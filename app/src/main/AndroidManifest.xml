@@ -16,7 +16,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SetPlayerNumberActivity"></activity>
+        <activity android:name=".SetPlayerNumberActivity" />
+        <activity android:name=".MainActivity"></activity>
     </application>
 
 </manifest>
