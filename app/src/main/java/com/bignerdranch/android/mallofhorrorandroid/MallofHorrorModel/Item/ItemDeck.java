@@ -68,6 +68,8 @@ public class ItemDeck  {
         itemsDeck.add(item);
     }
 
+    public void removeItem(Item item) { itemsDeck.remove(item);}
+
     public static void main(String[] args) {
         ItemDeck i1=new ItemDeck();
 

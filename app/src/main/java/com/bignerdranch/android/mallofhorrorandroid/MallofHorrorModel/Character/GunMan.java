@@ -1,6 +1,5 @@
 package com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Character;
 
-import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Character.GameCharacter;
 
 public class GunMan extends GameCharacter {
     public GunMan() {

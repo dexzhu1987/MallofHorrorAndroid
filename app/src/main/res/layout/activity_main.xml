@@ -5,24 +5,254 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.bignerdranch.android.mallofhorrorandroid.MainActivity"
-    android:background="@drawable/welcomebg">
+    android:background="@drawable/mainactivitybg"
+    android:orientation="vertical"
+    android:gravity="right"
+    android:id="@+id/main_activity">
+
+    <GridLayout
+        android:id="@+id/restroom_area_main"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="52dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </GridLayout>
+
+    <GridLayout
+        android:id="@+id/cachou_area_main"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="188dp"
+        android:layout_marginTop="52dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </GridLayout>
+
+    <GridLayout
+        android:id="@+id/megatoy_area_main"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="120dp"
+        android:layout_marginStart="340dp"
+        android:layout_marginTop="52dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </GridLayout>
+
+    <GridLayout
+        android:id="@+id/parking_area_main"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="154dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </GridLayout>
+
+    <GridLayout
+        android:id="@+id/security_area_main"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="188dp"
+        android:layout_marginTop="154dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </GridLayout>
+
+    <GridLayout
+        android:id="@+id/supermarket_area_main"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="130dp"
+        android:layout_marginStart="360dp"
+        android:layout_marginTop="154dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </GridLayout>
 
 
     <TextView
-        android:id="@+id/welcome_players"
+        android:id="@+id/restroom_zombie_main"
+        android:layout_width="20dp"
+        android:layout_height="27dp"
+        android:layout_marginStart="148dp"
+        android:layout_marginTop="84dp"
+        android:fontFamily="@font/exquisite_corpse"
+        android:text="0"
+        android:textColor="#FF0000"
+        android:textSize="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="0" />
+
+    <TextView
+        android:id="@+id/cachou_zombie_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="308dp"
+        android:layout_marginTop="84dp"
+        android:fontFamily="@font/exquisite_corpse"
+        android:text="0"
+        android:textColor="#FF0000"
+        android:textSize="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/megatoy_zombie_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="480dp"
+        android:layout_marginTop="84dp"
+        android:fontFamily="@font/exquisite_corpse"
+        android:text="0"
+        android:textColor="#FF0000"
+        android:textSize="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/parking_zombie_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="148dp"
+        android:layout_marginTop="192dp"
+        android:fontFamily="@font/exquisite_corpse"
+        android:text="0"
+        android:textColor="#FF0000"
+        android:textSize="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/security_zombie_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="308dp"
+        android:layout_marginTop="192dp"
+        android:fontFamily="@font/exquisite_corpse"
+        android:text="0"
+        android:textColor="#FF0000"
+        android:textSize="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/supermarket_zombie_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="480dp"
+        android:layout_marginTop="192dp"
+        android:fontFamily="@font/exquisite_corpse"
+        android:text="0"
+        android:textColor="#FF0000"
+        android:textSize="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/red_button"
+        android:layout_width="110dp"
+        android:layout_height="52dp"
+        android:padding="0dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/redbg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/yellow_button"
+        android:layout_width="110dp"
+        android:layout_height="52dp"
+        android:padding="0dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/yellowbg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/red_button" />
+
+    <ImageButton
+        android:id="@+id/blue_button"
+        android:layout_width="110dp"
+        android:layout_height="52dp"
+        android:padding="0dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/bluebg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/yellow_button" />
+
+    <ImageButton
+        android:id="@+id/green_button"
+        android:layout_width="110dp"
+        android:layout_height="52dp"
+        android:padding="0dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/greenbg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/blue_button" />
+
+    <ImageButton
+        android:id="@+id/brown_button"
+        android:layout_width="110dp"
+        android:layout_height="52dp"
+        android:padding="0dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/brownbg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/green_button" />
+
+    <ImageButton
+        android:id="@+id/black_button"
+        android:layout_width="110dp"
+        android:layout_height="52dp"
+        android:padding="0dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/blackbg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/brown_button" />
+
+
+    <ImageButton
+        android:id="@+id/continue_button1"
+        android:layout_width="108dp"
+        android:layout_height="58dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="356dp"
+        android:layout_marginTop="216dp"
+        android:padding="0dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/okbutton"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.724" />
+
+    <TextView
+        android:id="@+id/messageView_main"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="60dp"
-        android:layout_marginStart="60dp"
-        android:layout_marginTop="150dp"
+        android:layout_marginEnd="160dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="110dp"
         android:background="#010101"
-        android:fontFamily="@font/digital_7"
+        android:fontFamily="@font/digital"
         android:paddingBottom="10dp"
         android:paddingTop="10dp"
+        android:text="TextView"
         android:textAlignment="center"
         android:textColor="#00FE00"
-        android:textSize="35dp"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

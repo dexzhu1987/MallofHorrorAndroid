@@ -1,12 +1,19 @@
 package com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Character.*;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Game.*;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Playable.*;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Room.*;
 
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.List;
 
-public abstract class Item {
+
+public abstract class Item implements Parcelable {
     protected int itemNum;
     protected String name;
     protected int affectedRoomNumber;
@@ -18,6 +25,39 @@ public abstract class Item {
         affectedRoomNumber = 0;
         affectedGameCharacter = new ToughGuy();
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(itemNum);
+        dest.writeInt(affectedRoomNumber);
+        dest.writeString(name);
+        dest.writeSerializable(affectedGameCharacter);
+    }
+
+    protected Item (final Parcel in){
+        itemNum = in.readInt();
+        affectedRoomNumber = in.readInt();
+        name = in.readString();
+        affectedGameCharacter = (GameCharacter) in.readSerializable();
+    }
+
+    public static final Creator<Item> CREATOR = new Creator<Item>() {
+        @Override
+        public Item createFromParcel(Parcel source) {
+            return new Item(source) {
+            };
+        }
+
+        @Override
+        public Item[] newArray(int size) {
+            return new Item[size];
+        }
+    };
 
     public int getItemNum() {
         return itemNum;

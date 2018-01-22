@@ -1,7 +1,15 @@
 package com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Character;
 
 
-public abstract class GameCharacter {
+import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Room.Room;
+
+import java.util.HashMap;
+
+public abstract class GameCharacter implements Parcelable, java.io.Serializable {
     private String name;
     private int points;
     private int strength;
@@ -19,6 +27,70 @@ public abstract class GameCharacter {
 
 //    public int vote (){
 //        int votesum = 0;
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeInt(points);
+        dest.writeInt(strength);
+        dest.writeInt(vote);
+        dest.writeString(ownercolor);
+    }
+
+    protected GameCharacter (final Parcel in){
+        name = in.readString();
+        points = in.readInt();
+        strength = in.readInt();
+        vote = in.readInt();
+        ownercolor = in.readString();
+    }
+
+
+    public static final Creator<GameCharacter> CREATOR = new Creator<GameCharacter>() {
+        @Override
+        public GameCharacter createFromParcel(Parcel source) {
+            return new GameCharacter(source) {
+            };
+        }
+
+        @Override
+        public int hashCode() {
+            return super.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return super.equals(obj);
+        }
+
+        @Override
+        protected Object clone() throws CloneNotSupportedException {
+            return super.clone();
+        }
+
+        @Override
+        public String toString() {
+            return super.toString();
+        }
+
+        @Override
+        protected void finalize() throws Throwable {
+            super.finalize();
+        }
+
+        @Override
+        public GameCharacter[] newArray(int size) {
+            return new GameCharacter[size];
+        }
+    };
+
+
+
 //        return votesum += getVote();
 //    }
 

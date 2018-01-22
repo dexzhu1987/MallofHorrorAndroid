@@ -1,13 +1,18 @@
 package com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Room;
 
+import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Character.*;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Playable.*;
 
+import java.io.Serializable;
 import java.util.*;
 
 
 
-public abstract class Room {
+public class Room implements Parcelable {
     protected int roomNum;
     protected String name;
     protected int capability;
@@ -23,6 +28,43 @@ public abstract class Room {
         currentVoteResult = new HashMap<>();
         currentZombienumber = 0;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(roomNum);
+        dest.writeInt(capability);
+        dest.writeString(name);
+        dest.writeInt(currentZombienumber);
+        dest.writeSerializable(currentVoteResult);
+        dest.writeSerializable((Serializable) roomCharaters);
+    }
+
+    protected Room (final Parcel in){
+        roomNum = in.readInt();
+        capability = in.readInt();
+        name = in.readString();
+        currentZombienumber = in.readInt();
+        currentVoteResult =(HashMap<String,Integer>)  in.readSerializable();
+        roomCharaters = (List<GameCharacter>) in.readSerializable();
+    }
+
+
+    public static final Creator<Room> CREATOR = new Creator<Room>() {
+        @Override
+        public Room createFromParcel(Parcel source) {
+            return new Room(source);
+        }
+
+        @Override
+        public Room[] newArray(int size) {
+            return new Room[size];
+        }
+    };
 
     public int getRoomNum() {
         return roomNum;
