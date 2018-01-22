@@ -407,7 +407,123 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void searchParking(){
+        if (gameBroad.matchRoom(4).isEmpty() || gameBroad.getItemDeck().getItemsDeck().size() < 3) {
+            SimpleMessageWindow.display("Due to Parking is empty (or no more item avaiable), no searching will be performed");
+        } else {
+            HashSet<Playable> searchteam = gameBroad.WhoCan(gameBroad.matchRoom(4).existCharacterColor());
+            List<Playable> searchTeam = new ArrayList<>();
+            for (Playable player : searchteam) {
+                searchTeam.add(player);
+            }
+            SimpleMessageWindow.display(searchteam + " is/are in the parking");
+            List<Scene> playersScenes = matchThePlayerScenes(searchTeam);
+            List<String> votes = new ArrayList<>();
+            String vote = "";
+            for (int i = 0; i < searchteam.size(); i++) {
+                mainWindow.setScene(playersScenes.get(i));
+                Playable teammember = searchTeam.get(i);
+                vote = ChoosingColorWindow.display(searchTeam, teammember + " please vote who can search");
+                votes.add(teammember.getColor());
+                votes.add(vote);
+            }
+            gameBroad.matchRoom(4).resetVoteResult();
+            gameBroad.matchRoom(4).voteResultAfterVote(votes);
+            ViewVotingResultsWindow.display(votes,gameBroad.matchRoom(4).getCurrentVoteResult());
+            //using Threat to change result;
+            if (teamHasThreat(searchteam)) {
+                boolean voteYes = YesNoWindow.display("Voting result can be changed by item THREAT, anyone want to change the result?");
+                if (voteYes) {
+                    boolean moreThreatused ;
+                    do {
+                        moreThreatused =false;
+//                        int numThreat = 0;
+                        boolean memberUsedThreat = false;
+                        for (int i=0; i<searchTeam.size();i++) {
+                            mainWindow.setScene(playersScenes.get(i));
+                            Playable teammember = searchTeam.get(i);
+                            List<Integer> threadOptions = new ArrayList<>();
+                            for (int q=0; q<=teammember.threatNum(); q++){
+                                threadOptions.add(q);
+                            }
+                            memberUsedThreat = YesNoWindow.display(teammember + " please confirm you want to use THREAT");
+                            if (memberUsedThreat){
+                                if (teammember.hasThreat()){
+                                    String effectedColor = "";
+                                    for (int q = 0; q < votes.size(); q += 2) {
+                                        if (teammember.getColor().equalsIgnoreCase(votes.get(q))) {
+                                            effectedColor = votes.get(q + 1);
+                                        }
+                                    }
+                                    effectedColor = effectedColor.toUpperCase();
+                                    gameBroad.matchRoom(4).voteResultAfterItem(effectedColor, 1);
+                                    Item threat = gameBroad.matchItem(teammember, "Threat");
+                                    teammember.usedItem(threat);
+                                    SimpleMessageWindow.display("You vote has increased by one");
+                                } else {
+                                    SimpleMessageWindow.display("You do not have THREAT");
+                                }
 
+                            }
+
+                        }
+                        ViewVotingSummaryWindow.display(gameBroad.matchRoom(4).getCurrentVoteResult(), "Voting " +
+                                "Result after Threat");
+                        moreThreatused = YesNoWindow.display("Please confirm no more THREAT will be used (y - there will be more THREAT/n - no more THREAT)");
+                    }
+                    while (moreThreatused);
+                }
+            }
+            //result print
+            if (gameBroad.matchRoom(4).winner().equals("TIE")) {
+                SimpleMessageWindow.display("Result is TIE. " + " No Searching will be performed");
+            } else {
+                //searching begins
+                mainWindow.setScene(parkingSearchScene);
+                String winnercolor = gameBroad.matchRoom(4).winner();
+                SimpleMessageWindow.display("Winner is " + gameBroad.matchPlayer(winnercolor));
+                SimpleMessageWindow.display(gameBroad.matchPlayer(winnercolor) + " searched the parking and " +
+                        "found below items (only winning player can see the result and arrange items)");
+                gameBroad.getItemDeck().shuffle();
+                Item item1 = gameBroad.getItemDeck().deal();
+                Item item2 = gameBroad.getItemDeck().deal();
+                Item item3 = gameBroad.getItemDeck().deal();
+                List<Item> itemtemplist = new ArrayList<>();
+                itemtemplist.add(item1);
+                itemtemplist.add(item2);
+                itemtemplist.add(item3);
+                Item itemselect = ChoosingItemWindow.display(itemtemplist,"Please choose the item you want to keep");
+                if (gameBroad.matchPlayer(winnercolor).getCurrentItem().size()<6){
+                    ItemGettingWindow.display(itemselect, "You get");
+                    gameBroad.matchPlayer(winnercolor).getItem(itemselect);
+                }
+                else {
+                    SimpleMessageWindow.display("You get " + itemselect + ". However, due to your bag is full, you cannot carry more items.(Your throw the item on the ground)");
+                }
+                itemtemplist.remove(itemselect);
+                Item itemgiveselect = ChoosingItemWindow.display(itemtemplist, "Please select the item you want to give");
+                HashSet<Playable> others = gameBroad.RemainPlayers(gameBroad.matchPlayer(winnercolor));
+                List<Playable> othersList = new ArrayList<>();
+                for (Playable other: others){
+                    othersList.add(other);
+                }
+                String givecolor =ChoosingColorWindow.display(othersList, "Please select who you want give in the List: " + others);
+                if (gameBroad.matchPlayer(givecolor).getCurrentItem().size()<6){
+                    gameBroad.matchPlayer(givecolor).getItem(itemgiveselect);
+                }
+                itemtemplist.remove(itemgiveselect);
+                gameBroad.getItemDeck().addBackItem(itemtemplist.get(0));
+                String ok1 = "";
+                SimpleMessageWindow.display(gameBroad.matchPlayer(givecolor) + " you have received an item from " + gameBroad.matchPlayer(winnercolor)
+                        + " (keep it to yourself)");
+                if (gameBroad.matchPlayer(givecolor).getCurrentItem().size()<6){
+                    ItemGettingWindow.display(itemgiveselect, gameBroad.matchPlayer(givecolor) + ": You get");
+                } else {
+                    SimpleMessageWindow.display("You should have received " + itemgiveselect + ". Howver, due to your bag is full. You cannot carry more items.");
+                }
+                SimpleMessageWindow.display("Other players will be joining the game now");
+                SimpleMessageWindow.display("Player " + givecolor + " get an item from player " + winnercolor);
+            }
+        }
     }
 
     public static boolean teamHasThreat(HashSet<Playable> players) {
