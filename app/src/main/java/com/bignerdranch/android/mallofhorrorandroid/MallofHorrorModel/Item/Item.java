@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public abstract class Item implements Parcelable {
+public abstract class Item implements Parcelable,java.io.Serializable {
     protected int itemNum;
     protected String name;
     protected int affectedRoomNumber;

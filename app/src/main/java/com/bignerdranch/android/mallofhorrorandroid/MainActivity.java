@@ -28,13 +28,17 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_ROOM = 0;
     private static final int REQUEST_CODE_CHARACTER = 1;
     private static final int REQUEST_CODE_MESSAGE = 2;
+    private static final int REQUEST_CODE_VOTE = 3;
+    private static final int REQUEST_CODE_VIEWRESULT = 4;
 
     private int mPlayerNumber;
     private final static GameBroad gameBroad = new GameBroad(4);
     private static int mCurrentRoomPickedNumber = 0;
     private static int mCountSetUp;
-    private static boolean mCurrentYesNo = false;
+    private static int mSecondCount;
+    private static boolean mCurrentYesNoMain = false;
     private static String mCurrentGameCharacterSelected = "";
+    private static String mCurrentVoteColor = "";
     private static int mCountPhase;
     final static List<String> colors = new ArrayList<>();
     final static List<String> actualcolors= new ArrayList<>();
@@ -42,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private ConstraintLayout mMainActivityLayout;
     private ImageButton mRedButton, mYellowButton, mBlueButton, mGreenButton, mBrownButton, mBlackButton;
     private ImageButton mContinueButton;
+    private ImageButton mYesButton, mNoButton;
     private GridLayout mRestRoomArea, mCachouArea, mMegatoyArea, mParkingArea, mSecurityArea, mSupermarketArea;
     private TextView mRestRoomZombie, mCachouZombie, mMegatoyZombie, mParkingZombie, mSecurityZombie, mSupermarketZombie;
     private List<ImageButton> mPlayerButtons = new ArrayList<>();
@@ -98,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
                 if (mCountPhase==2) {
                     gameSetUpGetItem();
                 }
-                if (mCountPhase == 3) {
+                if (mCountPhase==3) {
                     searchParking();
                 }
             }
@@ -143,6 +148,26 @@ public class MainActivity extends AppCompatActivity {
         mPlayerButtons.add(mBrownButton);
         mPlayerButtons.add(mBlackButton);
 
+        mYesButton = findViewById(R.id.yesbutton_main);
+        mYesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCurrentYesNoMain = true;
+                mSecondCount++;
+                disableYesNo();
+            }
+        });
+        mNoButton = findViewById(R.id.nobutton_main);
+        mNoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCurrentYesNoMain = false;
+                mSecondCount++;
+                disableYesNo();
+            }
+        });
+        disableYesNo();
+
         for (ImageButton button: mPlayerButtons){
             button.setVisibility(View.INVISIBLE);
             button.setEnabled(false);
@@ -151,6 +176,20 @@ public class MainActivity extends AppCompatActivity {
         for (int i=0; i<mPlayerNumber; i++){
             mPlayerButtons.get(i).setVisibility(View.VISIBLE);
         }
+    }
+
+    private void disableYesNo() {
+        mYesButton.setVisibility(View.INVISIBLE);
+        mNoButton.setVisibility(View.INVISIBLE);
+        mYesButton.setEnabled(false);
+        mNoButton.setEnabled(false);
+    }
+
+    private void enableYesNo() {
+        mYesButton.setVisibility(View.VISIBLE);
+        mNoButton.setVisibility(View.VISIBLE);
+        mYesButton.setEnabled(true);
+        mNoButton.setEnabled(true);
     }
 
     private void updateRoom(Context context) {
@@ -408,44 +447,99 @@ public class MainActivity extends AppCompatActivity {
 
     private void searchParking(){
         if (gameBroad.matchRoom(4).isEmpty() || gameBroad.getItemDeck().getItemsDeck().size() < 3) {
-            SimpleMessageWindow.display("Due to Parking is empty (or no more item avaiable), no searching will be performed");
+            disableContinue();
+            mMessageView.setText("Due to Parking is empty (or no more item avaiable), no searching will be performed");
+            mMessageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    enableContinue();
+                    mCountPhase++;
+                }
+            });
         } else {
+            disableContinue();
             HashSet<Playable> searchteam = gameBroad.WhoCan(gameBroad.matchRoom(4).existCharacterColor());
             List<Playable> searchTeam = new ArrayList<>();
             for (Playable player : searchteam) {
                 searchTeam.add(player);
             }
-            SimpleMessageWindow.display(searchteam + " is/are in the parking");
-            List<Scene> playersScenes = matchThePlayerScenes(searchTeam);
+            mMessageView.setText(searchTeam + " is/are in the parking");
+            mMessageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    enableContinue();
+                }
+            });
             List<String> votes = new ArrayList<>();
-            String vote = "";
-            for (int i = 0; i < searchteam.size(); i++) {
-                mainWindow.setScene(playersScenes.get(i));
-                Playable teammember = searchTeam.get(i);
-                vote = ChoosingColorWindow.display(searchTeam, teammember + " please vote who can search");
+            if (mCountSetUp % 2 == 0 && mCountSetUp < 2*searchTeam.size()){
+                Playable teammember = searchTeam.get(mCountSetUp);
+                ArrayList rooms = (ArrayList<Room>)gameBroad.getRooms();
+                String playercolor = teammember.getColor();
+                String message = teammember +  "  please vote who can search";
+                ArrayList voteOptions = (ArrayList<Playable>) searchTeam;
+                ArrayList<Item> items = (ArrayList<Item>) searchTeam.get(mCountSetUp).getCurrentItem();
+                Intent intent = PlayerActivity.newVotingIntent(MainActivity.this,rooms,playercolor,items, voteOptions ,message,mCountSetUp,4);
+                startActivityForResult(intent,REQUEST_CODE_VOTE);
+            }
+            String vote = mCurrentVoteColor;
+            if (mCountSetUp % 2 == 1 && mCountSetUp < 2*searchTeam.size()){
+                Playable teammember = searchTeam.get(mCountSetUp-1);
                 votes.add(teammember.getColor());
                 votes.add(vote);
+                mCountSetUp++;
+                searchParking();
             }
-            gameBroad.matchRoom(4).resetVoteResult();
-            gameBroad.matchRoom(4).voteResultAfterVote(votes);
-            ViewVotingResultsWindow.display(votes,gameBroad.matchRoom(4).getCurrentVoteResult());
+            if (mCountSetUp == searchTeam.size() * 2  && mSecondCount == 0){
+                gameBroad.matchRoom(4).resetVoteResult();
+                gameBroad.matchRoom(4).voteResultAfterVote(votes);
+                ArrayList votes1 = (ArrayList<String>) votes;
+                Intent intent = ShowVoteResultActivity.newVoteResultIntent(MainActivity.this, votes1,gameBroad.matchRoom(4).getCurrentVoteResult(),mSecondCount);
+                startActivityForResult(intent, REQUEST_CODE_VIEWRESULT);
+            }
+            if (mCountSetUp == searchTeam.size() * 2 && mSecondCount > 0) {
+                if (teamHasThreat(searchteam)) {
+                    if (mSecondCount==1) {
+                        disableContinue();
+                        mMessageView.setText("Voting result can be changed by item THREAT, anyone want to change the result?");
+                        mMessageView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                mMessageView.setVisibility(View.INVISIBLE);
+                                mMessageView.setEnabled(false);
+                                enableYesNo();
+                            }
+                        });
+                    }
+                    if (mSecondCount==2) {
+                        if (mCurrentYesNoMain) {
+                        int i = searchTeam.size()% mCountSetUp;
+                        Playable teammember = searchTeam.get(i);
+                        String color = searchTeam.get(i).getColor();
+                        String message = teammember + " please confirm you want to use THREAT";
+                        ArrayList rooms = (ArrayList<Room>)gameBroad.getRooms();
+
+                        }
+
+                    }
+
+                } else {
+                     mCountSetUp += searchTeam.size();
+                     mSecondCount = 0;
+                }
+            }
+            if (mCountSetUp == searchTeam.size() *3 )
             //using Threat to change result;
-            if (teamHasThreat(searchteam)) {
-                boolean voteYes = YesNoWindow.display("Voting result can be changed by item THREAT, anyone want to change the result?");
+
                 if (voteYes) {
-                    boolean moreThreatused ;
-                    do {
                         moreThreatused =false;
-//                        int numThreat = 0;
                         boolean memberUsedThreat = false;
                         for (int i=0; i<searchTeam.size();i++) {
-                            mainWindow.setScene(playersScenes.get(i));
-                            Playable teammember = searchTeam.get(i);
+                            ;
                             List<Integer> threadOptions = new ArrayList<>();
                             for (int q=0; q<=teammember.threatNum(); q++){
                                 threadOptions.add(q);
                             }
-                            memberUsedThreat = YesNoWindow.display(teammember + " please confirm you want to use THREAT");
+                            memberUsedThreat = YesNoWindow.display();
                             if (memberUsedThreat){
                                 if (teammember.hasThreat()){
                                     String effectedColor = "";
@@ -468,9 +562,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                         ViewVotingSummaryWindow.display(gameBroad.matchRoom(4).getCurrentVoteResult(), "Voting " +
                                 "Result after Threat");
-                        moreThreatused = YesNoWindow.display("Please confirm no more THREAT will be used (y - there will be more THREAT/n - no more THREAT)");
-                    }
-                    while (moreThreatused);
                 }
             }
             //result print
@@ -576,6 +667,19 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             mCountSetUp = PlayerActivity.getCountedSetUp(data);
+        }
+        if (requestCode == REQUEST_CODE_VOTE){
+            if (data == null){
+                return;
+            }
+            mCountSetUp = PlayerActivity.getCountedSetUp(data);
+            mCurrentVoteColor = PlayerActivity.votedColor(data);
+        }
+        if (requestCode == REQUEST_CODE_VIEWRESULT){
+            if (data == null){
+                return;
+            }
+            mSecondCount = ShowVoteResultActivity.getCountedSetUp(data);
         }
 
     }

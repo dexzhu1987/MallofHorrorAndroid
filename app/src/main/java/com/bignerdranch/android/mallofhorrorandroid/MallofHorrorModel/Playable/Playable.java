@@ -1,12 +1,17 @@
 package com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Playable;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Character.*;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.*;
+import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Room.Room;
 
+import java.io.Serializable;
 import java.util.*;
 
 
-public class Playable {
+public class Playable implements Parcelable {
     protected String name;
     protected String color;
     protected List<GameCharacter> characters;
@@ -30,6 +35,41 @@ public class Playable {
         currentItem = new ArrayList<Item>();
 
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(color);
+        dest.writeSerializable((Serializable) characters);
+        dest.writeSerializable((Serializable) charactersselect);
+        dest.writeSerializable((Serializable) currentItem);
+    }
+
+    protected Playable (final Parcel in){
+        name = in.readString();
+        color = in.readString();
+        characters = (List<GameCharacter>) in.readSerializable();
+        charactersselect = (List<GameCharacter>) in.readSerializable();
+        currentItem = (List<Item>) in.readSerializable();
+    }
+
+
+    public static final Creator<Playable> CREATOR = new Creator<Playable>() {
+        @Override
+        public Playable createFromParcel(Parcel source) {
+            return new Playable(source);
+        }
+
+        @Override
+        public Playable[] newArray(int size) {
+            return new Playable[size];
+        }
+    };
 
     public String getName() {
         return name;

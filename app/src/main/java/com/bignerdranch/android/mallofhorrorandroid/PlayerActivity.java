@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Character.GameCharacter;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.Item;
+import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Playable.Playable;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Room.Room;
 
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ public class PlayerActivity extends AppCompatActivity {
     protected static final String ITEMS = "items";
     protected static final String GAMECHARACTERSOPTIONS = "gamecharacters";
     protected static final String ROOMSOPTIONS = "roomsoptions";
+    protected static final String VOTINGOPTIONS = "votingopions";
     protected static final String MESSAGE = "message";
     protected static final String COUNTSETUP = "countsetup";
     protected static final String TYPE = "type";
@@ -35,7 +37,7 @@ public class PlayerActivity extends AppCompatActivity {
     protected static final String CHOOSEDROOM = "choosedroom";
     protected static final String SETUPCOUNTED = "SETUPCOUNTED";
     protected static final String CHOOSEDCHARACTER = "choosedcharacter";
-
+    protected static final String CHOOSEDCOLOR = "choosedcolor";
 
     private ImageButton mEnterRestRoomButton, mEnterCachouButton, mEnterMegatoyButton, mEnterParkingButton, mEnterSecurityButton,
             mEnterSupermarketButton;
@@ -57,6 +59,7 @@ public class PlayerActivity extends AppCompatActivity {
     private ArrayList<? extends Item> mItems;
     private String mMessage;
     private ArrayList<GameCharacter> mGameCharactersOptions;
+    private ArrayList<Playable> mVoteOptions;
     private int mCountSetUp;
     private int mType;
     private String mColor;
@@ -97,6 +100,19 @@ public class PlayerActivity extends AppCompatActivity {
         intent.putParcelableArrayListExtra(ITEMS,(ArrayList<? extends Parcelable>) items);
         intent.putExtra(PLAYERCOLOR,playercolor);
         intent.putExtra(MESSAGE,message);
+        intent.putExtra(COUNTSETUP,countsetup);
+        intent.putExtra(TYPE, type);
+        return intent;
+    }
+
+    public static Intent newVotingIntent (Context context, List<Room> rooms, String playercolor, List<Item> items, ArrayList<Playable> votingOptions,
+                                           String message, int countsetup, int type){
+        Intent intent = new Intent(context, PlayerActivity.class);
+        intent.putParcelableArrayListExtra (ROOMS, (ArrayList<? extends Parcelable>) rooms);
+        intent.putParcelableArrayListExtra(ITEMS,(ArrayList<? extends Parcelable>) items);
+        intent.putExtra(PLAYERCOLOR,playercolor);
+        intent.putExtra(MESSAGE,message);
+        intent.putParcelableArrayListExtra(VOTINGOPTIONS, votingOptions);
         intent.putExtra(COUNTSETUP,countsetup);
         intent.putExtra(TYPE, type);
         return intent;
@@ -165,6 +181,36 @@ public class PlayerActivity extends AppCompatActivity {
                     data.putExtra(SETUPCOUNTED, mCountSetUp );
                     setResult(RESULT_OK, data);
                     finish();
+                }
+            });
+        }
+        if (mType == 4){
+            mVoteOptions = getIntent().getParcelableArrayListExtra(VOTINGOPTIONS);
+            mMessageTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mMessageTextView.setVisibility(View.INVISIBLE);
+                    for (int i=0; i<mVoteOptions.size(); i++){
+                        if (mVoteOptions.get(i).getColor().equalsIgnoreCase("RED")){
+                            mVoteRedButton.setVisibility(View.VISIBLE);
+                            mVoteRedButton.setEnabled(true);
+                        } else if (mVoteOptions.get(i).getColor().equalsIgnoreCase("YELLOW")){
+                            mVoteYellowButton.setVisibility(View.VISIBLE);
+                            mVoteYellowButton.setEnabled(true);
+                        } else if (mVoteOptions.get(i).getColor().equalsIgnoreCase("BLUE")){
+                            mVoteBlueButton.setVisibility(View.VISIBLE);
+                            mVoteBlueButton.setEnabled(true);
+                        } else if (mVoteOptions.get(i).getColor().equalsIgnoreCase("GREEN")){
+                            mVoteGreenButton.setVisibility(View.VISIBLE);
+                            mVoteGreenButton.setEnabled(true);
+                        } else if (mVoteOptions.get(i).getColor().equalsIgnoreCase("BROWN")){
+                            mVoteBrownButton.setVisibility(View.VISIBLE);
+                            mVoteBrownButton.setEnabled(true);
+                        } else if (mVoteOptions.get(i).getColor().equalsIgnoreCase("BLACK")) {
+                            mVoteBlackButton.setVisibility(View.VISIBLE);
+                            mVoteBlackButton.setEnabled(true);
+                        }
+                    }
                 }
             });
         }
@@ -256,11 +302,47 @@ public class PlayerActivity extends AppCompatActivity {
 
 
         mVoteRedButton = findViewById(R.id.votered_button);
+        mVoteRedButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                choosingColor("Red");
+            }
+        });
         mVoteYellowButton = findViewById(R.id.voteyellow_button);
+        mVoteYellowButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                choosingColor("Yellow");
+            }
+        });
         mVoteBlueButton = findViewById(R.id.voteblue_button);
+        mVoteBlueButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                choosingColor("Blue");
+            }
+        });
         mVoteGreenButton = findViewById(R.id.votegreen_button);
+        mVoteGreenButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                choosingColor("Green");
+            }
+        });
         mVoteBrownButton = findViewById(R.id.votebrown_button);
+        mVoteBrownButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                choosingColor("Brown");
+            }
+        });
         mVoteBlackButton = findViewById(R.id.voteblack_button);
+        mVoteBlackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                choosingColor("Black");
+            }
+        });
         mVotingButtons.add(mVoteRedButton);
         mVotingButtons.add(mVoteYellowButton);
         mVotingButtons.add(mVoteBlueButton);
@@ -543,6 +625,14 @@ public class PlayerActivity extends AppCompatActivity {
         finish();
     }
 
+    private void choosingColor(String color) {
+        mCountSetUp++;
+        Intent data = new Intent();
+        data.putExtra(CHOOSEDCOLOR, color);
+        data.putExtra(SETUPCOUNTED, mCountSetUp);
+        setResult(RESULT_OK, data);
+        finish();
+    }
 
     public static int choosedRoomNumber (Intent result){
         return result.getIntExtra(CHOOSEDROOM,0);
@@ -554,6 +644,10 @@ public class PlayerActivity extends AppCompatActivity {
 
     public static String choosedCharacter (Intent result){
         return result.getStringExtra(CHOOSEDCHARACTER);
+    }
+
+    public static String votedColor(Intent result){
+        return result.getStringExtra(CHOOSEDCOLOR);
     }
 
 
