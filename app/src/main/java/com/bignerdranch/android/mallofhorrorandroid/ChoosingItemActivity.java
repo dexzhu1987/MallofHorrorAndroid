@@ -32,7 +32,7 @@ public class ChoosingItemActivity extends AppCompatActivity {
     private ImageButton mImageSelected1, mImageSelected2, mImageSelected3;
 
     private ArrayList<Item> mItems;
-    private List<ImageButton> mAllItemsImageButtons;
+    private List<ImageButton> mAllItemsImageButtons = new ArrayList<>();
 
     private int mCountSetUp;
 
