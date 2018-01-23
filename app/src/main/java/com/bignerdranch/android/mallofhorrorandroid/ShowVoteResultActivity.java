@@ -30,7 +30,7 @@ public class ShowVoteResultActivity extends AppCompatActivity {
     private int mCountSetUp;
 
     public static Intent newVoteResultIntent(Context context, ArrayList<String> votes, HashMap<String, Integer> results, int countsetup){
-        Intent intent = new Intent(context, PlayerActivity.class);
+        Intent intent = new Intent(context, ShowVoteResultActivity.class);
         intent.putStringArrayListExtra(VOTES, votes);
         intent.putExtra(RESULTS,results);
         intent.putExtra(COUNTSETUP, countsetup);
@@ -42,6 +42,7 @@ public class ShowVoteResultActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_vote_result);
+        System.out.println("ShowVote Result called");
 
         mVotes = getIntent().getStringArrayListExtra(VOTES);
         mResults = (HashMap<String, Integer>) getIntent().getSerializableExtra(RESULTS);
@@ -66,6 +67,7 @@ public class ShowVoteResultActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mCountSetUp++;
+                System.out.println(mCountSetUp);
                 Intent data = new Intent();
                 data.putExtra(SETUPCOUNTED, mCountSetUp);
                 setResult(RESULT_OK, data);
@@ -75,14 +77,14 @@ public class ShowVoteResultActivity extends AppCompatActivity {
 
 
         HashMap<String, ImageView> votedImages = new HashMap<>();
-        votedImages.put("Red",mRedVoted);
-        votedImages.put("Yellow",mYellowVoted);
-        votedImages.put("Blue",mBlueVoted);
-        votedImages.put("Green",mGreenVoted);
-        votedImages.put("Brown",mBrownVoted);
-        votedImages.put("Black",mBlackVoted);
+        votedImages.put("RED",mRedVoted);
+        votedImages.put("YELLOW",mYellowVoted);
+        votedImages.put("BLUE",mBlueVoted);
+        votedImages.put("GREEN",mGreenVoted);
+        votedImages.put("BROWN",mBrownVoted);
+        votedImages.put("BLACK",mBlackVoted);
 
-        for (int i=0; i<mVotes.size(); i++){
+        for (int i=0; i<mVotes.size(); i+=2){
             if (votedImages.containsKey(mVotes.get(i))){
                 if (mVotes.get(i+1).equalsIgnoreCase("Red")){
                     votedImages.get(mVotes.get(i)).setImageResource(R.drawable.votingredbttn);
@@ -95,7 +97,7 @@ public class ShowVoteResultActivity extends AppCompatActivity {
                 } else if (mVotes.get(i+1).equalsIgnoreCase("Brown")){
                     votedImages.get(mVotes.get(i)).setImageResource(R.drawable.votingbrownbttn);
                 } else if (mVotes.get(i+1).equalsIgnoreCase("Black")){
-                    votedImages.get(mVotes.get(i)).setImageResource(R.drawable.votingBlackBttn);
+                    votedImages.get(mVotes.get(i)).setImageResource(R.drawable.votingblackbttn);
                 }
             }
         }
@@ -103,12 +105,12 @@ public class ShowVoteResultActivity extends AppCompatActivity {
         List<String> keys = new ArrayList<>(mResults.keySet());
         List<Integer> values= new ArrayList<>(mResults.values());
         HashMap<String, TextView> results = new HashMap<>();
-        results.put("Red", mRedResult);
-        results.put("Yellow",mYellowResult);
-        results.put("Blue",mBlueResult);
-        results.put("Green", mGreenResult);
-        results.put("Brown",mBrownResult);
-        results.put("Black", mBlackResult);
+        results.put("RED", mRedResult);
+        results.put("YELLOW",mYellowResult);
+        results.put("BLUE",mBlueResult);
+        results.put("GREEN", mGreenResult);
+        results.put("BROWN",mBrownResult);
+        results.put("BLACK", mBlackResult);
 
         for (int i=0; i<keys.size(); i++){
             if (results.containsKey(keys.get(i))){

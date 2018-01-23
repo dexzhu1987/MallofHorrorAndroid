@@ -33,11 +33,13 @@ public class PlayerActivity extends AppCompatActivity {
     protected static final String COUNTSETUP = "countsetup";
     protected static final String TYPE = "type";
     protected static final String PLAYERCOLOR = "playercolor";
+    protected static final String YESANDNO = "yesandno";
 
     protected static final String CHOOSEDROOM = "choosedroom";
     protected static final String SETUPCOUNTED = "SETUPCOUNTED";
     protected static final String CHOOSEDCHARACTER = "choosedcharacter";
     protected static final String CHOOSEDCOLOR = "choosedcolor";
+    protected static final String CHOOSEDBOOLEAN = "choosedboolean";
 
     private ImageButton mEnterRestRoomButton, mEnterCachouButton, mEnterMegatoyButton, mEnterParkingButton, mEnterSecurityButton,
             mEnterSupermarketButton;
@@ -63,6 +65,7 @@ public class PlayerActivity extends AppCompatActivity {
     private int mCountSetUp;
     private int mType;
     private String mColor;
+    private Boolean mBooleanOptions;
 
 
 
@@ -118,13 +121,26 @@ public class PlayerActivity extends AppCompatActivity {
         return intent;
     }
 
-
+    public static Intent newYesNoIntent (Context context, List<Room> rooms, String playercolor, List<Item> items, Boolean yesAndNo,
+                                          String message, int countsetup, int type){
+        Intent intent = new Intent(context, PlayerActivity.class);
+        intent.putParcelableArrayListExtra (ROOMS, (ArrayList<? extends Parcelable>) rooms);
+        intent.putParcelableArrayListExtra(ITEMS,(ArrayList<? extends Parcelable>) items);
+        intent.putExtra(PLAYERCOLOR,playercolor);
+        intent.putExtra(MESSAGE,message);
+        intent.putExtra(YESANDNO,yesAndNo);
+        intent.putExtra(COUNTSETUP,countsetup);
+        intent.putExtra(TYPE, type);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
-        gettingReady();
+        System.out.println("PlayerActivity called");
+            gettingReady();
+
     }
 
     private void gettingReady() {
@@ -213,6 +229,16 @@ public class PlayerActivity extends AppCompatActivity {
                     }
                 }
             });
+        }
+        if (mType==5){
+            mBooleanOptions = getIntent().getBooleanExtra(YESANDNO,false);
+            mMessageTextView.setVisibility(View.INVISIBLE);
+            if (mBooleanOptions){
+                mYesButton.setVisibility(View.VISIBLE);
+                mYesButton.setEnabled(true);
+            }
+            mNoButton.setVisibility(View.VISIBLE);
+            mNoButton.setEnabled(true);
         }
 
         otherCommonSetUp();
@@ -364,9 +390,21 @@ public class PlayerActivity extends AppCompatActivity {
         mAllItemSlots.add(mItemSolt6);
 
         mYesButton = findViewById(R.id.yesbutton);
+        mYesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                choosingBoolean(true);
+            }
+        });
         mYesButton.setEnabled(false);
         mYesButton.setVisibility(View.INVISIBLE);
         mNoButton = findViewById(R.id.nobutton);
+        mNoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                choosingBoolean(false);
+            }
+        });
         mNoButton.setEnabled(false);
         mNoButton.setVisibility(View.INVISIBLE);
 
@@ -388,40 +426,43 @@ public class PlayerActivity extends AppCompatActivity {
     }
 
     private void settingUpColor() {
-        if (mColor.equalsIgnoreCase("Yellow")){
-            mPlayerButton.setImageResource(R.drawable.yellowbg);
-            mGunManButton.setImageResource(R.drawable.yellowgunmanbttn);
-            mToughGunButton.setImageResource(R.drawable.yellowtoughguybttn);
-            mModelButton.setImageResource(R.drawable.yellowmodelbttn);
+        if (mColor!=null){
+            if (mColor.equalsIgnoreCase("Yellow")){
+                mPlayerButton.setImageResource(R.drawable.yellowbg);
+                mGunManButton.setImageResource(R.drawable.yellowgunmanbttn);
+                mToughGunButton.setImageResource(R.drawable.yellowtoughguybttn);
+                mModelButton.setImageResource(R.drawable.yellowmodelbttn);
+            }
+
+            if (mColor.equalsIgnoreCase("Blue")){
+                mPlayerButton.setImageResource(R.drawable.bluebg);
+                mGunManButton.setImageResource(R.drawable.bluegunmanbttn);
+                mToughGunButton.setImageResource(R.drawable.bluetoughguybttn);
+                mModelButton.setImageResource(R.drawable.bluemodelbttn);
+            }
+
+            if (mColor.equalsIgnoreCase("Green")){
+                mPlayerButton.setImageResource(R.drawable.greenbg);
+                mGunManButton.setImageResource(R.drawable.greengunmanbttn);
+                mToughGunButton.setImageResource(R.drawable.greentoughguybttn);
+                mModelButton.setImageResource(R.drawable.greenmodelbttn);
+            }
+
+            if (mColor.equalsIgnoreCase("Brown")){
+                mPlayerButton.setImageResource(R.drawable.brownbg);
+                mGunManButton.setImageResource(R.drawable.browngunmanbttn);
+                mToughGunButton.setImageResource(R.drawable.browntoughguybttn);
+                mModelButton.setImageResource(R.drawable.brownmodelbttn);
+            }
+
+            if (mColor.equalsIgnoreCase("Black")){
+                mPlayerButton.setImageResource(R.drawable.blackbg);
+                mGunManButton.setImageResource(R.drawable.blackgunmanbttn);
+                mToughGunButton.setImageResource(R.drawable.blacktoughguybttn);
+                mModelButton.setImageResource(R.drawable.blackmodelbttn);
+            }
         }
 
-        if (mColor.equalsIgnoreCase("Blue")){
-            mPlayerButton.setImageResource(R.drawable.bluebg);
-            mGunManButton.setImageResource(R.drawable.bluegunmanbttn);
-            mToughGunButton.setImageResource(R.drawable.bluetoughguybttn);
-            mModelButton.setImageResource(R.drawable.bluemodelbttn);
-        }
-
-        if (mColor.equalsIgnoreCase("Green")){
-            mPlayerButton.setImageResource(R.drawable.greenbg);
-            mGunManButton.setImageResource(R.drawable.greengunmanbttn);
-            mToughGunButton.setImageResource(R.drawable.greentoughguybttn);
-            mModelButton.setImageResource(R.drawable.greenmodelbttn);
-        }
-
-        if (mColor.equalsIgnoreCase("Brown")){
-            mPlayerButton.setImageResource(R.drawable.brownbg);
-            mGunManButton.setImageResource(R.drawable.browngunmanbttn);
-            mToughGunButton.setImageResource(R.drawable.browntoughguybttn);
-            mModelButton.setImageResource(R.drawable.brownmodelbttn);
-        }
-
-        if (mColor.equalsIgnoreCase("Black")){
-            mPlayerButton.setImageResource(R.drawable.blackbg);
-            mGunManButton.setImageResource(R.drawable.blackgunmanbttn);
-            mToughGunButton.setImageResource(R.drawable.blacktoughguybttn);
-            mModelButton.setImageResource(R.drawable.blackmodelbttn);
-        }
     }
 
     private void updateItem() {
@@ -634,6 +675,15 @@ public class PlayerActivity extends AppCompatActivity {
         finish();
     }
 
+    private void choosingBoolean(Boolean yes) {
+        mCountSetUp++;
+        Intent data = new Intent();
+        data.putExtra(CHOOSEDBOOLEAN, yes);
+        data.putExtra(SETUPCOUNTED, mCountSetUp);
+        setResult(RESULT_OK, data);
+        finish();
+    };
+
     public static int choosedRoomNumber (Intent result){
         return result.getIntExtra(CHOOSEDROOM,0);
     }
@@ -650,6 +700,8 @@ public class PlayerActivity extends AppCompatActivity {
         return result.getStringExtra(CHOOSEDCOLOR);
     }
 
-
+    public static Boolean choosedBoolean (Intent result){
+        return result.getBooleanExtra(CHOOSEDBOOLEAN, false);
+    }
 
 }
