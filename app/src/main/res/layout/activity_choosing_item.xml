@@ -8,7 +8,7 @@
     android:background="@drawable/choosingitembg">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/choosingItemTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="280dp"

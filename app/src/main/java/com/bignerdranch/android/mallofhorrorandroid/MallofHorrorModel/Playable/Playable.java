@@ -11,7 +11,7 @@ import java.io.Serializable;
 import java.util.*;
 
 
-public class Playable implements Parcelable {
+public class Playable implements Parcelable, java.io.Serializable  {
     protected String name;
     protected String color;
     protected List<GameCharacter> characters;
@@ -70,6 +70,14 @@ public class Playable implements Parcelable {
             return new Playable[size];
         }
     };
+
+    public static Playable createFromParcel(Parcel source) {
+        return CREATOR.createFromParcel(source);
+    }
+
+    public static Playable[] newArray(int size) {
+        return CREATOR.newArray(size);
+    }
 
     public String getName() {
         return name;

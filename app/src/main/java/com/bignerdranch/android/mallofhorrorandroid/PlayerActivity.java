@@ -151,6 +151,11 @@ public class PlayerActivity extends AppCompatActivity {
         mCountSetUp = getIntent().getIntExtra(COUNTSETUP,0);
         mColor = getIntent().getStringExtra(PLAYERCOLOR);
 
+        otherCommonSetUp();
+        settingUpColor();
+        updateRoom(PlayerActivity.this);
+        updateItem();
+
         mMessageTextView = findViewById(R.id.messageView);
         mMessageTextView.setText(mMessage);
         if (mType==1){
@@ -241,10 +246,7 @@ public class PlayerActivity extends AppCompatActivity {
             mNoButton.setEnabled(true);
         }
 
-        otherCommonSetUp();
-        settingUpColor();
-        updateRoom(PlayerActivity.this);
-        updateItem();
+
     }
 
     private void otherCommonSetUp() {
@@ -389,24 +391,28 @@ public class PlayerActivity extends AppCompatActivity {
         mAllItemSlots.add(mItemSolt5);
         mAllItemSlots.add(mItemSolt6);
 
-        mYesButton = findViewById(R.id.yesbutton);
+        mYesButton = findViewById(R.id.yesbutton_player);
         mYesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 choosingBoolean(true);
             }
         });
-        mYesButton.setEnabled(false);
-        mYesButton.setVisibility(View.INVISIBLE);
-        mNoButton = findViewById(R.id.nobutton);
+        mNoButton = findViewById(R.id.nobutton_player);
         mNoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 choosingBoolean(false);
             }
         });
+
+
+
+        mYesButton.setEnabled(false);
+        mYesButton.setVisibility(View.INVISIBLE);
         mNoButton.setEnabled(false);
         mNoButton.setVisibility(View.INVISIBLE);
+
 
 
         for (ImageButton button: mVotingButtons){

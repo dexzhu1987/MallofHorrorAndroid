@@ -17,6 +17,8 @@ public abstract class GameCharacter implements Parcelable, java.io.Serializable 
     private String ownercolor;
 
 
+
+
     public GameCharacter(String name, int points, int strength, int vote) {
         this.name = name;
         this.points = points;
@@ -59,40 +61,19 @@ public abstract class GameCharacter implements Parcelable, java.io.Serializable 
         }
 
         @Override
-        public int hashCode() {
-            return super.hashCode();
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            return super.equals(obj);
-        }
-
-        @Override
-        protected Object clone() throws CloneNotSupportedException {
-            return super.clone();
-        }
-
-        @Override
-        public String toString() {
-            return super.toString();
-        }
-
-        @Override
-        protected void finalize() throws Throwable {
-            super.finalize();
-        }
-
-        @Override
         public GameCharacter[] newArray(int size) {
             return new GameCharacter[size];
         }
     };
 
 
+    public static GameCharacter createFromParcel(Parcel source) {
+        return CREATOR.createFromParcel(source);
+    }
 
-//        return votesum += getVote();
-//    }
+    public static GameCharacter[] newArray(int size) {
+        return CREATOR.newArray(size);
+    }
 
     public String getName() {
         return name;

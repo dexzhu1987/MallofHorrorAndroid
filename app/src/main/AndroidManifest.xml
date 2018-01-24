@@ -41,9 +41,13 @@
             android:name=".ShowSimpleVoteResultActivity"
             android:configChanges="orientation"
             android:screenOrientation="landscape" />
-        <activity android:name=".ChoosingItemActivity"
+        <activity
+            android:name=".ChoosingItemActivity"
             android:configChanges="orientation"
-            android:screenOrientation="landscape"></activity>
+            android:screenOrientation="landscape" />
+        <activity android:name=".ShowingZombieActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="landscape" ></activity>
     </application>
 
 </manifest>

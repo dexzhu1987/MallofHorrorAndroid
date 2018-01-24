@@ -91,6 +91,15 @@ public abstract class Item implements Parcelable,java.io.Serializable {
         return name;
     }
 
+
+    public static Item createFromParcel(Parcel source) {
+        return CREATOR.createFromParcel(source);
+    }
+
+    public static Item[] newArray(int size) {
+        return CREATOR.newArray(size);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
