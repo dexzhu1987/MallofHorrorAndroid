@@ -1,5 +1,8 @@
 package com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Character.*;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Game.*;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Playable.*;
@@ -8,9 +11,31 @@ import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Room.*;
 import java.util.*;
 
 
-public class Sprint extends Item {
+public class Sprint extends Item implements Parcelable, java.io.Serializable  {
     public Sprint() {
         super(7,"Sprint");
+    }
+
+    @Override
+    public int describeContents() {
+        return super.describeContents();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+    }
+
+    protected Sprint(Parcel in) {
+        super(in);
+    }
+
+    public static Item createFromParcel(Parcel source) {
+        return CREATOR.createFromParcel(source);
+    }
+
+    public static Item[] newArray(int size) {
+        return CREATOR.newArray(size);
     }
 
     @Override
@@ -49,23 +74,12 @@ public class Sprint extends Item {
         }
         room.leave(selectedCharacter);
 //        SimpleMessageWindow.display(selectedCharacter + " has lefted " + room.getName());
-        affectedRoomNumber = roompicked;
         affectedGameCharacter = selectedCharacter;
 
     }
 
     public void afterEffect(GameBroad gameBroad){
-        List<String> messages = new ArrayList<>();
-        messages.add("Due to Sprint has been used, aftereffect(entering destination is triggerd)");
-        if (gameBroad.matchRoom(affectedRoomNumber).isFull()){
-            gameBroad.matchRoom(4).enter(affectedGameCharacter);
-            messages.add(affectedGameCharacter + " wanted to enter " + gameBroad.matchRoom(affectedRoomNumber).getName());
-            messages.add("However, Due to " + gameBroad.matchRoom(affectedRoomNumber).getName() + " is full, " + affectedGameCharacter + " will go to Parking instead.");
-        }else {
-            gameBroad.matchRoom(affectedRoomNumber).enter(affectedGameCharacter);
-            messages.add(affectedGameCharacter + " has entered " + gameBroad.matchRoom(affectedRoomNumber).getName());
-        }
-//        MultiMessagesWindow.display(messages, "------------------Sprint-------------------");
+
     }
 
     public static void main(String[] args) {

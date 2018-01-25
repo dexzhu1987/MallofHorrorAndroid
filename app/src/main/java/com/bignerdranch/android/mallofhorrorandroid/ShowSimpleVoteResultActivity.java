@@ -37,8 +37,6 @@ public class ShowSimpleVoteResultActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_simple_vote_result);
-
-
         mResults = (HashMap<String, Integer>) getIntent().getSerializableExtra(RESULTS);
         mCountSetUp = getIntent().getIntExtra(COUNTSETUP,0);
 
@@ -53,10 +51,10 @@ public class ShowSimpleVoteResultActivity extends AppCompatActivity {
         mContinueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCountSetUp++;
+                ++mCountSetUp;
                 Intent data = new Intent();
                 data.putExtra(SETUPCOUNTED, mCountSetUp);
-                setResult(RESULT_OK, data);
+                setResult(ShowSimpleVoteResultActivity.RESULT_OK, data);
                 finish();
             }
         });

@@ -9,21 +9,22 @@ import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Playable.*
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Room.*;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
 
 
-public abstract class Item implements Parcelable,java.io.Serializable {
+
+public abstract class Item implements Parcelable,Serializable {
     protected int itemNum;
     protected String name;
-    protected int affectedRoomNumber;
+    protected int currentaffectedRoomNumber;
+    protected int afteraffectedRoomNumber;
     protected GameCharacter affectedGameCharacter;
 
     public Item(int itemNum, String name) {
         this.itemNum = itemNum;
         this.name = name;
-        affectedRoomNumber = 0;
+        afteraffectedRoomNumber = 0;
         affectedGameCharacter = new ToughGuy();
+        currentaffectedRoomNumber = 0;
     }
 
     @Override
@@ -34,16 +35,43 @@ public abstract class Item implements Parcelable,java.io.Serializable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(itemNum);
-        dest.writeInt(affectedRoomNumber);
+        dest.writeInt(afteraffectedRoomNumber);
         dest.writeString(name);
-        dest.writeSerializable(affectedGameCharacter);
+        dest.writeParcelable(affectedGameCharacter,flags);
+        dest.writeInt(currentaffectedRoomNumber);
     }
+
+    public int getCurrentaffectedRoomNumber() {
+        return currentaffectedRoomNumber;
+    }
+
+    public void setCurrentaffectedRoomNumber(int currentaffectedRoomNumber) {
+        this.currentaffectedRoomNumber = currentaffectedRoomNumber;
+    }
+
+    public int getAfteraffectedRoomNumber() {
+        return afteraffectedRoomNumber;
+    }
+
+    public void setAfteraffectedRoomNumber(int afteraffectedRoomNumber) {
+        this.afteraffectedRoomNumber = afteraffectedRoomNumber;
+    }
+
+    public GameCharacter getAffectedGameCharacter() {
+        return affectedGameCharacter;
+    }
+
+    public void setAffectedGameCharacter(GameCharacter affectedGameCharacter) {
+        this.affectedGameCharacter = affectedGameCharacter;
+    }
+
 
     protected Item (final Parcel in){
         itemNum = in.readInt();
-        affectedRoomNumber = in.readInt();
+        afteraffectedRoomNumber = in.readInt();
         name = in.readString();
-        affectedGameCharacter = (GameCharacter) in.readSerializable();
+        affectedGameCharacter = in.readParcelable(GameCharacter.class.getClassLoader());
+        currentaffectedRoomNumber = in.readInt();
     }
 
     public static final Creator<Item> CREATOR = new Creator<Item>() {
@@ -72,11 +100,11 @@ public abstract class Item implements Parcelable,java.io.Serializable {
     }
 
     public int getAffectedRoomNumber() {
-        return affectedRoomNumber;
+        return afteraffectedRoomNumber;
     }
 
     public void setAffectedRoomNumber(int affectedRoomNumber) {
-        this.affectedRoomNumber = affectedRoomNumber;
+        this.afteraffectedRoomNumber = affectedRoomNumber;
     }
 
     public GameCharacter getGameCharacter() {
@@ -114,7 +142,7 @@ public abstract class Item implements Parcelable,java.io.Serializable {
     public int hashCode() {
         int result = itemNum;
         result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + affectedRoomNumber;
+        result = 31 * result + afteraffectedRoomNumber;
         result = 31 * result + (affectedGameCharacter != null ? affectedGameCharacter.hashCode() : 0);
         return result;
     }

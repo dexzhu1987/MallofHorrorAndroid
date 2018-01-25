@@ -87,7 +87,6 @@ public class ChoosingItemActivity extends AppCompatActivity {
             } else if (mItems.get(i).getItemNum() == 2){
                 mAllItemsImageButtons.get(i).setImageResource(R.drawable.securitycamera);
                 choosedItem(i,mAllItemsImageButtons.get(i), new SecurityCamera());
-
             } else if (mItems.get(i).getItemNum() == 3){
                 mAllItemsImageButtons.get(i).setImageResource(R.drawable.axe);
                 choosedItem(i, mAllItemsImageButtons.get(i), new Axe());

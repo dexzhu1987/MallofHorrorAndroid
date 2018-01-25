@@ -19,7 +19,7 @@ public class ShowVoteResultActivity extends AppCompatActivity {
     private static final String RESULTS = "results";
     private static final String COUNTSETUP = "countsetup";
 
-    private static final String SETUPCOUNTED = "SETUPCOUNTED";
+    private static final String SETUPCOUNTED1 = "SETUPCOUNTED1";
 
     private ImageView mRedVoted, mYellowVoted, mBlueVoted, mGreenVoted, mBrownVoted, mBlackVoted;
     private TextView mRedResult, mYellowResult, mBlueResult, mGreenResult, mBrownResult, mBlackResult;
@@ -66,11 +66,11 @@ public class ShowVoteResultActivity extends AppCompatActivity {
         mContinueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCountSetUp++;
+                ++mCountSetUp;
                 System.out.println(mCountSetUp);
                 Intent data = new Intent();
-                data.putExtra(SETUPCOUNTED, mCountSetUp);
-                setResult(RESULT_OK, data);
+                data.putExtra(SETUPCOUNTED1, mCountSetUp);
+                setResult(ShowVoteResultActivity.RESULT_OK, data);
                 finish();
             }
         });
@@ -121,6 +121,6 @@ public class ShowVoteResultActivity extends AppCompatActivity {
     }
 
     public static int getCountedSetUp (Intent result){
-        return result.getIntExtra(SETUPCOUNTED,0);
+        return result.getIntExtra(SETUPCOUNTED1,0);
     }
 }

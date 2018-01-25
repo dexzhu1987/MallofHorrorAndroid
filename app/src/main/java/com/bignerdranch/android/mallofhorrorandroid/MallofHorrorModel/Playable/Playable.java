@@ -47,7 +47,7 @@ public class Playable implements Parcelable, java.io.Serializable  {
         dest.writeString(color);
         dest.writeSerializable((Serializable) characters);
         dest.writeSerializable((Serializable) charactersselect);
-        dest.writeSerializable((Serializable) currentItem);
+        dest.writeList(currentItem);
     }
 
     protected Playable (final Parcel in){
@@ -55,7 +55,7 @@ public class Playable implements Parcelable, java.io.Serializable  {
         color = in.readString();
         characters = (List<GameCharacter>) in.readSerializable();
         charactersselect = (List<GameCharacter>) in.readSerializable();
-        currentItem = (List<Item>) in.readSerializable();
+        currentItem =  in.readArrayList(Item.class.getClassLoader());
     }
 
 

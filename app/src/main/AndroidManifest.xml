@@ -40,14 +40,20 @@
         <activity
             android:name=".ShowSimpleVoteResultActivity"
             android:configChanges="orientation"
-            android:screenOrientation="landscape" />
+            android:screenOrientation="landscape"
+            />
         <activity
             android:name=".ChoosingItemActivity"
             android:configChanges="orientation"
             android:screenOrientation="landscape" />
-        <activity android:name=".ShowingZombieActivity"
+        <activity
+            android:name=".ShowingZombieActivity"
             android:configChanges="orientation"
-            android:screenOrientation="landscape" ></activity>
+            android:screenOrientation="landscape"
+            android:launchMode="singleTask"/>
+        <activity android:name=".ShowMoreZombiesActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="landscape"  ></activity>
     </application>
 
 </manifest>

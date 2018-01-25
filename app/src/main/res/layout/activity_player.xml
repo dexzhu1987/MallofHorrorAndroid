@@ -2,13 +2,13 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/player_activity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.bignerdranch.android.mallofhorrorandroid.PlayerActivity"
     android:background="@drawable/mainactivitybg"
-    android:orientation="vertical"
     android:gravity="right"
-    android:id="@+id/player_activity">
+    android:orientation="vertical"
+    tools:context="com.bignerdranch.android.mallofhorrorandroid.PlayerActivity">
 
     <GridLayout
         android:id="@+id/restroom_area"
@@ -93,20 +93,23 @@
 
     <ImageButton
         android:id="@+id/enter_restroom"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_marginStart="6dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="84dp"
         android:padding="0dp"
         android:scaleType="fitXY"
         android:src="@drawable/enter"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageButton
         android:id="@+id/enter_cachou"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
         android:layout_marginEnd="420dp"
         android:layout_marginStart="184dp"
         android:layout_marginTop="84dp"
@@ -119,62 +122,72 @@
 
     <ImageButton
         android:id="@+id/enter_supermarket"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_marginStart="340dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="184dp"
         android:padding="0dp"
         android:scaleType="fitXY"
         android:src="@drawable/enter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.571"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageButton
         android:id="@+id/enter_security"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_marginEnd="420dp"
-        android:layout_marginStart="196dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="184dp"
         android:padding="0dp"
         android:scaleType="fitXY"
         android:src="@drawable/enter"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.294"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
         android:id="@+id/enter_parking"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_marginBottom="165dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="195dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
         android:padding="0dp"
         android:scaleType="fitXY"
         android:src="@drawable/enter"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.014"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.100000024" />
+        app:layout_constraintVertical_bias="0.644" />
 
     <ImageButton
         android:id="@+id/enter_megatoy"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_marginEnd="270dp"
-        android:layout_marginStart="340dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="84dp"
         android:padding="0dp"
         android:scaleType="fitXY"
         android:src="@drawable/enter"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.57"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
 
     <ImageButton
@@ -203,6 +216,7 @@
 
     <ImageButton
         android:id="@+id/redgunman_button"
+        style="@android:style/Widget.DeviceDefault.ImageButton"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginBottom="16dp"
@@ -212,8 +226,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/redgunmanbttn" />
-
-
 
 
     <ImageButton
@@ -313,12 +325,124 @@
         app:srcCompat="@drawable/nobttn" />
 
     <TextView
+        android:id="@+id/restroom_zombie"
+        android:layout_width="25dp"
+        android:layout_height="46dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="84dp"
+        android:fontFamily="@font/exquisite_corpse"
+        android:text="0"
+        android:textColor="#FF0000"
+        android:textSize="36sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.239"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        tools:text="0" />
+
+    <TextView
+        android:id="@+id/cachou_zombie"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="84dp"
+        android:fontFamily="@font/exquisite_corpse"
+        android:text="0"
+        android:textColor="#FF0000"
+        android:textSize="36sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.509"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/megatoy_zombie"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="84dp"
+        android:fontFamily="@font/exquisite_corpse"
+        android:text="0"
+        android:textColor="#FF0000"
+        android:textSize="36sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.785"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/parking_zombie"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/exquisite_corpse"
+        android:text="0"
+        android:textColor="#FF0000"
+        android:textSize="36sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.238"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.701" />
+
+    <TextView
+        android:id="@+id/security_zombie"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/exquisite_corpse"
+        android:text="0"
+        android:textColor="#FF0000"
+        android:textSize="36sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.517"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.701" />
+
+    <TextView
+        android:id="@+id/supermarket_zombie"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/exquisite_corpse"
+        android:text="0"
+        android:textColor="#FF0000"
+        android:textSize="36sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.792"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.714" />
+
+    <TextView
         android:id="@+id/messageView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="160dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="110dp"
+        android:layout_marginTop="112dp"
         android:background="#010101"
         android:fontFamily="@font/digital"
         android:paddingBottom="10dp"
@@ -332,150 +456,74 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/restroom_zombie"
-        android:layout_width="20dp"
-        android:layout_height="27dp"
-        android:layout_marginStart="148dp"
-        android:layout_marginTop="84dp"
-        android:fontFamily="@font/exquisite_corpse"
-        android:text="0"
-        android:textColor="#FF0000"
-        android:textSize="20dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="0" />
-
-    <TextView
-        android:id="@+id/cachou_zombie"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="290dp"
-        android:layout_marginStart="308dp"
-        android:layout_marginTop="84dp"
-        android:fontFamily="@font/exquisite_corpse"
-        android:text="0"
-        android:textColor="#FF0000"
-        android:textSize="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/megatoy_zombie"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="165dp"
-        android:layout_marginStart="480dp"
-        android:layout_marginTop="84dp"
-        android:fontFamily="@font/exquisite_corpse"
-        android:text="0"
-        android:textColor="#FF0000"
-        android:textSize="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.408"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/parking_zombie"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="148dp"
-        android:layout_marginTop="192dp"
-        android:fontFamily="@font/exquisite_corpse"
-        android:text="0"
-        android:textColor="#FF0000"
-        android:textSize="20dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/security_zombie"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="290dp"
-        android:layout_marginStart="308dp"
-        android:layout_marginTop="192dp"
-        android:fontFamily="@font/exquisite_corpse"
-        android:text="0"
-        android:textColor="#FF0000"
-        android:textSize="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/supermarket_zombie"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="150dp"
-        android:layout_marginStart="480dp"
-        android:layout_marginTop="192dp"
-        android:fontFamily="@font/exquisite_corpse"
-        android:text="0"
-        android:textColor="#FF0000"
-        android:textSize="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
+    <ImageButton
         android:id="@+id/itemSolt1"
         android:layout_width="45dp"
         android:layout_height="57dp"
         android:layout_marginBottom="168dp"
         android:layout_marginEnd="64dp"
+        android:padding="0dp"
+        android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/threat" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/itemSolt2"
         android:layout_width="45dp"
         android:layout_height="57dp"
         android:layout_marginBottom="168dp"
         android:layout_marginEnd="8dp"
+        android:padding="0dp"
+        android:scaleType="fitXY"
         app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/threat" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/itemSolt3"
         android:layout_width="45dp"
         android:layout_height="57dp"
         android:layout_marginBottom="100dp"
         android:layout_marginEnd="64dp"
+        android:padding="0dp"
+        android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/threat" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/itemSolt4"
         android:layout_width="45dp"
         android:layout_height="57dp"
         android:layout_marginBottom="100dp"
         android:layout_marginEnd="8dp"
+        android:padding="0dp"
+        android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/threat" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/itemSolt5"
         android:layout_width="45dp"
         android:layout_height="57dp"
         android:layout_marginBottom="32dp"
         android:layout_marginEnd="64dp"
+        android:padding="0dp"
+        android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/threat" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/itemSolt6"
         android:layout_width="45dp"
         android:layout_height="57dp"
         android:layout_marginBottom="32dp"
         android:layout_marginEnd="8dp"
+        android:padding="0dp"
+        android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/threat" />

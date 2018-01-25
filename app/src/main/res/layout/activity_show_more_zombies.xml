@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.bignerdranch.android.mallofhorrorandroid.ShowMoreZombiesActivity"
+    android:background="@drawable/messagebg">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="280dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="32dp"
+        android:background="#010101"
+        android:fontFamily="@font/digital"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:text="Zero to two more zombies have approached below rooms...because
+    \nOne room has most people, (zombie can smell fresh)
+    \nOne room has most models, (they smell better)"
+        android:textAlignment="viewStart"
+        android:textColor="#00FE00"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.242" />
+
+    <ImageView
+        android:id="@+id/morezombie1"
+        android:layout_width="139dp"
+        android:layout_height="106dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="152dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.212"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/wonderlandbttn" />
+
+    <ImageView
+        android:id="@+id/morezombie2"
+        android:layout_width="139dp"
+        android:layout_height="106dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="152dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.807"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/wonderlandbttn" />
+
+    <ImageButton
+        android:id="@+id/okButton_showMoreZombie"
+        android:layout_width="72dp"
+        android:layout_height="35dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:padding="0dp"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.526"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/okbutton" />
+
+</android.support.constraint.ConstraintLayout>

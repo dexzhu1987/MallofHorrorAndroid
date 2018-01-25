@@ -1,5 +1,8 @@
 package com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Character.*;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Game.*;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Playable.*;
@@ -9,9 +12,31 @@ import java.util.*;
 
 
 
-public class Hidden extends Item {
+public class Hidden extends Item implements Parcelable, java.io.Serializable  {
     public Hidden() {
         super(6, "Hidden");
+    }
+
+    @Override
+    public int describeContents() {
+        return super.describeContents();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+    }
+
+    protected Hidden(Parcel in) {
+        super(in);
+    }
+
+    public static Item createFromParcel(Parcel source) {
+        return CREATOR.createFromParcel(source);
+    }
+
+    public static Item[] newArray(int size) {
+        return CREATOR.newArray(size);
     }
 
     public void effect(Playable player, Room room) {
@@ -32,15 +57,12 @@ public class Hidden extends Item {
         }
         room.leave(selectedCharacter);
 //        SimpleMessageWindow.display(selectedCharacter + " temporarily lefted " + room.getName());
-        affectedRoomNumber = room.getRoomNum();
         affectedGameCharacter = selectedCharacter;
     }
 
     public void afterEffect(GameBroad gameBroad){
         List<String> messages = new ArrayList<>();
-        messages.add("Due to Hidden has been used, aftereffect(entering back to the room is triggerd)");
-        gameBroad.matchRoom(affectedRoomNumber).enter(affectedGameCharacter);
-        messages.add(affectedGameCharacter + " has entered back to " + gameBroad.matchRoom(affectedRoomNumber).getName());;
+        messages.add("Due to Hidden has been used, aftereffect(entering back to the room is triggerd)");;
 //        MultiMessagesWindow.display(messages,"---------------Hidden---------------------" );
     }
 

@@ -10,16 +10,28 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Character.GameCharacter;
+import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Character.GunMan;
+import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Character.Model;
+import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Character.ToughGuy;
+import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.Axe;
+import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.Hardware;
+import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.Hidden;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.Item;
+import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.SecurityCamera;
+import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.ShotGun;
+import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.Sprint;
+import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.Threat;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Playable.Playable;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Room.Room;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +52,8 @@ public class PlayerActivity extends AppCompatActivity {
     protected static final String CHOOSEDCHARACTER = "choosedcharacter";
     protected static final String CHOOSEDCOLOR = "choosedcolor";
     protected static final String CHOOSEDBOOLEAN = "choosedboolean";
+    protected static final String CHOOSEDITEM = "chooseditem";
+    protected static final String FALLENROOMNUMBER = "fallenroomnumber";
 
     private ImageButton mEnterRestRoomButton, mEnterCachouButton, mEnterMegatoyButton, mEnterParkingButton, mEnterSecurityButton,
             mEnterSupermarketButton;
@@ -50,11 +64,11 @@ public class PlayerActivity extends AppCompatActivity {
     private TextView mMessageTextView;
     private ImageButton mPlayerButton;
     private TextView mRestRoomZombie, mCachouZombie, mMegatoyZombie, mParkingZombie, mSecurityZombie, mSupermarketZombie;
-    private ImageView mItemSolt1, mItemSolt2, mItemSolt3, mItemSolt4, mItemSolt5, mItemSolt6;
+    private ImageButton mItemSolt1, mItemSolt2, mItemSolt3, mItemSolt4, mItemSolt5, mItemSolt6;
     private List<ImageButton> mVotingButtons = new ArrayList<>();
     private List<ImageButton> mEnterButtons = new ArrayList<>();
     private List<ImageButton> mGameCharaterButtons = new ArrayList<>();
-    private List<ImageView> mAllItemSlots = new ArrayList<>();
+    private List<ImageButton> mAllItemSlots = new ArrayList<>();
 
     private ArrayList<Integer> mRoomOptions;
     private ArrayList<? extends Room> mRooms;
@@ -66,7 +80,7 @@ public class PlayerActivity extends AppCompatActivity {
     private int mType;
     private String mColor;
     private Boolean mBooleanOptions;
-
+    private int mFallenRoomNumber;
 
 
 
@@ -134,12 +148,29 @@ public class PlayerActivity extends AppCompatActivity {
         return intent;
     }
 
+    public static Intent newChoosingItemIntent (Context context, List<Room> rooms, String playercolor, List<Item> items,  int fallenroomnum,  ArrayList<GameCharacter> gameCharactersOptions,
+                                               String message, int countsetup, int type){
+        Intent intent = new Intent(context, PlayerActivity.class);
+        intent.putParcelableArrayListExtra (ROOMS, (ArrayList<? extends Parcelable>) rooms);
+        intent.putParcelableArrayListExtra(ITEMS,(ArrayList<? extends Parcelable>) items);
+        intent.putExtra(PLAYERCOLOR,playercolor);
+        intent.putExtra(FALLENROOMNUMBER, fallenroomnum);
+        intent.putParcelableArrayListExtra(GAMECHARACTERSOPTIONS, gameCharactersOptions);
+        intent.putExtra(MESSAGE,message);
+        intent.putExtra(COUNTSETUP,countsetup);
+        intent.putExtra(TYPE, type);
+        return intent;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
+
         System.out.println("PlayerActivity called");
             gettingReady();
+
+
 
     }
 
@@ -197,7 +228,7 @@ public class PlayerActivity extends AppCompatActivity {
             mMessageTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mCountSetUp++;
+                    ++mCountSetUp;
                     Intent data = new Intent();
                     data.putExtra(SETUPCOUNTED, mCountSetUp );
                     setResult(RESULT_OK, data);
@@ -237,13 +268,34 @@ public class PlayerActivity extends AppCompatActivity {
         }
         if (mType==5){
             mBooleanOptions = getIntent().getBooleanExtra(YESANDNO,false);
-            mMessageTextView.setVisibility(View.INVISIBLE);
-            if (mBooleanOptions){
-                mYesButton.setVisibility(View.VISIBLE);
-                mYesButton.setEnabled(true);
-            }
-            mNoButton.setVisibility(View.VISIBLE);
-            mNoButton.setEnabled(true);
+            mMessageTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mMessageTextView.setVisibility(View.INVISIBLE);
+                    if (mBooleanOptions){
+                        mYesButton.setVisibility(View.VISIBLE);
+                        mYesButton.setEnabled(true);
+                    }
+                    mNoButton.setVisibility(View.VISIBLE);
+                    mNoButton.setEnabled(true);
+                }
+            });
+        }
+        if (mType==6){
+            mGameCharactersOptions = getIntent().getParcelableArrayListExtra(GAMECHARACTERSOPTIONS);
+            mFallenRoomNumber = getIntent().getIntExtra(FALLENROOMNUMBER,0);
+            mMessageTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mMessageTextView.setVisibility(View.INVISIBLE);
+                    for (int i=0; i<mItems.size(); i++){
+                        mAllItemSlots.get(i).setEnabled(true);
+                    }
+                    mNoButton.setVisibility(View.VISIBLE);
+                    mNoButton.setEnabled(true);
+                }
+            });
+
         }
 
 
@@ -254,47 +306,51 @@ public class PlayerActivity extends AppCompatActivity {
 
 
         mEnterRestRoomButton = findViewById(R.id.enter_restroom);
-        mEnterRestRoomButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                choosingRoom(1);
-            }
-        });
         mEnterCachouButton = findViewById(R.id.enter_cachou);
-        mEnterCachouButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                choosingRoom(2);
-            }
-        });
         mEnterMegatoyButton = findViewById(R.id.enter_megatoy);
-        mEnterMegatoyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                choosingRoom(3);
-            }
-        });
         mEnterParkingButton = findViewById(R.id.enter_parking);
-        mEnterParkingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                choosingRoom(4);
-            }
-        });
         mEnterSecurityButton = findViewById(R.id.enter_security);
-        mEnterSecurityButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                choosingRoom(5);
-            }
-        });
         mEnterSupermarketButton = findViewById(R.id.enter_supermarket);
-        mEnterSupermarketButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                choosingRoom(6);
-            }
-        });
+        if (mType!=6){
+            mEnterRestRoomButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    choosingRoom(1);
+                }
+            });
+            mEnterCachouButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    choosingRoom(2);
+                }
+            });
+            mEnterMegatoyButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    choosingRoom(3);
+                }
+            });
+            mEnterParkingButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    choosingRoom(4);
+                }
+            });
+            mEnterSecurityButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    choosingRoom(5);
+                }
+            });
+            mEnterSupermarketButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    choosingRoom(6);
+                }
+            });
+        }
+
+
         mEnterButtons.add(mEnterRestRoomButton);
         mEnterButtons.add(mEnterCachouButton);
         mEnterButtons.add(mEnterMegatoyButton);
@@ -304,26 +360,31 @@ public class PlayerActivity extends AppCompatActivity {
 
 
         mGunManButton = findViewById(R.id.redgunman_button);
-        mGunManButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                choosingCharacter("Gun Man"); ;
-            }
-        });
         mToughGunButton = findViewById(R.id.redtoughman_button);
-        mToughGunButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                choosingCharacter("Tough Guy");
-            }
-        });
         mModelButton = findViewById(R.id.redmodel_button);
-        mModelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                choosingCharacter("Model");
-            }
-        });
+
+        if (mType!=6){
+            mGunManButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    choosingCharacter("Gun Man"); ;
+                }
+            });
+            mToughGunButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    choosingCharacter("Tough Guy");
+                }
+            });
+            mModelButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    choosingCharacter("Model");
+                }
+            });
+        }
+
+
         mGameCharaterButtons.add(mGunManButton);
         mGameCharaterButtons.add(mToughGunButton);
         mGameCharaterButtons.add(mModelButton);
@@ -429,6 +490,10 @@ public class PlayerActivity extends AppCompatActivity {
             button.setEnabled(false);
             button.setVisibility(View.INVISIBLE);
         }
+
+        for (ImageButton button: mAllItemSlots){
+            button.setEnabled(false);
+        }
     }
 
     private void settingUpColor() {
@@ -475,18 +540,25 @@ public class PlayerActivity extends AppCompatActivity {
         for (int i=0; i<mItems.size(); i++){
            if (mItems.get(i).getItemNum()==1){
                mAllItemSlots.get(i).setImageResource(R.drawable.threat);
+               choosingItem(mAllItemSlots.get(i), new Threat());
            } else if (mItems.get(i).getItemNum() == 2){
                mAllItemSlots.get(i).setImageResource(R.drawable.securitycamera);
+               choosingItem(mAllItemSlots.get(i), new SecurityCamera());
            } else if (mItems.get(i).getItemNum() == 3){
                mAllItemSlots.get(i).setImageResource(R.drawable.axe);
+               choosingItem(mAllItemSlots.get(i), new Axe());
            }else if (mItems.get(i).getItemNum() == 4){
                mAllItemSlots.get(i).setImageResource(R.drawable.shortgun);
+               choosingItem(mAllItemSlots.get(i), new ShotGun());
            }else if (mItems.get(i).getItemNum() == 5){
                mAllItemSlots.get(i).setImageResource(R.drawable.hardware);
+               choosingItem(mAllItemSlots.get(i), new Hardware());
            }else if (mItems.get(i).getItemNum() == 6){
                mAllItemSlots.get(i).setImageResource(R.drawable.hidden);
+               choosingItem(mAllItemSlots.get(i), new Hidden());
            }else if (mItems.get(i).getItemNum() == 7) {
                mAllItemSlots.get(i).setImageResource(R.drawable.sprint);
+               choosingItem(mAllItemSlots.get(i), new Sprint());
            }
         }
     }
@@ -597,6 +669,16 @@ public class PlayerActivity extends AppCompatActivity {
         roomHasList.add(mSecurityArea);
         roomHasList.add(mSupermarketArea);
 
+        for (GridLayout gridLayout: roomHasList){
+            gridLayout.removeAllViews();
+        }
+
+        for (ImageButton imageButton: allGameCharacterButtons){
+            if (imageButton!=null && ((ViewGroup) imageButton.getParent())!=null)
+            ((ViewGroup) imageButton.getParent()).removeView(imageButton);
+        }
+
+
         for (int i=0; i<mRooms.size(); i++ ) {
             List<ImageButton> roomLabel = new ArrayList<>();
             for (int q = 0; q < mRooms.get(i).getRoomCharaters().size(); q++) {
@@ -655,7 +737,7 @@ public class PlayerActivity extends AppCompatActivity {
     }
 
     private void choosingRoom(int roomNumber) {
-        mCountSetUp++;
+        ++mCountSetUp;
         Intent data = new Intent();
         data.putExtra(CHOOSEDROOM, roomNumber);
         data.putExtra(SETUPCOUNTED, mCountSetUp );
@@ -664,7 +746,7 @@ public class PlayerActivity extends AppCompatActivity {
     }
 
     private void choosingCharacter(String character){
-        mCountSetUp++;
+        ++mCountSetUp;
         Intent data = new Intent();
         data.putExtra(CHOOSEDCHARACTER, character);
         data.putExtra(SETUPCOUNTED, mCountSetUp);
@@ -690,6 +772,191 @@ public class PlayerActivity extends AppCompatActivity {
         finish();
     };
 
+    private void choosingItem(ImageButton button, final Item item) {
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mNoButton.setVisibility(View.INVISIBLE);
+                mNoButton.setEnabled(false);
+                if (item.getItemNum()==3 || item.getItemNum()==4 ){
+                    mCountSetUp++;
+                    Intent data = new Intent();
+                    data.putExtra(CHOOSEDITEM, (Serializable) item);
+                    data.putExtra(SETUPCOUNTED, mCountSetUp);
+                    data.putExtra(CHOOSEDBOOLEAN,true);
+                    setResult(RESULT_OK, data);
+                    finish();
+                }
+                if (item.getItemNum()==5){
+                    item.setAfteraffectedRoomNumber(mFallenRoomNumber);
+                    mCountSetUp++;
+                    Intent data = new Intent();
+                    data.putExtra(CHOOSEDITEM, (Serializable) item);
+                    data.putExtra(SETUPCOUNTED, mCountSetUp);
+                    data.putExtra(CHOOSEDBOOLEAN,true);
+                    setResult(RESULT_OK, data);
+                    finish();
+                }
+                if (item.getItemNum()==6){
+                    item.setAfteraffectedRoomNumber(mFallenRoomNumber);
+                    item.setCurrentaffectedRoomNumber(mFallenRoomNumber);
+                    for (ImageButton button: mAllItemSlots){
+                        button.setEnabled(false);
+                        button.setVisibility(View.INVISIBLE);
+                    }
+                    mMessageTextView.setVisibility(View.VISIBLE);
+                    mMessageTextView.setEnabled(true);
+                    mMessageTextView.setText("Hidden selected: please select your character to hide");
+                    mMessageTextView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mMessageTextView.setVisibility(View.INVISIBLE);
+                            for (int i=0; i<mGameCharactersOptions.size(); i++){
+                                if (mGameCharactersOptions.get(i).getName().equalsIgnoreCase("Gun Man")){
+                                    mGunManButton.setVisibility(View.VISIBLE);
+                                    mGunManButton.setEnabled(true);
+                                } else if (mGameCharactersOptions.get(i).getName().equalsIgnoreCase("Tough Guy")){
+                                    mToughGunButton.setVisibility(View.VISIBLE);
+                                    mToughGunButton.setEnabled(true);
+                                } else if (mGameCharactersOptions.get(i).getName().equalsIgnoreCase("Model")){
+                                    mModelButton.setVisibility(View.VISIBLE);
+                                    mModelButton.setEnabled(true);
+                                }
+                            }
+                            mGunManButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    item.setAffectedGameCharacter(new GunMan());
+                                    mCountSetUp++;
+                                    Intent data = new Intent();
+                                    data.putExtra(CHOOSEDITEM, (Serializable) item);
+                                    data.putExtra(SETUPCOUNTED, mCountSetUp);
+                                    data.putExtra(CHOOSEDBOOLEAN,true);
+                                    setResult(RESULT_OK, data);
+                                    finish();
+                                }
+                            });
+                            mToughGunButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    item.setAffectedGameCharacter(new ToughGuy());
+                                    mCountSetUp++;
+                                    Intent data = new Intent();
+                                    data.putExtra(CHOOSEDITEM, (Serializable) item);
+                                    data.putExtra(SETUPCOUNTED, mCountSetUp);
+                                    data.putExtra(CHOOSEDBOOLEAN,true);
+                                    setResult(RESULT_OK, data);
+                                    finish();
+                                }
+                            });
+                            mModelButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    item.setAffectedGameCharacter(new Model());
+                                    mCountSetUp++;
+                                    Intent data = new Intent();
+                                    data.putExtra(CHOOSEDITEM, (Serializable) item);
+                                    data.putExtra(SETUPCOUNTED, mCountSetUp);
+                                    data.putExtra(CHOOSEDBOOLEAN,true);
+                                    setResult(RESULT_OK, data);
+                                    finish();
+                                }
+                            });
+                        }
+                    });
+
+                }
+                if (item.getItemNum()==7){
+                    item.setCurrentaffectedRoomNumber(mFallenRoomNumber);
+                    for (ImageButton button: mAllItemSlots){
+                        button.setEnabled(false);
+                        button.setVisibility(View.INVISIBLE);
+                    }
+                    mMessageTextView.setVisibility(View.VISIBLE);
+                    mMessageTextView.setEnabled(true);
+                    mMessageTextView.setText("Sprint selected: please select your character that leaving");
+                    mMessageTextView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            for (int i=0; i<mGameCharactersOptions.size(); i++){
+                                if (mGameCharactersOptions.get(i).getName().equalsIgnoreCase("Gun Man")){
+                                    mGunManButton.setVisibility(View.VISIBLE);
+                                    mGunManButton.setEnabled(true);
+                                } else if (mGameCharactersOptions.get(i).getName().equalsIgnoreCase("Tough Guy")){
+                                    mToughGunButton.setVisibility(View.VISIBLE);
+                                    mToughGunButton.setEnabled(true);
+                                } else if (mGameCharactersOptions.get(i).getName().equalsIgnoreCase("Model")){
+                                    mModelButton.setVisibility(View.VISIBLE);
+                                    mModelButton.setEnabled(true);
+                                }
+                            }
+                            mGunManButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    item.setAffectedGameCharacter(new GunMan());
+                                    itemChoosingRoom(item);
+                                }
+                            });
+                            mToughGunButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    item.setAffectedGameCharacter(new ToughGuy());
+                                    itemChoosingRoom(item);
+                                }
+                            });
+                            mModelButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    item.setAffectedGameCharacter(new Model());
+                                    itemChoosingRoom(item);
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+
+            private void itemChoosingRoom(Item item1) {
+                for (ImageButton button: mGameCharaterButtons){
+                    button.setEnabled(false);
+                    button.setVisibility(View.INVISIBLE);
+                    mMessageTextView.setVisibility(View.VISIBLE);
+                    mMessageTextView.setEnabled(true);
+                    mMessageTextView.setText("Please select the room your want to move to");
+                    mMessageTextView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mMessageTextView.setVisibility(View.INVISIBLE);
+                            for (int i=0; i<mEnterButtons.size(); i++){
+                                if (i!=(mFallenRoomNumber-1)) {
+                                    mEnterButtons.get(i).setEnabled(true);
+                                    mEnterButtons.get(i).setVisibility(View.VISIBLE);
+                                    final int finalI = i;
+                                    mEnterButtons.get(i).setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            item.setAfteraffectedRoomNumber(finalI +1);
+                                            mCountSetUp++;
+                                            Intent data = new Intent();
+                                            data.putExtra(CHOOSEDITEM, (Serializable) item);
+                                            data.putExtra(SETUPCOUNTED, mCountSetUp);
+                                            data.putExtra(CHOOSEDBOOLEAN,true);
+                                            setResult(RESULT_OK, data);
+                                            finish();
+                                        }
+                                    });
+                                }
+
+                            }
+
+
+                        }
+                    });
+                }
+            }
+        });
+    }
+
     public static int choosedRoomNumber (Intent result){
         return result.getIntExtra(CHOOSEDROOM,0);
     }
@@ -710,4 +977,7 @@ public class PlayerActivity extends AppCompatActivity {
         return result.getBooleanExtra(CHOOSEDBOOLEAN, false);
     }
 
+    public static Item choosedItem (Intent result){
+        return (Item) result.getSerializableExtra(CHOOSEDITEM);
+    }
 }

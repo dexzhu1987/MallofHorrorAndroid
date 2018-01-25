@@ -5,27 +5,25 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
 
-public class ShowingZombieActivity extends AppCompatActivity {
-    private static final String COUNTSETUP = "countsetup";
+public class ShowMoreZombiesActivity extends AppCompatActivity {
+    private static final String COUNTSETUP = "countsetup";;
     private static final String ROOMS = "rooms";
-
     private static final String SETUPCOUNTED = "countedsetup";
 
-    private ImageView mEnterRoomOne, mEnterRoomTwo, mEnterRoomThree, mEnterRoomFour;
-    private ImageButton mContinueButton;
+    private ImageView mShowMore1, mShowMore2;
+    private ImageButton mOKButton;
 
     private ArrayList<ImageView> mAllEnterView = new ArrayList<>();
     private ArrayList<Integer> mRooms;
     private int mCountSetUp;
 
     public static Intent newShowZombiesIntent(Context context, ArrayList<Integer> rooms, int countsetup){
-        Intent intent = new Intent(context, ShowingZombieActivity.class);
+        Intent intent = new Intent(context, ShowMoreZombiesActivity.class);
         intent.putExtra(COUNTSETUP,countsetup);
         intent.putIntegerArrayListExtra(ROOMS,rooms);
         return intent;
@@ -34,22 +32,18 @@ public class ShowingZombieActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_showing_zombie);
+        setContentView(R.layout.activity_show_more_zombies);
 
         mCountSetUp = getIntent().getIntExtra(COUNTSETUP,0);
         mRooms = getIntent().getIntegerArrayListExtra(ROOMS);
 
-        mEnterRoomOne = findViewById(R.id.enterroom1);
-        mEnterRoomTwo = findViewById(R.id.enterroom2);
-        mEnterRoomThree = findViewById(R.id.enterroom3);
-        mEnterRoomFour = findViewById(R.id.enterroom4);
-        mAllEnterView.add(mEnterRoomOne);
-        mAllEnterView.add(mEnterRoomTwo);
-        mAllEnterView.add(mEnterRoomThree);
-        mAllEnterView.add(mEnterRoomFour);
+        mShowMore1 = findViewById(R.id.morezombie1);
+        mShowMore2 = findViewById(R.id.morezombie2);
+        mAllEnterView.add(mShowMore1);
+        mAllEnterView.add(mShowMore2);
 
-        mContinueButton = findViewById(R.id.okButton_showZombie);
-        mContinueButton.setOnClickListener(new View.OnClickListener() {
+        mOKButton = findViewById(R.id.okButton_showMoreZombie);
+        mOKButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ++mCountSetUp;
@@ -74,7 +68,6 @@ public class ShowingZombieActivity extends AppCompatActivity {
             } else if (mRooms.get(i)==6){
                 mAllEnterView.get(i).setImageResource(R.drawable.superstorebttn);
             }
-
         }
 
     }

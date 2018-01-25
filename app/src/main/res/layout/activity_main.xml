@@ -83,82 +83,118 @@
 
     <TextView
         android:id="@+id/restroom_zombie_main"
-        android:layout_width="20dp"
-        android:layout_height="27dp"
-        android:layout_marginStart="148dp"
-        android:layout_marginTop="84dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="80dp"
         android:fontFamily="@font/exquisite_corpse"
         android:text="0"
         android:textColor="#FF0000"
-        android:textSize="20dp"
+        android:textSize="36sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/yellow_button"
+        app:layout_constraintHorizontal_bias="0.232"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
         tools:text="0" />
 
     <TextView
         android:id="@+id/cachou_zombie_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="308dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="84dp"
         android:fontFamily="@font/exquisite_corpse"
         android:text="0"
         android:textColor="#FF0000"
-        android:textSize="20dp"
+        android:textSize="36sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.505"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/megatoy_zombie_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="480dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="84dp"
         android:fontFamily="@font/exquisite_corpse"
         android:text="0"
         android:textColor="#FF0000"
-        android:textSize="20dp"
+        android:textSize="36sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.779"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/parking_zombie_main"
-        android:layout_width="wrap_content"
+        android:layout_width="17dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="148dp"
-        android:layout_marginTop="192dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:fontFamily="@font/exquisite_corpse"
         android:text="0"
         android:textColor="#FF0000"
-        android:textSize="20dp"
+        android:textSize="36sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.229"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.71" />
 
     <TextView
         android:id="@+id/security_zombie_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="308dp"
-        android:layout_marginTop="192dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:fontFamily="@font/exquisite_corpse"
         android:text="0"
         android:textColor="#FF0000"
-        android:textSize="20dp"
+        android:textSize="36sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.505"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.713" />
 
     <TextView
         android:id="@+id/supermarket_zombie_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="480dp"
-        android:layout_marginTop="192dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
         android:fontFamily="@font/exquisite_corpse"
         android:text="0"
         android:textColor="#FF0000"
-        android:textSize="20dp"
+        android:textSize="36sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/brown_button"
+        app:layout_constraintHorizontal_bias="0.789"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.713" />
 
     <ImageButton
         android:id="@+id/red_button"
@@ -234,27 +270,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.724" />
-
-    <TextView
-        android:id="@+id/messageView_main"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="160dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="110dp"
-        android:background="#010101"
-        android:fontFamily="@font/digital"
-        android:paddingBottom="10dp"
-        android:paddingTop="10dp"
-        android:text="TextView"
-        android:textAlignment="center"
-        android:textColor="#00FE00"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <ImageButton
         android:id="@+id/yesbutton_main"
@@ -291,6 +307,26 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.968"
         app:srcCompat="@drawable/nobttn" />
+
+    <TextView
+        android:id="@+id/messageView_main"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="160dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="110dp"
+        android:background="#010101"
+        android:fontFamily="@font/digital"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:text="TextView"
+        android:textAlignment="center"
+        android:textColor="#00FE00"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>
