@@ -1217,7 +1217,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showZombie() {
-        System.out.println("mCountSetup: " + mCountSetUp +  " mSecondCount: " + mSecondCount + " mThirdCount: " + mThirdCount + " mFourthCount" + mFourthCount);
+        System.out.println("mCountSetup: " + mCountSetUp +  " mSecondCount: " + mSecondCount + " mThirdCount: " + mThirdCount + " mFourthCount: " + mFourthCount + " mFifth Count: " + mFifthCount + " mSixth Count: " + mSixCount);
         if (mFourthCount==0){
             System.out.println("Showing Zombie to all");
             Intent intent = ShowingZombieActivity.newShowZombiesIntent(MainActivity.this, mCurrentZombiesRooms,mFourthCount);
@@ -1246,7 +1246,7 @@ public class MainActivity extends AppCompatActivity {
             startActivityForResult(intent, REQUEST_CODE_VIEWZOMBIEALLMORE);
         }
         if (mFifthCount<6 &&  mFourthCount>=2){
-            final Room fallenRoom = gameBroad.getRooms().get(mFifthCount);
+            final Room fallenRoom = gameBroad.matchRoom(mFifthCount+1);
             HashSet<Playable> playersInTheRoom = gameBroad.WhoCan(fallenRoom.existCharacterColor());
             List<Playable> playersInTheRoomList = new ArrayList<>();
             for (Playable player : playersInTheRoom) {

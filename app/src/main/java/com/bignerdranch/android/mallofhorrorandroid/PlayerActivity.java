@@ -55,6 +55,7 @@ public class PlayerActivity extends AppCompatActivity {
     protected static final String CHOOSEDITEM = "chooseditem";
     protected static final String FALLENROOMNUMBER = "fallenroomnumber";
 
+    private ConstraintLayout mPlayerActivityLayout;
     private ImageButton mEnterRestRoomButton, mEnterCachouButton, mEnterMegatoyButton, mEnterParkingButton, mEnterSecurityButton,
             mEnterSupermarketButton;
     private ImageButton mGunManButton, mToughGunButton, mModelButton;
@@ -302,6 +303,7 @@ public class PlayerActivity extends AppCompatActivity {
     }
 
     private void otherCommonSetUp() {
+        mPlayerActivityLayout = findViewById(R.id.player_activity);
         mPlayerButton = findViewById(R.id.play);
 
 
@@ -499,6 +501,7 @@ public class PlayerActivity extends AppCompatActivity {
     private void settingUpColor() {
         if (mColor!=null){
             if (mColor.equalsIgnoreCase("Yellow")){
+                mPlayerActivityLayout.setBackground(getResources().getDrawable(R.drawable.yellowbg));
                 mPlayerButton.setImageResource(R.drawable.yellowbg);
                 mGunManButton.setImageResource(R.drawable.yellowgunmanbttn);
                 mToughGunButton.setImageResource(R.drawable.yellowtoughguybttn);
@@ -506,6 +509,7 @@ public class PlayerActivity extends AppCompatActivity {
             }
 
             if (mColor.equalsIgnoreCase("Blue")){
+                mPlayerActivityLayout.setBackground(getResources().getDrawable(R.drawable.bluebg));
                 mPlayerButton.setImageResource(R.drawable.bluebg);
                 mGunManButton.setImageResource(R.drawable.bluegunmanbttn);
                 mToughGunButton.setImageResource(R.drawable.bluetoughguybttn);
@@ -513,6 +517,7 @@ public class PlayerActivity extends AppCompatActivity {
             }
 
             if (mColor.equalsIgnoreCase("Green")){
+                mPlayerActivityLayout.setBackground(getResources().getDrawable(R.drawable.greenbg));
                 mPlayerButton.setImageResource(R.drawable.greenbg);
                 mGunManButton.setImageResource(R.drawable.greengunmanbttn);
                 mToughGunButton.setImageResource(R.drawable.greentoughguybttn);
@@ -520,6 +525,7 @@ public class PlayerActivity extends AppCompatActivity {
             }
 
             if (mColor.equalsIgnoreCase("Brown")){
+                mPlayerActivityLayout.setBackground(getResources().getDrawable(R.drawable.brownbg));
                 mPlayerButton.setImageResource(R.drawable.brownbg);
                 mGunManButton.setImageResource(R.drawable.browngunmanbttn);
                 mToughGunButton.setImageResource(R.drawable.browntoughguybttn);
@@ -527,6 +533,7 @@ public class PlayerActivity extends AppCompatActivity {
             }
 
             if (mColor.equalsIgnoreCase("Black")){
+                mPlayerActivityLayout.setBackground(getResources().getDrawable(R.drawable.bluebg));
                 mPlayerButton.setImageResource(R.drawable.blackbg);
                 mGunManButton.setImageResource(R.drawable.blackgunmanbttn);
                 mToughGunButton.setImageResource(R.drawable.blacktoughguybttn);
