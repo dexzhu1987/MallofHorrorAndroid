@@ -1669,7 +1669,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     String playerColor = mCurrentVictim.getColor();
                     ArrayList characters = (ArrayList<GameCharacter>) availableOptions;
-                    String message = mCurrentStartPlayer + " please select the victim ";
+                    String message = mCurrentVictim + " please select the victim ";
                     ArrayList rooms = (ArrayList<Room>)gameBroad.getRooms();
                     ArrayList<Item> items = (ArrayList<Item>) mCurrentVictim.getCurrentItem();
                     Intent intent = PlayerActivity.newChoosingCharacterIntent(MainActivity.this,rooms,playerColor,items, characters,message,mCountSetUp,2);

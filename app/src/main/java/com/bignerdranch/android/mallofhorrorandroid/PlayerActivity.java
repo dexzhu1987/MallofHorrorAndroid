@@ -1019,7 +1019,6 @@ public class PlayerActivity extends AppCompatActivity {
             private void itemChoosingRoom(Item item1) {
                 for (ImageButton button: mGameCharaterButtons){
                     button.setEnabled(false);
-                    button.setVisibility(View.INVISIBLE);
                     mMessageTextView.setVisibility(View.VISIBLE);
                     mMessageTextView.setEnabled(true);
                     mMessageTextView.setText("Please select the room your want to move to");
