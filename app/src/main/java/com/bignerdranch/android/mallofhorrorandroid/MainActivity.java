@@ -182,6 +182,7 @@ public class MainActivity extends AppCompatActivity {
         mContinueButton.setVisibility(View.INVISIBLE);
         mMessageView.setVisibility(View.VISIBLE);
         mMessageView.setEnabled(true);
+        mOKShadow.animate().cancel();
         mOKShadow.setVisibility(View.INVISIBLE);
     }
 
@@ -262,6 +263,12 @@ public class MainActivity extends AppCompatActivity {
         mNoButton.setVisibility(View.INVISIBLE);
         mYesButton.setEnabled(false);
         mNoButton.setEnabled(false);
+        mYesShadow.animate().cancel();
+        mNoShadow.animate().cancel();
+        mYesShadow.clearAnimation();
+        mYesShadow.setAnimation(null);
+        mNoShadow.clearAnimation();
+        mNoShadow.setAnimation(null);
         mYesShadow.setVisibility(View.INVISIBLE);
         mNoShadow.setVisibility(View.INVISIBLE);
 
