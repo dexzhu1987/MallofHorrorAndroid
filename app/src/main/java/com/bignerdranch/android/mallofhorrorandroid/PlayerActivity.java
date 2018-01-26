@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Parcelable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,10 @@ import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -59,9 +64,12 @@ public class PlayerActivity extends AppCompatActivity {
     private ImageButton mEnterRestRoomButton, mEnterCachouButton, mEnterMegatoyButton, mEnterParkingButton, mEnterSecurityButton,
             mEnterSupermarketButton;
     private ImageButton mGunManButton, mToughGunButton, mModelButton;
+    private ImageView mGunManShadow, mToughGuyShadow, mModelShadow;
     private ImageButton mVoteRedButton, mVoteYellowButton, mVoteBlueButton, mVoteGreenButton, mVoteBrownButton, mVoteBlackButton;
+    private ImageView mShadowVoteRed,mShadowVoteYellow,mShadowVoteBlue,mShadowVoteGreen,mShadowVoteBrown,mShadowVoteBlack;
     private GridLayout mRestRoomArea, mCachouArea, mMegatoyArea, mParkingArea, mSecurityArea, mSupermarketArea;
     private ImageButton mYesButton, mNoButton;
+    private ImageView mYesShadow, mNoShadow;
     private TextView mMessageTextView;
     private ImageButton mPlayerButton;
     private TextView mRestRoomZombie, mCachouZombie, mMegatoyZombie, mParkingZombie, mSecurityZombie, mSupermarketZombie;
@@ -70,6 +78,10 @@ public class PlayerActivity extends AppCompatActivity {
     private List<ImageButton> mEnterButtons = new ArrayList<>();
     private List<ImageButton> mGameCharaterButtons = new ArrayList<>();
     private List<ImageButton> mAllItemSlots = new ArrayList<>();
+    private ArrayList<ImageView> mShadows = new ArrayList<>();
+    private ArrayList<ImageView> mVoteShadows = new ArrayList<>();
+    private AnimationDrawable shadowInOut ;
+    private ImageView mLoading;
 
     private ArrayList<Integer> mRoomOptions;
     private ArrayList<? extends Room> mRooms;
@@ -188,6 +200,16 @@ public class PlayerActivity extends AppCompatActivity {
         updateRoom(PlayerActivity.this);
         updateItem();
 
+        final Animation animAlpha = AnimationUtils.loadAnimation(this, R.anim.anim_alpha);
+        final Animation animBounce = AnimationUtils.loadAnimation(this, R.anim.anim_bounce);
+        final Animation mFlash = new AlphaAnimation(1, 0);
+        mFlash.setDuration(500);
+        mFlash.setInterpolator(new LinearInterpolator());
+        mFlash.setRepeatCount(Animation.INFINITE);
+        mFlash.setRepeatMode(Animation.REVERSE);
+
+
+
         mMessageTextView = findViewById(R.id.messageView);
         mMessageTextView.setText(mMessage);
         if (mType==1){
@@ -200,6 +222,7 @@ public class PlayerActivity extends AppCompatActivity {
                         int roomNumber = mRoomOptions.get(i);
                         mEnterButtons.get(roomNumber-1).setVisibility(View.VISIBLE);
                         mEnterButtons.get(roomNumber-1).setEnabled(true);
+                        mEnterButtons.get(roomNumber-1).startAnimation(animBounce);
                     }
                 }
             });
@@ -214,12 +237,18 @@ public class PlayerActivity extends AppCompatActivity {
                         if (mGameCharactersOptions.get(i).getName().equalsIgnoreCase("Gun Man")){
                             mGunManButton.setVisibility(View.VISIBLE);
                             mGunManButton.setEnabled(true);
+                            mGunManShadow.setVisibility(View.VISIBLE);
+                            mGunManShadow.startAnimation(mFlash);
                         } else if (mGameCharactersOptions.get(i).getName().equalsIgnoreCase("Tough Guy")){
                             mToughGunButton.setVisibility(View.VISIBLE);
                             mToughGunButton.setEnabled(true);
+                            mToughGuyShadow.setVisibility(View.VISIBLE);
+                            mToughGuyShadow.startAnimation(mFlash);
                         } else if (mGameCharactersOptions.get(i).getName().equalsIgnoreCase("Model")){
                             mModelButton.setVisibility(View.VISIBLE);
                             mModelButton.setEnabled(true);
+                            mModelShadow.setVisibility(View.VISIBLE);
+                            mModelShadow.startAnimation(mFlash);
                         }
                     }
                 }
@@ -248,21 +277,36 @@ public class PlayerActivity extends AppCompatActivity {
                         if (mVoteOptions.get(i).getColor().equalsIgnoreCase("RED")){
                             mVoteRedButton.setVisibility(View.VISIBLE);
                             mVoteRedButton.setEnabled(true);
+                            mShadowVoteRed.setVisibility(View.VISIBLE);
+                            mShadowVoteRed.startAnimation(mFlash);
+//                            mShadowVoteRed.setImageResource(R.drawable.shadow_in_out);
+//                            shadowInOut = (AnimationDrawable) mShadowVoteRed.getDrawable();
+//                            shadowInOut.start();
                         } else if (mVoteOptions.get(i).getColor().equalsIgnoreCase("YELLOW")){
                             mVoteYellowButton.setVisibility(View.VISIBLE);
                             mVoteYellowButton.setEnabled(true);
+                            mShadowVoteYellow.setVisibility(View.VISIBLE);
+                            mShadowVoteYellow.startAnimation(mFlash);
                         } else if (mVoteOptions.get(i).getColor().equalsIgnoreCase("BLUE")){
                             mVoteBlueButton.setVisibility(View.VISIBLE);
                             mVoteBlueButton.setEnabled(true);
+                            mShadowVoteBlue.setVisibility(View.VISIBLE);
+                            mShadowVoteBlue.startAnimation(mFlash);
                         } else if (mVoteOptions.get(i).getColor().equalsIgnoreCase("GREEN")){
                             mVoteGreenButton.setVisibility(View.VISIBLE);
                             mVoteGreenButton.setEnabled(true);
+                            mShadowVoteGreen.setVisibility(View.VISIBLE);
+                            mShadowVoteGreen.startAnimation(mFlash);
                         } else if (mVoteOptions.get(i).getColor().equalsIgnoreCase("BROWN")){
                             mVoteBrownButton.setVisibility(View.VISIBLE);
                             mVoteBrownButton.setEnabled(true);
+                            mShadowVoteBrown.setVisibility(View.VISIBLE);
+                            mShadowVoteBrown.startAnimation(mFlash);
                         } else if (mVoteOptions.get(i).getColor().equalsIgnoreCase("BLACK")) {
                             mVoteBlackButton.setVisibility(View.VISIBLE);
                             mVoteBlackButton.setEnabled(true);
+                            mShadowVoteBlack.setVisibility(View.VISIBLE);
+                            mShadowVoteBlack.startAnimation(mFlash);
                         }
                     }
                 }
@@ -277,9 +321,13 @@ public class PlayerActivity extends AppCompatActivity {
                     if (mBooleanOptions){
                         mYesButton.setVisibility(View.VISIBLE);
                         mYesButton.setEnabled(true);
+                        mYesShadow.setVisibility(View.VISIBLE);
+                        mYesShadow.startAnimation(mFlash);
                     }
                     mNoButton.setVisibility(View.VISIBLE);
                     mNoButton.setEnabled(true);
+                    mNoShadow.setVisibility(View.VISIBLE);
+                    mNoShadow.startAnimation(mFlash);
                 }
             });
         }
@@ -295,6 +343,8 @@ public class PlayerActivity extends AppCompatActivity {
                     }
                     mNoButton.setVisibility(View.VISIBLE);
                     mNoButton.setEnabled(true);
+                    mNoShadow.setVisibility(View.VISIBLE);
+                    mNoShadow.startAnimation(mFlash);
                 }
             });
 
@@ -306,7 +356,11 @@ public class PlayerActivity extends AppCompatActivity {
     private void otherCommonSetUp() {
         mPlayerActivityLayout = findViewById(R.id.player_activity);
         mPlayerButton = findViewById(R.id.play);
+        mLoading = findViewById(R.id.loading_player);
 
+        final Animation animRotate = AnimationUtils.loadAnimation(this, R.anim.anim_rotate);
+
+        mLoading.startAnimation(animRotate);
 
         mEnterRestRoomButton = findViewById(R.id.enter_restroom);
         mEnterCachouButton = findViewById(R.id.enter_cachou);
@@ -387,11 +441,17 @@ public class PlayerActivity extends AppCompatActivity {
             });
         }
 
+        mGunManShadow = findViewById(R.id.shadow_gunman);
+        mToughGuyShadow = findViewById(R.id.shadow_toughguy);
+        mModelShadow = findViewById(R.id.shadow_model);
 
         mGameCharaterButtons.add(mGunManButton);
         mGameCharaterButtons.add(mToughGunButton);
         mGameCharaterButtons.add(mModelButton);
 
+        mShadows.add(mGunManShadow);
+        mShadows.add(mToughGuyShadow);
+        mShadows.add(mModelShadow);
 
         mVoteRedButton = findViewById(R.id.votered_button);
         mVoteRedButton.setOnClickListener(new View.OnClickListener() {
@@ -442,6 +502,19 @@ public class PlayerActivity extends AppCompatActivity {
         mVotingButtons.add(mVoteBrownButton);
         mVotingButtons.add(mVoteBlackButton);
 
+        mShadowVoteRed = findViewById(R.id.roundshadow_votered);
+        mShadowVoteYellow = findViewById(R.id.roundshadow_voteyellow);
+        mShadowVoteBlue = findViewById(R.id.roundshadow_voteblue);
+        mShadowVoteGreen = findViewById(R.id.roundshadow_votegreen);
+        mShadowVoteBrown = findViewById(R.id.roundshadow_votebrown);
+        mShadowVoteBlack = findViewById(R.id.roundshadow_voteblack);
+        mVoteShadows.add(mShadowVoteRed);
+        mVoteShadows.add(mShadowVoteYellow);
+        mVoteShadows.add(mShadowVoteBlue);
+        mVoteShadows.add(mShadowVoteGreen);
+        mVoteShadows.add(mShadowVoteBrown);
+        mVoteShadows.add(mShadowVoteBlack);
+
         mItemSolt1 = findViewById(R.id.itemSolt1);
         mItemSolt2 = findViewById(R.id.itemSolt2);
         mItemSolt3 = findViewById(R.id.itemSolt3);
@@ -469,14 +542,16 @@ public class PlayerActivity extends AppCompatActivity {
                 choosingBoolean(false);
             }
         });
-
+        mYesShadow = findViewById(R.id.shadow_yes);
+        mNoShadow = findViewById(R.id.shadow_no);
 
 
         mYesButton.setEnabled(false);
         mYesButton.setVisibility(View.INVISIBLE);
         mNoButton.setEnabled(false);
         mNoButton.setVisibility(View.INVISIBLE);
-
+        mYesShadow.setVisibility(View.INVISIBLE);
+        mNoShadow.setVisibility(View.INVISIBLE);
 
 
         for (ImageButton button: mVotingButtons){
@@ -487,6 +562,7 @@ public class PlayerActivity extends AppCompatActivity {
         for (ImageButton button: mEnterButtons){
             button.setEnabled(false);
             button.setVisibility(View.INVISIBLE);
+
         }
 
         for (ImageButton button: mGameCharaterButtons){
@@ -494,8 +570,15 @@ public class PlayerActivity extends AppCompatActivity {
             button.setVisibility(View.INVISIBLE);
         }
 
+        for (ImageView button: mShadows){
+            button.setVisibility(View.INVISIBLE);
+        }
+
         for (ImageButton button: mAllItemSlots){
             button.setEnabled(false);
+        }
+        for (ImageView button: mVoteShadows){
+            button.setVisibility(View.INVISIBLE);
         }
     }
 

@@ -9,6 +9,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -60,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
     final static List<String> actualcolors= new ArrayList<>();
     private ArrayList<Playable> mCurrentTeam = new ArrayList<>();
 
+
     private ConstraintLayout mMainActivityLayout;
     private ImageButton mRedButton, mYellowButton, mBlueButton, mGreenButton, mBrownButton, mBlackButton;
     private ImageButton mContinueButton;
@@ -67,8 +72,11 @@ public class MainActivity extends AppCompatActivity {
     private GridLayout mRestRoomArea, mCachouArea, mMegatoyArea, mParkingArea, mSecurityArea, mSupermarketArea;
     private TextView mRestRoomZombie, mCachouZombie, mMegatoyZombie, mParkingZombie, mSecurityZombie, mSupermarketZombie;
     private List<ImageButton> mPlayerButtons = new ArrayList<>();
+    private ImageView mYesShadow, mNoShadow, mOKShadow;
     private List<ImageButton> mActualPlayerButtons = new ArrayList<>();
     private TextView mMessageView;
+    private ImageView mLoading;
+
     private static List<String> votes = new ArrayList<>();
     private static int mThirdCount;
     private static List<Item> mCurrentItemOptions = new ArrayList<>();
@@ -86,6 +94,8 @@ public class MainActivity extends AppCompatActivity {
     private static int mFourthCount;
     private static int mFifthCount;
     private static int mSixCount;
+
+    final Animation mFlash = new AlphaAnimation(1, 0);
 
 
     public static Intent mainIntent(Context packageContext, int playerNumber){
@@ -107,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
     private void gettingReady() {
         mPlayerNumber = getIntent().getIntExtra(PLAYER_NUMBER,0);
         gameBroad.setPlayersNumber(mPlayerNumber);
+
 
         ContinueButtonMethod();
         otherCommonSetUp();
@@ -162,6 +173,8 @@ public class MainActivity extends AppCompatActivity {
         mMessageView.setVisibility(View.INVISIBLE);
         mContinueButton.setVisibility(View.VISIBLE);
         mContinueButton.setEnabled(true);
+        mOKShadow.setVisibility(View.VISIBLE);
+        mOKShadow.startAnimation(mFlash);
     }
 
     private void disableContinue() {
@@ -169,11 +182,18 @@ public class MainActivity extends AppCompatActivity {
         mContinueButton.setVisibility(View.INVISIBLE);
         mMessageView.setVisibility(View.VISIBLE);
         mMessageView.setEnabled(true);
+        mOKShadow.setVisibility(View.INVISIBLE);
     }
 
     private void otherCommonSetUp() {
 
         mMainActivityLayout = findViewById(R.id.main_activity);
+
+        mLoading = findViewById(R.id.loading_main);
+
+        final Animation animRotate = AnimationUtils.loadAnimation(this, R.anim.anim_rotate);
+
+        mLoading.startAnimation(animRotate);
 
         colors.add("Red");
         colors.add("Yellow");
@@ -194,6 +214,16 @@ public class MainActivity extends AppCompatActivity {
         mPlayerButtons.add(mGreenButton);
         mPlayerButtons.add(mBrownButton);
         mPlayerButtons.add(mBlackButton);
+
+        mFlash.setDuration(500);
+        mFlash.setInterpolator(new LinearInterpolator());
+        mFlash.setRepeatCount(Animation.INFINITE);
+        mFlash.setRepeatMode(Animation.REVERSE);
+
+        mYesShadow = findViewById(R.id.shadow_yesmain);
+        mNoShadow = findViewById(R.id.shadow_nomain);
+        mOKShadow = findViewById(R.id.shadow_okmain);
+        mOKShadow.startAnimation(mFlash);
 
         mYesButton = findViewById(R.id.yesbutton_main);
         mYesButton.setOnClickListener(new View.OnClickListener() {
@@ -232,6 +262,9 @@ public class MainActivity extends AppCompatActivity {
         mNoButton.setVisibility(View.INVISIBLE);
         mYesButton.setEnabled(false);
         mNoButton.setEnabled(false);
+        mYesShadow.setVisibility(View.INVISIBLE);
+        mNoShadow.setVisibility(View.INVISIBLE);
+
     }
 
     private void enableYesNo() {
@@ -239,6 +272,10 @@ public class MainActivity extends AppCompatActivity {
         mNoButton.setVisibility(View.VISIBLE);
         mYesButton.setEnabled(true);
         mNoButton.setEnabled(true);
+        mYesShadow.setVisibility(View.VISIBLE);
+        mYesShadow.startAnimation(mFlash);
+        mNoShadow.setVisibility(View.VISIBLE);
+        mNoShadow.startAnimation(mFlash);
     }
 
     private void updateRoom(Context context) {

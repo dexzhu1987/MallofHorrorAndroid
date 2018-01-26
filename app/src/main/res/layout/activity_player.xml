@@ -10,6 +10,63 @@
     android:orientation="vertical"
     tools:context="com.bignerdranch.android.mallofhorrorandroid.PlayerActivity">
 
+    <ImageView
+        android:id="@+id/roundshadow_votered"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="46dp"
+        android:layout_marginStart="178dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/roundshadow" />
+
+    <ImageView
+        android:id="@+id/roundshadow_voteyellow"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="46dp"
+        android:layout_marginStart="228dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/roundshadow" />
+
+    <ImageView
+        android:id="@+id/roundshadow_voteblue"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="46dp"
+        android:layout_marginStart="276dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/roundshadow" />
+
+    <ImageView
+        android:id="@+id/roundshadow_votegreen"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="178dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/roundshadow" />
+
+    <ImageView
+        android:id="@+id/roundshadow_votebrown"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="228dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/roundshadow" />
+
+    <ImageView
+        android:id="@+id/roundshadow_voteblack"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="276dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/roundshadow" />
+
     <GridLayout
         android:id="@+id/restroom_area"
         android:layout_width="120dp"
@@ -198,12 +255,54 @@
         app:layout_constraintVertical_bias="0.0" />
 
 
+    <ImageView
+        android:id="@+id/shadow_gunman"
+        android:layout_width="59dp"
+        android:layout_height="65dp"
+        android:layout_marginBottom="2dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="24dp"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.995"
+        app:srcCompat="@drawable/showdowdrop" />
+
+    <ImageView
+        android:id="@+id/shadow_toughguy"
+        android:layout_width="59dp"
+        android:layout_height="65dp"
+        android:layout_marginBottom="2dp"
+        android:layout_marginStart="63dp"
+        android:layout_marginTop="24dp"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/showdowdrop" />
+
+    <ImageView
+        android:id="@+id/shadow_model"
+        android:layout_width="59dp"
+        android:layout_height="65dp"
+        android:layout_marginBottom="2dp"
+        android:layout_marginStart="116dp"
+        android:layout_marginTop="24dp"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/showdowdrop" />
+
     <ImageButton
         android:id="@+id/redtoughman_button"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginStart="64dp"
+        android:layout_marginBottom="24dp"
+        android:layout_marginStart="68dp"
         android:background="@drawable/round_button"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -214,8 +313,8 @@
         android:id="@+id/redmodel_button"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginStart="116dp"
+        android:layout_marginBottom="24dp"
+        android:layout_marginStart="120dp"
         android:background="@drawable/round_button"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -227,8 +326,8 @@
         style="@android:style/Widget.DeviceDefault.ImageButton"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginBottom="24dp"
+        android:layout_marginStart="16dp"
         android:background="@drawable/round_button"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -241,10 +340,13 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginBottom="50dp"
+        android:layout_marginEnd="380dp"
         android:layout_marginStart="184dp"
         android:background="@drawable/round_button"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/redbttn" />
 
@@ -253,10 +355,13 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginBottom="50dp"
+        android:layout_marginEnd="325dp"
         android:layout_marginStart="232dp"
         android:background="@drawable/round_button"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/yellowbttn" />
 
@@ -264,11 +369,14 @@
         android:id="@+id/voteblue_button"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_marginBottom="48dp"
+        android:layout_marginBottom="50dp"
+        android:layout_marginEnd="275dp"
         android:layout_marginStart="280dp"
         android:background="@drawable/round_button"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/bluebttn" />
 
@@ -307,6 +415,33 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/blackbttn" />
+
+
+    <ImageView
+        android:id="@+id/shadow_yes"
+        android:layout_width="59dp"
+        android:layout_height="65dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="410dp"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.995"
+        app:srcCompat="@drawable/showdowdrop" />
+
+    <ImageView
+        android:id="@+id/shadow_no"
+        android:layout_width="59dp"
+        android:layout_height="65dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="336dp"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/showdowdrop" />
 
     <ImageButton
         android:id="@+id/yesbutton_player"
@@ -463,77 +598,157 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
-        android:id="@+id/itemSolt1"
+    <android.support.v7.widget.CardView
         android:layout_width="45dp"
         android:layout_height="57dp"
         android:layout_marginBottom="168dp"
         android:layout_marginEnd="64dp"
-        android:padding="0dp"
-        android:scaleType="fitXY"
+        app:cardElevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/itemslot" />
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <ImageButton
-        android:id="@+id/itemSolt2"
+        <ImageButton
+            android:id="@+id/itemSolt1"
+            android:layout_width="45dp"
+            android:layout_height="57dp"
+            android:layout_marginBottom="168dp"
+            android:layout_marginEnd="64dp"
+            android:background="@drawable/button_shawdow"
+            android:padding="0dp"
+            android:scaleType="fitXY"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/itemslot" />
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardView2"
         android:layout_width="45dp"
         android:layout_height="57dp"
         android:layout_marginBottom="168dp"
         android:layout_marginEnd="8dp"
-        android:padding="0dp"
-        android:scaleType="fitXY"
+        app:cardElevation="10dp"
         app:layout_constraintBottom_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/itemslot" />
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <ImageButton
-        android:id="@+id/itemSolt3"
+        <ImageButton
+            android:id="@+id/itemSolt2"
+            android:layout_width="45dp"
+            android:layout_height="57dp"
+            android:layout_marginBottom="168dp"
+            android:layout_marginEnd="8dp"
+            android:padding="0dp"
+            android:scaleType="fitXY"
+            app:layout_constraintBottom_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/itemslot" />
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
         android:layout_width="45dp"
         android:layout_height="57dp"
         android:layout_marginBottom="100dp"
         android:layout_marginEnd="64dp"
-        android:padding="0dp"
-        android:scaleType="fitXY"
+        app:cardElevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/itemslot" />
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <ImageButton
-        android:id="@+id/itemSolt4"
+        <ImageButton
+            android:id="@+id/itemSolt3"
+            android:layout_width="45dp"
+            android:layout_height="57dp"
+            android:layout_marginBottom="100dp"
+            android:layout_marginEnd="64dp"
+            android:padding="0dp"
+            android:scaleType="fitXY"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/itemslot" />
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
         android:layout_width="45dp"
         android:layout_height="57dp"
         android:layout_marginBottom="100dp"
         android:layout_marginEnd="8dp"
-        android:padding="0dp"
-        android:scaleType="fitXY"
+        app:cardElevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/itemslot" />
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <ImageButton
-        android:id="@+id/itemSolt5"
+        <ImageButton
+            android:id="@+id/itemSolt4"
+            android:layout_width="45dp"
+            android:layout_height="57dp"
+            android:layout_marginBottom="100dp"
+            android:layout_marginEnd="8dp"
+            android:padding="0dp"
+            android:scaleType="fitXY"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/itemslot" />
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
         android:layout_width="45dp"
         android:layout_height="57dp"
         android:layout_marginBottom="32dp"
         android:layout_marginEnd="64dp"
-        android:padding="0dp"
-        android:scaleType="fitXY"
+        app:cardElevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/itemslot" />
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <ImageButton
-        android:id="@+id/itemSolt6"
+        <ImageButton
+            android:id="@+id/itemSolt5"
+            android:layout_width="45dp"
+            android:layout_height="57dp"
+            android:layout_marginBottom="32dp"
+            android:layout_marginEnd="64dp"
+            android:padding="0dp"
+            android:scaleType="fitXY"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/itemslot" />
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardView"
         android:layout_width="45dp"
         android:layout_height="57dp"
         android:layout_marginBottom="32dp"
         android:layout_marginEnd="8dp"
-        android:padding="0dp"
-        android:scaleType="fitXY"
+        app:cardElevation="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageButton
+            android:id="@+id/itemSolt6"
+            android:layout_width="45dp"
+            android:layout_height="57dp"
+            android:layout_marginBottom="32dp"
+            android:layout_marginEnd="8dp"
+            android:padding="0dp"
+            android:scaleType="fitXY"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/itemslot" />
+    </android.support.v7.widget.CardView>
+
+    <ImageView
+        android:id="@+id/loading_player"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="110dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/itemslot" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/loading" />
 
 </android.support.constraint.ConstraintLayout>
 
