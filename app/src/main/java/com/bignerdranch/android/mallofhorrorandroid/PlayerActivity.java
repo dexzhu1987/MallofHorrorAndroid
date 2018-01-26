@@ -9,6 +9,7 @@ import android.os.Parcelable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,10 +75,12 @@ public class PlayerActivity extends AppCompatActivity {
     private ImageButton mPlayerButton;
     private TextView mRestRoomZombie, mCachouZombie, mMegatoyZombie, mParkingZombie, mSecurityZombie, mSupermarketZombie;
     private ImageButton mItemSolt1, mItemSolt2, mItemSolt3, mItemSolt4, mItemSolt5, mItemSolt6;
+    private CardView mCardViewItem1, mCardViewItem2,mCardViewItem3, mCardViewItem4,mCardViewItem5, mCardViewItem6;
     private List<ImageButton> mVotingButtons = new ArrayList<>();
     private List<ImageButton> mEnterButtons = new ArrayList<>();
     private List<ImageButton> mGameCharaterButtons = new ArrayList<>();
     private List<ImageButton> mAllItemSlots = new ArrayList<>();
+    private List<CardView> mAllItemCardView = new ArrayList<>();
     private ArrayList<ImageView> mShadows = new ArrayList<>();
     private ArrayList<ImageView> mVoteShadows = new ArrayList<>();
     private AnimationDrawable shadowInOut ;
@@ -527,6 +530,21 @@ public class PlayerActivity extends AppCompatActivity {
         mAllItemSlots.add(mItemSolt4);
         mAllItemSlots.add(mItemSolt5);
         mAllItemSlots.add(mItemSolt6);
+
+
+        mCardViewItem1 = findViewById(R.id.cardviewitem1);
+        mCardViewItem2 = findViewById(R.id.cardviewitem2);
+        mCardViewItem3 = findViewById(R.id.cardviewitem3);
+        mCardViewItem4 = findViewById(R.id.cardviewitem4);
+        mCardViewItem5 = findViewById(R.id.cardviewitem5);
+        mCardViewItem6 = findViewById(R.id.cardviewitem6);
+        mAllItemCardView.add(mCardViewItem1);
+        mAllItemCardView.add(mCardViewItem2);
+        mAllItemCardView.add(mCardViewItem3);
+        mAllItemCardView.add(mCardViewItem4);
+        mAllItemCardView.add(mCardViewItem5);
+        mAllItemCardView.add(mCardViewItem6);
+
 
         mYesButton = findViewById(R.id.yesbutton_player);
         mYesButton.setOnClickListener(new View.OnClickListener() {
@@ -1017,8 +1035,12 @@ public class PlayerActivity extends AppCompatActivity {
             }
 
             private void itemChoosingRoom(Item item1) {
+                for (CardView cardView: mAllItemCardView){
+                    cardView.setVisibility(View.INVISIBLE);
+                }
                 for (ImageButton button: mGameCharaterButtons){
                     button.setEnabled(false);
+                    button.setVisibility(View.INVISIBLE);
                     mMessageTextView.setVisibility(View.VISIBLE);
                     mMessageTextView.setEnabled(true);
                     mMessageTextView.setText("Please select the room your want to move to");
