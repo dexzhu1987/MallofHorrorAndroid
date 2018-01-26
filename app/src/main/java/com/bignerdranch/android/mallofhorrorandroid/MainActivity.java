@@ -183,7 +183,10 @@ public class MainActivity extends AppCompatActivity {
         mMessageView.setVisibility(View.VISIBLE);
         mMessageView.setEnabled(true);
         mOKShadow.animate().cancel();
+        mOKShadow.clearAnimation();
+        mOKShadow.setAnimation(null);
         mOKShadow.setVisibility(View.INVISIBLE);
+
     }
 
     private void otherCommonSetUp() {
