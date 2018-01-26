@@ -67,7 +67,6 @@ public class ShowVoteResultActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 ++mCountSetUp;
-                System.out.println(mCountSetUp);
                 Intent data = new Intent();
                 data.putExtra(SETUPCOUNTED1, mCountSetUp);
                 setResult(ShowVoteResultActivity.RESULT_OK, data);

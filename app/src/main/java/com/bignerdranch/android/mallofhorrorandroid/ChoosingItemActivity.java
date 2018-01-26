@@ -119,6 +119,7 @@ public class ChoosingItemActivity extends AppCompatActivity {
                 data.putParcelableArrayListExtra(REMAINITEMS, mItems);
                 setResult(RESULT_OK, data);
                 finish();
+                overridePendingTransition(android.support.v7.appcompat.R.anim.abc_grow_fade_in_from_bottom,android.support.v7.appcompat.R.anim.abc_shrink_fade_out_from_bottom );
             }
         });
     }

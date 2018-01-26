@@ -234,6 +234,7 @@ public class PlayerActivity extends AppCompatActivity {
                     data.putExtra(SETUPCOUNTED, mCountSetUp );
                     setResult(RESULT_OK, data);
                     finish();
+                    overridePendingTransition(0,0 );
                 }
             });
         }
@@ -750,6 +751,7 @@ public class PlayerActivity extends AppCompatActivity {
         data.putExtra(SETUPCOUNTED, mCountSetUp );
         setResult(RESULT_OK, data);
         finish();
+        overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
     }
 
     private void choosingCharacter(String character){
@@ -759,6 +761,7 @@ public class PlayerActivity extends AppCompatActivity {
         data.putExtra(SETUPCOUNTED, mCountSetUp);
         setResult(RESULT_OK, data);
         finish();
+        overridePendingTransition(0,0 );
     }
 
     private void choosingColor(String color) {
@@ -768,6 +771,7 @@ public class PlayerActivity extends AppCompatActivity {
         data.putExtra(SETUPCOUNTED, mCountSetUp);
         setResult(RESULT_OK, data);
         finish();
+        overridePendingTransition(0,0 );
     }
 
     private void choosingBoolean(Boolean yes) {
@@ -777,6 +781,7 @@ public class PlayerActivity extends AppCompatActivity {
         data.putExtra(SETUPCOUNTED, mCountSetUp);
         setResult(RESULT_OK, data);
         finish();
+        overridePendingTransition(0,0 );
     };
 
     private void choosingItem(ImageButton button, final Item item) {
@@ -793,6 +798,7 @@ public class PlayerActivity extends AppCompatActivity {
                     data.putExtra(CHOOSEDBOOLEAN,true);
                     setResult(RESULT_OK, data);
                     finish();
+                    overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
                 }
                 if (item.getItemNum()==5){
                     item.setAfteraffectedRoomNumber(mFallenRoomNumber);
@@ -803,6 +809,7 @@ public class PlayerActivity extends AppCompatActivity {
                     data.putExtra(CHOOSEDBOOLEAN,true);
                     setResult(RESULT_OK, data);
                     finish();
+                    overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
                 }
                 if (item.getItemNum()==6){
                     item.setAfteraffectedRoomNumber(mFallenRoomNumber);
@@ -841,6 +848,7 @@ public class PlayerActivity extends AppCompatActivity {
                                     data.putExtra(CHOOSEDBOOLEAN,true);
                                     setResult(RESULT_OK, data);
                                     finish();
+                                    overridePendingTransition(0,0 );
                                 }
                             });
                             mToughGunButton.setOnClickListener(new View.OnClickListener() {
@@ -854,6 +862,7 @@ public class PlayerActivity extends AppCompatActivity {
                                     data.putExtra(CHOOSEDBOOLEAN,true);
                                     setResult(RESULT_OK, data);
                                     finish();
+                                    overridePendingTransition(0,0 );
                                 }
                             });
                             mModelButton.setOnClickListener(new View.OnClickListener() {
@@ -867,6 +876,7 @@ public class PlayerActivity extends AppCompatActivity {
                                     data.putExtra(CHOOSEDBOOLEAN,true);
                                     setResult(RESULT_OK, data);
                                     finish();
+                                    overridePendingTransition(0,0 );
                                 }
                             });
                         }
@@ -950,6 +960,7 @@ public class PlayerActivity extends AppCompatActivity {
                                             data.putExtra(CHOOSEDBOOLEAN,true);
                                             setResult(RESULT_OK, data);
                                             finish();
+                                            overridePendingTransition(0,0 );
                                         }
                                     });
                                 }

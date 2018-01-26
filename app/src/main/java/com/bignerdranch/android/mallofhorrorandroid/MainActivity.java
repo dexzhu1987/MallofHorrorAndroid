@@ -432,6 +432,7 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = PlayerActivity.newChoosingRoomIntent(MainActivity.this,rooms,playerColor,items, options,message,mCountSetUp,1);
             intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivityForResult(intent,REQUEST_CODE_ROOM);
+            overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
         }
         int selectedRoom = mCurrentRoomPickedNumber;
         if (mCountSetUp % 3 == 1 && mCountSetUp < 3*mPlayerNumber*3){
@@ -448,6 +449,7 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = PlayerActivity.newChoosingCharacterIntent(MainActivity.this,rooms,playerColor,items, characters,message,mCountSetUp,2);
             intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivityForResult(intent,REQUEST_CODE_CHARACTER);
+            overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
         }
         String selectedCharacter = mCurrentGameCharacterSelected;
         if (mCountSetUp>0 && mCountSetUp % 3 == 2 && mCountSetUp < 3*mPlayerNumber*3) {
@@ -489,6 +491,7 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = PlayerActivity.newMessageIntent(MainActivity.this,rooms,playercolor,items,message,mCountSetUp,3);
             intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivityForResult(intent,REQUEST_CODE_MESSAGE);
+            overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
             gameBroad.getItemDeck().removeItem(starterItem);
         } else if (mCountSetUp == mPlayerNumber){
             disableContinue();
@@ -560,6 +563,7 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = PlayerActivity.newVotingIntent(MainActivity.this,rooms,playercolor,items, voteOptions ,message,mCountSetUp,4);
                     intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivityForResult(intent,REQUEST_CODE_VOTE);
+                    overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
                 }
                 String vote = mCurrentVoteColor;
                 if (mCountSetUp % 2 == 1 && (mCountSetUp < 2*mCurrentTeam.size())){
@@ -582,6 +586,7 @@ public class MainActivity extends AppCompatActivity {
                     System.out.println(votes1);
                     Intent intent2 = ShowVoteResultActivity.newVoteResultIntent(MainActivity.this, votes1,gameBroad.matchRoom(4).getCurrentVoteResult(),mSecondCount);
                     startActivityForResult(intent2, REQUEST_CODE_VIEWRESULT);
+                    overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
                 }
                 if (mCountSetUp >= mCurrentTeam.size()*2 && mSecondCount > 0 && mCountSetUp < mCurrentTeam.size()*4) {
                     System.out.println("Step IV: using threat");
@@ -616,6 +621,7 @@ public class MainActivity extends AppCompatActivity {
                                     Intent intent = PlayerActivity.newYesNoIntent(MainActivity.this, rooms, color, items, yesAndNo, message, mCountSetUp, 5);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                                     startActivityForResult(intent, REQUEST_CODE_YESNO);
+                                    overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
                                 }
                                 if (mCountSetUp % 2 == 1) {
                                     int q = mCountSetUp - (2 * mCurrentTeam.size());
@@ -643,8 +649,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                     } else {
                         System.out.println("No threat");
-                        mCountSetUp += mCurrentTeam.size() * 2;
-                        mSecondCount += 1;
+                        mCountSetUp = mCurrentTeam.size() * 4;
+                        mSecondCount = 2;
                         System.out.println("mCountSetup: " + mCountSetUp +  " mSecond Count: " + mSecondCount);
                         searchParking();
                     }
@@ -654,6 +660,7 @@ public class MainActivity extends AppCompatActivity {
                     HashMap<String, Integer> results = gameBroad.matchRoom(4).getCurrentVoteResult();
                     Intent intent = ShowSimpleVoteResultActivity.newVoteResultIntent(MainActivity.this,results,mSecondCount);
                     startActivityForResult(intent,REQUEST_CODE_VIEWSIMPLERESULT);
+                    overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
                 }
                 if (mCountSetUp == mCurrentTeam.size()*4 && mSecondCount == 3) {
                     if (gameBroad.matchRoom(4).winner().equals("TIE")){
@@ -700,6 +707,7 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = ChoosingItemActivity.newChoosingItemIntent(MainActivity.this,mCurrentItemOptions, message, mSecondCount);
                     intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivityForResult(intent,REQUEST_CODE_CHOOSINGITEM);
+                    overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
                 }
                 Item itemselect = mCurrentSelectedItem;
                 if (mCountSetUp == mCurrentTeam.size()*4 && mSecondCount==5) {
@@ -713,6 +721,7 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = ChoosingItemActivity.newChoosingItemIntent(MainActivity.this, mCurrentItemOptions, message, mSecondCount);
                     intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivityForResult(intent,REQUEST_CODE_CHOOSINGITEM);
+                    overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
                 }
                 Item itemgiveselect = mCurrentSelectedItem;
                 if (mCountSetUp == mCurrentTeam.size()*4 && mSecondCount==6) {
@@ -734,6 +743,7 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = PlayerActivity.newVotingIntent(MainActivity.this, rooms,playercolor,items,voteOptions,message,mCountSetUp,4);
                     intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivityForResult(intent,REQUEST_CODE_VOTE);
+                    overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
                 }
                 String givecolor = mCurrentVoteColor;
                 if (mCountSetUp == mCurrentTeam.size()*4+1 && mSecondCount==6 ) {
@@ -766,6 +776,7 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = PlayerActivity.newMessageIntent(MainActivity.this,rooms,playercolor,items,message,mCountSetUp,3);
                     intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivityForResult(intent,REQUEST_CODE_MESSAGE);
+                    overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
                 }
                 if (mCountSetUp == mCurrentTeam.size()*4+2) {
                     System.out.println("Display message again");
@@ -839,6 +850,7 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = PlayerActivity.newVotingIntent(MainActivity.this, rooms, playercolor, items, voteOptions, message, mCountSetUp, 4);
                     intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivityForResult(intent, REQUEST_CODE_VOTE);
+                    overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
                 }
                 String vote = mCurrentVoteColor;
                 if (mCountSetUp % 2 == 1 && (mCountSetUp < 2 * mCurrentTeam.size())) {
@@ -861,6 +873,7 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent2 = ShowVoteResultActivity.newVoteResultIntent(MainActivity.this, votes1, gameBroad.matchRoom(5).getCurrentVoteResult(), mSecondCount);
                     intent2.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivityForResult(intent2, REQUEST_CODE_VIEWRESULT);
+                    overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
                 }
                 if (mCountSetUp >= mCurrentTeam.size() * 2 && mSecondCount > 0 && mCountSetUp < mCurrentTeam.size() * 4) {
                     System.out.println("Step IV: using threat");
@@ -895,6 +908,7 @@ public class MainActivity extends AppCompatActivity {
                                     Intent intent = PlayerActivity.newYesNoIntent(MainActivity.this, rooms, color, items, yesAndNo, message, mCountSetUp, 5);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                                     startActivityForResult(intent, REQUEST_CODE_YESNO);
+                                    overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
                                 }
                                 if (mCountSetUp % 2 == 1) {
                                     int q = mCountSetUp - (2 * mCurrentTeam.size());
@@ -922,8 +936,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                     } else {
                         System.out.println("No threat");
-                        mCountSetUp += mCurrentTeam.size() * 2;
-                        mSecondCount += 1;
+                        mCountSetUp = mCurrentTeam.size() * 4;
+                        mSecondCount = 2;
                         electChief();
                     }
                 }
@@ -933,6 +947,7 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = ShowSimpleVoteResultActivity.newVoteResultIntent(MainActivity.this, results, mSecondCount);
                     intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivityForResult(intent, REQUEST_CODE_VIEWSIMPLERESULT);
+                    overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
                 }
             }
         }
@@ -1022,6 +1037,7 @@ public class MainActivity extends AppCompatActivity {
                                 Intent intent = PlayerActivity.newYesNoIntent(MainActivity.this, rooms, color, items, yesAndNo, message, mCountSetUp, 5);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                                 startActivityForResult(intent, REQUEST_CODE_YESNO);
+                                overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
                             }
                             if (mCountSetUp % 2 == 1) {
                                 int q = mCountSetUp - (4 * mCurrentTeam.size());
@@ -1030,6 +1046,7 @@ public class MainActivity extends AppCompatActivity {
                                 if (mCurrentYesNo) {
                                     Intent intent = ShowingZombieActivity.newShowZombiesIntent(MainActivity.this, mCurrentZombiesRooms,mCountSetUp);
                                     startActivityForResult(intent, REQUEST_CODE_VIEWZOMBIE);
+                                    overridePendingTransition(android.support.v7.appcompat.R.anim.abc_popup_enter,android.support.v7.appcompat.R.anim.abc_popup_exit );
                                     Item securityCamera = gameBroad.matchItem(teammember, "SecurityCamera");
                                     teammember.usedItem(securityCamera);
                                     electChief();
@@ -1089,6 +1106,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = PlayerActivity.newChoosingRoomIntent(MainActivity.this,rooms,playerColor,items, options,message,mCountSetUp,1);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivityForResult(intent,REQUEST_CODE_ROOM);
+                overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
                 playersIndex.add(mCurrentStartPlayerIndex);
             }
             if (mCountSetUp==1) {
@@ -1105,6 +1123,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = ShowingZombieActivity.newShowZombiesIntent(MainActivity.this, mCurrentZombiesRooms,mSecondCount);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivityForResult(intent, REQUEST_CODE_VIEWZOMBIECHIEF);
+                overridePendingTransition(android.support.v7.appcompat.R.anim.abc_popup_enter,android.support.v7.appcompat.R.anim.abc_popup_exit );
             }
             if (mSecondCount==1 && mCountSetUp==0){
                 System.out.println("Chief Seleting Room");
@@ -1116,6 +1135,7 @@ public class MainActivity extends AppCompatActivity {
                 ArrayList options = (ArrayList) gameBroad.roomsOptions(mCurrentStartPlayer);
                 Intent intent = PlayerActivity.newChoosingRoomIntent(MainActivity.this,rooms,playerColor,items, options,message,mCountSetUp,1);
                 startActivityForResult(intent,REQUEST_CODE_ROOM);
+                overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
             }
             if (mCountSetUp==1 && mSecondCount==1){
                 System.out.println("Chief Room revealing");
@@ -1150,6 +1170,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = PlayerActivity.newChoosingRoomIntent(MainActivity.this, rooms, playerColor, items, (ArrayList<Integer>) options, message, mCountSetUp, 1);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivityForResult(intent, REQUEST_CODE_ROOM);
+                overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
             }
             if (mCountSetUp % 2 == 1 && mCountSetUp<mCurrentPlayerNumber*2) {
                 System.out.println("Collecting the Rooms");
@@ -1173,6 +1194,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = PlayerActivity.newChoosingCharacterIntent(MainActivity.this,rooms,playerColor,items, characters,message,mCountSetUp,2);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivityForResult(intent,REQUEST_CODE_CHARACTER);
+                overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
             }
             if (mCountSetUp%2==1  && mCountSetUp<mCurrentPlayerNumber*4){
                 System.out.println("Moving Actual Character into the room");
@@ -1222,6 +1244,7 @@ public class MainActivity extends AppCompatActivity {
             System.out.println("Showing Zombie to all");
             Intent intent = ShowingZombieActivity.newShowZombiesIntent(MainActivity.this, mCurrentZombiesRooms,mFourthCount);
             startActivityForResult(intent, REQUEST_CODE_VIEWZOMBIEAll);
+            overridePendingTransition(android.support.v7.appcompat.R.anim.abc_popup_enter,android.support.v7.appcompat.R.anim.abc_popup_exit );
         }
         if (mFourthCount==1){
             if (mCurrentMoreZombies.size() == 0) {
@@ -1244,6 +1267,7 @@ public class MainActivity extends AppCompatActivity {
             }
             Intent intent = ShowMoreZombiesActivity.newShowZombiesIntent(MainActivity.this, mCurrentMoreZombies,mFourthCount);
             startActivityForResult(intent, REQUEST_CODE_VIEWZOMBIEALLMORE);
+            overridePendingTransition(android.support.v7.appcompat.R.anim.abc_popup_enter,android.support.v7.appcompat.R.anim.abc_popup_exit );
         }
         if (mFifthCount<6 &&  mFourthCount>=2){
             final Room fallenRoom = gameBroad.matchRoom(mFifthCount+1);
@@ -1255,15 +1279,18 @@ public class MainActivity extends AppCompatActivity {
             System.out.println(fallenRoom.getName());
             if (mFourthCount==2){
                 if (!fallenRoom.isFallen()){
+                    System.out.println(fallenRoom.getName() +  " is not fallen");
                     mFourthCount=5;
                 }
                 if (fallenRoom.isFallen() && fallenRoom.getRoomNum()==4){
+                    System.out.println(fallenRoom.getName() + " is parking");
                     mCountSetUp=0;
                     mSecondCount=0;
                     mThirdCount=0;
                     mFourthCount++;
                 }
                 if (fallenRoom.isFallen() && fallenRoom.getRoomNum()!=4) {
+                    System.out.println(fallenRoom.getName() + " is not parking");
                     mSixCount++;
                     if (mSecondCount==0){
                         System.out.println("Confirm if want to use item");
@@ -1296,6 +1323,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
                                 Intent intent = PlayerActivity.newChoosingItemIntent(MainActivity.this,rooms,playerColor,items,fallenRoom.getRoomNum(), (ArrayList<GameCharacter>) existedCharactersList,  message,mCountSetUp,6);
                                 startActivityForResult(intent,REQUEST_CODE_ITEM);
+                                overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
                             }
                             if (mCountSetUp%2==1){
                                 int i = mCountSetUp/2;
@@ -1389,8 +1417,9 @@ public class MainActivity extends AppCompatActivity {
                     mSecondCount+=1;
                 }
                 if (mCountSetUp==playersInTheRoomList.size()*2 && fallenRoom.isFallen()){
+                    System.out.println("still fallen after the item used");
                     disableContinue();
-                    mMessageView.setText(fallenRoom.getRoomNum()==4? fallenRoom.getName() +  " is still fallen. /nPlease vote who will be eaten": "Parking is fallen, /nPlease vote who will be eaten");
+                    mMessageView.setText(fallenRoom.getName() +  " is still fallen. /nPlease vote who will be eaten");
                     mMessageView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -1403,6 +1432,7 @@ public class MainActivity extends AppCompatActivity {
                     });
                 }
                 if (mCountSetUp==playersInTheRoomList.size()*2 && !fallenRoom.isFallen()){
+                    System.out.println("Not fallen after the item used");
                     mCountSetUp=0;
                     mSecondCount=0;
                     mThirdCount=0;
@@ -1411,25 +1441,31 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             if (mFourthCount==3){
+                HashSet<Playable> searchteam = gameBroad.WhoCan(fallenRoom.existCharacterColor());
+                List<Playable> searchTeam = new ArrayList<>();
+                for (Playable player : searchteam) {
+                    searchTeam.add(player);
+                }
+                System.out.println("Calculated searchteam: " +  searchTeam);
+                mCurrentTeam = (ArrayList<Playable>) searchTeam;
+                System.out.println("Doing the fallen calculation");
                     if (mThirdCount==0 ){
-                        HashSet<Playable> searchteam = gameBroad.WhoCan(fallenRoom.existCharacterColor());
-                        List<Playable> searchTeam = new ArrayList<>();
-                        for (Playable player : searchteam) {
-                            searchTeam.add(player);
-                        }
-                        mCurrentTeam = (ArrayList<Playable>) searchTeam;
+                        System.out.println("getting the team");
                         disableContinue();
-                        mMessageView.setText(mCurrentTeam + " are in the fallen room");
+                        mMessageView.setText("Please select the victim");
                         mMessageView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 enableContinue();
                                 mThirdCount++;
+                                mCountSetUp=0;
+                                mSecondCount=0;
+
                             }
                         });
                     }
                     if (mThirdCount==1) {
-                        System.out.println(mCurrentTeam);
+                        System.out.println(mCurrentTeam.size());
                         if (mCountSetUp % 2 == 0 && (mCountSetUp < 2 * mCurrentTeam.size())) {
                             int i = (mCountSetUp == 0) ? 0 : mCountSetUp / 2;
                             Playable teammember = mCurrentTeam.get(i);
@@ -1443,6 +1479,7 @@ public class MainActivity extends AppCompatActivity {
                             Intent intent = PlayerActivity.newVotingIntent(MainActivity.this, rooms, playercolor, items, voteOptions, message, mCountSetUp, 4);
                             intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                             startActivityForResult(intent, REQUEST_CODE_VOTE);
+                            overridePendingTransition(android.support.v7.appcompat.R.anim.abc_popup_enter,android.support.v7.appcompat.R.anim.abc_popup_exit );
                         }
                         String vote = mCurrentVoteColor;
                         if (mCountSetUp % 2 == 1 && (mCountSetUp < 2 * mCurrentTeam.size())) {
@@ -1465,6 +1502,7 @@ public class MainActivity extends AppCompatActivity {
                             Intent intent2 = ShowVoteResultActivity.newVoteResultIntent(MainActivity.this, votes1, gameBroad.matchRoom(5).getCurrentVoteResult(), mSecondCount);
                             intent2.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                             startActivityForResult(intent2, REQUEST_CODE_VIEWRESULT);
+                            overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
                             mCurrentYesNo =false;
                         }
                         if (mCountSetUp >= mCurrentTeam.size() * 2 && mSecondCount > 0 && mCountSetUp < mCurrentTeam.size() * 4) {
@@ -1500,6 +1538,7 @@ public class MainActivity extends AppCompatActivity {
                                             Intent intent = PlayerActivity.newYesNoIntent(MainActivity.this, rooms, color, items, yesAndNo, message, mCountSetUp, 5);
                                             intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                                             startActivityForResult(intent, REQUEST_CODE_YESNO);
+                                            overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
                                         }
                                         if (mCountSetUp % 2 == 1) {
                                             int q = mCountSetUp - (2 * mCurrentTeam.size());
@@ -1527,8 +1566,8 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             } else {
                                 System.out.println("No threat");
-                                mCountSetUp += mCurrentTeam.size() * 2;
-                                mSecondCount += 1;
+                                mCountSetUp = mCurrentTeam.size() * 4;
+                                mSecondCount = 2;
                                 showZombie();
                             }
                         }
@@ -1538,6 +1577,7 @@ public class MainActivity extends AppCompatActivity {
                             Intent intent = ShowSimpleVoteResultActivity.newVoteResultIntent(MainActivity.this, results, mSecondCount);
                             intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                             startActivityForResult(intent, REQUEST_CODE_VIEWSIMPLERESULT);
+                            overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
                         }
                     }
                 if (mCountSetUp == mCurrentTeam.size()*4 && mSecondCount == 3) {
@@ -1588,6 +1628,7 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = PlayerActivity.newChoosingCharacterIntent(MainActivity.this,rooms,playerColor,items, characters,message,mCountSetUp,2);
                     intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivityForResult(intent,REQUEST_CODE_CHARACTER);
+                    overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
                 }
                 if (mCountSetUp == mCurrentTeam.size()*4 +1){
                     GameCharacter deathCharacter = gameBroad.matchGameCharacter(mCurrentVictim, mCurrentGameCharacterSelected);
@@ -1658,7 +1699,7 @@ public class MainActivity extends AppCompatActivity {
                     showZombie();
                 }
             }
-        if (mFourthCount==5){
+        if (mFourthCount>=5){
             HashSet<Playable> removedPlayers = new HashSet<>();
             removedPlayers.clear();
             for (int i=0; i<gameBroad.getPlayers().size();i++) {
@@ -1687,6 +1728,7 @@ public class MainActivity extends AppCompatActivity {
                 });
             }else {
               mFifthCount++;
+            }
             }
         }
         if (mFifthCount==7){
@@ -1721,9 +1763,6 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             });
-
-        }
-
 
         }
     }

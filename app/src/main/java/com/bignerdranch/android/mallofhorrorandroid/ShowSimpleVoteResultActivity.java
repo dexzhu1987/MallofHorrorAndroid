@@ -56,6 +56,7 @@ public class ShowSimpleVoteResultActivity extends AppCompatActivity {
                 data.putExtra(SETUPCOUNTED, mCountSetUp);
                 setResult(ShowSimpleVoteResultActivity.RESULT_OK, data);
                 finish();
+                overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
             }
         });
 
