@@ -62,15 +62,17 @@ public class ShowVoteResultActivity extends AppCompatActivity {
         mBrownResult = findViewById(R.id.brownresult);
         mBlackResult = findViewById(R.id.blackresult);
 
+        ++mCountSetUp;
+
         mContinueButton = findViewById(R.id.okButton_voteDetailed);
         mContinueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ++mCountSetUp;
                 Intent data = new Intent();
                 data.putExtra(SETUPCOUNTED1, mCountSetUp);
                 setResult(ShowVoteResultActivity.RESULT_OK, data);
                 finish();
+                overridePendingTransition(0,0);
             }
         });
 

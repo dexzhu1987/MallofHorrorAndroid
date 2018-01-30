@@ -891,6 +891,9 @@ public class PlayerActivity extends AppCompatActivity {
             public void onClick(View v) {
                 mNoButton.setVisibility(View.INVISIBLE);
                 mNoButton.setEnabled(false);
+                for (CardView cardView: mAllItemCardView){
+                    cardView.setVisibility(View.INVISIBLE);
+                }
                 if (item.getItemNum()==3 || item.getItemNum()==4 ){
                     mCountSetUp++;
                     Intent data = new Intent();
@@ -1035,9 +1038,7 @@ public class PlayerActivity extends AppCompatActivity {
             }
 
             private void itemChoosingRoom(Item item1) {
-                for (CardView cardView: mAllItemCardView){
-                    cardView.setVisibility(View.INVISIBLE);
-                }
+
                 for (ImageButton button: mGameCharaterButtons){
                     button.setEnabled(false);
                     button.setVisibility(View.INVISIBLE);
@@ -1102,4 +1103,5 @@ public class PlayerActivity extends AppCompatActivity {
     public static Item choosedItem (Intent result){
         return (Item) result.getSerializableExtra(CHOOSEDITEM);
     }
+
 }

@@ -42,11 +42,12 @@ public class ShowMoreZombiesActivity extends AppCompatActivity {
         mAllEnterView.add(mShowMore1);
         mAllEnterView.add(mShowMore2);
 
+        ++mCountSetUp;
+
         mOKButton = findViewById(R.id.okButton_showMoreZombie);
         mOKButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ++mCountSetUp;
                 Intent data = new Intent();
                 data.putExtra(SETUPCOUNTED, mCountSetUp);
                 setResult(RESULT_OK, data);

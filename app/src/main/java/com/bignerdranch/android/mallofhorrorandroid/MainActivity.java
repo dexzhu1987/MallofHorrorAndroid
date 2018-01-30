@@ -114,6 +114,14 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        System.out.println("Resuming ");
+        updateRoom(MainActivity.this);
+    }
+
     private void gettingReady() {
         mPlayerNumber = getIntent().getIntExtra(PLAYER_NUMBER,0);
         gameBroad.setPlayersNumber(mPlayerNumber);
@@ -622,7 +630,7 @@ public class MainActivity extends AppCompatActivity {
                     System.out.println(mCurrentTeam);
                     System.out.println(votes);
                     ++mCountSetUp;
-                    if (mCountSetUp != 2*mCurrentTeam.size()-1 )
+                    if (mCountSetUp != 2*mCurrentTeam.size() )
                     searchParking();
                 }
                 if (mCountSetUp == mCurrentTeam.size()*2  && mSecondCount == 0){
@@ -637,7 +645,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 if (mCountSetUp >= mCurrentTeam.size()*2 && mSecondCount > 0 && mCountSetUp < mCurrentTeam.size()*4) {
                     System.out.println("Step IV: using threat");
-                    if (teamHasThreat(mCurrentTeam) || mCurrentYesNo ) {
+                    if (teamHasThreat(mCurrentTeam) || mCurrentYesNoMain ) {
                         System.out.println("has threat");
                         if (mSecondCount==1) {
                             disableContinue();
@@ -688,6 +696,7 @@ public class MainActivity extends AppCompatActivity {
                                         teammember.usedItem(threat);
                                     }
                                     mCountSetUp++;
+                                    if (mCountSetUp != mCurrentTeam.size()*4)
                                     searchParking();
                                 }
                             } else {
@@ -699,6 +708,7 @@ public class MainActivity extends AppCompatActivity {
                         mCountSetUp = mCurrentTeam.size() * 4;
                         mSecondCount = 2;
                         System.out.println("mCountSetup: " + mCountSetUp +  " mSecond Count: " + mSecondCount);
+                        if (mCountSetUp != mCurrentTeam.size()*4)
                         searchParking();
                     }
                 }
@@ -718,10 +728,7 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onClick(View v) {
                                 enableContinue();
-                                mCountPhase++;
-                                mCountSetUp=0;
-                                mSecondCount=0;
-                                mThirdCount=0;
+                                mCountSetUp = mCurrentTeam.size()*4+2;
                             }
                         });
                     } else {
@@ -909,6 +916,7 @@ public class MainActivity extends AppCompatActivity {
                     System.out.println(mCurrentTeam);
                     System.out.println(votes);
                     ++mCountSetUp;
+                    if (mCountSetUp != mCurrentTeam.size() * 2 )
                     electChief();
                 }
                 if (mCountSetUp == mCurrentTeam.size() * 2 && mSecondCount == 0) {
@@ -924,7 +932,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 if (mCountSetUp >= mCurrentTeam.size() * 2 && mSecondCount > 0 && mCountSetUp < mCurrentTeam.size() * 4) {
                     System.out.println("Step IV: using threat");
-                    if (teamHasThreat(mCurrentTeam) || mCurrentYesNo) {
+                    if (teamHasThreat(mCurrentTeam) || mCurrentYesNoMain) {
                         System.out.println("has threat");
                         if (mSecondCount == 1) {
                             disableContinue();
@@ -975,6 +983,7 @@ public class MainActivity extends AppCompatActivity {
                                         teammember.usedItem(threat);
                                     }
                                     mCountSetUp++;
+                                    if (mCountSetUp != mCurrentTeam.size() * 4)
                                     electChief();
                                 }
                             } else {
@@ -985,6 +994,7 @@ public class MainActivity extends AppCompatActivity {
                         System.out.println("No threat");
                         mCountSetUp = mCurrentTeam.size() * 4;
                         mSecondCount = 2;
+                        if (mCountSetUp != mCurrentTeam.size() * 4)
                         electChief();
                     }
                 }
@@ -1053,7 +1063,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             if (mCountSetUp < (mCurrentTeam.size()*4 + gameBroad.getPlayers().size() * 2) && (mSecondCount==4 || mSecondCount==5)) {
-                if (teamHasSecurityCamera(gameBroad.getPlayers()) || mCurrentYesNo) {
+                if (teamHasSecurityCamera(gameBroad.getPlayers()) || mCurrentYesNoMain) {
                     System.out.println("Has Camera");
                     if (mSecondCount==4){
                         disableContinue();
@@ -1096,9 +1106,9 @@ public class MainActivity extends AppCompatActivity {
                                     overridePendingTransition(android.support.v7.appcompat.R.anim.abc_popup_enter,android.support.v7.appcompat.R.anim.abc_popup_exit );
                                     Item securityCamera = gameBroad.matchItem(teammember, "SecurityCamera");
                                     teammember.usedItem(securityCamera);
-                                    electChief();
                                 } else {
                                     mCountSetUp++;
+                                    if (mCountSetUp != mCurrentTeam.size()*4)
                                     electChief();
                                 }
 
@@ -1110,8 +1120,9 @@ public class MainActivity extends AppCompatActivity {
 
                 } else {
                     System.out.println("No security Camera");
-                    mCountSetUp += gameBroad.getPlayers().size() * 2;
+                    mCountSetUp = mCurrentTeam.size()*4 + gameBroad.getPlayers().size() * 2;
                     mSecondCount += 1;
+                    if (mCountSetUp != mCurrentTeam.size()*4)
                     electChief();
                 }
             }
@@ -1160,6 +1171,7 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println("Colleting first player room");
                 roomspicked.add(mCurrentRoomPickedNumber);
                 ++mCountSetUp;
+                if (mCountSetUp!=2)
                 viewAndMove();
             }
         }
@@ -1223,6 +1235,7 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println("Collecting the Rooms");
                 roomspicked.add(mCurrentRoomPickedNumber);
                 ++mCountSetUp;
+                if (mCountSetUp!=mCurrentPlayerNumber*2 )
                 viewAndMove();
             }
         }
@@ -1257,6 +1270,7 @@ public class MainActivity extends AppCompatActivity {
                     gameBroad.matchRoom(roomspicked.get(q)).enter(selectedCharacter2);
                 }
                 ++mCountSetUp;
+                if (mCountSetUp!=mCurrentPlayerNumber*4)
                 viewAndMove();
             }
         }
@@ -1327,7 +1341,7 @@ public class MainActivity extends AppCompatActivity {
             if (mFourthCount==2){
                 if (!fallenRoom.isFallen()){
                     System.out.println(fallenRoom.getName() +  " is not fallen");
-                    mFourthCount=5;
+                    mFourthCount=4;
                 }
                 if (fallenRoom.isFallen() && fallenRoom.getRoomNum()==4){
                     System.out.println(fallenRoom.getName() + " is parking");
@@ -1335,6 +1349,7 @@ public class MainActivity extends AppCompatActivity {
                     mSecondCount=0;
                     mThirdCount=0;
                     mFourthCount++;
+                    mSixCount++;
                 }
                 if (fallenRoom.isFallen() && fallenRoom.getRoomNum()!=4) {
                     System.out.println(fallenRoom.getName() + " is not parking");
@@ -1456,7 +1471,6 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }else {
                             mCountSetUp=playersInTheRoomList.size()*2;
-                            showZombie();
                         }
                     }
                 } else {
@@ -1484,7 +1498,6 @@ public class MainActivity extends AppCompatActivity {
                     mSecondCount=0;
                     mThirdCount=0;
                     mFourthCount+=2;
-                    showZombie();
                 }
             }
             if (mFourthCount==3){
@@ -1499,7 +1512,7 @@ public class MainActivity extends AppCompatActivity {
                     if (mThirdCount==0 ){
                         System.out.println("getting the team");
                         disableContinue();
-                        mMessageView.setText("Please select the victim");
+                        mMessageView.setText("For " + fallenRoom.getName() +  ": please select the victim");
                         mMessageView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -1538,6 +1551,7 @@ public class MainActivity extends AppCompatActivity {
                             System.out.println(mCurrentTeam);
                             System.out.println(votes);
                             ++mCountSetUp;
+                            if (mCountSetUp != mCurrentTeam.size() * 2)
                             showZombie();
                         }
                         if (mCountSetUp == mCurrentTeam.size() * 2 && mSecondCount == 0) {
@@ -1550,11 +1564,11 @@ public class MainActivity extends AppCompatActivity {
                             intent2.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                             startActivityForResult(intent2, REQUEST_CODE_VIEWRESULT);
                             overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
-                            mCurrentYesNo =false;
+                            mCurrentYesNoMain =false;
                         }
                         if (mCountSetUp >= mCurrentTeam.size() * 2 && mSecondCount > 0 && mCountSetUp < mCurrentTeam.size() * 4) {
                             System.out.println("Step IV: using threat");
-                            if (teamHasThreat(mCurrentTeam) || mCurrentYesNo) {
+                            if (teamHasThreat(mCurrentTeam) || mCurrentYesNoMain) {
                                 System.out.println("has threat");
                                 if (mSecondCount == 1) {
                                     disableContinue();
@@ -1605,16 +1619,18 @@ public class MainActivity extends AppCompatActivity {
                                                 teammember.usedItem(threat);
                                             }
                                             mCountSetUp++;
+                                            if (mCountSetUp != mCurrentTeam.size() * 4)
                                             showZombie();
                                         }
                                     } else {
-                                        mCountSetUp += mCurrentTeam.size() * 2;
+                                        mCountSetUp = mCurrentTeam.size() * 4;
                                     }
                                 }
                             } else {
                                 System.out.println("No threat");
                                 mCountSetUp = mCurrentTeam.size() * 4;
                                 mSecondCount = 2;
+                                if (mCountSetUp != mCurrentTeam.size() * 4)
                                 showZombie();
                             }
                         }
@@ -1760,6 +1776,7 @@ public class MainActivity extends AppCompatActivity {
             }
             mFourthCount=2;
             mFifthCount++;
+            mUsedItem.clear();
             showZombie();
         }
         if (mFifthCount==6){
@@ -1949,7 +1966,7 @@ public class MainActivity extends AppCompatActivity {
             if (data == null){
                 return;
             }
-            mCountSetUp = ChoosingItemActivity.getCountedSetUp(data);
+            mCountSetUp = ShowingZombieActivity.getCountedSetUp(data);
         }
         if (requestCode == REQUEST_CODE_VIEWZOMBIECHIEF){
             if (data == null){
