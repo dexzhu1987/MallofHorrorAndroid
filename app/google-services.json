@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "311241502586",
+    "firebase_url": "https://mallofhorrorandroid.firebaseio.com",
+    "project_id": "mallofhorrorandroid",
+    "storage_bucket": "mallofhorrorandroid.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:311241502586:android:a602887d7ba92c3d",
+        "android_client_info": {
+          "package_name": "com.bignerdranch.android.mallofhorrorandroid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "311241502586-k9i6b5qv6olr1gv69rj52uaqqgbs5sgm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD47Sxrso6d7cYtAYQA4ElgdNNjiqbf5YA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -57,7 +57,7 @@ public class PlayerActivity extends AppCompatActivity {
     protected static final String SETUPCOUNTED = "SETUPCOUNTED";
     protected static final String CHOOSEDCHARACTER = "choosedcharacter";
     protected static final String CHOOSEDCOLOR = "choosedcolor";
-    protected static final String CHOOSEDBOOLEAN = "choosedboolean";
+        protected static final String CHOOSEDBOOLEAN = "choosedboolean";
     protected static final String CHOOSEDITEM = "chooseditem";
     protected static final String FALLENROOMNUMBER = "fallenroomnumber";
 
