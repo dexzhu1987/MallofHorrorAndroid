@@ -40,8 +40,7 @@
         <activity
             android:name=".ShowSimpleVoteResultActivity"
             android:configChanges="orientation"
-            android:screenOrientation="landscape"
-            />
+            android:screenOrientation="landscape" />
         <activity
             android:name=".ChoosingItemActivity"
             android:configChanges="orientation"

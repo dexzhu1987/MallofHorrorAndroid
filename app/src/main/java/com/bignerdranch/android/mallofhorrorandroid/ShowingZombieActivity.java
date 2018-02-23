@@ -48,11 +48,13 @@ public class ShowingZombieActivity extends AppCompatActivity {
         mAllEnterView.add(mEnterRoomThree);
         mAllEnterView.add(mEnterRoomFour);
 
+        ++mCountSetUp;
+
         mContinueButton = findViewById(R.id.okButton_showZombie);
         mContinueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ++mCountSetUp;
+                System.out.println(mCountSetUp);
                 Intent data = new Intent();
                 data.putExtra(SETUPCOUNTED, mCountSetUp);
                 setResult(RESULT_OK, data);

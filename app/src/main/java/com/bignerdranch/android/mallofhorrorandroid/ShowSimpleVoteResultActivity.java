@@ -47,11 +47,12 @@ public class ShowSimpleVoteResultActivity extends AppCompatActivity {
         mBrownResult = findViewById(R.id.brownresult_simple);
         mBlackResult = findViewById(R.id.blackresult_simple);
 
+        ++mCountSetUp;
+
         mContinueButton = findViewById(R.id.okButton_voteSimple);
         mContinueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ++mCountSetUp;
                 Intent data = new Intent();
                 data.putExtra(SETUPCOUNTED, mCountSetUp);
                 setResult(ShowSimpleVoteResultActivity.RESULT_OK, data);
