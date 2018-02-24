@@ -1,26 +1,49 @@
 package com.bignerdranch.android.mallofhorrorandroid;
 
 import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.databinding.DataBindingUtil;
+import android.widget.Toast;
 
-import com.daasuu.ei.Ease;
-import com.daasuu.ei.EasingInterpolator;
+import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.User;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
+
+import com.bignerdranch.android.mallofhorrorandroid.databinding.ActivityFirstBinding;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.firebase.iid.FirebaseInstanceId;
+
+import static android.text.TextUtils.isEmpty;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+import static android.widget.Toast.LENGTH_SHORT;
+import static com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.User.*;
+
 
 public class FirstActivity extends AppCompatActivity {
+    private static final String LOG_TAG = "StartActivity";
     private ImageButton mPlayButton;
     private ImageButton mHowToPlayButton;
+    private ActivityFirstBinding binding;
+    private boolean loggedIn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_first);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_first);
 
         final Animation animTranslate = AnimationUtils.loadAnimation(this, R.anim.anim_translate);
 
@@ -36,14 +59,114 @@ public class FirstActivity extends AppCompatActivity {
             }
         });
 
-        mHowToPlayButton = findViewById(R.id.how_to_play_button);
-        mHowToPlayButton.startAnimation(animTranslate);
-        mHowToPlayButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+//        mHowToPlayButton = findViewById(R.id.how_to_play_button);
+//        mHowToPlayButton.startAnimation(animTranslate);
+//        mHowToPlayButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//            }
+//        });
 
+    }
+
+    public void startMultilayer(View view){
+        if (!arePlayServicesOk()) {
+            return;
+        }
+        if (isAnonymous()) {
+            binding.inputEmail.setVisibility(VISIBLE);
+            binding.inputName.setVisibility(VISIBLE);
+            binding.login.setVisibility(VISIBLE);
+            binding.inputPassword.setVisibility(VISIBLE);
+        } else {
+            Intent intent = new Intent(this, UserListActivity.class);
+            startActivity(intent);
+        }
+    }
+
+    public void loginWithEmail(View view) {
+        String email = binding.inputEmail.getText().toString();
+        String name = binding.inputName.getText().toString();
+        String password = binding.inputPassword.getText().toString();
+        if (loggedIn) {
+            return;
+        }
+        if (isEmpty(email) || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            Toast.makeText(this, "Enter correct email", LENGTH_SHORT).show();
+            return;
+        }
+        if (isEmpty(name)) {
+            Toast.makeText(this, "Enter correct name", LENGTH_SHORT).show();
+            return;
+        }
+        if (password.length() < 6) {
+            Toast.makeText(this, "Password should have at least 6 characters", LENGTH_SHORT).show();
+            return;
+        }
+
+        loggedIn = true;
+        showProgressDialog();
+
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        auth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Log.d(LOG_TAG, "loginWithEmail: ");
+                        String uid = auth.getCurrentUser().getUid();
+
+                        User user = new User(name);
+                        FirebaseDatabase.getInstance().getReference().child("users").child(uid)
+                                .setValue(user);
+
+                        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+                        savePushToken(refreshedToken, uid);
+                        System.out.println("ReshsedToken: " + refreshedToken + "| UID: " +uid);
+
+                        Intent intent = new Intent(this, UserListActivity.class);
+                        intent.addCategory(Intent.CATEGORY_HOME);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+
+                    } else {
+                        Log.d(LOG_TAG, "loginWithEmail: unsuccessful");
+                        auth.signInWithEmailAndPassword(email, password)
+                                .addOnCompleteListener(task1 -> {
+                                    if (!isAnonymous()) {
+                                        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+
+                                        savePushToken(refreshedToken, getCurrentUserId());
+                                        System.out.println("ReshsedToken: " + refreshedToken + "| UID: " +getCurrentUserId());
+
+                                        Intent intent = new Intent(this, UserListActivity.class);
+                                        startActivity(intent);
+
+                                    }
+                                });
+                    }
+                });
+    }
+
+    private void showProgressDialog() {
+        binding.progress.setVisibility(VISIBLE);
+    }
+
+
+    private boolean isAnonymous() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        return currentUser == null || currentUser.isAnonymous();
+    }
+
+    private boolean arePlayServicesOk() {
+        final GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
+        final int resultCode = googleAPI.isGooglePlayServicesAvailable(this);
+
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (googleAPI.isUserResolvableError(resultCode)) {
+                googleAPI.getErrorDialog(this, resultCode, 5000).show();
             }
-        });
-
+            return false;
+        }
+        return true;
     }
 }

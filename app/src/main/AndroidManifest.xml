@@ -48,11 +48,15 @@
         <activity
             android:name=".ShowingZombieActivity"
             android:configChanges="orientation"
-            android:screenOrientation="landscape"
-            android:launchMode="singleTask"/>
-        <activity android:name=".ShowMoreZombiesActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ShowMoreZombiesActivity"
             android:configChanges="orientation"
-            android:screenOrientation="landscape"  ></activity>
+            android:screenOrientation="landscape" />
+        <activity android:name=".UserListActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="landscape"/>
     </application>
 
 </manifest>

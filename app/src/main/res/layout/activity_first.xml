@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -12,20 +13,104 @@
 
     <ImageButton
         android:id="@+id/play_button"
-        android:layout_marginTop="150dp"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
+        android:layout_marginTop="125dp"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
         android:scaleType="fitXY"
         android:background="@drawable/play_button"
         android:padding="0dp"/>
 
+    <!--<ImageButton-->
+        <!--android:id="@+id/how_to_play_button"-->
+        <!--android:layout_marginTop="10dp"-->
+        <!--android:layout_width="100dp"-->
+        <!--android:layout_height="30dp"-->
+        <!--android:scaleType="fitXY"-->
+        <!--android:src="@drawable/tutorial_button"-->
+        <!--android:padding="0dp" />-->
+
     <ImageButton
-        android:id="@+id/how_to_play_button"
+        android:id="@+id/multiplayer_button"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
         android:layout_marginTop="10dp"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
+        android:onClick="startMultilayer"
+        android:padding="0dp"
         android:scaleType="fitXY"
-        android:src="@drawable/tutorial_button"
-        android:padding="0dp" />
+        android:src="@drawable/tutorial_button" />
+
+    <LinearLayout
+        android:layout_marginTop="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/buttons"
+        android:layout_centerHorizontal="true"
+        android:animateLayoutChanges="true"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:textSize="12dp"
+                android:id="@+id/input_name"
+                android:layout_width="wrap_content"
+                android:minWidth="100dp"
+                android:visibility="gone"
+                android:layout_height="wrap_content"
+                android:hint="Name"
+                android:textColorHint="@android:color/holo_red_light"/>
+
+            <EditText
+                android:textSize="12dp"
+                android:id="@+id/input_email"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:minWidth="100dp"
+                android:layout_height="wrap_content"
+                android:hint="Email"
+                android:textColorHint="@android:color/holo_red_light"/>
+
+            <EditText
+                android:textSize="12dp"
+                android:id="@+id/input_password"
+                android:layout_width="wrap_content"
+                android:minWidth="100dp"
+                android:visibility="gone"
+                android:layout_height="wrap_content"
+                android:hint="Password"
+                android:inputType="textPassword"
+                android:textColorHint="@android:color/holo_red_light"/>
+        </LinearLayout>
+
+
+        <Button
+            android:layout_margin="0dp"
+            android:id="@+id/login"
+            style="@style/Widget.AppCompat.Button"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:onClick="loginWithEmail"
+            android:padding="0dp"
+            android:text="Log in"
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textColor="@android:color/holo_red_dark"
+            android:textSize="10dp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <ProgressBar
+            android:id="@+id/progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:visibility="gone" />
+    </LinearLayout>
 
 </LinearLayout>
+</layout>

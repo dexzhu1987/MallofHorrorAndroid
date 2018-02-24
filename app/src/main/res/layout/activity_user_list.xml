@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="user"
+            type="com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.User" />
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="com.myhexaville.tictactoe.wifi.UserListActivity">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:background="@android:color/holo_red_light"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/user_1"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                    android:text="@{user.name}"
+                    android:textColor="@android:color/white"
+                    android:layout_gravity="center_vertical"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                    tools:text="Name" />
+
+                <TextView
+                    android:textColor="@android:color/black"
+                    android:layout_marginRight="10dp"
+                    android:layout_alignParentRight="true"
+                    android:textAlignment="gravity"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="Player Red" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:background="@android:color/holo_orange_light"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/user_2"
+                    android:textColor="@android:color/white"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                    android:text="@{user.name}"
+                    android:layout_gravity="center_vertical"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                    tools:text="Name" />
+
+                <TextView
+                    android:textColor="@android:color/black"
+                    android:layout_marginRight="10dp"
+                    android:layout_alignParentRight="true"
+                    android:textAlignment="gravity"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="Player Yellow" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:background="@android:color/holo_blue_light"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/user_3"
+                    android:textColor="@android:color/white"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                    android:text="@{user.name}"
+                    android:layout_gravity="center_vertical"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                    tools:text="Name" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="10dp"
+                    android:text="Player Blue"
+                    android:textAlignment="gravity"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                    android:textColor="@android:color/black" />
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:background="@android:color/holo_green_light"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/user_4"
+                    android:textColor="@android:color/white"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                    android:text="@{user.name}"
+                    android:layout_gravity="center_vertical"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                    tools:text="Name" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="10dp"
+                    android:text="Player Green"
+                    android:textAlignment="gravity"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                    android:textColor="@android:color/black" />
+
+            </RelativeLayout>
+
+
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            />
+    </LinearLayout>
+</layout>
