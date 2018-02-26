@@ -2,6 +2,7 @@ package com.bignerdranch.android.mallofhorrorandroid;
 
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 
 import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.User;
@@ -40,11 +41,14 @@ public class Holder extends RecyclerView.ViewHolder {
                             OkHttpClient client = new OkHttpClient();
 
                             String to = binding.getUser().getPushId();
+                            Log.i("Button", "to: " + to);
 
                             Request request = new Request.Builder()
                                     .url(String
-                                            .format("https://us-central1-mallofhorrorandroid.cloudfunctions.net/sendNotification?to=%s&fromPushId=%s&fromId=%s&fromName=%s&type=%s", to, me.getPushId(),User.getCurrentUserId() ,me.getName(), "invite"))
+                                            .format("https://us-central1-mallofhorrorandroid.cloudfunctions.net/sendNotification?to=%s&fromPushId=%s&fromId=%s&fromName=%s&type=%s", to, me.getPushId(),User.getCurrentUserId() , me.getName(), "invite"))
                                     .build();
+                            Log.i("Button", "format: " + String
+                                    .format("https://us-central1-mallofhorrorandroid.cloudfunctions.net/sendNotification?to=%s&fromPushId=%s&fromId=%s&fromName=%s&type=%s", to, me.getPushId(),User.getCurrentUserId() , me.getName(), "invite"));
 
                             client.newCall(request).enqueue(new Callback() {
                                 @Override

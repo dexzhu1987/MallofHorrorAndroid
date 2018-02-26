@@ -29,6 +29,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.bignerdranch.android.mallofhorrorandroid.databinding.ActivityFirstBinding;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import static android.text.TextUtils.isEmpty;
 import static android.view.View.GONE;
@@ -52,6 +53,8 @@ public class FirstActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_first);
 
         final Animation animTranslate = AnimationUtils.loadAnimation(this, R.anim.anim_translate);
+
+
 
         firstActivity = FirstActivity.this;
 

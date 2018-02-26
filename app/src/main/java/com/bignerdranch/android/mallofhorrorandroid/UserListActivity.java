@@ -18,6 +18,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +50,8 @@ public class UserListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ActivityUserListBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_user_list);
+
+        FirebaseMessaging.getInstance().subscribeToTopic("all");
 
         type = getIntent().getStringExtra(TYPE);
         roomId = getIntent().getStringExtra(ROOMID);

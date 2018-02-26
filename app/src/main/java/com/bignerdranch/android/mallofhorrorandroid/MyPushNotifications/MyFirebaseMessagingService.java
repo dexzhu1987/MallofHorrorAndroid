@@ -40,7 +40,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String fromId = remoteMessage.getData().get("fromId");
         String fromName = remoteMessage.getData().get("fromName");
         String type = remoteMessage.getData().get("type");
-        Log.d(LOG_TAG, "onMessageReceived: ");
+        Log.d(LOG_TAG, "onMessageReceived: " + remoteMessage.getData());
 
         if (type.equals("invite")) {
             handleInviteIntent(fromPushId, fromId, fromName);
