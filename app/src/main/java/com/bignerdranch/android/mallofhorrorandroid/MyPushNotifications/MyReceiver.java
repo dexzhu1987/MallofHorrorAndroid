@@ -38,10 +38,10 @@ public class MyReceiver extends BroadcastReceiver {
 
                         OkHttpClient client = new OkHttpClient();
 
-                        String roomId = intent.getExtras().getString("to");
+                        String to = intent.getExtras().getString("to");
 
                         String format = String
-                                .format("https://us-central1-mallofhorrorandroid.cloudfunctions.net/sendNotification?to=%s&fromPushId=%s&fromId=%s&fromName=%s&type=%s", roomId, me.getPushId(), User.getCurrentUserId(), me.getName(), intent.getAction());
+                                .format("https://us-central1-mallofhorrorandroid.cloudfunctions.net/sendNotification?to=%s&fromPushId=%s&fromId=%s&fromName=%s&type=%s", to, me.getPushId(), User.getCurrentUserId(), me.getName(), intent.getAction());
 
                         Log.d(LOG_TAG, "onDataChange: " + format);
                         Request request = new Request.Builder()
@@ -61,7 +61,9 @@ public class MyReceiver extends BroadcastReceiver {
                         });
 
                         if (intent.getAction().equals("accept")) {
-                            context.startActivity(UserListActivity.newIntent(context,"Guest",roomId,name));
+                            String ownername = me.getName();
+                            String roomID = intent.getExtras().getString("fromId");
+                            context.startActivity(UserListActivity.newIntent(context,"Guest",roomID,ownername));
                         }
                     }
 

@@ -1,5 +1,6 @@
 package com.bignerdranch.android.mallofhorrorandroid.MyPushNotifications;
 
+import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -45,7 +46,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if (type.equals("invite")) {
             handleInviteIntent(fromPushId, fromId, fromName);
         } else if (type.equals("accept")) {
-            Toast.makeText(this, fromName + " joined your room ",Toast.LENGTH_LONG);
+            
         } else if (type.equals("reject")) {
             // todo update to Oreo notifications
             NotificationCompat.Builder mBuilder =

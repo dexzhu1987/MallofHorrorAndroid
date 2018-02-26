@@ -161,10 +161,24 @@ public class FirstActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         String name = (String) dataSnapshot.getValue();
-                        roomID = User.getCurrentUserId();
-                        String type = "Host";
-                        Intent intent = UserListActivity.newIntent(firstActivity, type, roomID,name);
-                        startActivity(intent);
+
+                        FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).
+                                child("pushId").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                roomID = (String) dataSnapshot.getValue();
+                                String type = "Host";
+                                Intent intent = UserListActivity.newIntent(firstActivity, type, roomID,name);
+                                startActivity(intent);
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+
                     }
 
                     @Override
