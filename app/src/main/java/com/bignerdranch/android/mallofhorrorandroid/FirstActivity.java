@@ -2,6 +2,7 @@ package com.bignerdranch.android.mallofhorrorandroid;
 
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,7 +20,10 @@ import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.User;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import com.bignerdranch.android.mallofhorrorandroid.databinding.ActivityFirstBinding;
@@ -39,6 +43,8 @@ public class FirstActivity extends AppCompatActivity {
     private ImageButton mHowToPlayButton;
     private ActivityFirstBinding binding;
     private boolean loggedIn;
+    private String roomID;
+    private Context firstActivity ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +52,8 @@ public class FirstActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_first);
 
         final Animation animTranslate = AnimationUtils.loadAnimation(this, R.anim.anim_translate);
+
+        firstActivity = FirstActivity.this;
 
 
         mPlayButton = findViewById(R.id.play_button);
@@ -68,6 +76,8 @@ public class FirstActivity extends AppCompatActivity {
 //            }
 //        });
 
+
+
     }
 
     public void startMultilayer(View view){
@@ -80,8 +90,7 @@ public class FirstActivity extends AppCompatActivity {
             binding.login.setVisibility(VISIBLE);
             binding.inputPassword.setVisibility(VISIBLE);
         } else {
-            Intent intent = new Intent(this, UserListActivity.class);
-            startActivity(intent);
+            startUserListActivity();
         }
     }
 
@@ -123,10 +132,7 @@ public class FirstActivity extends AppCompatActivity {
                         savePushToken(refreshedToken, uid);
                         System.out.println("ReshsedToken: " + refreshedToken + "| UID: " +uid);
 
-                        Intent intent = new Intent(this, UserListActivity.class);
-                        intent.addCategory(Intent.CATEGORY_HOME);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
+                        startUserListActivity();
 
                     } else {
                         Log.d(LOG_TAG, "loginWithEmail: unsuccessful");
@@ -138,11 +144,29 @@ public class FirstActivity extends AppCompatActivity {
                                         savePushToken(refreshedToken, getCurrentUserId());
                                         System.out.println("ReshsedToken: " + refreshedToken + "| UID: " +getCurrentUserId());
 
-                                        Intent intent = new Intent(this, UserListActivity.class);
-                                        startActivity(intent);
 
+                                        startUserListActivity();
                                     }
                                 });
+                    }
+                });
+    }
+
+    private void startUserListActivity() {
+        FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("name").
+                addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        String name = (String) dataSnapshot.getValue();
+                        roomID = User.getCurrentUserId();
+                        String type = "Host";
+                        Intent intent = UserListActivity.newIntent(firstActivity, type, roomID,name);
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
                     }
                 });
     }

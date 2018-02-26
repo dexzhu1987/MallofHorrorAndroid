@@ -6,6 +6,9 @@
         <variable
             name="user"
             type="com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.User" />
+        <variable
+            name="game"
+            type="com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.Game" />
     </data>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
