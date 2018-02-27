@@ -94,10 +94,10 @@ public class UserListActivity extends AppCompatActivity {
                     } else {
                         usersNames.get(j-1).setText((String) dataSnapshot.getValue());
                     }
-                    if (j==4){
-                        Intent intent = MainActivity.mainIntent(userActivity, 4);
-                        startActivity(intent);
-                    }
+//                    if (j==4){
+//                        Intent intent = MainActivity.mainIntent(userActivity, 4);
+//                        startActivity(intent);
+//                    }
                 }
 
                 @Override
@@ -120,12 +120,15 @@ public class UserListActivity extends AppCompatActivity {
                 players.add(game.getPlayer3());
                 players.add(game.getPlayer4());
                 for (int i=0, q=2; i<=players.size(); i++,q++){
-                    if (players.get(i).equals("")){
-                        FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child("player"+q).setValue(username);
+                    if (players.get(i).equals(username)){
+                      return;
                     } else {
-                        continue;
+                        if (players.get(i).equals("")){
+                            FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child("player"+q).setValue(username);
+                        } else {
+                            continue;
+                        }
                     }
-
                 }
             }
 
@@ -153,7 +156,6 @@ public class UserListActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            Log.i(LOG_TAG, " checked snapshot working");
                             User user = snapshot.getValue(User.class);
                             if (!snapshot.getKey().equals(User.getCurrentUserId())) {
                                 users.add(user);
