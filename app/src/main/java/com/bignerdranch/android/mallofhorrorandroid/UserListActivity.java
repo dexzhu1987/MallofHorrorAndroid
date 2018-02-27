@@ -110,18 +110,21 @@ public class UserListActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Game game = dataSnapshot.getValue(Game.class);
-                Log.i(LOG_TAG, game.toString());
+                Log.i(LOG_TAG, game.toString() + "");
                 ArrayList<String> players = new ArrayList();
                 players.add(game.getPlayer2());
                 players.add(game.getPlayer3());
                 players.add(game.getPlayer4());
-                for (int i=2; i<=4; i++){
+                for (int i=0, q=2; i<=players.size(); i++,q++){
                     if (players.get(i).equals("")){
-                        FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child("player"+i).setValue(username);
+                        FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child("player"+q).setValue(username);
                         if (i==4){
                             Intent intent = MainActivity.mainIntent(userActivity,4);
+                            startActivity(intent);
                         }
                         break;
+                    } else {
+                        continue;
                     }
 
                 }
