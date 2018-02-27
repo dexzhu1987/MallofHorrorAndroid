@@ -94,10 +94,16 @@ public class UserListActivity extends AppCompatActivity {
                     } else {
                         usersNames.get(j-1).setText((String) dataSnapshot.getValue());
                     }
-//                    if (j==4){
-//                        Intent intent = MainActivity.mainIntent(userActivity, 4);
-//                        startActivity(intent);
-//                    }
+                    for (int i=0; i<usersNames.size(); i++){
+                        if (usersNames.get(i).getText().toString().equals("")){
+                            break;
+                        } else {
+                            if (i==3){
+                                Intent intent = MainActivity.mainIntent(UserListActivity.this,4);
+                                startActivity(intent);
+                            }
+                        }
+                    }
                 }
 
                 @Override
@@ -106,6 +112,7 @@ public class UserListActivity extends AppCompatActivity {
                 }
             });
         }
+
     }
 
     private void registerNameInRoom(String roomId) {
@@ -119,12 +126,13 @@ public class UserListActivity extends AppCompatActivity {
                 players.add(game.getPlayer2());
                 players.add(game.getPlayer3());
                 players.add(game.getPlayer4());
-                for (int i=0, q=2; i<=players.size(); i++,q++){
+                for (int i=0, q=2; i<players.size(); i++,q++){
                     if (players.get(i).equals(username)){
                       return;
                     } else {
                         if (players.get(i).equals("")){
                             FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child("player"+q).setValue(username);
+                            return;
                         } else {
                             continue;
                         }
