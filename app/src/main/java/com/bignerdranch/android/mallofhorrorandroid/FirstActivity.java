@@ -160,7 +160,7 @@ public class FirstActivity extends AppCompatActivity {
                 addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        String name = (String) dataSnapshot.getValue();
+                        final String name = (String) dataSnapshot.getValue();
 
                         FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).
                                 child("pushId").addListenerForSingleValueEvent(new ValueEventListener() {

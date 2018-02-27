@@ -112,4 +112,9 @@ public class Game implements Parcelable, java.io.Serializable {
     public static Game[] newArray(int size) {
         return CREATOR.newArray(size);
     }
+
+    @Override
+    public String toString() {
+        return "GameId: " + roomId + " player1: " + player1 + " player2 " + player2 + " player3 " + player3 + " player4 " + player4 ;
+    }
 }

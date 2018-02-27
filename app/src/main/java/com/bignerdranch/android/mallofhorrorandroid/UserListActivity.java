@@ -58,11 +58,13 @@ public class UserListActivity extends AppCompatActivity {
         username = getIntent().getStringExtra(USERNAME);
         userActivity = UserListActivity.this;
 
-        Log.i(LOG_TAG, "type: " + type  + " roomID: "+ roomId);
+        Log.i(LOG_TAG, "type: " + type  + " roomID: "+ roomId + " username: " + username);
 
         adapter = new Adapter(this, users);
         binding.list.setAdapter(adapter);
         binding.list.setLayoutManager(new LinearLayoutManager(this));
+
+        fetchUsers();
 
         if (type.equals("Host")){
             createRoom(roomId);
@@ -72,7 +74,7 @@ public class UserListActivity extends AppCompatActivity {
 
         updateRoom(binding, roomId);
 
-        fetchUsers();
+
     }
 
     private void updateRoom(ActivityUserListBinding binding, String roomId) {
@@ -103,40 +105,36 @@ public class UserListActivity extends AppCompatActivity {
     }
 
     private void registerNameInRoom(String roomId) {
-        for (int i=2; i<=4; i++){
-        String player = "player"+i;
-        final int j=i;
-        FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child(player).
-                addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.getValue()==""){
-                            FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child(player).setValue(username);
-                            switch (j){
-                                case 2:
-                                    game.setPlayer2(username);
-                                    break;
-                                case 3:
-                                    game.setPlayer3(username);
-                                    break;
-                                case 4:
-                                    game.setPlayer4(username);
-                                    break;
-                            }
-                            if (j==4){
-                              Intent intent = MainActivity.mainIntent(userActivity,4);
-                              startActivity(intent);
-                            }
-                            return;
+        FirebaseDatabase.getInstance().getReference().child("game")
+                .child(roomId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Game game = dataSnapshot.getValue(Game.class);
+                Log.i(LOG_TAG, game.toString());
+                ArrayList<String> players = new ArrayList();
+                players.add(game.getPlayer2());
+                players.add(game.getPlayer3());
+                players.add(game.getPlayer4());
+                for (int i=2; i<=4; i++){
+                    if (players.get(i).equals("")){
+                        FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child("player"+i).setValue(username);
+                        if (i==4){
+                            Intent intent = MainActivity.mainIntent(userActivity,4);
                         }
+                        break;
                     }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                }
+            }
 
-                    }
-                });
-        }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
     }
 
     private void createRoom(String roomId) {
@@ -153,6 +151,7 @@ public class UserListActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            Log.i(LOG_TAG, " checked snapshot working");
                             User user = snapshot.getValue(User.class);
                             if (!snapshot.getKey().equals(User.getCurrentUserId())) {
                                 users.add(user);

@@ -27,7 +27,7 @@ public class MyReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(LOG_TAG, "onReceive: " + intent.getAction());
+        Log.d(LOG_TAG, "onReceive: " + intent.getAction() + " Data: " + intent.getStringExtra("to") + " Data: " + intent.getStringExtra("withId"));
         FirebaseDatabase.getInstance().getReference().child("users")
                 .child(User.getCurrentUserId())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -61,8 +61,8 @@ public class MyReceiver extends BroadcastReceiver {
                         });
 
                         if (intent.getAction().equals("accept")) {
-                            String ownername = me.getName();
-                            String roomID = intent.getExtras().getString("fromId");
+                            String ownername =  me.getName();
+                            String roomID = intent.getStringExtra("to");
                             context.startActivity(UserListActivity.newIntent(context,"Guest",roomID,ownername));
                         }
                     }

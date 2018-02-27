@@ -61,7 +61,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             String name = (String) dataSnapshot.getValue();
-                            String type = "Host";
+                            String type = "Guest";
                             Intent resultIntent = UserListActivity.newIntent(mContext,type,fromPushId,name);
 
                             TaskStackBuilder stackBuilder = TaskStackBuilder.create(mContext);
@@ -109,7 +109,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         String name = (String) dataSnapshot.getValue();
-                        String type = "Host";
+                        String type = "Guest";
                         Intent resultIntent = UserListActivity.newIntent(mContext,type,fromPushId,name);
 
                         TaskStackBuilder stackBuilder = TaskStackBuilder.create(mContext);
