@@ -125,11 +125,12 @@ public class MainActivity extends AppCompatActivity {
         return intent;
     }
 
-    public static Intent mainIntent(Context packageContext, int playerNumber, Game game, String mUserName){
+    public static Intent mainIntent(Context packageContext, int playerNumber, Game game, String mUserName, String type){
         Intent intent = new Intent(packageContext, MainActivity.class);
         intent.putExtra(DATABASEGAME, (Parcelable) game);
         intent.putExtra(PLAYER_NUMBER, playerNumber);
         intent.putExtra(USERNAME, mUserName);
+        intent.putExtra(TYPE, type);
         return intent;
     }
 
@@ -156,25 +157,16 @@ public class MainActivity extends AppCompatActivity {
         gameBroad.setPlayersNumber(mPlayerNumber);
 
         mDatabaseGame = getIntent().getParcelableExtra(DATABASEGAME);
-
         mUserName = getIntent().getStringExtra(USERNAME);
+        mType = getIntent().getStringExtra(TYPE);
 
-        if (mDatabaseGame!=null){
-            mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("game").child(mDatabaseGame.getRoomId()+"started");
-            mDatabaseGame.setRoomId(mDatabaseGame.getRoomId()+"started");
-            List<String> userNames = new ArrayList<>();
-            userNames.add(mDatabaseGame.getPlayer1());
-            userNames.add(mDatabaseGame.getPlayer2());
-            userNames.add(mDatabaseGame.getPlayer3());
-            userNames.add(mDatabaseGame.getPlayer4());
-            for (int i=0; i<userNames.size(); i++){
-                if (mUserName.equals(userNames.get(i))){
-                    mMyPlayerID=i;
-
-                }
-            }
-
+        if (mDatabaseGame!=null && mCountPhase==0 && mType.equals("Host")){
+            createRoomOnFireBase();
+            registerMyPlayerId();
+        } else if (mDatabaseGame!=null && mCountPhase==0 ){
+            registerMyPlayerId();
         }
+
         ContinueButtonMethod();
         otherCommonSetUp();
 
@@ -190,8 +182,6 @@ public class MainActivity extends AppCompatActivity {
                             mMessageView.setVisibility(View.INVISIBLE);
 
                         }else {
-                            mDatabaseReference.setValue(mDatabaseGame);
-                            mDatabaseReference.child("mCount").setValue(0);
                             enableContinue();
                             mCountPhase++;
                         }
@@ -206,6 +196,27 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void createRoomOnFireBase() {
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("game").child(mDatabaseGame.getRoomId()+"started");
+        mDatabaseGame.setRoomId(mDatabaseGame.getRoomId()+"started");
+        mDatabaseReference.setValue(mDatabaseGame);
+        mDatabaseReference.child("mCount").setValue(0);
+    }
+
+    private void registerMyPlayerId() {
+        List<String> userNames = new ArrayList<>();
+        userNames.add(mDatabaseGame.getPlayer1());
+        userNames.add(mDatabaseGame.getPlayer2());
+        userNames.add(mDatabaseGame.getPlayer3());
+        userNames.add(mDatabaseGame.getPlayer4());
+        for (int i=0; i<userNames.size(); i++){
+            if (mUserName.equals(userNames.get(i))){
+                mMyPlayerID=i;
+
+            }
+        }
     }
 
     private void ContinueButtonMethod() {

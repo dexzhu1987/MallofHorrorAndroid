@@ -108,7 +108,7 @@ public class UserListActivity extends AppCompatActivity {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         gameMain = dataSnapshot.getValue(Game.class);
-                                        Intent intent = MainActivity.mainIntent(UserListActivity.this,4, gameMain, username);
+                                        Intent intent = MainActivity.mainIntent(UserListActivity.this,4, gameMain, username, type);
                                         Log.i(LOG_TAG, "start main activity when reached 4 players");
                                         Intent serviceintent = OnClearFromRecentService.newServiceIntent(UserListActivity.this, roomId+"started");
                                         startService(serviceintent);
