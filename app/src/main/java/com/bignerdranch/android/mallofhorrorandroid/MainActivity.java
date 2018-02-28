@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
     private String mUserName;
     private int mMyPlayerID;
 
+
     private final static GameBroad gameBroad = new GameBroad(0);
     private static int mCurrentRoomPickedNumber = 0;
     private static int mCountSetUp;
@@ -169,6 +170,7 @@ public class MainActivity extends AppCompatActivity {
             for (int i=0; i<userNames.size(); i++){
                 if (mUserName.equals(userNames.get(i))){
                     mMyPlayerID=i;
+
                 }
             }
 

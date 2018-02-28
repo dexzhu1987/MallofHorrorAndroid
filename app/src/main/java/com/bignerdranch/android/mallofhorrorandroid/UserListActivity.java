@@ -35,7 +35,7 @@ public class UserListActivity extends AppCompatActivity {
     private List<User> users = new ArrayList<>();
     private Adapter adapter;
     private Context userActivity;
-    private String roomId;
+    private static String roomId;
     private String username;
     private Game gameMain;
     private String type;
@@ -110,6 +110,8 @@ public class UserListActivity extends AppCompatActivity {
                                         gameMain = dataSnapshot.getValue(Game.class);
                                         Intent intent = MainActivity.mainIntent(UserListActivity.this,4, gameMain, username);
                                         Log.i(LOG_TAG, "start main activity when reached 4 players");
+                                        Intent serviceintent = OnClearFromRecentService.newServiceIntent(UserListActivity.this, roomId+"started");
+                                        startService(serviceintent);
                                         startActivity(intent);
                                     }
 
@@ -220,6 +222,7 @@ public class UserListActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("on").setValue(false);
         if (type.equals("Host")) {
             FirebaseDatabase.getInstance().getReference().child("game").child(roomId).setValue(null);
             Log.i(LOG_TAG, "deleting data when leaving the room");

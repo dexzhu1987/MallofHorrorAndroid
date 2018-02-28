@@ -1,8 +1,10 @@
 package com.bignerdranch.android.mallofhorrorandroid;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.User;
@@ -15,6 +17,14 @@ import static android.app.Service.START_NOT_STICKY;
  */
 
 public class OnClearFromRecentService extends Service {
+    private static String ROOMID = "roomId";
+    private String roomId;
+
+    public static Intent newServiceIntent(Context context, String roomID){
+        Intent intent = new Intent(context, OnClearFromRecentService.class);
+        intent.putExtra(ROOMID, roomID);
+        return intent;
+    }
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -24,6 +34,7 @@ public class OnClearFromRecentService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d("ClearFromRecentService", "Service Started");
+        roomId = intent.getStringExtra(ROOMID);
         return START_NOT_STICKY;
     }
 
@@ -36,8 +47,8 @@ public class OnClearFromRecentService extends Service {
     @Override
     public void onTaskRemoved(Intent rootIntent) {
         Log.e("ClearFromRecentService", "END");
-        FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("on").setValue(false);
 
+        FirebaseDatabase.getInstance().getReference().child("game").child(roomId).setValue(null);
         Log.e("ClearFromRecentService", " " + User.getCurrentUserId());
         stopSelf();
     }
