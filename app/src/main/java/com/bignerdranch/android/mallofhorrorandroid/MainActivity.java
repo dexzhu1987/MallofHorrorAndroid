@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String DATABASEGAME = "databasegame";
     private static final String USERNAME = "username";
+    private static final String TYPE = "type";
 
     private static final int REQUEST_CODE_ROOM = 0;
     private static final int REQUEST_CODE_CHARACTER = 1;
@@ -66,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
     private Game mDatabaseGame;
     private String mUserName;
     private int mMyPlayerID;
+    private String mType;
 
 
     private final static GameBroad gameBroad = new GameBroad(0);
@@ -159,9 +161,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (mDatabaseGame!=null){
             mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("game").child(mDatabaseGame.getRoomId()+"started");
-            mDatabaseReference.setValue(mDatabaseGame);
             mDatabaseGame.setRoomId(mDatabaseGame.getRoomId()+"started");
-            mDatabaseReference.child("mCount").setValue(0);
             List<String> userNames = new ArrayList<>();
             userNames.add(mDatabaseGame.getPlayer1());
             userNames.add(mDatabaseGame.getPlayer2());
@@ -187,8 +187,11 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (mDatabaseGame!=null&& mMyPlayerID!= dataSnapshot.getValue(Integer.TYPE)){
+                            mMessageView.setVisibility(View.INVISIBLE);
 
                         }else {
+                            mDatabaseReference.setValue(mDatabaseGame);
+                            mDatabaseReference.child("mCount").setValue(0);
                             enableContinue();
                             mCountPhase++;
                         }

@@ -2,8 +2,10 @@ package com.bignerdranch.android.mallofhorrorandroid;
 
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -78,7 +80,9 @@ public class FirstActivity extends AppCompatActivity {
 //
 //            }
 //        });
-
+        if (Build.BRAND.equalsIgnoreCase("xiaomi")) {
+            Toast.makeText(FirstActivity.this, "For Xiaomi User, please got to Setting--Permission--Enable auto start to ensure the app will be running properly. Thanks", Toast.LENGTH_LONG).show();
+        }
 
 
     }
