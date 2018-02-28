@@ -8,6 +8,7 @@ import android.os.Parcelable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
@@ -152,11 +153,11 @@ public class MainActivity extends AppCompatActivity {
         gameBroad.setPlayersNumber(mPlayerNumber);
 
         mDatabaseGame = getIntent().getParcelableExtra(DATABASEGAME);
-        mDatabaseReference = FirebaseDatabase.getInstance().getReference().child(mDatabaseGame.getRoomId());
 
         mUserName = getIntent().getStringExtra(USERNAME);
 
         if (mDatabaseGame!=null){
+            mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("game").child(mDatabaseGame.getRoomId());
             mDatabaseReference.setValue(mDatabaseGame);
             mDatabaseReference.child("mCount").setValue(0);
             List<String> userNames = new ArrayList<>();
@@ -183,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (mDatabaseGame!=null&& mMyPlayerID!= dataSnapshot.getValue(Integer.TYPE)){
-                            
+
                         }else {
                             enableContinue();
                             mCountPhase++;
@@ -2053,5 +2054,6 @@ public class MainActivity extends AppCompatActivity {
             mCurrentYesNo = PlayerActivity.choosedBoolean(data);
         }
     }
+
 
 }

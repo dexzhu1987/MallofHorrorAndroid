@@ -130,6 +130,17 @@ public class UserListActivity extends AppCompatActivity {
 
 
     private void registerNameInRoom(String roomId) {
+        FirebaseDatabase.getInstance().getReference().child("game").child(roomId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                gameMain = dataSnapshot.getValue(Game.class);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
         FirebaseDatabase.getInstance().getReference().child("game")
                 .child(roomId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -148,7 +159,7 @@ public class UserListActivity extends AppCompatActivity {
                     } else {
                         if (players.get(i).equals("")){
                             FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child("player"+q).setValue(username);
-                            switch (i){
+                            switch (q){
                                 case 2:
                                     gameMain.setPlayer2(username);
                                     break;
