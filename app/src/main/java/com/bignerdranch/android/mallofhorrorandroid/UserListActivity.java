@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -35,7 +37,7 @@ public class UserListActivity extends AppCompatActivity {
     private Context userActivity;
     private String roomId;
     private String username;
-    private Game game;
+    private Game gameMain;
     private String type;
 
     public static Intent newIntent(Context context, String type, String roomID, String username) {
@@ -52,7 +54,7 @@ public class UserListActivity extends AppCompatActivity {
         ActivityUserListBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_user_list);
 
         FirebaseMessaging.getInstance().subscribeToTopic("all");
-
+        FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("on").setValue(true);
         type = getIntent().getStringExtra(TYPE);
         roomId = getIntent().getStringExtra(ROOMID);
         username = getIntent().getStringExtra(USERNAME);
@@ -94,10 +96,19 @@ public class UserListActivity extends AppCompatActivity {
                     } else {
                         usersNames.get(j-1).setText((String) dataSnapshot.getValue());
                     }
-//                    if (j==4){
-//                        Intent intent = MainActivity.mainIntent(userActivity, 4);
-//                        startActivity(intent);
-//                    }
+
+                    for (int i=0; i<usersNames.size(); i++){
+                        if (usersNames.get(i).getText().toString().equals("")){
+                            break;
+                        } else {
+                            if (i==3){
+                                FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("on").setValue(false);
+                                Intent intent = MainActivity.mainIntent(UserListActivity.this,4, gameMain, username);
+                                startActivity(intent);
+                            }
+                        }
+                    }
+
                 }
 
                 @Override
@@ -106,7 +117,17 @@ public class UserListActivity extends AppCompatActivity {
                 }
             });
         }
+
     }
+
+    private void createRoom(String roomId) {
+        gameMain = new Game(roomId);
+        Log.i(LOG_TAG,"Create Room: " + roomId + " : " );
+        FirebaseDatabase.getInstance().getReference().child("game").child(roomId).setValue(gameMain);
+        FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child("player1").setValue(username);
+        gameMain.setPlayer1(username);
+    }
+
 
     private void registerNameInRoom(String roomId) {
         FirebaseDatabase.getInstance().getReference().child("game")
@@ -119,9 +140,27 @@ public class UserListActivity extends AppCompatActivity {
                 players.add(game.getPlayer2());
                 players.add(game.getPlayer3());
                 players.add(game.getPlayer4());
-                for (int i=0, q=2; i<=players.size(); i++,q++){
-                    if (players.get(i).equals("")){
-                        FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child("player"+q).setValue(username);
+
+
+                for (int i=0, q=2; i<players.size(); i++,q++){
+                    if (players.get(i).equals(username)){
+                      return;
+                    } else {
+                        if (players.get(i).equals("")){
+                            FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child("player"+q).setValue(username);
+                            switch (i){
+                                case 2:
+                                    gameMain.setPlayer2(username);
+                                    break;
+                                case 3:
+                                    gameMain.setPlayer3(username);
+                                    break;
+                                case 4:
+                                    gameMain.setPlayer4(username);
+                                    break;
+                            }
+                            return;
+                        }
                     }
                 }
             }
@@ -132,17 +171,8 @@ public class UserListActivity extends AppCompatActivity {
             }
         });
 
-
-
     }
 
-    private void createRoom(String roomId) {
-        game = new Game(roomId);
-        Log.i(LOG_TAG,"Create Room: " + roomId + " : " );
-        FirebaseDatabase.getInstance().getReference().child("game").child(roomId).setValue(game);
-        FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child("player1").setValue(username);
-        game.setPlayer1(username);
-    }
 
     private void fetchUsers() {
         FirebaseDatabase.getInstance().getReference().child("users")
@@ -150,7 +180,6 @@ public class UserListActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            Log.i(LOG_TAG, " checked snapshot working");
                             User user = snapshot.getValue(User.class);
                             if (!snapshot.getKey().equals(User.getCurrentUserId())) {
                                 users.add(user);
@@ -174,17 +203,18 @@ public class UserListActivity extends AppCompatActivity {
         if (type.equals("Host")){
             createRoom(roomId);
         }
-
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("on").setValue(false);
-        if (type.equals("Host")){
+        if (type.equals("Host")) {
             FirebaseDatabase.getInstance().getReference().child("game").child(roomId).setValue(null);
         }
     }
+
+
 
     @Override
     public void onBackPressed() {

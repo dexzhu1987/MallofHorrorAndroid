@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Message;
+import android.os.Parcelable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,12 +19,18 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.Game;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Character.GameCharacter;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Dice.PairofDice;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Dice.TwoPairofDice;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.Item;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Playable.Playable;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Room.Room;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,6 +41,10 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
     private static final String PLAYER_NUMBER = "player_number";
+
+    private static final String DATABASEGAME = "databasegame";
+    private static final String USERNAME = "username";
+
     private static final int REQUEST_CODE_ROOM = 0;
     private static final int REQUEST_CODE_CHARACTER = 1;
     private static final int REQUEST_CODE_MESSAGE = 2;
@@ -49,6 +60,12 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_ITEM = 12;
 
     private int mPlayerNumber;
+
+    private DatabaseReference mDatabaseReference;
+    private Game mDatabaseGame;
+    private String mUserName;
+    private int mMyPlayerID;
+
     private final static GameBroad gameBroad = new GameBroad(0);
     private static int mCurrentRoomPickedNumber = 0;
     private static int mCountSetUp;
@@ -104,6 +121,14 @@ public class MainActivity extends AppCompatActivity {
         return intent;
     }
 
+    public static Intent mainIntent(Context packageContext, int playerNumber, Game game, String mUserName){
+        Intent intent = new Intent(packageContext, MainActivity.class);
+        intent.putExtra(DATABASEGAME, (Parcelable) game);
+        intent.putExtra(PLAYER_NUMBER, playerNumber);
+        intent.putExtra(USERNAME, mUserName);
+        return intent;
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,7 +151,26 @@ public class MainActivity extends AppCompatActivity {
         mPlayerNumber = getIntent().getIntExtra(PLAYER_NUMBER,0);
         gameBroad.setPlayersNumber(mPlayerNumber);
 
+        mDatabaseGame = getIntent().getParcelableExtra(DATABASEGAME);
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference().child(mDatabaseGame.getRoomId());
 
+        mUserName = getIntent().getStringExtra(USERNAME);
+
+        if (mDatabaseGame!=null){
+            mDatabaseReference.setValue(mDatabaseGame);
+            mDatabaseReference.child("mCount").setValue(0);
+            List<String> userNames = new ArrayList<>();
+            userNames.add(mDatabaseGame.getPlayer1());
+            userNames.add(mDatabaseGame.getPlayer2());
+            userNames.add(mDatabaseGame.getPlayer3());
+            userNames.add(mDatabaseGame.getPlayer4());
+            for (int i=0; i<userNames.size(); i++){
+                if (mUserName.equals(userNames.get(i))){
+                    mMyPlayerID=i;
+                }
+            }
+
+        }
         ContinueButtonMethod();
         otherCommonSetUp();
 
@@ -135,8 +179,23 @@ public class MainActivity extends AppCompatActivity {
         mMessageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                enableContinue();
-                mCountPhase++;
+                mDatabaseReference.child("mCount").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (mDatabaseGame!=null&& mMyPlayerID!= dataSnapshot.getValue(Integer.TYPE)){
+                            
+                        }else {
+                            enableContinue();
+                            mCountPhase++;
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
             }
         });
 
@@ -1808,13 +1867,13 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         ++mCountPhase;
                     }
-                    mCountSetUp=0;
+
+                    mUsedItem.clear();  mCountSetUp=0;
                     mSecondCount=0;
                     mThirdCount=0;
                     mFourthCount=0;
                     mFifthCount=0;
                     mSixCount=0;
-                    mUsedItem.clear();
                     mPlayersUsedItem.clear();;
                     mCurrentTeam.clear();
                     votes.clear();;
@@ -1889,7 +1948,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return false;
     }
-
 
     public static List<GameCharacter> characterNotInTheRoom(Room room, Playable player) {
         List<GameCharacter> notInTheRoomList = new ArrayList<GameCharacter>();

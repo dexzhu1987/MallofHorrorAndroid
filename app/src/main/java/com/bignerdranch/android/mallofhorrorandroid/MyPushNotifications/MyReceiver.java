@@ -34,7 +34,6 @@ public class MyReceiver extends BroadcastReceiver {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         User me = dataSnapshot.getValue(User.class);
-                        String name = me.getName();
 
                         OkHttpClient client = new OkHttpClient();
 
