@@ -159,6 +159,7 @@ public class MainActivity extends AppCompatActivity {
         mDatabaseGame = getIntent().getParcelableExtra(DATABASEGAME);
         mUserName = getIntent().getStringExtra(USERNAME);
         mType = getIntent().getStringExtra(TYPE);
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("game").child(mDatabaseGame.getRoomId()+"started");
 
         if (mDatabaseGame!=null && mCountPhase==0 && mType.equals("Host")){
             createRoomOnFireBase();
@@ -180,7 +181,6 @@ public class MainActivity extends AppCompatActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (mDatabaseGame!=null&& mMyPlayerID!= dataSnapshot.getValue(Integer.TYPE)){
                             mMessageView.setVisibility(View.INVISIBLE);
-
                         }else {
                             enableContinue();
                             mCountPhase++;
@@ -199,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void createRoomOnFireBase() {
-        mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("game").child(mDatabaseGame.getRoomId()+"started");
+
         mDatabaseGame.setRoomId(mDatabaseGame.getRoomId()+"started");
         mDatabaseReference.setValue(mDatabaseGame);
         mDatabaseReference.child("mCount").setValue(0);
