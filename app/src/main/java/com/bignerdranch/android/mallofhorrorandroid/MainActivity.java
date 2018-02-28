@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
         mUserName = getIntent().getStringExtra(USERNAME);
 
         if (mDatabaseGame!=null){
-            mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("game").child(mDatabaseGame.getRoomId());
+            mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("game").child(mDatabaseGame.getRoomId()+"started");
             mDatabaseReference.setValue(mDatabaseGame);
             mDatabaseReference.child("mCount").setValue(0);
             List<String> userNames = new ArrayList<>();

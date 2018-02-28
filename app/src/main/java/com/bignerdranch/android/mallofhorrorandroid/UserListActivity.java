@@ -93,6 +93,7 @@ public class UserListActivity extends AppCompatActivity {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.getValue()==username){
                         usersNames.get(j-1).setText(dataSnapshot.getValue() + " (Me)");
+                        return;
                     } else {
                         usersNames.get(j-1).setText((String) dataSnapshot.getValue());
                     }
@@ -103,10 +104,20 @@ public class UserListActivity extends AppCompatActivity {
                         } else {
                             if (i==3){
                                 FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("on").setValue(false);
-                                Intent intent = MainActivity.mainIntent(UserListActivity.this,4, gameMain, username);
-                                Log.i(LOG_TAG, "start main activity when reached 4 players");
-                                startActivity(intent);
-                                break;
+                                FirebaseDatabase.getInstance().getReference().child("game").child(roomId).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        gameMain = dataSnapshot.getValue(Game.class);
+                                        Intent intent = MainActivity.mainIntent(UserListActivity.this,4, gameMain, username);
+                                        Log.i(LOG_TAG, "start main activity when reached 4 players");
+                                        startActivity(intent);
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
                             }
                         }
                     }
@@ -127,7 +138,6 @@ public class UserListActivity extends AppCompatActivity {
         Log.i(LOG_TAG,"Create Room: " + roomId + " : " );
         FirebaseDatabase.getInstance().getReference().child("game").child(roomId).setValue(gameMain);
         FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child("player1").setValue(username);
-        gameMain.setPlayer1(username);
     }
 
 
@@ -161,18 +171,7 @@ public class UserListActivity extends AppCompatActivity {
                     } else {
                         if (players.get(i).equals("")){
                             FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child("player"+q).setValue(username);
-                            switch (q){
-                                case 2:
-                                    gameMain.setPlayer2(username);
-                                    break;
-                                case 3:
-                                    gameMain.setPlayer3(username);
-                                    break;
-                                case 4:
-                                    gameMain.setPlayer4(username);
-                                    break;
-                            }
-                            return;
+
                         }
                     }
                 }
@@ -219,11 +218,12 @@ public class UserListActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onPause() {
+        super.onPause();
         FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("on").setValue(false);
         if (type.equals("Host")) {
             FirebaseDatabase.getInstance().getReference().child("game").child(roomId).setValue(null);
+            Log.i(LOG_TAG, "deleting data when leaving the room");
         }
     }
 
