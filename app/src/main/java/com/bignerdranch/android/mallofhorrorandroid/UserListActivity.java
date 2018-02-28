@@ -171,7 +171,7 @@ public class UserListActivity extends AppCompatActivity {
                     } else {
                         if (players.get(i).equals("")){
                             FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child("player"+q).setValue(username);
-
+                            return;
                         }
                     }
                 }
