@@ -220,7 +220,6 @@ public class UserListActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("on").setValue(false);
         if (type.equals("Host")) {
             FirebaseDatabase.getInstance().getReference().child("game").child(roomId).setValue(null);
             Log.i(LOG_TAG, "deleting data when leaving the room");

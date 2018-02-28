@@ -72,7 +72,7 @@
 
         <receiver android:name=".MyPushNotifications.MyReceiver" />
 
-        <activity android:name=".InternetCheckingActivity" />
+        <service android:name="com.bignerdranch.android.mallofhorrorandroid.OnClearFromRecentService" android:stopWithTask="false" />
     </application>
 
 </manifest>
