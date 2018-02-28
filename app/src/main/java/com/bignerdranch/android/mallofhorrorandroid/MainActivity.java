@@ -159,12 +159,14 @@ public class MainActivity extends AppCompatActivity {
         mDatabaseGame = getIntent().getParcelableExtra(DATABASEGAME);
         mUserName = getIntent().getStringExtra(USERNAME);
         mType = getIntent().getStringExtra(TYPE);
-        mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("game").child(mDatabaseGame.getRoomId()+"started");
+
 
         if (mDatabaseGame!=null && mCountPhase==0 && mType.equals("Host")){
+            mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("game").child(mDatabaseGame.getRoomId()+"started");
             createRoomOnFireBase();
             registerMyPlayerId();
         } else if (mDatabaseGame!=null && mCountPhase==0 ){
+            mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("game").child(mDatabaseGame.getRoomId()+"started");
             registerMyPlayerId();
         }
 

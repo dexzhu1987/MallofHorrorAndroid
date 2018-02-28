@@ -92,6 +92,9 @@ public class FirstActivity extends AppCompatActivity {
             return;
         }
         if (isAnonymous()) {
+            if (Build.BRAND.equalsIgnoreCase("xiaomi")) {
+                Toast.makeText(FirstActivity.this, "For Xiaomi User, please got to Setting--Permission--Enable auto start to ensure the app will be running properly. Thanks", Toast.LENGTH_LONG).show();
+            }
             binding.inputEmail.setVisibility(VISIBLE);
             binding.inputName.setVisibility(VISIBLE);
             binding.login.setVisibility(VISIBLE);
