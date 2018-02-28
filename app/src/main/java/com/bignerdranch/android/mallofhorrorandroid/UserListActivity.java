@@ -104,7 +104,9 @@ public class UserListActivity extends AppCompatActivity {
                             if (i==3){
                                 FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("on").setValue(false);
                                 Intent intent = MainActivity.mainIntent(UserListActivity.this,4, gameMain, username);
+                                Log.i(LOG_TAG, "start main activity when reached 4 players");
                                 startActivity(intent);
+                                break;
                             }
                         }
                     }
