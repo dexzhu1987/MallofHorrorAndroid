@@ -34,7 +34,6 @@ public class MyReceiver extends BroadcastReceiver {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         User me = dataSnapshot.getValue(User.class);
-                        String name = me.getName();
 
                         OkHttpClient client = new OkHttpClient();
 
@@ -61,6 +60,7 @@ public class MyReceiver extends BroadcastReceiver {
                         });
 
                         if (intent.getAction().equals("accept")) {
+                            FirebaseDatabase.getInstance().getReference().child("game").child(me.getPushId()).setValue(null);
                             String ownername =  me.getName();
                             String roomID = intent.getStringExtra("to");
                             context.startActivity(UserListActivity.newIntent(context,"Guest",roomID,ownername));

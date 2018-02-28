@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -52,7 +54,7 @@ public class UserListActivity extends AppCompatActivity {
         ActivityUserListBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_user_list);
 
         FirebaseMessaging.getInstance().subscribeToTopic("all");
-
+        FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("on").setValue(true);
         type = getIntent().getStringExtra(TYPE);
         roomId = getIntent().getStringExtra(ROOMID);
         username = getIntent().getStringExtra(USERNAME);
@@ -99,6 +101,7 @@ public class UserListActivity extends AppCompatActivity {
                             break;
                         } else {
                             if (i==3){
+                                FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("on").setValue(false);
                                 Intent intent = MainActivity.mainIntent(UserListActivity.this,4);
                                 startActivity(intent);
                             }
@@ -187,17 +190,17 @@ public class UserListActivity extends AppCompatActivity {
         if (type.equals("Host")){
             createRoom(roomId);
         }
-
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("on").setValue(false);
-        if (type.equals("Host")){
             FirebaseDatabase.getInstance().getReference().child("game").child(roomId).setValue(null);
-        }
+
     }
+
+
 
     @Override
     public void onBackPressed() {

@@ -54,26 +54,25 @@
             android:name=".ShowMoreZombiesActivity"
             android:configChanges="orientation"
             android:screenOrientation="landscape" />
-        <activity android:name=".UserListActivity"
+        <activity
+            android:name=".UserListActivity"
             android:configChanges="orientation"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
 
-
-        <service
-            android:name=".MyPushNotifications.MyFirebaseInstanceIdService">
+        <service android:name=".MyPushNotifications.MyFirebaseInstanceIdService">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name=".MyPushNotifications.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
-        <service
-            android:name=".MyPushNotifications.MyFirebaseMessagingService">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
-            </intent-filter>
-        </service>
+        <receiver android:name=".MyPushNotifications.MyReceiver" />
 
-        <receiver android:name=".MyPushNotifications.MyReceiver"/>
+        <activity android:name=".InternetCheckingActivity" />
     </application>
 
 </manifest>
