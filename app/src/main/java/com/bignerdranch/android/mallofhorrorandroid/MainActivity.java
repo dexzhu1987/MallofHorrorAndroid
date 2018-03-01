@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
     private String mUserName;
     private int mMyPlayerID;
     private String mType;
+    private boolean isRoomCreated;
 
 
     private final static GameBroad gameBroad = new GameBroad(0);
@@ -142,7 +143,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         gettingReady();
         updateRoom(MainActivity.this);
-
     }
 
 
@@ -163,13 +163,25 @@ public class MainActivity extends AppCompatActivity {
         mType = getIntent().getStringExtra(TYPE);
 
 
-        if (mDatabaseGame!=null && mCountPhase==0 && mType.equals("Host")){
-            mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("game").child(mDatabaseGame.getRoomId()+"started");
-            createRoomOnFireBase();
-            registerMyPlayerId();
-        } else if (mDatabaseGame!=null && mCountPhase==0 ){
-            mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("game").child(mDatabaseGame.getRoomId()+"started");
-            registerMyPlayerId();
+        if (mDatabaseGame!=null){
+            FirebaseDatabase.getInstance().getReference().child("game").child(mDatabaseGame.getRoomId()+"started").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.getValue()==null && mCountPhase==0 && mType.equals("Host")){
+                        mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("game").child(mDatabaseGame.getRoomId()+"started");
+                        createRoomOnFireBase();
+                        registerMyPlayerId();
+                    } else if (dataSnapshot.getValue()==null && mCountPhase==0 ) {
+                        mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("game").child(mDatabaseGame.getRoomId()+"started");
+                        registerMyPlayerId();
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
         }
 
         ContinueButtonMethod();
@@ -203,8 +215,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void createRoomOnFireBase() {
-
-        mDatabaseGame.setRoomId(mDatabaseGame.getRoomId()+"started");
         mDatabaseReference.setValue(mDatabaseGame);
         mDatabaseReference.child("mCount").setValue(0);
     }
