@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Playable> mCurrentTeam = new ArrayList<>();
 
 
-    private ConstraintLayout mMainActivityLayout;
+    private ViewGroup mMainActivityLayout;
     private ImageButton mRedButton, mYellowButton, mBlueButton, mGreenButton, mBrownButton, mBlackButton;
     private ImageButton mContinueButton;
     private ImageButton mYesButton, mNoButton;
@@ -264,14 +264,15 @@ public class MainActivity extends AppCompatActivity {
                                     GameData gameData = dataSnapshot.getValue(GameData.class);
                                     if (mMyPlayerID==turn){
                                         updateDataFromFireBase(turn, gameData);
+                                        mMainActivityLayout.invalidate();
                                         mMessageView.setVisibility(View.VISIBLE);
                                         mMessageView.setText("Your Turn");
                                         mMessageView.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
-                                                enableContinue();
                                                 mMessageView.setVisibility(View.INVISIBLE);
                                                 mMessageView.setEnabled(false);
+                                                enableContinue();
                                             }
                                         });
                                         mCountPhase=gameData.getmCountPhase();
