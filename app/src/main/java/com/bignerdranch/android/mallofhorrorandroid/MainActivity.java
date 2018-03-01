@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
     private int mPlayerNumber;
 
-    private final String PLAYERINFORM = "Playerinform";
+    private final String PLAYERINFORM = "PlayerInform";
     private final String TURN = "Turn";
     private final String GAMEDATA = "GameData";
 
@@ -2187,12 +2187,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public static final int DISCONNECT_TIMEOUT = 6000; // 5 min = 5 * 60 * 1000 ms
-
     @Override
     public void onUserInteraction() {
         super.onUserInteraction();
-        delayedIdle(1);
+        delayedIdle(5);
     }
 
     Handler _idleHandler = new Handler();
