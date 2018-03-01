@@ -265,6 +265,7 @@ public class MainActivity extends AppCompatActivity {
                                     if (mMyPlayerID==turn){
                                         updateDataFromFireBase(turn, gameData);
                                         mMainActivityLayout.invalidate();
+                                        mMessageView.setEnabled(true);
                                         mMessageView.setVisibility(View.VISIBLE);
                                         mMessageView.setText("Your Turn");
                                         mMessageView.setOnClickListener(new View.OnClickListener() {
