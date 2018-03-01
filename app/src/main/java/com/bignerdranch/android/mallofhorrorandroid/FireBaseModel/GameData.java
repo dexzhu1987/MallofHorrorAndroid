@@ -12,11 +12,40 @@ public class GameData {
     private int mFourthCount;
     private int mFifthCount;
     private int mSixCount;
+    private String mSelectedCharacter;
+    private int mSelectedRoom;
+    private int mPassingType;
 
-    public GameData() {
+    public String getmSelectedCharacter() {
+        return mSelectedCharacter;
     }
 
-    public GameData(int mCountPhase, int mCountSetUp, int mSecondCount, int mThirdCount, int mFourthCount, int mFifthCount, int mSixCount) {
+    public void setmSelectedCharacter(String mSelectedCharacter) {
+        this.mSelectedCharacter = mSelectedCharacter;
+    }
+
+    public int getmSelectedRoom() {
+        return mSelectedRoom;
+    }
+
+    public void setmSelectedRoom(int mSelectedRoom) {
+        this.mSelectedRoom = mSelectedRoom;
+    }
+
+    public int getmPassingType() {
+        return mPassingType;
+    }
+
+    public void setmPassingType(int mPassingType) {
+        this.mPassingType = mPassingType;
+    }
+
+    public GameData() {
+
+    }
+
+    public GameData(int mCountPhase, int mCountSetUp, int mSecondCount, int mThirdCount, int mFourthCount, int mFifthCount,
+                    int mSixCount) {
         this.mCountPhase = mCountPhase;
         this.mCountSetUp = mCountSetUp;
         this.mSecondCount = mSecondCount;
@@ -24,6 +53,23 @@ public class GameData {
         this.mFourthCount = mFourthCount;
         this.mFifthCount = mFifthCount;
         this.mSixCount = mSixCount;
+        this.mPassingType = 0;
+        this.mSelectedCharacter = mSelectedCharacter;
+        this.mSelectedRoom = mSelectedRoom;
+    }
+
+    public GameData(int mCountPhase, int mCountSetUp, int mSecondCount, int mThirdCount, int mFourthCount, int mFifthCount,
+                    int mSixCountv, int mSelectedRoom, String mSelectedCharacter) {
+        this.mCountPhase = mCountPhase;
+        this.mCountSetUp = mCountSetUp;
+        this.mSecondCount = mSecondCount;
+        this.mThirdCount = mThirdCount;
+        this.mFourthCount = mFourthCount;
+        this.mFifthCount = mFifthCount;
+        this.mSixCount = mSixCount;
+        this.mPassingType = 1;
+        this.mSelectedCharacter = mSelectedCharacter;
+        this.mSelectedRoom = mSelectedRoom;
     }
 
     public int getmCountPhase() {

@@ -180,33 +180,31 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        setUpListenerOnFirebase();
+
+
+    }
+
+    private void setUpListenerOnFirebase() {
         if (mDatabaseGame!=null){
             mDatabaseReference.child("Turn").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     int turn = dataSnapshot.getValue(Integer.TYPE);
                     mPlayerButtons.get(turn).setVisibility(View.VISIBLE);
+                    GameData gameData = dataSnapshot.child("GameData").getValue(GameData.class);
                     if (mMyPlayerID==turn){
-                        mDatabaseReference.child("GameData").addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                GameData gameData = dataSnapshot.getValue(GameData.class);
-                                mCountPhase=gameData.getmCountPhase();
-                                mCountSetUp=gameData.getmCountSetUp();
-                                mSecondCount=gameData.getmSecondCount();
-                                mThirdCount=gameData.getmThirdCount();
-                                mFourthCount=gameData.getmFourthCount();
-                                mFifthCount=gameData.getmFifthCount();
-                                mSixCount=gameData.getmSixCount();
-                                enableContinue();
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
+                        updateDataFromFireBase(turn, gameData);
+                        mCountPhase=gameData.getmCountPhase();
+                        mCountSetUp=gameData.getmCountSetUp();
+                        mSecondCount=gameData.getmSecondCount();
+                        mThirdCount=gameData.getmThirdCount();
+                        mFourthCount=gameData.getmFourthCount();
+                        mFifthCount=gameData.getmFifthCount();
+                        mSixCount=gameData.getmSixCount();
+                        enableContinue();
                     }else {
+                        updateDataFromFireBase(turn, gameData);
                         String whoseTurn = "Player " +  colors.get(turn) + " 's turn, please wait";
                         mMessageView.setText(whoseTurn);
                         disableContinue();
@@ -220,8 +218,21 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+    }
 
-
+    private void updateDataFromFireBase(int turn, GameData gameData) {
+        if (gameData.getmPassingType()==1){
+            int q = turn==0? mPlayerNumber: turn-1;
+            int selectedRoom = gameData.getmSelectedRoom();
+            String selectedCharacter = gameData.getmSelectedCharacter();
+            if (gameBroad.matchRoom(selectedRoom).isFull()) {
+                gameBroad.matchRoom(4).enter(gameBroad.getPlayers().get(q).selectchoose(selectedCharacter));
+                gameBroad.getPlayers().get(q).selectchooseremove(selectedCharacter);
+            } else {
+                gameBroad.matchRoom(selectedRoom).enter(gameBroad.getPlayers().get(q).selectchoose(selectedCharacter));
+                gameBroad.getPlayers().get(q).selectchooseremove(selectedCharacter);
+            }
+        }
     }
 
     private void FireBaseInitialSetup() {
@@ -256,8 +267,8 @@ public class MainActivity extends AppCompatActivity {
         mSixCount=0;
         mDatabaseReference.setValue(mDatabaseGame);
         GameData gameData = new GameData(0,0,0,0,0,0,0);
-        mDatabaseReference.setValue(gameData);
         mDatabaseReference.child("Turn").setValue(-1);
+        mDatabaseReference.child("Turn").setValue(gameData);
 
     }
 
@@ -646,8 +657,10 @@ public class MainActivity extends AppCompatActivity {
                 gameBroad.getPlayers().get(q).selectchooseremove(selectedCharacter);
             }
             ++mCountSetUp;
-            GameData gameData = new GameData(mCountPhase, mCountSetUp, mSecondCount, mThirdCount, mFourthCount, mFifthCount, mSixCount);
-            mDatabaseReference.setValue(gameData);
+            GameData gameData = new GameData(mCountPhase, mCountSetUp, mSecondCount, mThirdCount, mFourthCount, mFifthCount, mSixCount,
+                    selectedRoom, selectedCharacter);
+            mDatabaseReference.child("Turn").setValue(gameData);
+            mDatabaseReference.child("Turn").setValue((q==mPlayerNumber-1)?0:q+1);
 //            gameSetUpPickRooms();
         }
         if (mCountSetUp == 3*mPlayerNumber*3){
