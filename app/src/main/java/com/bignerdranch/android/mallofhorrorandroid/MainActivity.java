@@ -264,6 +264,7 @@ public class MainActivity extends AppCompatActivity {
                                     GameData gameData = dataSnapshot.getValue(GameData.class);
                                     if (mMyPlayerID==turn){
                                         updateDataFromFireBase(turn, gameData);
+                                        updateRoom(MainActivity.this);
                                         mMainActivityLayout.invalidate();
                                         mMessageView.setEnabled(true);
                                         mMessageView.setVisibility(View.VISIBLE);
