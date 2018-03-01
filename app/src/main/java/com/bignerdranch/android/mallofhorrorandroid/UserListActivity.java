@@ -99,6 +99,7 @@ public class UserListActivity extends AppCompatActivity {
                     }
 
                     for (int i=0; i<usersNames.size(); i++){
+                        Log.i(LOG_TAG, "J: " + j + " I: " + i);
                         if (usersNames.get(i).getText().toString().equals("")){
                             break;
                         } else {
@@ -110,15 +111,9 @@ public class UserListActivity extends AppCompatActivity {
                                         gameMain = dataSnapshot.getValue(Game.class);
                                         Intent intent = MainActivity.mainIntent(UserListActivity.this,4, gameMain, username, type);
                                         Log.i(LOG_TAG, "start main activity when reached 4 players");
-                                        final Handler delayHandler = new Handler();
-                                        delayHandler.postDelayed( new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                Intent serviceintent = OnClearFromRecentService.newServiceIntent(UserListActivity.this, roomId+"started");
-                                                startService(serviceintent);
-                                                startActivity(intent);
-                                            }
-                                        }, 12000);
+                                        Intent serviceintent = OnClearFromRecentService.newServiceIntent(UserListActivity.this, roomId+"started");
+                                        startService(serviceintent);
+                                        startActivity(intent);
                                     }
 
                                     @Override
@@ -230,10 +225,6 @@ public class UserListActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("on").setValue(false);
-        if (type.equals("Host")) {
-            FirebaseDatabase.getInstance().getReference().child("game").child(roomId).setValue(null);
-            Log.i(LOG_TAG, "deleting data when leaving the room");
-        }
     }
 
 
@@ -244,5 +235,26 @@ public class UserListActivity extends AppCompatActivity {
         startMain.addCategory(Intent.CATEGORY_HOME);
         startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(startMain);
+    }
+
+    @Override
+    public void onUserInteraction() {
+        super.onUserInteraction();
+        delayedIdle(1);
+    }
+
+    Handler _idleHandler = new Handler();
+    Runnable _idleRunnable = new Runnable() {
+        @Override
+        public void run() {
+            Log.i(LOG_TAG, "set the data null due to inactivy");
+            FirebaseDatabase.getInstance().getReference().child("game").child(roomId).setValue(null);
+        }
+    };
+
+    private void delayedIdle(int delayMinutes) {
+        _idleHandler.removeCallbacks(_idleRunnable);
+        _idleHandler.postDelayed(_idleRunnable,2000);
+//        (delayMinutes * 1000 * 60)
     }
 }

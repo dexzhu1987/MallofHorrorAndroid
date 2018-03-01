@@ -47,7 +47,6 @@ public class OnClearFromRecentService extends Service {
     @Override
     public void onTaskRemoved(Intent rootIntent) {
         Log.e("ClearFromRecentService", "END");
-
         FirebaseDatabase.getInstance().getReference().child("game").child(roomId).setValue(null);
         Log.e("ClearFromRecentService", " " + User.getCurrentUserId());
         stopSelf();
