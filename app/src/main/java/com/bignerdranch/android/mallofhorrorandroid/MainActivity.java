@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Playable> mCurrentTeam = new ArrayList<>();
 
 
-    private ConstraintLayout mMainActivityLayout;
+    private ViewGroup mMainActivityLayout;
     private ImageButton mRedButton, mYellowButton, mBlueButton, mGreenButton, mBrownButton, mBlackButton;
     private ImageButton mContinueButton;
     private ImageButton mYesButton, mNoButton;
