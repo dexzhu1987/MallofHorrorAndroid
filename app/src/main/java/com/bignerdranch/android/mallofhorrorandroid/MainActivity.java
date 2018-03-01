@@ -170,23 +170,22 @@ public class MainActivity extends AppCompatActivity {
         otherCommonSetUp();
 
         mMessageView = findViewById(R.id.messageView_main);
-        if (mCountPhase==0){
-            mMessageView.setText("PRE-GAME SETTING PHASE ONE : CHOOSE ROOM");
-            mMessageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mMessageView.setVisibility(View.INVISIBLE);
-                    if (mDatabaseGame!=null&& mMyPlayerID!=0){
+        mMessageView.setText("PRE-GAME SETTING PHASE ONE : CHOOSE ROOM");
+        mMessageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMessageView.setVisibility(View.INVISIBLE);
+                if (mDatabaseGame!=null&& mMyPlayerID!=0){
 
-                    }else {
-                        mCountPhase++;
-                        GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                        mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                        mDatabaseReference.child(TURN).setValue(0);
-                    }
+                }else {
+                    mCountPhase++;
+                    GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                    mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                    mDatabaseReference.child(TURN).setValue(0);
                 }
-            });
-        }
+            }
+        });
+
 
 
         setUpListenerOnFirebase();
@@ -265,11 +264,14 @@ public class MainActivity extends AppCompatActivity {
                                     GameData gameData = dataSnapshot.getValue(GameData.class);
                                     if (mMyPlayerID==turn){
                                         updateDataFromFireBase(turn, gameData);
+                                        mMessageView.setVisibility(View.VISIBLE);
                                         mMessageView.setText("Your Turn");
                                         mMessageView.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
                                                 enableContinue();
+                                                mMessageView.setVisibility(View.INVISIBLE);
+                                                mMessageView.setEnabled(false);
                                             }
                                         });
                                         mCountPhase=gameData.getmCountPhase();
@@ -289,6 +291,7 @@ public class MainActivity extends AppCompatActivity {
                                         mMessageView.setEnabled(false);
                                         disableContinue();
                                         updateRoom(MainActivity.this);
+                                        mMainActivityLayout.invalidate();
                                     }
                                 }
                             }
