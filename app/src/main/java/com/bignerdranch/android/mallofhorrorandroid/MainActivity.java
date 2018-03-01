@@ -3,6 +3,7 @@ package com.bignerdranch.android.mallofhorrorandroid;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.os.Message;
 import android.os.Parcelable;
 import android.support.constraint.ConstraintLayout;
@@ -150,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         System.out.println("Resuming ");
         updateRoom(MainActivity.this);
+        resetDisconnectTimer();
     }
 
     private void gettingReady() {
@@ -2074,5 +2076,41 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    public static final long DISCONNECT_TIMEOUT = 300000; // 5 min = 5 * 60 * 1000 ms
+
+    private Handler disconnectHandler = new Handler(){
+        public void handleMessage(Message msg) {
+        }
+    };
+
+    private Runnable disconnectCallback = new Runnable() {
+        @Override
+        public void run() {
+            // Perform any required operation on disconnect
+            if (mDatabaseGame!=null)
+            FirebaseDatabase.getInstance().getReference().child("game").child(mDatabaseGame.getRoomId()).setValue(null);
+        }
+    };
+
+    public void resetDisconnectTimer(){
+        disconnectHandler.removeCallbacks(disconnectCallback);
+        disconnectHandler.postDelayed(disconnectCallback, DISCONNECT_TIMEOUT);
+    }
+
+    public void stopDisconnectTimer(){
+        disconnectHandler.removeCallbacks(disconnectCallback);
+    }
+
+    @Override
+    public void onUserInteraction(){
+        resetDisconnectTimer();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        stopDisconnectTimer();
+    }
 
 }
