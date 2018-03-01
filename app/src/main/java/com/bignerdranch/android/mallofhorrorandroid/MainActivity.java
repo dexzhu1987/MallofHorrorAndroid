@@ -2087,7 +2087,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public static final long DISCONNECT_TIMEOUT = 300000; // 5 min = 5 * 60 * 1000 ms
+    @Override
+    public void onBackPressed() {
+        Intent startMain = new Intent(Intent.ACTION_MAIN);
+        startMain.addCategory(Intent.CATEGORY_HOME);
+        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(startMain);
+    }
+
+
+    public static final long DISCONNECT_TIMEOUT = 6000; // 5 min = 5 * 60 * 1000 ms
 
     private Handler disconnectHandler = new Handler(){
         public void handleMessage(Message msg) {
@@ -2108,19 +2117,11 @@ public class MainActivity extends AppCompatActivity {
         disconnectHandler.postDelayed(disconnectCallback, DISCONNECT_TIMEOUT);
     }
 
-    public void stopDisconnectTimer(){
-        disconnectHandler.removeCallbacks(disconnectCallback);
-    }
 
     @Override
     public void onUserInteraction(){
         resetDisconnectTimer();
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        stopDisconnectTimer();
-    }
 
 }
