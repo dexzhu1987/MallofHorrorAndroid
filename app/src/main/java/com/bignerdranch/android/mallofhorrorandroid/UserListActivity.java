@@ -161,7 +161,7 @@ public class UserListActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Game game = dataSnapshot.getValue(Game.class);
-                Log.i(LOG_TAG, game.toString() + "");
+                Log.i(LOG_TAG, game.toString() + " ");
                 ArrayList<String> players = new ArrayList();
                 players.add(game.getPlayer2());
                 players.add(game.getPlayer3());
@@ -240,7 +240,7 @@ public class UserListActivity extends AppCompatActivity {
     @Override
     public void onUserInteraction() {
         super.onUserInteraction();
-        delayedIdle(1);
+        delayedIdle(10);
     }
 
     Handler _idleHandler = new Handler();
@@ -254,7 +254,6 @@ public class UserListActivity extends AppCompatActivity {
 
     private void delayedIdle(int delayMinutes) {
         _idleHandler.removeCallbacks(_idleRunnable);
-        _idleHandler.postDelayed(_idleRunnable,2000);
-//        (delayMinutes * 1000 * 60)
+        _idleHandler.postDelayed(_idleRunnable,(delayMinutes * 1000 * 60));
     }
 }
