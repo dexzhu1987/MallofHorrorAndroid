@@ -190,9 +190,10 @@ public class UserListActivity extends AppCompatActivity {
 
     private void fetchUsers() {
         FirebaseDatabase.getInstance().getReference().child("users")
-                .addListenerForSingleValueEvent(new ValueEventListener() {
+                .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        users.clear();
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             User user = snapshot.getValue(User.class);
                             if (!snapshot.getKey().equals(User.getCurrentUserId())) {
