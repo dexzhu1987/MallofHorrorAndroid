@@ -264,14 +264,15 @@ public class MainActivity extends AppCompatActivity {
                                     GameData gameData = dataSnapshot.getValue(GameData.class);
                                     if (mMyPlayerID==turn){
                                         updateDataFromFireBase(turn, gameData);
+                                        mMainActivityLayout.invalidate();
                                         mMessageView.setVisibility(View.VISIBLE);
                                         mMessageView.setText("Your Turn");
                                         mMessageView.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
-                                                enableContinue();
                                                 mMessageView.setVisibility(View.INVISIBLE);
                                                 mMessageView.setEnabled(false);
+                                                enableContinue();
                                             }
                                         });
                                         mCountPhase=gameData.getmCountPhase();
