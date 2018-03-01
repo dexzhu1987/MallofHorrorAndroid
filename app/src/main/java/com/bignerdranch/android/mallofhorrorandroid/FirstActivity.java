@@ -4,8 +4,10 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,8 +16,11 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.databinding.DataBindingUtil;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.User;
@@ -80,10 +85,6 @@ public class FirstActivity extends AppCompatActivity {
 //
 //            }
 //        });
-        if (Build.BRAND.equalsIgnoreCase("xiaomi")) {
-            Toast.makeText(FirstActivity.this, "For Xiaomi User, please got to Setting--Permission--Enable auto start to ensure the app will be running properly. Thanks", Toast.LENGTH_LONG).show();
-        }
-
 
     }
 
@@ -93,7 +94,24 @@ public class FirstActivity extends AppCompatActivity {
         }
         if (isAnonymous()) {
             if (Build.BRAND.equalsIgnoreCase("xiaomi")) {
-                Toast.makeText(FirstActivity.this, "For Xiaomi User, please got to Setting--Permission--Enable auto start to ensure the app will be running properly. Thanks", Toast.LENGTH_LONG).show();
+//                final TextView nameInput = new EditText(FirstActivity.this);
+//                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+//                        LinearLayout.LayoutParams.MATCH_PARENT,
+//                        LinearLayout.LayoutParams.WRAP_CONTENT
+//                );
+//                nameInput.setLayoutParams(params);
+//                nameInput.setText("For Xiaomi User, please got to Setting--Permission--Enable auto start to ensure the app will be running properly. Thanks");
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(FirstActivity.this);
+                builder.setTitle("Important notice");
+                builder.setMessage("For Xiaomi User, please got to Setting--Permission--Enable auto start to ensure the app will be running properly. Thanks");
+                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                AlertDialog mAlertDialog = builder.create();
+                mAlertDialog.show();
             }
             binding.inputEmail.setVisibility(VISIBLE);
             binding.inputName.setVisibility(VISIBLE);

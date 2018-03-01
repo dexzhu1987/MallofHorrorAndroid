@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.Game;
+import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.GameData;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Character.GameCharacter;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Dice.PairofDice;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Dice.TwoPairofDice;
@@ -42,6 +43,7 @@ import java.util.Random;
 
 
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "MainActivity";
     private static final String PLAYER_NUMBER = "player_number";
 
     private static final String DATABASEGAME = "databasegame";
@@ -69,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
     private String mUserName;
     private int mMyPlayerID;
     private String mType;
-    private boolean isRoomCreated;
+
 
 
     private final static GameBroad gameBroad = new GameBroad(0);
@@ -151,29 +153,64 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         System.out.println("Resuming ");
         updateRoom(MainActivity.this);
-        resetDisconnectTimer();
     }
 
     private void gettingReady() {
         mPlayerNumber = getIntent().getIntExtra(PLAYER_NUMBER,0);
         gameBroad.setPlayersNumber(mPlayerNumber);
-
         mDatabaseGame = getIntent().getParcelableExtra(DATABASEGAME);
         mUserName = getIntent().getStringExtra(USERNAME);
         mType = getIntent().getStringExtra(TYPE);
 
+        FireBaseInitialSetup();
+        ContinueButtonMethod();
+        otherCommonSetUp();
+
+        mMessageView = findViewById(R.id.messageView_main);
+        mMessageView.setText("PRE-GAME SETTING PHASE ONE : CHOOSE ROOM");
+        mMessageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mDatabaseGame!=null&& mMyPlayerID!= 0 ){
+                    mMessageView.setVisibility(View.INVISIBLE);
+                }else {
+                    mCountPhase++;
+                    mDatabaseReference.child("Turn").setValue(0);
+                }
+            }
+        });
 
         if (mDatabaseGame!=null){
-            FirebaseDatabase.getInstance().getReference().child("game").child(mDatabaseGame.getRoomId()+"started").addListenerForSingleValueEvent(new ValueEventListener() {
+            mDatabaseReference.child("Turn").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.getValue()==null && mCountPhase==0 && mType.equals("Host")){
-                        mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("game").child(mDatabaseGame.getRoomId()+"started");
-                        createRoomOnFireBase();
-                        registerMyPlayerId();
-                    } else if (dataSnapshot.getValue()==null && mCountPhase==0 ) {
-                        mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("game").child(mDatabaseGame.getRoomId()+"started");
-                        registerMyPlayerId();
+                    int turn = dataSnapshot.getValue(Integer.TYPE);
+                    mPlayerButtons.get(turn).setVisibility(View.VISIBLE);
+                    if (mMyPlayerID==turn){
+                        mDatabaseReference.child("GameData").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                GameData gameData = dataSnapshot.getValue(GameData.class);
+                                mCountPhase=gameData.getmCountPhase();
+                                mCountSetUp=gameData.getmCountSetUp();
+                                mSecondCount=gameData.getmSecondCount();
+                                mThirdCount=gameData.getmThirdCount();
+                                mFourthCount=gameData.getmFourthCount();
+                                mFifthCount=gameData.getmFifthCount();
+                                mSixCount=gameData.getmSixCount();
+                                enableContinue();
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+                    }else {
+                        String whoseTurn = "Player " +  colors.get(turn) + " 's turn, please wait";
+                        mMessageView.setText(whoseTurn);
+                        disableContinue();
+                        updateRoom(MainActivity.this);
                     }
                 }
 
@@ -184,39 +221,44 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
-        ContinueButtonMethod();
-        otherCommonSetUp();
-
-        mMessageView = findViewById(R.id.messageView_main);
-        mMessageView.setText("PRE-GAME SETTING PHASE ONE : CHOOSE ROOM");
-        mMessageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mDatabaseReference.child("mCount").addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (mDatabaseGame!=null&& mMyPlayerID!= dataSnapshot.getValue(Integer.TYPE)){
-                            mMessageView.setVisibility(View.INVISIBLE);
-                        }else {
-                            enableContinue();
-                            mCountPhase++;
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-
-            }
-        });
 
     }
 
+    private void FireBaseInitialSetup() {
+        if (mDatabaseGame!=null){
+            mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("game").child(mDatabaseGame.getRoomId()+"started");
+            FirebaseDatabase.getInstance().getReference().child("game").child(mDatabaseGame.getRoomId()+"started").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.getValue()==null && mCountPhase==0 && mType.equals("Host")){
+                        createRoomOnFireBase();
+                        registerMyPlayerId();
+                    } else if (dataSnapshot.getValue()==null && mCountPhase==0 ) {
+                        registerMyPlayerId();
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+    }
+
     private void createRoomOnFireBase() {
+        mCountPhase=0;
+        mCountSetUp=0;
+        mSecondCount=0;
+        mThirdCount=0;
+        mFourthCount=0;
+        mFifthCount=0;
+        mSixCount=0;
         mDatabaseReference.setValue(mDatabaseGame);
-        mDatabaseReference.child("mCount").setValue(0);
+        GameData gameData = new GameData(0,0,0,0,0,0,0);
+        mDatabaseReference.setValue(gameData);
+        mDatabaseReference.child("Turn").setValue(-1);
+
     }
 
     private void registerMyPlayerId() {
@@ -268,8 +310,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void enableContinue() {
-        mMessageView.setEnabled(false);
-        mMessageView.setVisibility(View.INVISIBLE);
         mContinueButton.setVisibility(View.VISIBLE);
         mContinueButton.setEnabled(true);
         mOKShadow.setVisibility(View.VISIBLE);
@@ -277,8 +317,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void disableContinue() {
-        mContinueButton.setEnabled(false);
-        mContinueButton.setVisibility(View.INVISIBLE);
         mMessageView.setVisibility(View.VISIBLE);
         mMessageView.setEnabled(true);
         mOKShadow.animate().cancel();
@@ -355,9 +393,9 @@ public class MainActivity extends AppCompatActivity {
             button.setEnabled(false);
         }
 
-        for (int i=0; i<mPlayerNumber; i++){
-            mPlayerButtons.get(i).setVisibility(View.VISIBLE);
-        }
+//        for (int i=0; i<mPlayerNumber; i++){
+//            mPlayerButtons.get(i).setVisibility(View.VISIBLE);
+//        }
     }
 
     private void disableYesNo() {
@@ -608,7 +646,9 @@ public class MainActivity extends AppCompatActivity {
                 gameBroad.getPlayers().get(q).selectchooseremove(selectedCharacter);
             }
             ++mCountSetUp;
-            gameSetUpPickRooms();
+            GameData gameData = new GameData(mCountPhase, mCountSetUp, mSecondCount, mThirdCount, mFourthCount, mFifthCount, mSixCount);
+            mDatabaseReference.setValue(gameData);
+//            gameSetUpPickRooms();
         }
         if (mCountSetUp == 3*mPlayerNumber*3){
             disableContinue();
@@ -2096,32 +2136,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public static final long DISCONNECT_TIMEOUT = 6000; // 5 min = 5 * 60 * 1000 ms
-
-    private Handler disconnectHandler = new Handler(){
-        public void handleMessage(Message msg) {
-        }
-    };
-
-    private Runnable disconnectCallback = new Runnable() {
-        @Override
-        public void run() {
-            // Perform any required operation on disconnect
-            if (mDatabaseGame!=null)
-            FirebaseDatabase.getInstance().getReference().child("game").child(mDatabaseGame.getRoomId()).setValue(null);
-        }
-    };
-
-    public void resetDisconnectTimer(){
-        disconnectHandler.removeCallbacks(disconnectCallback);
-        disconnectHandler.postDelayed(disconnectCallback, DISCONNECT_TIMEOUT);
-    }
-
+    public static final int DISCONNECT_TIMEOUT = 6000; // 5 min = 5 * 60 * 1000 ms
 
     @Override
-    public void onUserInteraction(){
-        resetDisconnectTimer();
+    public void onUserInteraction() {
+        super.onUserInteraction();
+        delayedIdle(1);
     }
 
+    Handler _idleHandler = new Handler();
+    Runnable _idleRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mDatabaseGame!=null){
+                Log.i(TAG, "set the data null due to inactivy");
+                FirebaseDatabase.getInstance().getReference().child("game").child(mDatabaseGame.getRoomId()+"started").setValue(null);
+            }
+            //handle your IDLE state
+        }
+    };
 
+    private void delayedIdle(int delayMinutes) {
+        _idleHandler.removeCallbacks(_idleRunnable);
+        _idleHandler.postDelayed(_idleRunnable, (delayMinutes * 1000 * 60));
+    }
 }
