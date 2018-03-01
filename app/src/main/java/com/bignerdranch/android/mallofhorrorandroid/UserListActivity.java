@@ -110,9 +110,15 @@ public class UserListActivity extends AppCompatActivity {
                                         gameMain = dataSnapshot.getValue(Game.class);
                                         Intent intent = MainActivity.mainIntent(UserListActivity.this,4, gameMain, username, type);
                                         Log.i(LOG_TAG, "start main activity when reached 4 players");
-                                        Intent serviceintent = OnClearFromRecentService.newServiceIntent(UserListActivity.this, roomId+"started");
-                                        startService(serviceintent);
-                                        startActivity(intent);
+                                        final Handler delayHandler = new Handler();
+                                        delayHandler.postDelayed( new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Intent serviceintent = OnClearFromRecentService.newServiceIntent(UserListActivity.this, roomId+"started");
+                                                startService(serviceintent);
+                                                startActivity(intent);
+                                            }
+                                        }, 12000);
                                     }
 
                                     @Override
