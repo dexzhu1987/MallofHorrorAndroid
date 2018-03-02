@@ -825,6 +825,8 @@ public class MainActivity extends AppCompatActivity {
                 GameData gameData = new GameData(mCountPhase, mCountSetUp, mSecondCount, mThirdCount, mFourthCount, mFifthCount, mSixCount);
                 mDatabaseReference.child(GAMEDATA).setValue(gameData);
             } else if (mCountSetUp%2==1) {
+                GameData gameData = new GameData(mCountPhase, mCountSetUp, mSecondCount, mThirdCount, mFourthCount, mFifthCount, mSixCount);
+                mDatabaseReference.child(GAMEDATA).setValue(gameData);
                 if (mCountSetUp == mPlayerNumber) {
                     mDatabaseReference.child(TURN).setValue(-1);
                 }else {
