@@ -313,7 +313,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                     });
-                }else if(mCountPhase==2 && mCountSetUp==mPlayerNumber) {
+                }else if(mCountPhase==2 && mCountSetUp==mPlayerNumber*2) {
                     disableContinue();
                     mMessageView.setText("Game Phase I: Parking Search");
                     mMessageView.setOnClickListener(new View.OnClickListener() {
@@ -809,7 +809,7 @@ public class MainActivity extends AppCompatActivity {
     private void gameSetUpGetItem() {
         gameBroad.getItemDeck().shuffle();
         if (mCountSetUp < mPlayerNumber*2){
-            int i = mCountSetUp%2;
+            int i = mCountSetUp /2;
             if (mCountSetUp%2==0){
                 ArrayList rooms = (ArrayList<Room>)gameBroad.getRooms();
                 String playercolor = gameBroad.getPlayers().get(i).getColor();
@@ -825,17 +825,18 @@ public class MainActivity extends AppCompatActivity {
                 GameData gameData = new GameData(mCountPhase, mCountSetUp, mSecondCount, mThirdCount, mFourthCount, mFifthCount, mSixCount);
                 mDatabaseReference.child(GAMEDATA).setValue(gameData);
             } else if (mCountSetUp%2==1) {
+                mCountSetUp++;
                 GameData gameData = new GameData(mCountPhase, mCountSetUp, mSecondCount, mThirdCount, mFourthCount, mFifthCount, mSixCount);
                 mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                if (mCountSetUp == mPlayerNumber) {
+                if (mCountSetUp == mPlayerNumber*2) {
                     mDatabaseReference.child(TURN).setValue(-1);
                 }else {
                     mDatabaseReference.child(TURN).setValue(i);
                 }
-                mCountSetUp++;
+
             }
 
-        } else if (mCountSetUp == mPlayerNumber){
+        } else if (mCountSetUp == mPlayerNumber*2){
             disableContinue();
             mMessageView.setText("Game Phase I: Parking Search");
             mMessageView.setOnClickListener(new View.OnClickListener() {
