@@ -831,7 +831,7 @@ public class MainActivity extends AppCompatActivity {
                 if (mCountSetUp == mPlayerNumber*2) {
                     mDatabaseReference.child(TURN).setValue(-1);
                 }else {
-                    mDatabaseReference.child(TURN).setValue(i);
+                    mDatabaseReference.child(TURN).setValue(i+1);
                 }
 
             }
