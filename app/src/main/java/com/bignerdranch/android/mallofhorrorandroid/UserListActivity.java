@@ -162,39 +162,40 @@ public class UserListActivity extends AppCompatActivity {
                 .child(roomId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Game game = dataSnapshot.getValue(Game.class);
-                Log.i(LOG_TAG, game.toString() + " ");
-                ArrayList<String> players = new ArrayList();
-                players.add(game.getPlayer2());
-                players.add(game.getPlayer3());
-                players.add(game.getPlayer4());
-
-                for (int i=0, q=2; i<players.size(); i++,q++){
-                    if (players.get(i).equals(username)){
-                      return;
-                    } else {
-                        if (players.get(i).equals("")){
-                            FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child("player"+q).setValue(username);
-                            if (q==4){
-                                FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("on").setValue(false);
-                                FirebaseDatabase.getInstance().getReference().child("game").child(roomId).addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        gameMain = dataSnapshot.getValue(Game.class);
-                                        Intent intent = MainActivity.mainIntent(UserListActivity.this,4, gameMain, username, type);
-                                        Log.i(LOG_TAG, "start main activity when reached 4 players");
-                                        Intent serviceintent = OnClearFromRecentService.newServiceIntent(UserListActivity.this, roomId+"started");
-                                        startService(serviceintent);
-                                        startActivity(intent);
-                                    }
-
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-
-                                    }
-                                });
-                            }
+                if (dataSnapshot.getValue()!=null){
+                    Game game = dataSnapshot.getValue(Game.class);
+                    Log.i(LOG_TAG, game.toString() + " ");
+                    ArrayList<String> players = new ArrayList();
+                    players.add(game.getPlayer2());
+                    players.add(game.getPlayer3());
+                    players.add(game.getPlayer4());
+                    for (int i=0, q=2; i<players.size(); i++,q++){
+                        if (players.get(i).equals(username)){
                             return;
+                        } else {
+                            if (players.get(i).equals("")){
+                                FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child("player"+q).setValue(username);
+                                if (q==4){
+                                    FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("on").setValue(false);
+                                    FirebaseDatabase.getInstance().getReference().child("game").child(roomId).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            gameMain = dataSnapshot.getValue(Game.class);
+                                            Intent intent = MainActivity.mainIntent(UserListActivity.this,4, gameMain, username, type);
+                                            Log.i(LOG_TAG, "start main activity when reached 4 players");
+                                            Intent serviceintent = OnClearFromRecentService.newServiceIntent(UserListActivity.this, roomId+"started");
+                                            startService(serviceintent);
+                                            startActivity(intent);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
+                                }
+                                return;
+                            }
                         }
                     }
                 }

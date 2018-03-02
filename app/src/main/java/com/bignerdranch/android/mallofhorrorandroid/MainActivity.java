@@ -832,6 +832,7 @@ public class MainActivity extends AppCompatActivity {
                 }else {
                     mDatabaseReference.child(TURN).setValue(i);
                 }
+                mCountSetUp++;
             }
 
         } else if (mCountSetUp == mPlayerNumber){
