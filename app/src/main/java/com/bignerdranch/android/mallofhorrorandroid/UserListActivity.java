@@ -140,7 +140,7 @@ public class UserListActivity extends AppCompatActivity {
     private void createRoom(String roomId) {
         gameMain = new Game(roomId);
         Log.i(LOG_TAG,"Create Room: " + roomId + " : " );
-        FirebaseDatabase.getInstance().getReference().child("game").child(roomId+"started").setValue(gameMain);
+        FirebaseDatabase.getInstance().getReference().child("game").child(roomId+"started").setValue(null);
         FirebaseDatabase.getInstance().getReference().child("game").child(roomId).setValue(gameMain);
         FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child("player1").setValue(username);
     }
@@ -245,7 +245,6 @@ public class UserListActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("on").setValue(false);
-        FirebaseDatabase.getInstance().getReference().child("game").child(roomId).setValue(null);
     }
 
 
@@ -258,33 +257,33 @@ public class UserListActivity extends AppCompatActivity {
         startActivity(startMain);
     }
 
-//    @Override
-//    public void onUserInteraction() {
-//        super.onUserInteraction();
-//        delayedIdle(5);
-//    }
-//
-//    Handler _idleHandler = new Handler();
-//    Runnable _idleRunnable = new Runnable() {
-//        @Override
-//        public void run() {
-//            Log.i(LOG_TAG, "set the data null due to inactivy");
-//
-//            AlertDialog.Builder builder = new AlertDialog.Builder(UserListActivity.this);
-//            builder.setTitle("Idle Room");
-//            builder.setMessage("Due to no activity, your room has been cleared, please log in again :)");
-//            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-//                @Override
-//                public void onClick(DialogInterface dialog, int which) {
-//                }
-//            });
-//            AlertDialog mAlertDialog = builder.create();
-//            mAlertDialog.show();
-//        }
-//    };
-//
-//    private void delayedIdle(int delayMinutes) {
-//        _idleHandler.removeCallbacks(_idleRunnable);
-//        _idleHandler.postDelayed(_idleRunnable,(delayMinutes * 1000 * 60));
-//    }
+    @Override
+    public void onUserInteraction() {
+        super.onUserInteraction();
+        delayedIdle(2);
+    }
+
+    Handler _idleHandler = new Handler();
+    Runnable _idleRunnable = new Runnable() {
+        @Override
+        public void run() {
+            Log.i(LOG_TAG, "set the data null due to inactivy");
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(UserListActivity.this);
+            builder.setTitle("Idle Room");
+            builder.setMessage("Due to no activity, your room has been cleared, please log in again :)");
+            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                }
+            });
+            AlertDialog mAlertDialog = builder.create();
+            mAlertDialog.show();
+        }
+    };
+
+    private void delayedIdle(int delayMinutes) {
+        _idleHandler.removeCallbacks(_idleRunnable);
+        _idleHandler.postDelayed(_idleRunnable,(delayMinutes * 1000 * 60));
+    }
 }
