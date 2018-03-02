@@ -245,6 +245,9 @@ public class MainActivity extends AppCompatActivity {
                     if (dataSnapshot.getValue()!=null){
                     int turn = dataSnapshot.getValue(Integer.TYPE);
                     if(turn==-1){
+                        for (ImageButton imageButton: mPlayerButtons){
+                            imageButton.setVisibility(View.INVISIBLE);
+                        }
                         gamePhaseChangingAccoringtoFirebase();
                     } else if (turn>=0){
                         rotateTurnAccoridngtoFirebase(turn);
@@ -342,7 +345,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void rotateTurnAccoridngtoFirebase(int turn) {
         mPlayerButtons.get(turn).setVisibility(View.VISIBLE);
-        int q = turn==0? mPlayerNumber: turn-1;
+        int q = turn==0? mPlayerNumber-1: turn-1;
         mPlayerButtons.get(q).setVisibility(View.INVISIBLE);
         mDatabaseReference.child("GameData").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -823,7 +826,7 @@ public class MainActivity extends AppCompatActivity {
             if (mCountSetUp == mPlayerNumber) {
                 mDatabaseReference.child(TURN).setValue(-1);
             }else {
-                mDatabaseReference.child(TURN).setValue(i);
+                mDatabaseReference.child(TURN).setValue(mCountSetUp);
             }
         } else if (mCountSetUp == mPlayerNumber){
             disableContinue();
