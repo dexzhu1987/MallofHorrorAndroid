@@ -140,6 +140,7 @@ public class UserListActivity extends AppCompatActivity {
     private void createRoom(String roomId) {
         gameMain = new Game(roomId);
         Log.i(LOG_TAG,"Create Room: " + roomId + " : " );
+        FirebaseDatabase.getInstance().getReference().child("game").child(roomId+"started").setValue(gameMain);
         FirebaseDatabase.getInstance().getReference().child("game").child(roomId).setValue(gameMain);
         FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child("player1").setValue(username);
     }

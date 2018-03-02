@@ -98,8 +98,6 @@ public class PlayerActivity extends AppCompatActivity {
     private Boolean mBooleanOptions;
     private int mFallenRoomNumber;
 
-
-
     public static Intent newChoosingRoomIntent (Context context, List<Room> rooms, String playercolor, List<Item> items,  ArrayList<Integer> roomOptions,
                                                 String message, int countsetup, int type){
         Intent intent = new Intent(context, PlayerActivity.class);

@@ -322,7 +322,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateDataFromFireBase(int turn, GameData gameData) {
         if (gameData.getmPassingType()==1){
-            int q = turn==0? mPlayerNumber: turn-1;
+            int q = turn==0? mPlayerNumber-1: turn-1;
             int selectedRoom = gameData.getmSelectedRoom();
             String selectedCharacter = gameData.getmSelectedCharacter();
             if (gameBroad.matchRoom(selectedRoom).isFull()) {

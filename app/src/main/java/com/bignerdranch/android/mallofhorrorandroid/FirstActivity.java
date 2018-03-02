@@ -155,24 +155,18 @@ public class FirstActivity extends AppCompatActivity {
                         User user = new User(name);
                         FirebaseDatabase.getInstance().getReference().child("users").child(uid)
                                 .setValue(user);
-
                         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
                         savePushToken(refreshedToken, uid);
-                        System.out.println("ReshsedToken: " + refreshedToken + "| UID: " +uid);
-
+                        Log.i(LOG_TAG, "ReshsedToken: " + refreshedToken + "| UID: " +uid);
                         startUserListActivity();
-
                     } else {
                         Log.d(LOG_TAG, "loginWithEmail: unsuccessful");
                         auth.signInWithEmailAndPassword(email, password)
                                 .addOnCompleteListener(task1 -> {
                                     if (!isAnonymous()) {
                                         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-
                                         savePushToken(refreshedToken, getCurrentUserId());
                                         System.out.println("ReshsedToken: " + refreshedToken + "| UID: " +getCurrentUserId());
-
-
                                         startUserListActivity();
                                     }
                                 });
@@ -185,8 +179,8 @@ public class FirstActivity extends AppCompatActivity {
                 addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        Log.i(LOG_TAG, "login with email");
                         final String name = (String) dataSnapshot.getValue();
-
                         FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).
                                 child("pushId").addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override

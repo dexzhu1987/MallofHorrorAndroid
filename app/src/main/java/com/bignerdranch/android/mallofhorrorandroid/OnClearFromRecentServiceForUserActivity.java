@@ -30,7 +30,7 @@ public class OnClearFromRecentServiceForUserActivity extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d("ClearFromRecentService", "Service Started");
+        Log.d("ClearServiceUser", "Service Started");
         roomId = intent.getStringExtra(ROOMID);
         return START_NOT_STICKY;
     }
@@ -38,15 +38,15 @@ public class OnClearFromRecentServiceForUserActivity extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d("ClearFromRecentService", "Service Destroyed");
+        Log.d("ClearServiceUser", "Service Destroyed");
     }
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {
-        Log.e("ClearFromRecentService", "END");
+        Log.e("ClearServiceUser", "END");
         FirebaseDatabase.getInstance().getReference().child("game").child(roomId).setValue(null);
         FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("on").setValue(false);
-        Log.e("ClearFromRecentService", " " + User.getCurrentUserId());
+        Log.e("ClearServiceUser", " " + User.getCurrentUserId());
         stopSelf();
     }
 }
