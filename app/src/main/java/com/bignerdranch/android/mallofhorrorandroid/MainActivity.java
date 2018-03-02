@@ -223,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
         mFourthCount=0;
         mFifthCount=0;
         mSixCount=0;
-        FirebaseDatabase.getInstance().getReference().child(mDatabaseGame.getRoomId()).setValue(mDatabaseGame);
+        FirebaseDatabase.getInstance().getReference().child("game").child(mDatabaseGame.getRoomId()).setValue(mDatabaseGame);
         mDatabaseReference.child(PLAYERINFORM).setValue(mDatabaseGame);
         GameData gameData = new GameData(0,0,0,0,0,0,0);
         mDatabaseReference.child(TURN).setValue(-1);
