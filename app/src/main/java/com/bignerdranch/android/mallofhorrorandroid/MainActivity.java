@@ -808,26 +808,30 @@ public class MainActivity extends AppCompatActivity {
 
     private void gameSetUpGetItem() {
         gameBroad.getItemDeck().shuffle();
-        if (mCountSetUp < mPlayerNumber){
-            int i = mCountSetUp;
-            ArrayList rooms = (ArrayList<Room>)gameBroad.getRooms();
-            String playercolor = gameBroad.getPlayers().get(i).getColor();
-            Item starterItem = gameBroad.getItemDeck().deal();
-            String message = gameBroad.getPlayers().get(i) +  " get " + starterItem;
-            gameBroad.getPlayers().get(i).getItem(starterItem);
-            ArrayList<Item> items = (ArrayList<Item>) gameBroad.getPlayers().get(i).getCurrentItem();
-            Intent intent = PlayerActivity.newMessageIntent(MainActivity.this,rooms,playercolor,items,message,mCountSetUp,3);
-            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivityForResult(intent,REQUEST_CODE_MESSAGE);
-            overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
-            gameBroad.getItemDeck().removeItem(starterItem);
-            GameData gameData = new GameData(mCountPhase, mCountSetUp, mSecondCount, mThirdCount, mFourthCount, mFifthCount, mSixCount);
-            mDatabaseReference.child(GAMEDATA).setValue(gameData);
-            if (mCountSetUp == mPlayerNumber) {
-                mDatabaseReference.child(TURN).setValue(-1);
-            }else {
-                mDatabaseReference.child(TURN).setValue(mCountSetUp);
+        if (mCountSetUp < mPlayerNumber*2){
+            int i = mCountSetUp%mPlayerNumber;
+            if (mCountSetUp%2==0){
+                ArrayList rooms = (ArrayList<Room>)gameBroad.getRooms();
+                String playercolor = gameBroad.getPlayers().get(i).getColor();
+                Item starterItem = gameBroad.getItemDeck().deal();
+                String message = gameBroad.getPlayers().get(i) +  " get " + starterItem;
+                gameBroad.getPlayers().get(i).getItem(starterItem);
+                ArrayList<Item> items = (ArrayList<Item>) gameBroad.getPlayers().get(i).getCurrentItem();
+                Intent intent = PlayerActivity.newMessageIntent(MainActivity.this,rooms,playercolor,items,message,mCountSetUp,3);
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivityForResult(intent,REQUEST_CODE_MESSAGE);
+                overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
+                gameBroad.getItemDeck().removeItem(starterItem);
+                GameData gameData = new GameData(mCountPhase, mCountSetUp, mSecondCount, mThirdCount, mFourthCount, mFifthCount, mSixCount);
+                mDatabaseReference.child(GAMEDATA).setValue(gameData);
+            } else if (mCountSetUp%2==1) {
+                if (mCountSetUp == mPlayerNumber) {
+                    mDatabaseReference.child(TURN).setValue(-1);
+                }else {
+                    mDatabaseReference.child(TURN).setValue(i);
+                }
             }
+
         } else if (mCountSetUp == mPlayerNumber){
             disableContinue();
             mMessageView.setText("Game Phase I: Parking Search");
