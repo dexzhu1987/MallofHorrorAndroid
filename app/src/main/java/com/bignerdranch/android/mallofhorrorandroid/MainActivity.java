@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
-import android.os.Message;
 import android.os.Parcelable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -165,38 +164,21 @@ public class MainActivity extends AppCompatActivity {
         mUserName = getIntent().getStringExtra(USERNAME);
         mType = getIntent().getStringExtra(TYPE);
 
-        FireBaseInitialSetup();
-        ContinueButtonMethod();
+        fireBaseInitialSetup();
+        continueButtonMethod();
         otherCommonSetUp();
         registerMyPlayerId();
 
         Log.i(TAG, "PlayerNumber: " + mPlayerNumber + " gameDataBase " +  mDatabaseGame.toString() + " username: " + mUserName + " type: " + mType + " myPlayerID:" + mMyPlayerID );
 
         mMessageView = findViewById(R.id.messageView_main);
-        mMessageView.setText("PRE-GAME SETTING PHASE ONE : CHOOSE ROOM");
-        mMessageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mMessageView.setVisibility(View.INVISIBLE);
-                if (mDatabaseGame!=null&& mMyPlayerID!=0){
-
-                }else {
-                    mCountPhase++;
-                    GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                    mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                    mDatabaseReference.child(TURN).setValue(0);
-                }
-            }
-        });
-
-
 
         setUpListenerOnFirebase();
 
 
     }
 
-    private void FireBaseInitialSetup() {
+    private void fireBaseInitialSetup() {
         if (mDatabaseGame!=null){
             mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("game").child(mDatabaseGame.getRoomId()+"started");
             FirebaseDatabase.getInstance().getReference().child("game").child(mDatabaseGame.getRoomId()+"started").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -262,57 +244,10 @@ public class MainActivity extends AppCompatActivity {
                     Log.i(TAG, "Turn value :  " + dataSnapshot.getValue());
                     if (dataSnapshot.getValue()!=null){
                     int turn = dataSnapshot.getValue(Integer.TYPE);
-                    Log.i(TAG, "turn: " + turn);
-                    if (turn>=0){
-                        mPlayerButtons.get(turn).setVisibility(View.VISIBLE);
-                        int q = turn==0? mPlayerNumber: turn-1;
-                        mPlayerButtons.get(q).setVisibility(View.INVISIBLE);
-                        mDatabaseReference.child("GameData").addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                if (dataSnapshot.getValue()!=null){
-                                    GameData gameData = dataSnapshot.getValue(GameData.class);
-                                    if (mMyPlayerID==turn){
-                                        updateDataFromFireBase(turn, gameData);
-                                        updateRoom(MainActivity.this);
-                                        mMainActivityLayout.invalidate();
-                                        mMessageView.setEnabled(true);
-                                        mMessageView.setVisibility(View.VISIBLE);
-                                        mMessageView.setText("Your Turn");
-                                        mMessageView.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                mMessageView.setVisibility(View.INVISIBLE);
-                                                mMessageView.setEnabled(false);
-                                                enableContinue();
-                                            }
-                                        });
-                                        mCountPhase=gameData.getmCountPhase();
-                                        mCountSetUp=gameData.getmCountSetUp();
-                                        mSecondCount=gameData.getmSecondCount();
-                                        mThirdCount=gameData.getmThirdCount();
-                                        mFourthCount=gameData.getmFourthCount();
-                                        mFifthCount=gameData.getmFifthCount();
-                                        mSixCount=gameData.getmSixCount();
-                                    }else {
-                                        int q = turn==0? mPlayerNumber-1: turn-1;
-                                        if (q!=mMyPlayerID){
-                                            updateDataFromFireBase(turn, gameData);
-                                        }
-                                        String whoseTurn = "Player " +  colors.get(turn) + " 's turn, please wait";
-                                        mMessageView.setText(whoseTurn);
-                                        mMessageView.setEnabled(false);
-                                        disableContinue();
-                                        updateRoom(MainActivity.this);
-                                        mMainActivityLayout.invalidate();
-                                    }
-                                }
-                            }
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
+                    if(turn==-1){
+                        gamePhaseChangingAccoringtoFirebase();
+                    } else if (turn>=0){
+                        rotateTurnAccoridngtoFirebase(turn);
                     }
                     }
                 }
@@ -322,6 +257,139 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private void gamePhaseChangingAccoringtoFirebase() {
+        mDatabaseReference.child(GAMEDATA).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                GameData gameData = dataSnapshot.getValue(GameData.class);
+                mCountPhase=gameData.getmCountPhase();
+                mCountSetUp=gameData.getmCountSetUp();
+                mSecondCount=gameData.getmSecondCount();
+                mThirdCount=gameData.getmThirdCount();
+                mFourthCount=gameData.getmFourthCount();
+                mFifthCount=gameData.getmFifthCount();
+                mSixCount=gameData.getmSixCount();
+                if (mCountPhase==0){
+                    mMessageView.setText("PRE-GAME SETTING PHASE ONE : CHOOSE ROOM");
+                    mMessageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mMessageView.setVisibility(View.INVISIBLE);
+                            if (mDatabaseGame!=null&& mMyPlayerID!=0){
+
+                            }else {
+                                mCountPhase++;
+                                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                                mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                                mDatabaseReference.child(TURN).setValue(0);
+                            }
+                        }
+                    });
+                } else if (mCountPhase==1 && mCountSetUp == 3*mPlayerNumber*3){
+                    disableContinue();
+                    if (mMyPlayerID!=mPlayerNumber-1){
+                        updateDataFromFireBase(0, gameData);
+                    }
+                    mMainActivityLayout.invalidate();
+                    mMessageView.setEnabled(true);
+                    mMessageView.setText("PRE-GAME SETTING PHASE TWO: GETTING STARTER ITEM");
+                    mMessageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (mMyPlayerID!=0){
+
+                            }else {
+                                mCountPhase++;
+                                mCountSetUp=0;
+                                enableContinue();
+                                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                                mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                                mDatabaseReference.child(TURN).setValue(0);
+                            }
+                        }
+                    });
+                }else if(mCountPhase==2 && mCountSetUp==mPlayerNumber) {
+                    disableContinue();
+                    mMessageView.setText("Game Phase I: Parking Search");
+                    mMessageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (mMyPlayerID!=0){
+
+                            }else {
+                                mCountPhase++;
+                                mCountSetUp=0;
+                                enableContinue();
+                                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                                mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                                mDatabaseReference.child(TURN).setValue(0);
+                            }
+                        }
+                    });
+                } else {
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void rotateTurnAccoridngtoFirebase(int turn) {
+        mPlayerButtons.get(turn).setVisibility(View.VISIBLE);
+        int q = turn==0? mPlayerNumber: turn-1;
+        mPlayerButtons.get(q).setVisibility(View.INVISIBLE);
+        mDatabaseReference.child("GameData").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue()!=null){
+                    GameData gameData = dataSnapshot.getValue(GameData.class);
+                    if (mMyPlayerID==turn){
+                        updateDataFromFireBase(turn, gameData);
+                        updateRoom(MainActivity.this);
+                        mMainActivityLayout.invalidate();
+                        mMessageView.setEnabled(true);
+                        mMessageView.setVisibility(View.VISIBLE);
+                        mMessageView.setText("Your Turn");
+                        mMessageView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                mMessageView.setVisibility(View.INVISIBLE);
+                                mMessageView.setEnabled(false);
+                                enableContinue();
+                            }
+                        });
+                        mCountPhase=gameData.getmCountPhase();
+                        mCountSetUp=gameData.getmCountSetUp();
+                        mSecondCount=gameData.getmSecondCount();
+                        mThirdCount=gameData.getmThirdCount();
+                        mFourthCount=gameData.getmFourthCount();
+                        mFifthCount=gameData.getmFifthCount();
+                        mSixCount=gameData.getmSixCount();
+                    }else {
+                        int q = turn==0? mPlayerNumber-1: turn-1;
+                        if (q!=mMyPlayerID){
+                            updateDataFromFireBase(turn, gameData);
+                        }
+                        String whoseTurn = "Player " +  colors.get(turn) + " 's turn, please wait";
+                        mMessageView.setText(whoseTurn);
+                        mMessageView.setEnabled(false);
+                        disableContinue();
+                        updateRoom(MainActivity.this);
+                        mMainActivityLayout.invalidate();
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void updateDataFromFireBase(int turn, GameData gameData) {
@@ -339,7 +407,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void ContinueButtonMethod() {
+    private void continueButtonMethod() {
         mContinueButton = findViewById(R.id.continue_button1);
         mContinueButton.setVisibility(View.INVISIBLE);
         mContinueButton.setEnabled(false);
@@ -714,7 +782,11 @@ public class MainActivity extends AppCompatActivity {
             GameData gameData = new GameData(mCountPhase, mCountSetUp, mSecondCount, mThirdCount, mFourthCount, mFifthCount, mSixCount,
                     selectedRoom, selectedCharacter);
             mDatabaseReference.child(GAMEDATA).setValue(gameData);
-            mDatabaseReference.child(TURN).setValue((q==mPlayerNumber-1)?0:q+1);
+            if (mCountSetUp == 3*mPlayerNumber*3) {
+                mDatabaseReference.child(TURN).setValue(-1);
+            }else {
+                mDatabaseReference.child(TURN).setValue((q==mPlayerNumber-1)?0:q+1);
+            }
 //            gameSetUpPickRooms();
         }
         if (mCountSetUp == 3*mPlayerNumber*3){
@@ -746,6 +818,13 @@ public class MainActivity extends AppCompatActivity {
             startActivityForResult(intent,REQUEST_CODE_MESSAGE);
             overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
             gameBroad.getItemDeck().removeItem(starterItem);
+            GameData gameData = new GameData(mCountPhase, mCountSetUp, mSecondCount, mThirdCount, mFourthCount, mFifthCount, mSixCount);
+            mDatabaseReference.child(GAMEDATA).setValue(gameData);
+            if (mCountSetUp == mPlayerNumber) {
+                mDatabaseReference.child(TURN).setValue(-1);
+            }else {
+                mDatabaseReference.child(TURN).setValue(i);
+            }
         } else if (mCountSetUp == mPlayerNumber){
             disableContinue();
             mMessageView.setText("Game Phase I: Parking Search");
