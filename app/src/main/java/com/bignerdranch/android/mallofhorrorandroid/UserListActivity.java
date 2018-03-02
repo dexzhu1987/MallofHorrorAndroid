@@ -2,10 +2,12 @@ package com.bignerdranch.android.mallofhorrorandroid;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -167,7 +169,6 @@ public class UserListActivity extends AppCompatActivity {
                 players.add(game.getPlayer3());
                 players.add(game.getPlayer4());
 
-
                 for (int i=0, q=2; i<players.size(); i++,q++){
                     if (players.get(i).equals(username)){
                       return;
@@ -249,6 +250,16 @@ public class UserListActivity extends AppCompatActivity {
         public void run() {
             Log.i(LOG_TAG, "set the data null due to inactivy");
             FirebaseDatabase.getInstance().getReference().child("game").child(roomId).setValue(null);
+            AlertDialog.Builder builder = new AlertDialog.Builder(UserListActivity.this);
+            builder.setTitle("Idle Room");
+            builder.setMessage("Due to no activity, your room has been cleared, please log in again :)");
+            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                }
+            });
+            AlertDialog mAlertDialog = builder.create();
+            mAlertDialog.show();
         }
     };
 

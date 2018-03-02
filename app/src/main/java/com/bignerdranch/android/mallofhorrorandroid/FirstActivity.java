@@ -194,7 +194,7 @@ public class FirstActivity extends AppCompatActivity {
                                 roomID = (String) dataSnapshot.getValue();
                                 String type = "Host";
                                 Intent intent = UserListActivity.newIntent(firstActivity, type, roomID,name);
-                                Intent serviceintent = OnClearFromRecentService.newServiceIntent(FirstActivity.this, roomID);
+                                Intent serviceintent = OnClearFromRecentServiceForUserActivity.newServiceIntent(FirstActivity.this, roomID);
                                 startService(serviceintent);
                                 startActivity(intent);
                             }
