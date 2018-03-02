@@ -245,7 +245,11 @@ public class MainActivity extends AppCompatActivity {
         for (int i=0; i<userNames.size(); i++){
             if (mUserName.equals(userNames.get(i))){
                 mMyPlayerID=i;
+                if (mMyPlayerID==mPlayerNumber-1){
+                    FirebaseDatabase.getInstance().getReference().child("game").child(mDatabaseGame.getRoomId()).setValue(null);
+                }
                 return;
+
             }
         }
     }
