@@ -168,6 +168,9 @@ public class MainActivity extends AppCompatActivity {
         FireBaseInitialSetup();
         ContinueButtonMethod();
         otherCommonSetUp();
+        registerMyPlayerId();
+
+        Log.i(TAG, "PlayerNumber: " + mPlayerNumber + " gameDataBase " +  mDatabaseGame.toString() + " username: " + mUserName + " type: " + mType + " myPlayerID:" + mMyPlayerID );
 
         mMessageView = findViewById(R.id.messageView_main);
         mMessageView.setText("PRE-GAME SETTING PHASE ONE : CHOOSE ROOM");
@@ -201,9 +204,9 @@ public class MainActivity extends AppCompatActivity {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.getValue()==null && mCountPhase==0 && mType.equals("Host")){
                         createRoomOnFireBase();
-                        registerMyPlayerId();
+
                     } else if (dataSnapshot.getValue()==null && mCountPhase==0 ) {
-                        registerMyPlayerId();
+
                     }
                 }
 
@@ -216,6 +219,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void createRoomOnFireBase() {
+        Log.i(TAG, "host created room" );
         mCountPhase=0;
         mCountSetUp=0;
         mSecondCount=0;
@@ -223,7 +227,6 @@ public class MainActivity extends AppCompatActivity {
         mFourthCount=0;
         mFifthCount=0;
         mSixCount=0;
-        FirebaseDatabase.getInstance().getReference().child("game").child(mDatabaseGame.getRoomId()).setValue(mDatabaseGame);
         mDatabaseReference.child(PLAYERINFORM).setValue(mDatabaseGame);
         GameData gameData = new GameData(0,0,0,0,0,0,0);
         mDatabaseReference.child(TURN).setValue(-1);
@@ -238,9 +241,11 @@ public class MainActivity extends AppCompatActivity {
         userNames.add(mDatabaseGame.getPlayer2());
         userNames.add(mDatabaseGame.getPlayer3());
         userNames.add(mDatabaseGame.getPlayer4());
+        Log.i(TAG, "Main Game: " +  mDatabaseGame.toString());
         for (int i=0; i<userNames.size(); i++){
             if (mUserName.equals(userNames.get(i))){
                 mMyPlayerID=i;
+                return;
             }
         }
     }

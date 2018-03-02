@@ -101,7 +101,6 @@ public class UserListActivity extends AppCompatActivity {
                     }
 
                     for (int i=0; i<usersNames.size(); i++){
-                        Log.i(LOG_TAG, "J: " + j + " I: " + i);
                         if (usersNames.get(i).getText().toString().equals("")){
                             break;
                         } else {
@@ -175,6 +174,25 @@ public class UserListActivity extends AppCompatActivity {
                     } else {
                         if (players.get(i).equals("")){
                             FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child("player"+q).setValue(username);
+                            if (q==4){
+                                FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("on").setValue(false);
+                                FirebaseDatabase.getInstance().getReference().child("game").child(roomId).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        gameMain = dataSnapshot.getValue(Game.class);
+                                        Intent intent = MainActivity.mainIntent(UserListActivity.this,4, gameMain, username, type);
+                                        Log.i(LOG_TAG, "start main activity when reached 4 players");
+                                        Intent serviceintent = OnClearFromRecentService.newServiceIntent(UserListActivity.this, roomId+"started");
+                                        startService(serviceintent);
+                                        startActivity(intent);
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+                            }
                             return;
                         }
                     }
@@ -241,7 +259,7 @@ public class UserListActivity extends AppCompatActivity {
     @Override
     public void onUserInteraction() {
         super.onUserInteraction();
-        delayedIdle(10);
+        delayedIdle(5);
     }
 
     Handler _idleHandler = new Handler();
