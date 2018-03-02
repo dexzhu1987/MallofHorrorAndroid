@@ -291,7 +291,7 @@ public class MainActivity extends AppCompatActivity {
                                         mFifthCount=gameData.getmFifthCount();
                                         mSixCount=gameData.getmSixCount();
                                     }else {
-                                        int q = turn==0? mPlayerNumber: turn-1;
+                                        int q = turn==0? mPlayerNumber-1: turn-1;
                                         if (q!=mMyPlayerID){
                                             updateDataFromFireBase(turn, gameData);
                                         }
