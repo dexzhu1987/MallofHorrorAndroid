@@ -809,7 +809,7 @@ public class MainActivity extends AppCompatActivity {
     private void gameSetUpGetItem() {
         gameBroad.getItemDeck().shuffle();
         if (mCountSetUp < mPlayerNumber*2){
-            int i = mCountSetUp%mPlayerNumber;
+            int i = mCountSetUp%2;
             if (mCountSetUp%2==0){
                 ArrayList rooms = (ArrayList<Room>)gameBroad.getRooms();
                 String playercolor = gameBroad.getPlayers().get(i).getColor();
