@@ -59,23 +59,24 @@ public class FirstActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_first);
 
-        final Animation animTranslate = AnimationUtils.loadAnimation(this, R.anim.anim_translate);
-
-
+        Animation animTranslate = AnimationUtils.loadAnimation(this, R.anim.anim_translate);
+        mPlayButton = findViewById(R.id.multiplayer_button);
+        mPlayButton.startAnimation(animTranslate);
+//        overridePendingTransition(android.support.v7.appcompat.R.anim.abc_grow_fade_in_from_bottom,android.support.v7.appcompat.R.anim.abc_shrink_fade_out_from_bottom );
 
         firstActivity = FirstActivity.this;
 
 
-        mPlayButton = findViewById(R.id.play_button);
-        mPlayButton.startAnimation(animTranslate);
-        mPlayButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent =  new Intent(FirstActivity.this, SetPlayerNumberActivity.class);
-                startActivity(intent);
-                overridePendingTransition(android.support.v7.appcompat.R.anim.abc_grow_fade_in_from_bottom,android.support.v7.appcompat.R.anim.abc_shrink_fade_out_from_bottom );
-            }
-        });
+//        mPlayButton = findViewById(R.id.play_button);
+//        mPlayButton.startAnimation(animTranslate);
+//        mPlayButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent =  new Intent(FirstActivity.this, SetPlayerNumberActivity.class);
+//                startActivity(intent);
+//                overridePendingTransition(android.support.v7.appcompat.R.anim.abc_grow_fade_in_from_bottom,android.support.v7.appcompat.R.anim.abc_shrink_fade_out_from_bottom );
+//            }
+//        });
 
 //        mHowToPlayButton = findViewById(R.id.how_to_play_button);
 //        mHowToPlayButton.startAnimation(animTranslate);
@@ -89,6 +90,7 @@ public class FirstActivity extends AppCompatActivity {
     }
 
     public void startMultilayer(View view){
+
         if (!arePlayServicesOk()) {
             return;
         }
@@ -118,6 +120,8 @@ public class FirstActivity extends AppCompatActivity {
             binding.login.setVisibility(VISIBLE);
             binding.inputPassword.setVisibility(VISIBLE);
         } else {
+            Animation animTranslate = AnimationUtils.loadAnimation(this, R.anim.anim_bounce);
+            mPlayButton.startAnimation(animTranslate);
             startUserListActivity();
         }
     }
