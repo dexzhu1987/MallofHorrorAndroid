@@ -261,7 +261,7 @@ public class UserListActivity extends AppCompatActivity {
     @Override
     public void onUserInteraction() {
         super.onUserInteraction();
-        delayedIdle(2);
+        delayedIdle(5);
     }
 
     Handler _idleHandler = new Handler();
