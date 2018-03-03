@@ -36,6 +36,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -408,6 +411,12 @@ public class MainActivity extends AppCompatActivity {
             searchTeam.add(player);
         }
         mCurrentTeam = (ArrayList<Playable>) searchTeam;
+        Collections.sort(mCurrentTeam, new Comparator<Playable>() {
+            @Override
+            public int compare(Playable o1, Playable o2) {
+                return o1.compareTo(o2);
+            }
+        });
         disableContinue();
         mMessageView.setVisibility(View.VISIBLE);
         mMessageView.setEnabled(true);
@@ -435,9 +444,20 @@ public class MainActivity extends AppCompatActivity {
 
     private void rotateTurnAccoridngtoFirebase(int turn) {
         mPlayerButtons.get(turn).setVisibility(View.VISIBLE);
-        int q = turn==0? mPlayerNumber-1: turn-1;
-        mPlayerButtons.get(q).setVisibility(View.INVISIBLE);
-        mDatabaseReference.child("GameData").addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabaseReference.child(PREVTURN).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue()!=null){
+                    mPlayerButtons.get(dataSnapshot.getValue(Integer.TYPE)).setVisibility(View.INVISIBLE);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        mDatabaseReference.child(GAMEDATA).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue()!=null){

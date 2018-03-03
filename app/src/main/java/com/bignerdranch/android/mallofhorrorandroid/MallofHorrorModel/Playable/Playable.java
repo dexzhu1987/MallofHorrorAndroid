@@ -2,6 +2,7 @@ package com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Playable;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Character.*;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.*;
@@ -11,7 +12,7 @@ import java.io.Serializable;
 import java.util.*;
 
 
-public class Playable implements Parcelable, java.io.Serializable  {
+public class Playable implements Parcelable, java.io.Serializable, Comparable  {
     protected String name;
     protected String color;
     protected List<GameCharacter> characters;
@@ -311,4 +312,16 @@ public class Playable implements Parcelable, java.io.Serializable  {
     }
 
 
+    @Override
+    public int compareTo(@NonNull Object o) {
+        if (this.name.equalsIgnoreCase("RED") && !((Playable)o).getName().equalsIgnoreCase("RED")){
+            return 1;
+        } else if (this.name.equalsIgnoreCase("YELLOW") && !((Playable)o).getName().equalsIgnoreCase("YELLOW")){
+            return 1;
+        } else if(this.name.equalsIgnoreCase("BLUE") && !((Playable)o).getName().equalsIgnoreCase("BLUE")){
+            return 1;
+        } else  {
+            return -1;
+        }
+    }
 }
