@@ -1032,7 +1032,7 @@ public class MainActivity extends AppCompatActivity {
                     System.out.println(votes);
                     ++mCountSetUp;
                     for (int q=0; q<colors.size(); q++){
-                        if (mCurrentTeam.get(i).getColor().equalsIgnoreCase(colors.get(q))){
+                        if (mCurrentTeam.get(i+1).getColor().equalsIgnoreCase(colors.get(q))){
                             GameData gameData = new GameData(mCountPhase,mCountSetUp, mSecondCount, mThirdCount, mFourthCount, mFifthCount,
                                     mSixCount, teammember.getColor(), vote);
                             mDatabaseReference.child(GAMEDATA).setValue(gameData);
