@@ -978,7 +978,7 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
             if (mThirdCount==1){
-                System.out.println(mCurrentTeam);
+                Log.i(TAG, mCurrentTeam + "");
                 if (mCountSetUp % 2 == 0 && (mCountSetUp < 2 * mCurrentTeam.size())){
                     int i = (mCountSetUp ==0 )? 0: mCountSetUp/2;
                     Playable teammember = mCurrentTeam.get(i);
