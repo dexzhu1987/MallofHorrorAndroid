@@ -17,6 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
+        android:background="@drawable/player_room_bg"
         tools:context="com.myhexaville.tictactoe.wifi.UserListActivity">
 
         <LinearLayout
@@ -41,7 +42,7 @@
                     android:layout_marginStart="@dimen/activity_horizontal_margin"
                     android:text=""
                     android:textColor="@android:color/white"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
                     tools:text="" />
 
                 <TextView
@@ -57,8 +58,9 @@
                     android:text="Player Red" />
 
                 <ImageView
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginRight="10dp"
                     android:layout_alignParentRight="true"
                     android:src="@drawable/redtoughguybttn"
                     android:layout_below="@+id/pl_red"/>
@@ -82,7 +84,7 @@
                     android:layout_marginStart="@dimen/activity_horizontal_margin"
                     android:text=""
                     android:layout_marginTop="25dp"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
                     tools:text="" />
 
                 <TextView
@@ -97,8 +99,9 @@
                     android:layout_gravity="center_vertical"
                     android:text="Player Yellow" />
                 <ImageView
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginRight="10dp"
                     android:layout_alignParentRight="true"
                     android:src="@drawable/yellowtoughguybttn"
                     android:layout_below="@+id/pl_yellow"/>
@@ -122,7 +125,7 @@
                     android:layout_marginStart="@dimen/activity_horizontal_margin"
                     android:text=""
                     android:layout_marginTop="25dp"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
                     tools:text="" />
 
                 <TextView
@@ -138,8 +141,9 @@
                     android:textColor="@android:color/black" />
 
                 <ImageView
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginRight="10dp"
                     android:layout_alignParentRight="true"
                     android:src="@drawable/bluetoughguybttn"
                     android:layout_below="@+id/pl_blue"/>
@@ -164,7 +168,7 @@
                     android:layout_marginStart="@dimen/activity_horizontal_margin"
                     android:text=""
                     android:layout_marginTop="25dp"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
                     tools:text="" />
 
                 <TextView
@@ -180,8 +184,9 @@
                     android:textColor="@android:color/black" />
 
                 <ImageView
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginRight="10dp"
                     android:layout_alignParentRight="true"
                     android:src="@drawable/greentoughguybttn"
                     android:layout_below="@+id/pl_green"/>
