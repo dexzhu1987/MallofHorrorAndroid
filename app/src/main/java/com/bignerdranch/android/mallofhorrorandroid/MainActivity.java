@@ -433,11 +433,13 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     }
                 }
-                Log.i(TAG, "firstsearch for parking: " + firstSearch);
-                mThirdCount++;
-                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                mDatabaseReference.child(TURN).setValue(firstSearch);
+                if (mMyPlayerID!=firstSearch){
+                    Log.i(TAG, "firstsearch for parking: " + firstSearch);
+                    mThirdCount++;
+                    GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                    mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                    mDatabaseReference.child(TURN).setValue(firstSearch);
+                }
             }
         },DELAYEDSECONDSFORMESSAGEVIE * 1000);
     }
