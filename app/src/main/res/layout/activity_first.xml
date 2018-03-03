@@ -31,14 +31,16 @@
             android:layout_height="40dp"
             android:padding="0dp"
             android:scaleType="fitXY"
+            android:onClick="start_how_to_play"
             android:src="@drawable/btn_howto" />
 
         <ImageButton
-            android:id="@+id/setting"
+            android:id="@+id/btn_setting"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:padding="0dp"
             android:scaleType="fitXY"
+            android:onClick="start_settings"
             android:src="@drawable/btn_setting" />
     </LinearLayout>
 

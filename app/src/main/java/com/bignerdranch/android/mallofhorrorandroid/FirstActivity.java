@@ -49,6 +49,7 @@ public class FirstActivity extends AppCompatActivity {
     private static final String LOG_TAG = "StartActivity";
     private ImageButton mPlayButton;
     private ImageButton mHowToPlayButton;
+    private ImageButton mSettingButton;
     private ActivityFirstBinding binding;
     private boolean loggedIn;
     private String roomID;
@@ -62,7 +63,14 @@ public class FirstActivity extends AppCompatActivity {
         Animation animTranslate = AnimationUtils.loadAnimation(this, R.anim.anim_translate);
         mPlayButton = findViewById(R.id.multiplayer_button);
         mPlayButton.startAnimation(animTranslate);
+
+        mHowToPlayButton = findViewById(R.id.how_to_play_button);
+        mSettingButton = findViewById(R.id.btn_setting);
+
+
+
 //        overridePendingTransition(android.support.v7.appcompat.R.anim.abc_grow_fade_in_from_bottom,android.support.v7.appcompat.R.anim.abc_shrink_fade_out_from_bottom );
+
 
         firstActivity = FirstActivity.this;
 
@@ -202,8 +210,6 @@ public class FirstActivity extends AppCompatActivity {
 
                             }
                         });
-
-
                     }
 
                     @Override
@@ -234,5 +240,15 @@ public class FirstActivity extends AppCompatActivity {
             return false;
         }
         return true;
+    }
+
+    public void start_how_to_play(View view) {
+        Animation animTranslate = AnimationUtils.loadAnimation(this, R.anim.anim_bounce);
+        mHowToPlayButton.startAnimation(animTranslate);
+    }
+
+    public void start_settings(View view) {
+        Animation animTranslate = AnimationUtils.loadAnimation(this, R.anim.anim_bounce);
+        mSettingButton.startAnimation(animTranslate);
     }
 }
