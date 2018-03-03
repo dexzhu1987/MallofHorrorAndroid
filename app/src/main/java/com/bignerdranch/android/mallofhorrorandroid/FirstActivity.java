@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -20,6 +21,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.databinding.DataBindingUtil;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,8 +68,6 @@ public class FirstActivity extends AppCompatActivity {
 
         mHowToPlayButton = findViewById(R.id.how_to_play_button);
         mSettingButton = findViewById(R.id.btn_setting);
-
-
 
 //        overridePendingTransition(android.support.v7.appcompat.R.anim.abc_grow_fade_in_from_bottom,android.support.v7.appcompat.R.anim.abc_shrink_fade_out_from_bottom );
 
@@ -250,5 +250,43 @@ public class FirstActivity extends AppCompatActivity {
     public void start_settings(View view) {
         Animation animTranslate = AnimationUtils.loadAnimation(this, R.anim.anim_bounce);
         mSettingButton.startAnimation(animTranslate);
+
+        LayoutInflater inflater = getLayoutInflater();
+        View alertLayout = inflater.inflate(R.layout.setting_dialog, null);
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+        SeekBar mSoundBar = alertLayout.findViewById(R.id.sound_seekbar);
+        TextView mSeekBar_Value = alertLayout.findViewById(R.id.seekbar_value);
+        mSeekBar_Value.setText("0");
+
+        mSoundBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                String value = String.valueOf(mSoundBar.getProgress());
+                mSeekBar_Value.setText(value);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+
+        alert.setView(alertLayout);
+
+        alert.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        AlertDialog dialog = alert.create();
+        dialog.show();
     }
 }
