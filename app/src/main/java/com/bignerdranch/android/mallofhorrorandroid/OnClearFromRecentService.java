@@ -49,6 +49,7 @@ public class OnClearFromRecentService extends Service {
         Log.e("ClearFromRecentService", "END");
         FirebaseDatabase.getInstance().getReference().child("game").child(roomId).setValue(null);
         FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("on").setValue(false);
+        FirebaseDatabase.getInstance().getReference().child("game").child(roomId+"started").setValue(null);
         Log.e("ClearFromRecentService", " " + User.getCurrentUserId());
         stopSelf();
     }

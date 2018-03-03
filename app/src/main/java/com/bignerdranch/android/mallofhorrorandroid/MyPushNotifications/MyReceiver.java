@@ -65,7 +65,10 @@ public class MyReceiver extends BroadcastReceiver {
                         if (intent.getAction().equals("accept")) {
                             String ownername =  me.getName();
                             String roomID = intent.getStringExtra("to");
+                            Intent serviceintent = OnClearFromRecentService.newServiceIntent(context, roomID);
+                            context.startService(serviceintent);
                             context.startActivity(UserListActivity.newIntent(context,"Guest",roomID,ownername));
+
                         }
                     }
 

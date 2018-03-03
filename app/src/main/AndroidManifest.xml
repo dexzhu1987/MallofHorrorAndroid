@@ -73,7 +73,6 @@
         <receiver android:name=".MyPushNotifications.MyReceiver" />
 
         <service android:name="com.bignerdranch.android.mallofhorrorandroid.OnClearFromRecentService" android:stopWithTask="false" />
-        <service android:name="com.bignerdranch.android.mallofhorrorandroid.OnClearFromRecentServiceForUserActivity" android:stopWithTask="false" />
     </application>
 
 </manifest>
