@@ -15,6 +15,8 @@ public class GameData {
     private String mSelectedCharacter;
     private int mSelectedRoom;
     private int mPassingType;
+    private String whoVoteColor;
+    private String voteWhomColor;
 
     public String getmSelectedCharacter() {
         return mSelectedCharacter;
@@ -59,7 +61,22 @@ public class GameData {
     }
 
     public GameData(int mCountPhase, int mCountSetUp, int mSecondCount, int mThirdCount, int mFourthCount, int mFifthCount,
-                    int mSixCountv, int mSelectedRoom, String mSelectedCharacter) {
+                    int mSixCount, String whoVoteColor, String voteWhomColor) {
+        this.mCountPhase = mCountPhase;
+        this.mCountSetUp = mCountSetUp;
+        this.mSecondCount = mSecondCount;
+        this.mThirdCount = mThirdCount;
+        this.mFourthCount = mFourthCount;
+        this.mFifthCount = mFifthCount;
+        this.mSixCount = mSixCount;
+        this.whoVoteColor = whoVoteColor;
+        this.voteWhomColor = voteWhomColor;
+        this.mPassingType=2;
+    }
+
+
+    public GameData(int mCountPhase, int mCountSetUp, int mSecondCount, int mThirdCount, int mFourthCount, int mFifthCount,
+                    int mSixCount, int mSelectedRoom, String mSelectedCharacter) {
         this.mCountPhase = mCountPhase;
         this.mCountSetUp = mCountSetUp;
         this.mSecondCount = mSecondCount;
@@ -126,5 +143,22 @@ public class GameData {
 
     public void setmSixCount(int mSixCount) {
         this.mSixCount = mSixCount;
+    }
+
+
+    public String getWhoVoteColor() {
+        return whoVoteColor;
+    }
+
+    public void setWhoVoteColor(String whoVoteColor) {
+        this.whoVoteColor = whoVoteColor;
+    }
+
+    public String getVoteWhomColor() {
+        return voteWhomColor;
+    }
+
+    public void setVoteWhomColor(String voteWhomColor) {
+        this.voteWhomColor = voteWhomColor;
     }
 }
