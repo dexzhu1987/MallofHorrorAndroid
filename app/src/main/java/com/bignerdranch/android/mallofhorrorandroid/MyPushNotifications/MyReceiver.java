@@ -8,7 +8,6 @@ import android.util.Log;
 import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.User;
 import com.bignerdranch.android.mallofhorrorandroid.FirstActivity;
 import com.bignerdranch.android.mallofhorrorandroid.OnClearFromRecentService;
-import com.bignerdranch.android.mallofhorrorandroid.OnClearFromRecentServiceForUserActivity;
 import com.bignerdranch.android.mallofhorrorandroid.UserListActivity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
