@@ -245,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.i(TAG, "Turn value :  " + dataSnapshot.getValue());
                     if (dataSnapshot.getValue()!=null){
                     int turn = dataSnapshot.getValue(Integer.TYPE);
-                    if(turn==-1){
+                    if(turn<0){
                         for (ImageButton imageButton: mPlayerButtons){
                             imageButton.setVisibility(View.INVISIBLE);
                         }
@@ -267,6 +267,7 @@ public class MainActivity extends AppCompatActivity {
         mDatabaseReference.child(GAMEDATA).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
                 GameData gameData = dataSnapshot.getValue(GameData.class);
                 mCountPhase=gameData.getmCountPhase();
                 mCountSetUp=gameData.getmCountSetUp();
@@ -284,6 +285,8 @@ public class MainActivity extends AppCompatActivity {
                             if (mDatabaseGame!=null&& mMyPlayerID!=0){
 
                             }else {
+                                mMessageView.setVisibility(View.INVISIBLE);
+                                mMessageView.setEnabled(false);
                                 mCountPhase++;
                                 GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                                 mDatabaseReference.child(GAMEDATA).setValue(gameData);
@@ -292,95 +295,19 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
                 } else if (mCountPhase==1 && mCountSetUp == 3*mPlayerNumber*3){
-                    disableContinue();
-                    if (mMyPlayerID!=mPlayerNumber-1){
-                        updateDataFromFireBase(0, gameData);
+                    MessageViewInformMovetoGetItem(gameData);
+                } else if (mCountPhase==2 && mCountSetUp==mPlayerNumber*2) {
+                    MessageViewInformMovetoParksearch();
+                } else if (mCountPhase==3) {
+                    if (mCountSetUp==0 && (gameBroad.matchRoom(4).isEmpty() || gameBroad.getItemDeck().getItemsDeck().size() < 3)){
+                        MessageViewInformParkingEmptyandMovetoChiefElection();
+                    } else {
+                        if (mThirdCount==0){
+                            MessageViewInformSearchMembers();
+                        }
                     }
-                    mMainActivityLayout.invalidate();
-                    mMessageView.setEnabled(true);
-                    mMessageView.setText("PRE-GAME SETTING PHASE TWO: GETTING STARTER ITEM");
-                    mMessageView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (mMyPlayerID!=0){
+                } else if (mCountPhase==4) {
 
-                            }else {
-                                mCountPhase++;
-                                mCountSetUp=0;
-                                enableContinue();
-                                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                                mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                                mDatabaseReference.child(TURN).setValue(0);
-                            }
-                        }
-                    });
-                }else if(mCountPhase==2 && mCountSetUp==mPlayerNumber*2) {
-                    disableContinue();
-                    mMainActivityLayout.invalidate();
-                    mMessageView.setEnabled(true);
-                    mMessageView.setText("Game Phase I: Parking Search");
-                    mMessageView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (mMyPlayerID!=0){
-
-                            }else {
-                                mCountPhase++;
-                                mCountSetUp=0;
-                                enableContinue();
-                                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                                mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                                mDatabaseReference.child(TURN).setValue(-1);
-                            }
-                        }
-                    });
-                } else if (mCountPhase==2 && mCountSetUp==0 && (gameBroad.matchRoom(4).isEmpty()||gameBroad.getItemDeck().getItemsDeck().size() < 3)) {
-                    disableContinue();
-                    mMainActivityLayout.invalidate();
-                    mMessageView.setEnabled(true);
-                    mMessageView.setText("Due to Parking is empty (or no more item avaiable), no searching will be performed");
-                    mMessageView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (mMyPlayerID!=0){
-
-                            }else {
-                                mCountSetUp=mCurrentTeam.size()*4+2;
-                                enableContinue();
-                                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                                mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                                mDatabaseReference.child(TURN).setValue(-1);
-                            }
-                        }
-                    });
-                } else if (mCountPhase==2 && mCountSetUp == mCurrentTeam.size()*4+2) {
-                    disableContinue();
-                    mMainActivityLayout.invalidate();
-                    mMessageView.setEnabled(true);
-                    mMessageView.setText("Game Phase II: Security Chief selected");
-                    mMessageView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            votes.clear();
-                            mCurrentTeam.clear();
-                            mCurrentItemOptions.clear();
-                            mCurrentZombiesRooms.clear();
-                            mCurrentYesNo=false;
-                            mCurrentYesNoMain = false;
-                            if (mMyPlayerID!=0){
-
-                            }else {
-                                enableContinue();
-                                mCountPhase++;
-                                mCountSetUp=0;
-                                mSecondCount=0;
-                                mThirdCount=0;
-                                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                                mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                                mDatabaseReference.child(TURN).setValue(-1);
-                            }
-                        }
-                    });
                 }
             }
 
@@ -389,6 +316,116 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void MessageViewInformMovetoGetItem(GameData gameData) {
+        disableContinue();
+        if (mMyPlayerID!=mPlayerNumber-1){
+            updateDataFromFireBase(0, gameData);
+        }
+        mMainActivityLayout.invalidate();
+        mMessageView.setEnabled(true);
+        mMessageView.setText("PRE-GAME SETTING PHASE TWO: GETTING STARTER ITEM");
+        mMessageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mMyPlayerID==0){
+                    mMessageView.setVisibility(View.INVISIBLE);
+                    mMessageView.setEnabled(false);
+                    mCountPhase++;
+                    mCountSetUp=0;
+                    enableContinue();
+                    GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                    mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                    mDatabaseReference.child(TURN).setValue(0);
+                }
+            }
+        });
+    }
+
+    private void MessageViewInformMovetoParksearch() {
+        disableContinue();
+        mMainActivityLayout.invalidate();
+        mMessageView.setEnabled(true);
+        mMessageView.setText("Game Phase I: Parking Search");
+        mMessageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mMyPlayerID==0){
+                    mMessageView.setVisibility(View.INVISIBLE);
+                    mMessageView.setEnabled(false);
+                    mCountPhase++;
+                    mCountSetUp=0;
+                    GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                    mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                    mDatabaseReference.child(TURN).setValue(-2);
+                }
+            }
+        });
+    }
+
+    private void MessageViewInformParkingEmptyandMovetoChiefElection() {
+        mMainActivityLayout.invalidate();
+        mMessageView.setVisibility(View.VISIBLE);
+        mMessageView.setEnabled(true);
+        if (mSecondCount==0){
+            mMessageView.setText("Due to Parking is empty (or no more item avaiable), no searching will be performed");
+            mMessageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mMyPlayerID==0){
+                        GameData gameData = new GameData(mCountPhase,mCountSetUp,2,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                        mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                        mDatabaseReference.child(TURN).setValue(-1);
+                    }
+                }
+            });
+        } else {
+            mMessageView.setText("Game Phase II: Security Chief selected");
+            mMessageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mMyPlayerID==0){
+                        mCountPhase++;
+                        mCountSetUp=0;
+                        mSecondCount=0;
+                        GameData gameData = new GameData(mCountPhase,mCountSetUp,2,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                        mDatabaseReference.child(GAMEDATA).setValue(gameData);
+//                                    mDatabaseReference.child(TURN).setValue(-2);
+                    }
+                }
+            });
+        }
+    }
+
+    private void MessageViewInformSearchMembers() {
+        HashSet<Playable> searchteam = gameBroad.WhoCan(gameBroad.matchRoom(4).existCharacterColor());
+        List<Playable> searchTeam = new ArrayList<>();
+        for (Playable player : searchteam) {
+            searchTeam.add(player);
+        }
+        mCurrentTeam = (ArrayList<Playable>) searchTeam;
+        disableContinue();
+        mMessageView.setVisibility(View.VISIBLE);
+        mMessageView.setEnabled(true);
+        mMessageView.setText(mCurrentTeam + " are in the parking. " + "Player " + mCurrentTeam.get(0).getColor() + " please click this message to continue");
+        mMessageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mThirdCount++;
+                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                int firstSearch=0;
+                for (int i=0; i<colors.size(); i++){
+                    if (mCurrentTeam.get(0).getColor().equalsIgnoreCase(colors.get(i))){
+                        firstSearch=i;
+                        break;
+                    }
+                }
+                mDatabaseReference.child(TURN).setValue(firstSearch);
+            }
+        });
+
     }
 
     private void rotateTurnAccoridngtoFirebase(int turn) {
@@ -902,6 +939,7 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("mCountSetup: " + mCountSetUp +  " mSecondCount: " + mSecondCount);
         if (mCountSetUp==0 && ( gameBroad.matchRoom(4).isEmpty() || gameBroad.getItemDeck().getItemsDeck().size() < 3)) {
             disableContinue();
+            mMessageView.setEnabled(true);
             mMessageView.setText("Due to Parking is empty (or no more item avaiable), no searching will be performed");
             mMessageView.setOnClickListener(new View.OnClickListener() {
                 @Override
