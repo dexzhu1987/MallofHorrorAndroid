@@ -309,6 +309,10 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         if (mThirdCount==0){
                             MessageViewInformSearchMembers();
+                        } else if (mCountSetUp == mCurrentTeam.size()*2  && mSecondCount == 0){
+                            MessageViewInformSeeResult();
+                        } else {
+
                         }
                     }
                 } else if (mCountPhase==4) {
@@ -321,6 +325,20 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void MessageViewInformSeeResult() {
+        mMessageView.setVisibility(View.VISIBLE);
+        mMessageView.setText("Voting results are in, please click continue to view");
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+               mMessageView.setVisibility(View.INVISIBLE);
+               enableContinue();
+            }
+        },DELAYEDSECONDSFORMESSAGEVIE * 1000);
+        enableContinue();
     }
 
     private void MessageViewInformMovetoGetItem(GameData gameData) {
@@ -1052,20 +1070,20 @@ public class MainActivity extends AppCompatActivity {
                     System.out.println(mCurrentTeam);
                     System.out.println(votes);
                     ++mCountSetUp;
-                    for (int q=0; q<colors.size(); q++){
+                    GameData gameData = new GameData(mCountPhase,mCountSetUp, mSecondCount, mThirdCount, mFourthCount, mFifthCount,
+                            mSixCount, teammember.getColor(), vote);
+                    mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                    mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
+                    if (mCountSetUp==2*mCurrentTeam.size()) {
+                        mDatabaseReference.child(TURN).setValue(-1);
+                    } else {
+                        for (int q=0; q<colors.size(); q++){
                         if (mCurrentTeam.get(i+1).getColor().equalsIgnoreCase(colors.get(q))){
-                            GameData gameData = new GameData(mCountPhase,mCountSetUp, mSecondCount, mThirdCount, mFourthCount, mFifthCount,
-                                    mSixCount, teammember.getColor(), vote);
-                            mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                            mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
-                            if (mCountSetUp==2*mCurrentTeam.size()){
-                                mDatabaseReference.child(TURN).setValue(-1);
-                            } else {
-                                mDatabaseReference.child(TURN).setValue(q);
-                            }
+                            mDatabaseReference.child(TURN).setValue(q);
                             break;
+                          }
                         }
-                    }
+                     }
 //                    if (mCountSetUp != 2*mCurrentTeam.size() )
 //                    searchParking();
                 }
