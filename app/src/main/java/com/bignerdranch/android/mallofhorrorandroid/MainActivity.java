@@ -433,8 +433,8 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     }
                 }
+                Log.i(TAG, "firstsearch for parking: " + firstSearch);
                 if (mMyPlayerID!=firstSearch){
-                    Log.i(TAG, "firstsearch for parking: " + firstSearch);
                     mThirdCount++;
                     GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                     mDatabaseReference.child(GAMEDATA).setValue(gameData);
@@ -2444,7 +2444,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onUserInteraction() {
         super.onUserInteraction();
-        delayedIdle(5);
+        delayedIdle(10);
     }
 
     Handler _idleHandler = new Handler();
