@@ -314,11 +314,11 @@ public class Playable implements Parcelable, java.io.Serializable, Comparable  {
 
     @Override
     public int compareTo(@NonNull Object o) {
-        if (this.name.equalsIgnoreCase("RED") && !((Playable)o).getName().equalsIgnoreCase("RED")){
+        if (this.color.equalsIgnoreCase("RED") && !((Playable)o).getColor().equalsIgnoreCase("RED")){
             return 1;
-        } else if (this.name.equalsIgnoreCase("YELLOW") && !((Playable)o).getName().equalsIgnoreCase("YELLOW")){
+        } else if (this.color.equalsIgnoreCase("YELLOW") && !((Playable)o).getColor().equalsIgnoreCase("YELLOW")){
             return 1;
-        } else if(this.name.equalsIgnoreCase("BLUE") && !((Playable)o).getName().equalsIgnoreCase("BLUE")){
+        } else if(this.color.equalsIgnoreCase("BLUE") && !((Playable)o).getColor().equalsIgnoreCase("BLUE")){
             return 1;
         } else  {
             return -1;
