@@ -414,7 +414,7 @@ public class MainActivity extends AppCompatActivity {
         Collections.sort(mCurrentTeam, new Comparator<Playable>() {
             @Override
             public int compare(Playable o1, Playable o2) {
-                return o1.getName().compareTo(o2.getName());
+                return o1.compareTo(o2);
             }
         });
         disableContinue();

@@ -320,8 +320,14 @@ public class Playable implements Parcelable, java.io.Serializable, Comparable  {
             return 1;
         } else if(this.color.equalsIgnoreCase("BLUE") && !((Playable)o).getColor().equalsIgnoreCase("BLUE")){
             return 1;
-        } else  {
+        } else if (!this.color.equalsIgnoreCase("RED") && ((Playable)o).getColor().equalsIgnoreCase("RED"))  {
             return -1;
+        } else if (!this.color.equalsIgnoreCase("YELLOW") && ((Playable)o).getColor().equalsIgnoreCase("YELLOW")){
+            return -1;
+        } else if(!this.color.equalsIgnoreCase("BLUE") && ((Playable)o).getColor().equalsIgnoreCase("BLUE")){
+            return -1;
+        }  else {
+            return 0;
         }
     }
 }
