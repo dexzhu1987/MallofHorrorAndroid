@@ -915,12 +915,11 @@ public class MainActivity extends AppCompatActivity {
             GameData gameData = new GameData(mCountPhase, mCountSetUp, mSecondCount, mThirdCount, mFourthCount, mFifthCount, mSixCount,
                     selectedRoom, selectedCharacter);
             mDatabaseReference.child(GAMEDATA).setValue(gameData);
+            mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
             if (mCountSetUp == 3*mPlayerNumber*3) {
                 mDatabaseReference.child(TURN).setValue(-1);
-                mDatabaseReference.child(PREVTURN).setValue(-1);
             }else {
                 mDatabaseReference.child(TURN).setValue((q==mPlayerNumber-1)?0:q+1);
-                mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
             }
 //            gameSetUpPickRooms();
         }
@@ -960,11 +959,11 @@ public class MainActivity extends AppCompatActivity {
                 mCountSetUp++;
                 GameData gameData = new GameData(mCountPhase, mCountSetUp, mSecondCount, mThirdCount, mFourthCount, mFifthCount, mSixCount);
                 mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
                 if (mCountSetUp == mPlayerNumber*2) {
                     mDatabaseReference.child(TURN).setValue(-1);
                 }else {
                     mDatabaseReference.child(TURN).setValue(i+1);
-                    mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
                 }
 
             }
