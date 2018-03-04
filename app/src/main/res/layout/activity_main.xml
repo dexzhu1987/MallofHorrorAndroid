@@ -198,61 +198,61 @@
 
     <ImageButton
         android:id="@+id/red_button"
-        android:layout_width="110dp"
-        android:layout_height="52dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:padding="0dp"
         android:scaleType="fitXY"
-        android:src="@drawable/redbg"
+        android:src="@drawable/redtoughguybttn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
         android:id="@+id/yellow_button"
-        android:layout_width="110dp"
-        android:layout_height="52dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:padding="0dp"
         android:scaleType="fitXY"
-        android:src="@drawable/yellowbg"
+        android:src="@drawable/yellowtoughguybttn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/red_button" />
 
     <ImageButton
         android:id="@+id/blue_button"
-        android:layout_width="110dp"
-        android:layout_height="52dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:padding="0dp"
         android:scaleType="fitXY"
-        android:src="@drawable/bluebg"
+        android:src="@drawable/bluetoughguybttn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/yellow_button" />
 
     <ImageButton
         android:id="@+id/green_button"
-        android:layout_width="110dp"
-        android:layout_height="52dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:padding="0dp"
         android:scaleType="fitXY"
-        android:src="@drawable/greenbg"
+        android:src="@drawable/greentoughguybttn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/blue_button" />
 
     <ImageButton
         android:id="@+id/brown_button"
-        android:layout_width="110dp"
-        android:layout_height="52dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:padding="0dp"
         android:scaleType="fitXY"
-        android:src="@drawable/brownbg"
+        android:src="@drawable/browntoughguybttn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/green_button" />
 
     <ImageButton
         android:id="@+id/black_button"
-        android:layout_width="110dp"
-        android:layout_height="52dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:padding="0dp"
         android:scaleType="fitXY"
-        android:src="@drawable/blackbg"
+        android:src="@drawable/blacktoughguybttn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/brown_button" />
 
