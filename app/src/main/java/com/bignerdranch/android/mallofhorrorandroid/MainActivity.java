@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
     private final String PLAYERBOOLEANANSWERS = "PlayerBooleanAnswers";
 
     private final int DELAYEDSECONDSFORMESSAGEVIE = 2;
-    private final int DELAYEDSECONDSFOROPTIONSCHOSEN = 5;
+    private final int DELAYEDSECONDSFOROPTIONSCHOSEN = 10;
 
     private DatabaseReference mDatabaseReference;
     private Game mDatabaseGame;
@@ -512,6 +512,7 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                Log.i(TAG, "vote results: " + votes);
                 mMessageView.setVisibility(View.INVISIBLE);
                 gameBroad.matchRoom(4).resetVoteResult();
                 gameBroad.matchRoom(4).voteResultAfterVote(votes);
@@ -531,16 +532,32 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mCurrentYesNoMain = false;
+                Handler handler1 = new Handler();
+                handler1.postDelayed( new Runnable() {
+                    @Override
+                    public void run() {
+                        disableYesNo();
+                        mSecondCount = 2;
+                        GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                        mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                        mDatabaseReference.child(TURN).setValue(-1);
+                        mDatabaseReference.child(PLAYERBOOLEANANSWERS).push().setValue(false);
+                    }
+                },DELAYEDSECONDSFOROPTIONSCHOSEN * 1000);
                 mMessageView.setVisibility(View.INVISIBLE);
                 enableYesNo();
                 mYesButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mCurrentYesNoMain = true;
+                        mSecondCount = 2;
                         disableYesNo();
                         mMessageView.setVisibility(View.VISIBLE);
                         mMessageView.setText("Thank you, Please wait for other players");
+                        GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                        mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                        mDatabaseReference.child(TURN).setValue(-1);
+                        mDatabaseReference.child(PLAYERBOOLEANANSWERS).push().setValue(true);
+                        handler1.removeCallbacksAndMessages(null);
                     }
                 });
                 mNoButton.setOnClickListener(new View.OnClickListener() {
@@ -551,18 +568,7 @@ public class MainActivity extends AppCompatActivity {
                         mMessageView.setText("Thank you, Please wait for other players");
                     }
                 });
-                Handler handler1 = new Handler();
-                handler1.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        disableYesNo();
-                        mSecondCount = 2;
-                        GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                        mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                        mDatabaseReference.child(TURN).setValue(-1);
-                        mDatabaseReference.child(PLAYERBOOLEANANSWERS).push().setValue(mCurrentYesNoMain);
-                    }
-                },DELAYEDSECONDSFOROPTIONSCHOSEN * 1000);
+
             }
         },DELAYEDSECONDSFORMESSAGEVIE * 1000);
     }

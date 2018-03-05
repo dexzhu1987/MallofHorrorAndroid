@@ -75,7 +75,7 @@ public class ShowVoteResultActivity extends AppCompatActivity {
                 finish();
                 overridePendingTransition(0,0);
             }
-        },3 * 1000);
+        },5 * 1000);
 
 
         HashMap<String, ImageView> votedImages = new HashMap<>();
