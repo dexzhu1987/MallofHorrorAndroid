@@ -519,8 +519,8 @@ public class MainActivity extends AppCompatActivity {
                 ArrayList votes1 = (ArrayList<String>) votes;
                 System.out.println("Step III: show vote result");
                 System.out.println(votes1);
-                Intent intent2 = ShowVoteResultActivity.newVoteResultIntent(MainActivity.this, votes1,gameBroad.matchRoom(4).getCurrentVoteResult(),mSecondCount);
-                startActivityForResult(intent2, REQUEST_CODE_VIEWRESULT);
+                Intent intent = ShowVoteResultActivity.newVoteResultIntent(MainActivity.this, votes1,gameBroad.matchRoom(4).getCurrentVoteResult(),mSecondCount);
+                startActivityForResult(intent, REQUEST_CODE_VIEWRESULT);
                 overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
             }
         },DELAYEDSECONDSFORMESSAGEVIE * 1000);
@@ -1425,7 +1425,7 @@ public class MainActivity extends AppCompatActivity {
             if (mThirdCount==1){
                 Log.i(TAG, mCurrentTeam + "");
                 if (mCountSetUp % 2 == 0 && (mCountSetUp < 2 * mCurrentTeam.size())){
-                    int i = (mCountSetUp ==0 )? 0: mCountSetUp/2;
+                    int i = (mCountSetUp ==0)? 0: mCountSetUp/2;
                     Playable teammember = mCurrentTeam.get(i);
                     ArrayList rooms = (ArrayList<Room>)gameBroad.getRooms();
                     String playercolor = teammember.getColor();
@@ -1441,7 +1441,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 String vote = mCurrentVoteColor;
                 if (mCountSetUp % 2 == 1 && (mCountSetUp < 2*mCurrentTeam.size())){
-                    int i = (mCountSetUp ==0 )? 0: mCountSetUp/2;
+                    int i = (mCountSetUp ==0)? 0: mCountSetUp/2;
                     Playable teammember = mCurrentTeam.get(i);
                     votes.add(teammember.getColor());
                     votes.add(vote);
@@ -1456,29 +1456,30 @@ public class MainActivity extends AppCompatActivity {
                     if (mCountSetUp==2*mCurrentTeam.size()) {
                         mDatabaseReference.child(TURN).setValue(-1);
                     } else {
+                        int nextSearch = 0;
+                        Playable nextSearchTeamMember = mCurrentTeam.get(i+1);
                         for (int q=0; q<colors.size(); q++){
-                        if (mCurrentTeam.get(i+1).getColor().equalsIgnoreCase(colors.get(q))){
-                            mDatabaseReference.child(TURN).setValue(q);
-                            break;
+                        if (nextSearchTeamMember.getColor().equalsIgnoreCase(colors.get(q))){
+                            nextSearch = q;
                           }
                         }
+                        mDatabaseReference.child(TURN).setValue(nextSearch);
                      }
 //                    if (mCountSetUp != 2*mCurrentTeam.size() )
 //                    searchParking();
                 }
-                if (mCountSetUp == mCurrentTeam.size()*2  && mSecondCount == 0){
-                    gameBroad.matchRoom(4).resetVoteResult();
-                    gameBroad.matchRoom(4).voteResultAfterVote(votes);
-                    ArrayList votes1 = (ArrayList<String>) votes;
-                    System.out.println("Step III: show vote result");
-                    System.out.println(votes1);
-                    Intent intent2 = ShowVoteResultActivity.newVoteResultIntent(MainActivity.this, votes1,gameBroad.matchRoom(4).getCurrentVoteResult(),mSecondCount);
-                    startActivityForResult(intent2, REQUEST_CODE_VIEWRESULT);
-                    overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
-                }
+//                if (mCountSetUp == mCurrentTeam.size()*2  && mSecondCount == 0){
+//                    gameBroad.matchRoom(4).resetVoteResult();
+//                    gameBroad.matchRoom(4).voteResultAfterVote(votes);
+//                    ArrayList votes1 = (ArrayList<String>) votes;
+//                    System.out.println("Step III: show vote result");
+//                    System.out.println(votes1);
+//                    Intent intent2 = ShowVoteResultActivity.newVoteResultIntent(MainActivity.this, votes1,gameBroad.matchRoom(4).getCurrentVoteResult(),mSecondCount);
+//                    startActivityForResult(intent2, REQUEST_CODE_VIEWRESULT);
+//                    overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
+//                }
                 if (mCountSetUp >= mCurrentTeam.size()*2 && mSecondCount > 0 && mCountSetUp < mCurrentTeam.size()*4) {
                     System.out.println("Step IV: using threat");
-//                    if (teamHasThreat(mCurrentTeam) || mCurrentYesNoMain ) {
                         if (mSecondCount==1) {
                             disableContinue();
                             mMessageView.setText("Voting result can be changed by item THREAT, anyone want to change the result?");
@@ -1522,7 +1523,6 @@ public class MainActivity extends AppCompatActivity {
                                         }
                                         effectedColor = effectedColor.toUpperCase();
                                         gameBroad.matchRoom(4).voteResultAfterItem(effectedColor, 1);
-//                                    for (int q = 0; q < numThreat; q++) {
                                         Item threat = gameBroad.matchItem(teammember, "Threat");
                                         teammember.usedItem(threat);
 
@@ -1554,13 +1554,13 @@ public class MainActivity extends AppCompatActivity {
 //                        searchParking();
 //                    }
                 }
-                if (mCountSetUp == mCurrentTeam.size()*4 && mSecondCount == 2 ) {
-                    System.out.println("Show summary");
-                    HashMap<String, Integer> results = gameBroad.matchRoom(4).getCurrentVoteResult();
-                    Intent intent = ShowSimpleVoteResultActivity.newVoteResultIntent(MainActivity.this,results,mSecondCount);
-                    startActivityForResult(intent,REQUEST_CODE_VIEWSIMPLERESULT);
-                    overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
-                }
+//                if (mCountSetUp == mCurrentTeam.size()*4 && mSecondCount == 2 ) {
+//                    System.out.println("Show summary");
+//                    HashMap<String, Integer> results = gameBroad.matchRoom(4).getCurrentVoteResult();
+//                    Intent intent = ShowSimpleVoteResultActivity.newVoteResultIntent(MainActivity.this,results,mSecondCount);
+//                    startActivityForResult(intent,REQUEST_CODE_VIEWSIMPLERESULT);
+//                    overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
+//                }
                 if (mCountSetUp == mCurrentTeam.size()*4 && mSecondCount == 3) {
                     if (gameBroad.matchRoom(4).winner().equals("TIE")){
                         System.out.println("Result is Tie");
@@ -1660,7 +1660,7 @@ public class MainActivity extends AppCompatActivity {
                     System.out.println("Display giving message");
                     disableContinue();
                     String winnercolor = gameBroad.matchRoom(4).winner();
-                    mMessageView.setText(gameBroad.matchPlayer(givecolor) + " you have received an item from " + gameBroad.matchPlayer(winnercolor)
+                    mMessageView.setText("You have received an item from " + gameBroad.matchPlayer(winnercolor)
                             );
                     mMessageView.setOnClickListener(new View.OnClickListener() {
                         @Override
