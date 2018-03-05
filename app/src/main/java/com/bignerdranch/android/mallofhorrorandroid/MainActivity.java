@@ -644,6 +644,7 @@ public class MainActivity extends AppCompatActivity {
                                         Log.i(TAG, "firstsearch for parking: " + mCurrentTeam);
                                         Log.i(TAG, "firstsearch for parking: " + firstSearch);
                                         if (mMyPlayerID!=firstSearch){
+                                            mSecondCount=2;
                                             mCountSetUp = mCurrentTeam.size() * 4;
                                             GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                                             mDatabaseReference.child(GAMEDATA).setValue(gameData);
@@ -952,6 +953,7 @@ public class MainActivity extends AppCompatActivity {
                         mCurrentSelectedItem = items.get(i);
                     }
                 }
+                mCurrentVoteColor = colors.get(turn);
             }
         }
     }
@@ -1723,28 +1725,28 @@ public class MainActivity extends AppCompatActivity {
                     mDatabaseReference.child(TURN).setValue(-1);
                     mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
                 }
-                if (mCountSetUp == mCurrentTeam.size()*4+3) {
-                    System.out.println("Display message again");
-                    disableContinue();
-                    String winnercolor = gameBroad.matchRoom(4).winner();
-                    mMessageView.setText("Game Phase II: Security Chief selected");
-                    mMessageView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                                    enableContinue();
-                                    mCountPhase++;
-                                    mCountSetUp=0;
-                                    mSecondCount=0;
-                                    mThirdCount=0;
-                                    votes.clear();
-                                    mCurrentTeam.clear();
-                                    mCurrentItemOptions.clear();
-                                    mCurrentZombiesRooms.clear();
-                                    mCurrentYesNo=false;
-                                    mCurrentYesNoMain = false;
-                        }
-                    });
-                }
+//                if (mCountSetUp == mCurrentTeam.size()*4+3) {
+//                    System.out.println("Display message again");
+//                    disableContinue();
+//                    String winnercolor = gameBroad.matchRoom(4).winner();
+//                    mMessageView.setText("Game Phase II: Security Chief selected");
+//                    mMessageView.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                                    enableContinue();
+//                                    mCountPhase++;
+//                                    mCountSetUp=0;
+//                                    mSecondCount=0;
+//                                    mThirdCount=0;
+//                                    votes.clear();
+//                                    mCurrentTeam.clear();
+//                                    mCurrentItemOptions.clear();
+//                                    mCurrentZombiesRooms.clear();
+//                                    mCurrentYesNo=false;
+//                                    mCurrentYesNoMain = false;
+//                        }
+//                    });
+//                }
             }
         }
     }
@@ -2904,7 +2906,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onUserInteraction() {
         super.onUserInteraction();
-        delayedIdle(10);
+        delayedIdle(30);
     }
 
     Handler _idleHandler = new Handler();
