@@ -568,78 +568,84 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void messageViewInformIsThreatUsedParking(GameData gameData) {
-        mDatabaseReference.child(PLAYERBOOLEANANSWERS).addListenerForSingleValueEvent(new ValueEventListener() {
+        mMessageView.setText("Collecting Information");
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                List<Boolean> usersChoises = new ArrayList<>();
-                for (DataSnapshot snapshot: dataSnapshot.getChildren()){
-                    usersChoises.add(snapshot.getValue(Boolean.TYPE));
-                }
-                Boolean isThereTrue = false;
-                for (int i=0; i<usersChoises.size(); i++){
-                    if (usersChoises.get(i)){
-                        isThereTrue = true;
-                        break;
-                    }
-                }
-                if (gameData!=null){
-                    if (isThereTrue){
-                        mMessageView.setText("One of the players will used threat");
-                        Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                mMessageView.setVisibility(View.INVISIBLE);
-                                int firstSearch = 0;
-                                for (int i=0; i<colors.size(); i++){
-                                    if (mCurrentTeam.get(0).getColor().equalsIgnoreCase(colors.get(i))){
-                                        firstSearch = i;
-                                        break;
-                                    }
-                                }
-                                Log.i(TAG, "firstsearch for parking: " + mCurrentTeam);
-                                Log.i(TAG, "firstsearch for parking: " + firstSearch);
-                                if (mMyPlayerID!=firstSearch){
-                                    GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                                    mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                                    mDatabaseReference.child(TURN).setValue(firstSearch);
-                                }
+            public void run() {
+                mDatabaseReference.child(PLAYERBOOLEANANSWERS).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        List<Boolean> usersChoises = new ArrayList<>();
+                        for (DataSnapshot snapshot: dataSnapshot.getChildren()){
+                            usersChoises.add(snapshot.getValue(Boolean.TYPE));
+                        }
+                        Boolean isThereTrue = false;
+                        for (int i=0; i<usersChoises.size(); i++){
+                            if (usersChoises.get(i)){
+                                isThereTrue = true;
+                                break;
                             }
-                        },DELAYEDSECONDSFORMESSAGEVIE * 1000);
-                    }else {
-                        mMessageView.setText("Threat will not be used");
-                        Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                mMessageView.setVisibility(View.INVISIBLE);
-                                int firstSearch = 0;
-                                for (int i=0; i<colors.size(); i++){
-                                    if (mCurrentTeam.get(0).getColor().equalsIgnoreCase(colors.get(i))){
-                                        firstSearch = i;
-                                        break;
+                        }
+                        if (gameData!=null){
+                            if (isThereTrue){
+                                mMessageView.setText("One of the players will used threat");
+                                Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mMessageView.setVisibility(View.INVISIBLE);
+                                        int firstSearch = 0;
+                                        for (int i=0; i<colors.size(); i++){
+                                            if (mCurrentTeam.get(0).getColor().equalsIgnoreCase(colors.get(i))){
+                                                firstSearch = i;
+                                                break;
+                                            }
+                                        }
+                                        Log.i(TAG, "firstsearch for parking: " + mCurrentTeam);
+                                        Log.i(TAG, "firstsearch for parking: " + firstSearch);
+                                        if (mMyPlayerID!=firstSearch){
+                                            GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                                            mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                                            mDatabaseReference.child(TURN).setValue(firstSearch);
+                                        }
                                     }
-                                }
-                                Log.i(TAG, "firstsearch for parking: " + mCurrentTeam);
-                                Log.i(TAG, "firstsearch for parking: " + firstSearch);
-                                if (mMyPlayerID!=firstSearch){
-                                    mCountSetUp = mCurrentTeam.size() * 4;
-                                    GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                                    mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                                    mDatabaseReference.child(TURN).setValue(-1);
-                                }
+                                },DELAYEDSECONDSFORMESSAGEVIE * 1000);
+                            }else {
+                                mMessageView.setText("Threat will not be used");
+                                Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mMessageView.setVisibility(View.INVISIBLE);
+                                        int firstSearch = 0;
+                                        for (int i=0; i<colors.size(); i++){
+                                            if (mCurrentTeam.get(0).getColor().equalsIgnoreCase(colors.get(i))){
+                                                firstSearch = i;
+                                                break;
+                                            }
+                                        }
+                                        Log.i(TAG, "firstsearch for parking: " + mCurrentTeam);
+                                        Log.i(TAG, "firstsearch for parking: " + firstSearch);
+                                        if (mMyPlayerID!=firstSearch){
+                                            mCountSetUp = mCurrentTeam.size() * 4;
+                                            GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                                            mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                                            mDatabaseReference.child(TURN).setValue(-1);
+                                        }
+                                    }
+                                },DELAYEDSECONDSFORMESSAGEVIE * 1000);
                             }
-                        },DELAYEDSECONDSFORMESSAGEVIE * 1000);
+                        }
                     }
-                }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
             }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
+        },1000);
     }
 
     private void messageViewInformVoteSummaryForParking(GameData gameData) {
