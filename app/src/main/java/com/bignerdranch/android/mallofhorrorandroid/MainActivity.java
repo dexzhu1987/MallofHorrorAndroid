@@ -25,8 +25,14 @@ import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.GameData;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Character.GameCharacter;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Dice.PairofDice;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Dice.TwoPairofDice;
+import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.Axe;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.Hardware;
+import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.Hidden;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.Item;
+import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.SecurityCamera;
+import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.ShotGun;
+import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.Sprint;
+import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.Threat;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Playable.Playable;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Room.Room;
 import com.google.firebase.database.DataSnapshot;
@@ -83,8 +89,6 @@ public class MainActivity extends AppCompatActivity {
     private int mMyPlayerID;
     private String mType;
 
-
-
     private final static GameBroad gameBroad = new GameBroad(0);
     private static int mCurrentRoomPickedNumber = 0;
     private static int mCountSetUp;
@@ -97,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
     private static int mCountPhase = 0;
     private static Playable mCurrentVictim = new Playable();
     final static List<String> colors = new ArrayList<>();
+    final static List<Item> items = new ArrayList<>();
     final static List<String> actualcolors= new ArrayList<>();
     private ArrayList<Playable> mCurrentTeam = new ArrayList<>();
 
@@ -554,7 +559,7 @@ public class MainActivity extends AppCompatActivity {
                         mMessageView.setVisibility(View.VISIBLE);
                         mMessageView.setText("Thank you, Please wait for other players");
                         disableYesNo();
-                        long elapsedTime = System.nanoTime();
+                        long elapsedTime = System.nanoTime()- starttime;
                         long remaingTime = DELAYEDSECONDSFOROPTIONSCHOSEN * 1000 - elapsedTime;
                         Handler handler2 = new Handler();
                         handler2.postDelayed(new Runnable() {
@@ -923,14 +928,12 @@ public class MainActivity extends AppCompatActivity {
                 gameBroad.matchRoom(selectedRoom).enter(gameBroad.getPlayers().get(q).selectchoose(selectedCharacter));
                 gameBroad.getPlayers().get(q).selectchooseremove(selectedCharacter);
             }
-        }
-        if (gameData.getmPassingType()==2){
+        } else if (gameData.getmPassingType()==2){
             String whoVote = gameData.getWhoVoteColor();
             String voteWhom = gameData.getVoteWhomColor();
             votes.add(whoVote);
             votes.add(voteWhom);
-        }
-        if (gameData.getmPassingType()==3){
+        } else if (gameData.getmPassingType()==3){
             boolean isThreatUsed = gameData.getmUsedItemThreat();
             int affectedRoomNumber = gameData.getmAffectedRoom();
             if (isThreatUsed){
@@ -943,6 +946,15 @@ public class MainActivity extends AppCompatActivity {
                 }
                 effectedColor = effectedColor.toUpperCase();
                 gameBroad.matchRoom(affectedRoomNumber).voteResultAfterItem(effectedColor, 1);
+            }
+        } else if (gameData.getmPassingType()==4){
+            if (mMyPlayerID==turn){
+                int itemNumber = gameData.getItemNumber();
+                for (int i=0; i<items.size(); i++){
+                    if (itemNumber==items.get(i).getItemNum()){
+                        mCurrentSelectedItem = items.get(i);
+                    }
+                }
             }
         }
     }
@@ -1014,6 +1026,14 @@ public class MainActivity extends AppCompatActivity {
         colors.add("Green");
         colors.add("Brown");
         colors.add("Black");
+
+        items.add(new Threat());
+        items.add(new SecurityCamera());
+        items.add(new Axe());
+        items.add(new ShotGun());
+        items.add(new Hardware());
+        items.add(new Hidden());
+        items.add(new Sprint());
 
         mRedButton = findViewById(R.id.red_button);
         mYellowButton = findViewById(R.id.yellow_button);
@@ -1662,7 +1682,7 @@ public class MainActivity extends AppCompatActivity {
                             break;
                         }
                     }
-                    GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                    GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount,mCurrentSelectedItem.getItemNum());
                     mDatabaseReference.child(GAMEDATA).setValue(gameData);
                     mDatabaseReference.child(TURN).setValue(turnValue);
                     mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
@@ -1671,8 +1691,8 @@ public class MainActivity extends AppCompatActivity {
                     System.out.println("Display giving message");
                     disableContinue();
                     String winnercolor = gameBroad.matchRoom(4).winner();
-                    mMessageView.setText("You have received an item from " + gameBroad.matchPlayer(winnercolor)
-                            );
+                    mMessageView.setEnabled(true);
+                    mMessageView.setText("You have received an item from " + gameBroad.matchPlayer(winnercolor));
                     mMessageView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
