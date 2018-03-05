@@ -537,9 +537,16 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                long starttime = System.nanoTime();
                 Handler handler1 = new Handler();
                 handler1.postDelayed( new Runnable() {
+                    @Override
+                    public void run() {
+                        mDatabaseReference.child(PLAYERBOOLEANANSWERS).push().setValue(false);
+                    }
+                },DELAYEDSECONDSFOROPTIONSCHOSEN * 1000);
+
+                Handler handler2 = new Handler();
+                handler2.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         disableYesNo();
@@ -547,9 +554,9 @@ public class MainActivity extends AppCompatActivity {
                         GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                         mDatabaseReference.child(GAMEDATA).setValue(gameData);
                         mDatabaseReference.child(TURN).setValue(-1);
-                        mDatabaseReference.child(PLAYERBOOLEANANSWERS).push().setValue(false);
                     }
-                },DELAYEDSECONDSFOROPTIONSCHOSEN * 1000);
+                }, DELAYEDSECONDSFOROPTIONSCHOSEN * 1000);
+
                 mMessageView.setVisibility(View.INVISIBLE);
                 enableYesNo();
                 mYesButton.setOnClickListener(new View.OnClickListener() {
@@ -559,19 +566,8 @@ public class MainActivity extends AppCompatActivity {
                         mMessageView.setVisibility(View.VISIBLE);
                         mMessageView.setText("Thank you, Please wait for other players");
                         disableYesNo();
-                        long elapsedTime = System.nanoTime()- starttime;
-                        long remaingTime = DELAYEDSECONDSFOROPTIONSCHOSEN * 1000 - elapsedTime;
-                        Handler handler2 = new Handler();
-                        handler2.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                mSecondCount = 2;
-                                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                                mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                                mDatabaseReference.child(TURN).setValue(-1);
-                                mDatabaseReference.child(PLAYERBOOLEANANSWERS).push().setValue(true);
-                            }
-                        },remaingTime);
+                        mDatabaseReference.child(PLAYERBOOLEANANSWERS).push().setValue(true);
+
                     }
                 });
                 mNoButton.setOnClickListener(new View.OnClickListener() {
