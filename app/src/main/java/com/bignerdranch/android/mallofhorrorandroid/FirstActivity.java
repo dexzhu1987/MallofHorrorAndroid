@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.os.Build;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -56,11 +57,13 @@ public class FirstActivity extends AppCompatActivity {
     private boolean loggedIn;
     private String roomID;
     private Context firstActivity ;
+    private AudioManager audioManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_first);
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
         Animation animTranslate = AnimationUtils.loadAnimation(this, R.anim.anim_translate);
         mPlayButton = findViewById(R.id.multiplayer_button);
@@ -256,14 +259,19 @@ public class FirstActivity extends AppCompatActivity {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
         SeekBar mSoundBar = alertLayout.findViewById(R.id.sound_seekbar);
-        TextView mSeekBar_Value = alertLayout.findViewById(R.id.seekbar_value);
-        mSeekBar_Value.setText("0");
+//        TextView mSeekBar_Value = alertLayout.findViewById(R.id.seekbar_value);
+//        mSeekBar_Value.setText("0");
+
+        audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        mSoundBar.setMax(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
+        mSoundBar.setProgress(audioManager
+                .getStreamVolume(AudioManager.STREAM_MUSIC));
 
         mSoundBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                String value = String.valueOf(mSoundBar.getProgress());
-                mSeekBar_Value.setText(value);
+                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,
+                        i, 0);
             }
 
             @Override
