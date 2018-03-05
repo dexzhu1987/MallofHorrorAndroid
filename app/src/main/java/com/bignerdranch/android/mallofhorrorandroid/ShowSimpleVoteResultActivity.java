@@ -2,6 +2,7 @@ package com.bignerdranch.android.mallofhorrorandroid;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -49,17 +50,17 @@ public class ShowSimpleVoteResultActivity extends AppCompatActivity {
 
         ++mCountSetUp;
 
-        mContinueButton = findViewById(R.id.okButton_voteSimple);
-        mContinueButton.setOnClickListener(new View.OnClickListener() {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
             @Override
-            public void onClick(View v) {
+            public void run() {
                 Intent data = new Intent();
                 data.putExtra(SETUPCOUNTED, mCountSetUp);
                 setResult(ShowSimpleVoteResultActivity.RESULT_OK, data);
                 finish();
                 overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
             }
-        });
+        },3 * 1000);
 
         List<String> keys = new ArrayList<>(mResults.keySet());
         List<Integer> values= new ArrayList<>(mResults.values());

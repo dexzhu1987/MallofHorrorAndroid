@@ -17,6 +17,8 @@ public class GameData {
     private int mPassingType;
     private String whoVoteColor;
     private String voteWhomColor;
+    private Boolean mUsedItemThreat;
+    private int mAffectedRoom;
 
     public String getmSelectedCharacter() {
         return mSelectedCharacter;
@@ -61,6 +63,20 @@ public class GameData {
     }
 
     public GameData(int mCountPhase, int mCountSetUp, int mSecondCount, int mThirdCount, int mFourthCount, int mFifthCount,
+                    int mSixCount, int mSelectedRoom, String mSelectedCharacter) {
+        this.mCountPhase = mCountPhase;
+        this.mCountSetUp = mCountSetUp;
+        this.mSecondCount = mSecondCount;
+        this.mThirdCount = mThirdCount;
+        this.mFourthCount = mFourthCount;
+        this.mFifthCount = mFifthCount;
+        this.mSixCount = mSixCount;
+        this.mPassingType = 1;
+        this.mSelectedCharacter = mSelectedCharacter;
+        this.mSelectedRoom = mSelectedRoom;
+    }
+
+    public GameData(int mCountPhase, int mCountSetUp, int mSecondCount, int mThirdCount, int mFourthCount, int mFifthCount,
                     int mSixCount, String whoVoteColor, String voteWhomColor) {
         this.mCountPhase = mCountPhase;
         this.mCountSetUp = mCountSetUp;
@@ -74,9 +90,16 @@ public class GameData {
         this.mPassingType=2;
     }
 
+    public int getmAffectedRoom() {
+        return mAffectedRoom;
+    }
+
+    public void setmAffectedRoom(int mAffectedRoom) {
+        this.mAffectedRoom = mAffectedRoom;
+    }
 
     public GameData(int mCountPhase, int mCountSetUp, int mSecondCount, int mThirdCount, int mFourthCount, int mFifthCount,
-                    int mSixCount, int mSelectedRoom, String mSelectedCharacter) {
+                    int mSixCount, boolean mUsedItem, int mAffectedRoom) {
         this.mCountPhase = mCountPhase;
         this.mCountSetUp = mCountSetUp;
         this.mSecondCount = mSecondCount;
@@ -84,9 +107,10 @@ public class GameData {
         this.mFourthCount = mFourthCount;
         this.mFifthCount = mFifthCount;
         this.mSixCount = mSixCount;
-        this.mPassingType = 1;
-        this.mSelectedCharacter = mSelectedCharacter;
-        this.mSelectedRoom = mSelectedRoom;
+        this.mPassingType = 3;
+        this.mUsedItemThreat = mUsedItem;
+
+        this.mAffectedRoom = mAffectedRoom;
     }
 
     public int getmCountPhase() {
@@ -145,6 +169,13 @@ public class GameData {
         this.mSixCount = mSixCount;
     }
 
+    public Boolean getmUsedItemThreat() {
+        return mUsedItemThreat;
+    }
+
+    public void setmUsedItemThreat(Boolean mUsedItemThreat) {
+        this.mUsedItemThreat = mUsedItemThreat;
+    }
 
     public String getWhoVoteColor() {
         return whoVoteColor;

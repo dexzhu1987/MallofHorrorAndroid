@@ -2,6 +2,7 @@ package com.bignerdranch.android.mallofhorrorandroid;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -64,17 +65,17 @@ public class ShowVoteResultActivity extends AppCompatActivity {
 
         ++mCountSetUp;
 
-        mContinueButton = findViewById(R.id.okButton_voteDetailed);
-        mContinueButton.setOnClickListener(new View.OnClickListener() {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
             @Override
-            public void onClick(View v) {
+            public void run() {
                 Intent data = new Intent();
                 data.putExtra(SETUPCOUNTED1, mCountSetUp);
                 setResult(ShowVoteResultActivity.RESULT_OK, data);
                 finish();
                 overridePendingTransition(0,0);
             }
-        });
+        },3 * 1000);
 
 
         HashMap<String, ImageView> votedImages = new HashMap<>();
