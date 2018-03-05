@@ -458,7 +458,7 @@ public class MainActivity extends AppCompatActivity {
         Collections.sort(mCurrentTeam, new Comparator<Playable>() {
             @Override
             public int compare(Playable o1, Playable o2) {
-                return o1.compareTo(o2);
+                return o1.getColor().compareTo(o2.getColor());
             }
         });
         disableContinue();
@@ -478,7 +478,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 Log.i(TAG, "firstsearch for parking: " + mCurrentTeam);
                 Log.i(TAG, "firstsearch for parking: " + firstSearch);
-                if (mMyPlayerID!=firstSearch){
+                if (mMyPlayerID==firstSearch){
                     mThirdCount++;
                     GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                     mDatabaseReference.child(GAMEDATA).setValue(gameData);
@@ -1534,12 +1534,14 @@ public class MainActivity extends AppCompatActivity {
                                     if (mCountSetUp==4*mCurrentTeam.size()) {
                                         mDatabaseReference.child(TURN).setValue(-1);
                                     } else {
+                                        int nextSearch = 0;
                                         for (int k=0; k<colors.size(); k++){
                                             if (mCurrentTeam.get(i+1).getColor().equalsIgnoreCase(colors.get(k))){
-                                                mDatabaseReference.child(TURN).setValue(k);
+                                                nextSearch = k;
                                                 break;
                                             }
                                         }
+                                        mDatabaseReference.child(TURN).setValue(nextSearch);
                                     }
 //                                    if (mCountSetUp != mCurrentTeam.size()*4)
 //                                    searchParking();
