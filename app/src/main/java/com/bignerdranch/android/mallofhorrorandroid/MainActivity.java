@@ -648,7 +648,7 @@ public class MainActivity extends AppCompatActivity {
                                             mCountSetUp = mCurrentTeam.size() * 4;
                                             GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                                             mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                                            mDatabaseReference.child(TURN).setValue(-1);
+                                            mDatabaseReference.child(TURN).setValue(-2);
                                         }
                                     }
                                 },DELAYEDSECONDSFORMESSAGEVIE * 1000);
