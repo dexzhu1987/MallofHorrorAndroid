@@ -890,6 +890,7 @@ public class MainActivity extends AppCompatActivity {
                                         updateDataFromFireBase(turn, gameData, prevTurn);
                                     }
                                     String whoseTurn = "Player " +  colors.get(turn) + " 's turn, please wait";
+                                    mMessageView.setVisibility(View.VISIBLE);
                                     mMessageView.setText(whoseTurn);
                                     mMessageView.setEnabled(false);
                                     disableContinue();
