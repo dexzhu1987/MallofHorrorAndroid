@@ -532,6 +532,7 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                long starttime = System.nanoTime();
                 Handler handler1 = new Handler();
                 handler1.postDelayed( new Runnable() {
                     @Override
@@ -549,15 +550,23 @@ public class MainActivity extends AppCompatActivity {
                 mYesButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mSecondCount = 2;
-                        disableYesNo();
+                        handler1.removeCallbacksAndMessages(null);
                         mMessageView.setVisibility(View.VISIBLE);
                         mMessageView.setText("Thank you, Please wait for other players");
-                        GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                        mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                        mDatabaseReference.child(TURN).setValue(-1);
-                        mDatabaseReference.child(PLAYERBOOLEANANSWERS).push().setValue(true);
-                        handler1.removeCallbacksAndMessages(null);
+                        disableYesNo();
+                        long elapsedTime = System.nanoTime();
+                        long remaingTime = DELAYEDSECONDSFOROPTIONSCHOSEN * 1000 - elapsedTime;
+                        Handler handler2 = new Handler();
+                        handler2.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mSecondCount = 2;
+                                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                                mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                                mDatabaseReference.child(TURN).setValue(-1);
+                                mDatabaseReference.child(PLAYERBOOLEANANSWERS).push().setValue(true);
+                            }
+                        },remaingTime);
                     }
                 });
                 mNoButton.setOnClickListener(new View.OnClickListener() {
