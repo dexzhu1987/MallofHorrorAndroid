@@ -50,7 +50,7 @@
         android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
-        android:layout_marginTop="154dp"
+        android:layout_marginTop="200dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -61,7 +61,7 @@
         android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="188dp"
-        android:layout_marginTop="154dp"
+        android:layout_marginTop="200dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -73,7 +73,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="130dp"
         android:layout_marginStart="360dp"
-        android:layout_marginTop="154dp"
+        android:layout_marginTop="200dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -87,8 +87,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="0dp"
-        android:layout_marginStart="13dp"
-        android:layout_marginTop="120dp"
+        android:layout_marginStart="19dp"
+        android:layout_marginTop="115dp"
         android:fontFamily="@font/exquisite_corpse"
         android:text="0"
         android:textColor="#FF0000"
@@ -107,8 +107,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="0dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="120dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="115dp"
         android:fontFamily="@font/exquisite_corpse"
         android:text="0"
         android:textColor="#FF0000"
@@ -125,9 +125,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="12dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="120dp"
+        android:layout_marginTop="115dp"
         android:fontFamily="@font/exquisite_corpse"
         android:text="0"
         android:textColor="#FF0000"
@@ -146,7 +146,7 @@
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="32dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="0dp"
         android:fontFamily="@font/exquisite_corpse"
         android:text="0"
         android:textColor="#FF0000"
@@ -165,7 +165,7 @@
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="32dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="0dp"
         android:fontFamily="@font/exquisite_corpse"
         android:text="0"
         android:textColor="#FF0000"
@@ -182,9 +182,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginStart="125dp"
+        android:layout_marginTop="0dp"
         android:fontFamily="@font/exquisite_corpse"
         android:text="0"
         android:textColor="#FF0000"
@@ -200,6 +200,7 @@
         android:id="@+id/red_button"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:layout_marginRight="35dp"
         android:padding="0dp"
         android:scaleType="fitXY"
         android:src="@drawable/redtoughguybttn"
@@ -210,51 +211,56 @@
         android:id="@+id/yellow_button"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:layout_marginRight="35dp"
         android:padding="0dp"
         android:scaleType="fitXY"
         android:src="@drawable/yellowtoughguybttn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/red_button" />
+        app:layout_constraintEnd_toEndOf="parent"/>
+        <!--app:layout_constraintTop_toBottomOf="@+id/red_button" />-->
 
     <ImageButton
         android:id="@+id/blue_button"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:layout_marginRight="35dp"
         android:padding="0dp"
         android:scaleType="fitXY"
         android:src="@drawable/bluetoughguybttn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/yellow_button" />
+        app:layout_constraintEnd_toEndOf="parent"/>
+        <!--app:layout_constraintTop_toBottomOf="@+id/yellow_button" />-->
 
     <ImageButton
         android:id="@+id/green_button"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:layout_marginRight="35dp"
         android:padding="0dp"
         android:scaleType="fitXY"
         android:src="@drawable/greentoughguybttn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/blue_button" />
+        app:layout_constraintEnd_toEndOf="parent"/>
+        <!--app:layout_constraintTop_toBottomOf="@+id/blue_button" />-->
 
     <ImageButton
         android:id="@+id/brown_button"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:layout_marginRight="35dp"
         android:padding="0dp"
         android:scaleType="fitXY"
         android:src="@drawable/browntoughguybttn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/green_button" />
+        app:layout_constraintEnd_toEndOf="parent"/>
+        <!--app:layout_constraintTop_toBottomOf="@+id/green_button" />-->
 
     <ImageButton
         android:id="@+id/black_button"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:layout_marginRight="35dp"
         android:padding="0dp"
         android:scaleType="fitXY"
         android:src="@drawable/blacktoughguybttn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/brown_button" />
+        app:layout_constraintEnd_toEndOf="parent"/>
+        <!--app:layout_constraintTop_toBottomOf="@+id/brown_button" />-->
 
 
     <ImageButton
