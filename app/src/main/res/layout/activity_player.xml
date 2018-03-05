@@ -82,7 +82,7 @@
         android:id="@+id/cachou_area"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="240dp"
+        android:layout_marginStart="220dp"
         android:layout_marginTop="52dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -117,7 +117,7 @@
         android:id="@+id/security_area"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="240dp"
+        android:layout_marginStart="220dp"
         android:layout_marginTop="190dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -128,7 +128,7 @@
         android:id="@+id/supermarket_area"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="120dp"
+        android:layout_marginEnd="130dp"
         android:layout_marginStart="340dp"
         android:layout_marginTop="190dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -462,7 +462,7 @@
         android:layout_width="55dp"
         android:layout_height="35dp"
         android:layout_marginBottom="32dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginEnd="160dp"
         android:padding="0dp"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -604,7 +604,7 @@
         android:layout_width="45dp"
         android:layout_height="57dp"
         android:layout_marginBottom="63dp"
-        android:layout_marginEnd="250dp"
+        android:layout_marginEnd="100dp"
         app:cardElevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -629,7 +629,7 @@
         android:layout_width="45dp"
         android:layout_height="57dp"
         android:layout_marginBottom="63dp"
-        android:layout_marginEnd="200dp"
+        android:layout_marginEnd="50dp"
         app:cardElevation="10dp"
         app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -653,7 +653,7 @@
         android:layout_width="45dp"
         android:layout_height="57dp"
         android:layout_marginBottom="63dp"
-        android:layout_marginEnd="150dp"
+        android:layout_marginEnd="0dp"
         app:cardElevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -677,7 +677,7 @@
         android:layout_width="45dp"
         android:layout_height="57dp"
         android:layout_marginBottom="3dp"
-        android:layout_marginEnd="250dp"
+        android:layout_marginEnd="100dp"
         app:cardElevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -701,7 +701,7 @@
         android:layout_width="45dp"
         android:layout_height="57dp"
         android:layout_marginBottom="3dp"
-        android:layout_marginEnd="200dp"
+        android:layout_marginEnd="50dp"
         app:cardElevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -725,7 +725,7 @@
         android:layout_width="45dp"
         android:layout_height="57dp"
         android:layout_marginBottom="3dp"
-        android:layout_marginEnd="150dp"
+        android:layout_marginEnd="0dp"
         app:cardElevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">

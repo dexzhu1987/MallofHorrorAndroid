@@ -25,7 +25,7 @@
         android:id="@+id/cachou_area_main"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="188dp"
+        android:layout_marginStart="220dp"
         android:layout_marginTop="52dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -50,7 +50,7 @@
         android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="190dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -60,8 +60,8 @@
         android:id="@+id/security_area_main"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="188dp"
-        android:layout_marginTop="200dp"
+        android:layout_marginStart="220dp"
+        android:layout_marginTop="190dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -72,8 +72,8 @@
         android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="130dp"
-        android:layout_marginStart="360dp"
-        android:layout_marginTop="200dp"
+        android:layout_marginStart="340dp"
+        android:layout_marginTop="190dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
