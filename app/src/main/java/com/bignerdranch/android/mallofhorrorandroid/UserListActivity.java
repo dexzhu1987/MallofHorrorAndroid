@@ -20,6 +20,7 @@ import com.bignerdranch.android.mallofhorrorandroid.databinding.ActivityUserList
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -41,6 +42,7 @@ public class UserListActivity extends AppCompatActivity {
     private String username;
     private Game gameMain;
     private String type;
+    private boolean isStarted;
 
     public static Intent newIntent(Context context, String type, String roomID, String username) {
         Intent intent = new Intent(context, UserListActivity.class);
@@ -61,6 +63,7 @@ public class UserListActivity extends AppCompatActivity {
         roomId = getIntent().getStringExtra(ROOMID);
         username = getIntent().getStringExtra(USERNAME);
         userActivity = UserListActivity.this;
+        isStarted = false;
 
         Log.i(LOG_TAG, "type: " + type  + " roomID: "+ roomId + " username: " + username);
 
@@ -182,6 +185,15 @@ public class UserListActivity extends AppCompatActivity {
                                         public void onDataChange(DataSnapshot dataSnapshot) {
                                             gameMain = dataSnapshot.getValue(Game.class);
                                             Intent intent = MainActivity.mainIntent(UserListActivity.this,4, gameMain, username, type);
+                                            _idleHandler.removeCallbacks(_idleRunnable);
+                                            Runnable clearDataLaterRunnerable = new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    Log.i(LOG_TAG, "set the data null due to startactivity");
+                                                    FirebaseDatabase.getInstance().getReference().child("game").child(roomId).setValue(null);
+                                                }
+                                            };
+                                            _idleHandler.postDelayed(clearDataLaterRunnerable,(3 * 1000 * 60));
                                             Log.i(LOG_TAG, "start main activity when reached 4 players");
                                             Intent serviceintent = OnClearFromRecentService.newServiceIntent(UserListActivity.this, roomId+"started");
                                             startService(serviceintent);
@@ -269,7 +281,7 @@ public class UserListActivity extends AppCompatActivity {
         @Override
         public void run() {
             Log.i(LOG_TAG, "set the data null due to inactivy");
-
+            FirebaseDatabase.getInstance().getReference().child("game").child(roomId).setValue(null);
             AlertDialog.Builder builder = new AlertDialog.Builder(UserListActivity.this);
             builder.setTitle("Idle Room");
             builder.setMessage("Due to no activity, your room has been cleared, please log in again :)");
@@ -282,6 +294,7 @@ public class UserListActivity extends AppCompatActivity {
             mAlertDialog.show();
         }
     };
+
 
     private void delayedIdle(int delayMinutes) {
         _idleHandler.removeCallbacks(_idleRunnable);
