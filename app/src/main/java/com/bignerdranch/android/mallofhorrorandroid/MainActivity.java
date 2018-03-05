@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
     private final String TURN = "Turn";
     private final String PREVTURN = "PrevTurn";
     private final String GAMEDATA = "GameData";
+    private final String PLAYERBOOLEANANSWERS = "PlayerBooleanAnswers";
 
     private final int DELAYEDSECONDSFORMESSAGEVIE = 2;
     private final int DELAYEDSECONDSFOROPTIONSCHOSEN = 5;
@@ -293,12 +294,16 @@ public class MainActivity extends AppCompatActivity {
                     messageViewInformMovetoParksearch();
                 } else if (mCountPhase==3) {
                     if (mCountSetUp==0 && (gameBroad.matchRoom(4).isEmpty() || gameBroad.getItemDeck().getItemsDeck().size() < 3)){
-                        messageViewInformParkingEmptyandMovetoChiefElection();
+                        messageViewInformRoomIsEmptyandMovetoNextPhase(4);
                     } else {
                         messageViewRelatedParkingSearchWithSearchTeam(gameData);
                     }
                 } else if (mCountPhase==4) {
+                    if (mCountSetUp==0 && gameBroad.matchRoom(5).isEmpty()){
+                        messageViewInformRoomIsEmptyandMovetoNextPhase(5);
+                    } else {
 
+                    }
                 }
             }
 
@@ -370,11 +375,15 @@ public class MainActivity extends AppCompatActivity {
         },DELAYEDSECONDSFORMESSAGEVIE * 1000);
     }
 
-    private void messageViewInformParkingEmptyandMovetoChiefElection() {
+    private void messageViewInformRoomIsEmptyandMovetoNextPhase(int roomNumber) {
         mMainActivityLayout.invalidate();
         mMessageView.setVisibility(View.VISIBLE);
         if (mSecondCount==0){
-            mMessageView.setText("Due to Parking is empty (or no more item avaiable), no searching will be performed");
+            if (roomNumber==4){
+                mMessageView.setText("Due to Parking is empty (or no more item avaiable), no searching will be performed");
+            }else if (roomNumber==5){
+                mMessageView.setText("Due to Security HQ is empty, no election will be performed");
+            }
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
@@ -388,7 +397,12 @@ public class MainActivity extends AppCompatActivity {
                 }
             },DELAYEDSECONDSFORMESSAGEVIE * 1000);
         } else {
-            mMessageView.setText("Game Phase II: Security Chief selected");
+            if (roomNumber==4){
+                mMessageView.setText("Game Phase II: Security Chief selected");
+            } else if (roomNumber==5){
+                mMessageView.setText("Game Phase III: Chief Viewing and Moving");
+            }
+
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
@@ -398,6 +412,13 @@ public class MainActivity extends AppCompatActivity {
                         mCountPhase++;
                         mCountSetUp=0;
                         mSecondCount=0;
+                        mThirdCount=0;
+                        votes.clear();
+                        mCurrentTeam.clear();
+                        mCurrentItemOptions.clear();
+                        mCurrentZombiesRooms.clear();
+                        mCurrentYesNo=false;
+                        mCurrentYesNoMain = false;
                         GameData gameData = new GameData(mCountPhase,mCountSetUp,2,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                         mDatabaseReference.child(GAMEDATA).setValue(gameData);
                         mDatabaseReference.child(TURN).setValue(-2);
@@ -420,6 +441,10 @@ public class MainActivity extends AppCompatActivity {
             }
         } else if (mCountSetUp == mCurrentTeam.size()*4 && mSecondCount == 2 ){
             messageViewInformVoteSummaryForParking(gameData);
+        } else if (mCountSetUp == mCurrentTeam.size()*4 && mSecondCount == 3){
+            messageInformTieorWinner();
+        } else if (mCountSetUp == mCurrentTeam.size()*4+3){
+            messageViewInformMovingToChiefElect();
         }
     }
 
@@ -506,16 +531,16 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                mCurrentYesNoMain = false;
                 mMessageView.setVisibility(View.INVISIBLE);
                 enableYesNo();
                 mYesButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        mCurrentYesNoMain = true;
                         disableYesNo();
-                        mSecondCount++;
-                        GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount,true,4);
-                        mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                        mDatabaseReference.child(TURN).setValue(-1);
+                        mMessageView.setVisibility(View.VISIBLE);
+                        mMessageView.setText("Thank you, Please wait for other players");
                     }
                 });
                 mNoButton.setOnClickListener(new View.OnClickListener() {
@@ -523,7 +548,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(View v) {
                         disableYesNo();
                         mMessageView.setVisibility(View.VISIBLE);
-                        mMessageView.setText("Please wait for other players");
+                        mMessageView.setText("Thank you, Please wait for other players");
                     }
                 });
                 Handler handler1 = new Handler();
@@ -532,9 +557,10 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         disableYesNo();
                         mSecondCount = 2;
-                        GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount,false,4);
+                        GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                         mDatabaseReference.child(GAMEDATA).setValue(gameData);
                         mDatabaseReference.child(TURN).setValue(-1);
+                        mDatabaseReference.child(PLAYERBOOLEANANSWERS).push().setValue(mCurrentYesNoMain);
                     }
                 },DELAYEDSECONDSFOROPTIONSCHOSEN * 1000);
             }
@@ -542,58 +568,80 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void messageViewInformIsThreatUsedParking(GameData gameData) {
-        if (gameData!=null){
-            if (gameData.getmUsedItemThreat()){
-                mMessageView.setText("One of the players will used threat");
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mMessageView.setVisibility(View.INVISIBLE);
-                        int firstSearch = 0;
-                        for (int i=0; i<colors.size(); i++){
-                            if (mCurrentTeam.get(0).getColor().equalsIgnoreCase(colors.get(i))){
-                                firstSearch = i;
-                                break;
-                            }
-                        }
-                        Log.i(TAG, "firstsearch for parking: " + mCurrentTeam);
-                        Log.i(TAG, "firstsearch for parking: " + firstSearch);
-                        if (mMyPlayerID!=firstSearch){
-                            GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                            mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                            mDatabaseReference.child(TURN).setValue(firstSearch);
-                        }
+        mDatabaseReference.child(PLAYERBOOLEANANSWERS).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<Boolean> usersChoises = new ArrayList<>();
+                for (DataSnapshot snapshot: dataSnapshot.getChildren()){
+                    usersChoises.add(snapshot.getValue(Boolean.TYPE));
+                }
+                Boolean isThereTrue = false;
+                for (int i=0; i<usersChoises.size(); i++){
+                    if (usersChoises.get(i)){
+                        isThereTrue = true;
+                        break;
                     }
-                },DELAYEDSECONDSFORMESSAGEVIE * 1000);
-            }else {
-                mMessageView.setText("Threat will not be used");
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mMessageView.setVisibility(View.INVISIBLE);
-                        int firstSearch = 0;
-                        for (int i=0; i<colors.size(); i++){
-                            if (mCurrentTeam.get(0).getColor().equalsIgnoreCase(colors.get(i))){
-                                firstSearch = i;
-                                break;
+                }
+                if (gameData!=null){
+                    if (isThereTrue){
+                        mMessageView.setText("One of the players will used threat");
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mMessageView.setVisibility(View.INVISIBLE);
+                                int firstSearch = 0;
+                                for (int i=0; i<colors.size(); i++){
+                                    if (mCurrentTeam.get(0).getColor().equalsIgnoreCase(colors.get(i))){
+                                        firstSearch = i;
+                                        break;
+                                    }
+                                }
+                                Log.i(TAG, "firstsearch for parking: " + mCurrentTeam);
+                                Log.i(TAG, "firstsearch for parking: " + firstSearch);
+                                if (mMyPlayerID!=firstSearch){
+                                    GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                                    mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                                    mDatabaseReference.child(TURN).setValue(firstSearch);
+                                }
                             }
-                        }
-                        Log.i(TAG, "firstsearch for parking: " + mCurrentTeam);
-                        Log.i(TAG, "firstsearch for parking: " + firstSearch);
-                        if (mMyPlayerID!=firstSearch){
-                            mCountSetUp = mCurrentTeam.size() * 4;
-                            GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                            mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                            mDatabaseReference.child(TURN).setValue(-1);
-                        }
+                        },DELAYEDSECONDSFORMESSAGEVIE * 1000);
+                    }else {
+                        mMessageView.setText("Threat will not be used");
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mMessageView.setVisibility(View.INVISIBLE);
+                                int firstSearch = 0;
+                                for (int i=0; i<colors.size(); i++){
+                                    if (mCurrentTeam.get(0).getColor().equalsIgnoreCase(colors.get(i))){
+                                        firstSearch = i;
+                                        break;
+                                    }
+                                }
+                                Log.i(TAG, "firstsearch for parking: " + mCurrentTeam);
+                                Log.i(TAG, "firstsearch for parking: " + firstSearch);
+                                if (mMyPlayerID!=firstSearch){
+                                    mCountSetUp = mCurrentTeam.size() * 4;
+                                    GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                                    mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                                    mDatabaseReference.child(TURN).setValue(-1);
+                                }
+                            }
+                        },DELAYEDSECONDSFORMESSAGEVIE * 1000);
                     }
-                },DELAYEDSECONDSFORMESSAGEVIE * 1000);
+                }
             }
-        }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
-    
+
     private void messageViewInformVoteSummaryForParking(GameData gameData) {
         mDatabaseReference.child(PREVTURN).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -628,13 +676,140 @@ public class MainActivity extends AppCompatActivity {
         },DELAYEDSECONDSFORMESSAGEVIE * 1000);
     }
 
+    private void messageInformTieorWinner() {
+        if (gameBroad.matchRoom(4).winner().equals("TIE")){
+            System.out.println("Result is Tie");
+            disableContinue();
+            mMessageView.setText("Result is TIE. " + " No Searching will be performed");
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mCountSetUp = mCurrentTeam.size()*4+3;
+                    GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                    mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                    mDatabaseReference.child(TURN).setValue(-1);
+                }
+            },DELAYEDSECONDSFORMESSAGEVIE*1000);
+        } else {
+            System.out.println("Winner determined");
+            disableContinue();
+            String winnercolor = gameBroad.matchRoom(4).winner();
+            mMessageView.setText("Winner is " + gameBroad.matchPlayer(winnercolor) +
+                    "\nAnd would search items");
+            gameBroad.getItemDeck().shuffle();
+            Item item1 = gameBroad.getItemDeck().deal();
+            Item item2 = gameBroad.getItemDeck().deal();
+            Item item3 = gameBroad.getItemDeck().deal();
+            List<Item> itemtemplist = new ArrayList<>();
+            itemtemplist.add(item1);
+            itemtemplist.add(item2);
+            itemtemplist.add(item3);
+            mCurrentItemOptions = itemtemplist;
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    int turnValue = 0 ;
+                    for (int i=0; i<colors.size(); i++){
+                        if (winnercolor.equalsIgnoreCase(colors.get(i))){
+                            turnValue=i;
+                            break;
+                        }
+                    }
+                    mSecondCount++;
+                    GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                    mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                    mDatabaseReference.child(TURN).setValue(turnValue);
+                }
+            },DELAYEDSECONDSFORMESSAGEVIE*1000);
+        }
+    }
+
+    private void messageViewInformMovingToChiefElect() {
+        disableContinue();
+        String winnercolor = gameBroad.matchRoom(4).winner();
+        mDatabaseReference.child(PREVTURN).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue()!=null){
+                    int prevTurn = dataSnapshot.getValue(Integer.TYPE);
+                    String receivedColor = colors.get(prevTurn);
+                    if (gameBroad.matchRoom(4).winner().equals("TIE")){
+                        mMessageView.setText("Game Phase II: Security Chief selected");
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mMessageView.setVisibility(View.INVISIBLE);
+                                mCountPhase++;
+                                mCountSetUp=0;
+                                mSecondCount=0;
+                                mThirdCount=0;
+                                votes.clear();
+                                mCurrentTeam.clear();
+                                mCurrentItemOptions.clear();
+                                mCurrentZombiesRooms.clear();
+                                mCurrentYesNo=false;
+                                mCurrentYesNoMain = false;
+                                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                                mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                                mDatabaseReference.child(TURN).setValue(-2);
+                                mDatabaseReference.child(PREVTURN).setValue(-1);
+
+                            }
+                        },DELAYEDSECONDSFORMESSAGEVIE * 1000);
+                    }else {
+                        mMessageView.setText("Player " + receivedColor + " received an item from Player " + winnercolor);
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mMessageView.setText("Game Phase II: Security Chief selected");
+                                Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mMessageView.setVisibility(View.INVISIBLE);
+                                        mCountPhase++;
+                                        mCountSetUp=0;
+                                        mSecondCount=0;
+                                        mThirdCount=0;
+                                        votes.clear();
+                                        mCurrentTeam.clear();
+                                        mCurrentItemOptions.clear();
+                                        mCurrentZombiesRooms.clear();
+                                        mCurrentYesNo=false;
+                                        mCurrentYesNoMain = false;
+                                        GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                                        mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                                        mDatabaseReference.child(TURN).setValue(-2);
+                                        mDatabaseReference.child(PREVTURN).setValue(-1);
+
+                                    }
+                                },DELAYEDSECONDSFORMESSAGEVIE * 1000);
+                            }
+                        },DELAYEDSECONDSFORMESSAGEVIE * 1000);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     private void rotateTurnAccoridngtoFirebase(int turn) {
         mPlayerButtons.get(turn).setVisibility(View.VISIBLE);
         mDatabaseReference.child(PREVTURN).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue()!=null){
-                    mPlayerButtons.get(dataSnapshot.getValue(Integer.TYPE)).setVisibility(View.INVISIBLE);
+                    if (turn!=dataSnapshot.getValue(Integer.TYPE)){
+                        mPlayerButtons.get(dataSnapshot.getValue(Integer.TYPE)).setVisibility(View.INVISIBLE);
+                    }
                 }
             }
 
@@ -1292,7 +1467,6 @@ public class MainActivity extends AppCompatActivity {
                 if (mCountSetUp >= mCurrentTeam.size()*2 && mSecondCount > 0 && mCountSetUp < mCurrentTeam.size()*4) {
                     System.out.println("Step IV: using threat");
 //                    if (teamHasThreat(mCurrentTeam) || mCurrentYesNoMain ) {
-                        System.out.println("has threat");
                         if (mSecondCount==1) {
                             disableContinue();
                             mMessageView.setText("Voting result can be changed by item THREAT, anyone want to change the result?");
@@ -1456,12 +1630,26 @@ public class MainActivity extends AppCompatActivity {
                     overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
                 }
                 String givecolor = mCurrentVoteColor;
-                if (mCountSetUp == mCurrentTeam.size()*4+1 && mSecondCount==6 ) {
+                if (mCountSetUp == mCurrentTeam.size()*4+1 && mSecondCount==6) {
+                    mSecondCount++;
+                    int turnValue = 0;
+                    for (int i=0; i<colors.size(); i++){
+                        if (givecolor.equalsIgnoreCase(colors.get(i))){
+                            turnValue = i;
+                            break;
+                        }
+                    }
+                    GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                    mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                    mDatabaseReference.child(TURN).setValue(turnValue);
+                    mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
+                }
+                if (mCountSetUp == mCurrentTeam.size()*4+1 && mSecondCount==7 ) {
                     System.out.println("Display giving message");
                     disableContinue();
                     String winnercolor = gameBroad.matchRoom(4).winner();
                     mMessageView.setText(gameBroad.matchPlayer(givecolor) + " you have received an item from " + gameBroad.matchPlayer(winnercolor)
-                            + " (keep it to yourself)");
+                            );
                     mMessageView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -1470,7 +1658,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
                 }
-                if (mCountSetUp == mCurrentTeam.size()*4+1 && mSecondCount==7) {
+                if (mCountSetUp == mCurrentTeam.size()*4+1 && mSecondCount==8) {
                     System.out.println("Player receiving confiming item");
                     Playable teammember = gameBroad.matchPlayer(givecolor);
                     ArrayList rooms = (ArrayList<Room>)gameBroad.getRooms();
@@ -1488,7 +1676,14 @@ public class MainActivity extends AppCompatActivity {
                     startActivityForResult(intent,REQUEST_CODE_MESSAGE);
                     overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
                 }
-                if (mCountSetUp == mCurrentTeam.size()*4+2) {
+                if (mCountSetUp == mCurrentTeam.size()*4+2){
+                    mCountSetUp++;
+                    GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                    mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                    mDatabaseReference.child(TURN).setValue(-1);
+                    mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
+                }
+                if (mCountSetUp == mCurrentTeam.size()*4+3) {
                     System.out.println("Display message again");
                     disableContinue();
                     String winnercolor = gameBroad.matchRoom(4).winner();
@@ -2609,7 +2804,10 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println("data null");
                 return;
             }
-           mSecondCount = ShowSimpleVoteResultActivity.getCountedSetUp(data);
+            mSecondCount = ShowSimpleVoteResultActivity.getCountedSetUp(data);
+            GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+            mDatabaseReference.child(GAMEDATA).setValue(gameData);
+            mDatabaseReference.child(TURN).setValue(-10);
         }
         if (requestCode == REQUEST_CODE_CHOOSINGITEM){
             if (data == null){
