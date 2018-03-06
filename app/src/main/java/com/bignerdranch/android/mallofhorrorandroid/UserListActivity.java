@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
@@ -282,16 +283,18 @@ public class UserListActivity extends AppCompatActivity {
         public void run() {
             Log.i(LOG_TAG, "set the data null due to inactivy");
             FirebaseDatabase.getInstance().getReference().child("game").child(roomId).setValue(null);
-            AlertDialog.Builder builder = new AlertDialog.Builder(UserListActivity.this);
-            builder.setTitle("Idle Room");
-            builder.setMessage("Due to no activity, your room has been cleared, please log in again :)");
-            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                }
-            });
-            AlertDialog mAlertDialog = builder.create();
-            mAlertDialog.show();
+            if (!UserListActivity.this.isFinishing()) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(UserListActivity.this);
+                builder.setTitle("Idle Room");
+                builder.setMessage("Due to no activity, your room has been cleared, please log in again :)");
+                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                AlertDialog mAlertDialog = builder.create();
+                mAlertDialog.show();
+            }
         }
     };
 
