@@ -80,7 +80,8 @@ public class MainActivity extends AppCompatActivity {
     private final String GAMEDATA = "GameData";
     private final String PLAYERBOOLEANANSWERS = "PlayerBooleanAnswers";
     private final String ZOMBIEROOMS = "ZombiesRooms";
-    private final String EXISTINGPLAYERIDS = "ExistedPlayerIds";
+    private final String FIRSTPLAYERINDEX = "FirstPlayerIndex";
+
 
     private final int DELAYEDSECONDSFORMESSAGEVIE = 3;
     private final int DELAYEDSECONDSFOROPTIONSCHOSEN = 10;
@@ -311,6 +312,8 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         messageViewRelatedChiefElectionWithElectionTeam(gameData);
                     }
+                } else if (mCountPhase==5) {
+                    messageViewInformRelatedtoMoveAndView(gameData);
                 }
             }
 
@@ -867,14 +870,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void messageViewInformTieorWinnerForSecurity() {
+        disableContinue();
         if (gameBroad.matchRoom(5).winner().equals("TIE") || gameBroad.matchRoom(5).isEmpty()){
-            disableContinue();
+            Random generator = new Random();
+            mCurrentStartPlayerIndex = generator.nextInt(gameBroad.getPlayers().size());
             mMessageView.setText("No chief is elected." + " A ramdom player will start first");
             mIsChiefSelected=false;
         } else {
-            System.out.println("Winner determined");
-            disableContinue();
             String winnercolor = gameBroad.matchRoom(5).winner();
+            mCurrentStartPlayerIndex = gameBroad.getPlayers().indexOf(gameBroad.matchPlayer(winnercolor));
             mMessageView.setText("Winner is " + gameBroad.matchPlayer(winnercolor) +
                     "\nAnd would see the approaching zombies");
             mIsChiefSelected = true;
@@ -915,6 +919,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.i(TAG, "firstsearch for parking: " + firstSearch);
                 if (mMyPlayerID==firstSearch){
                     mDatabaseReference.child(ZOMBIEROOMS).setValue(mCurrentZombiesRooms);
+                    mDatabaseReference.child(FIRSTPLAYERINDEX).setValue(mCurrentPlayerNumber);
                 }
             }
         },DELAYEDSECONDSFORMESSAGEVIE*1000);
@@ -927,6 +932,20 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue()!=null){
                     mCurrentZombiesRooms = (ArrayList<Integer>) dataSnapshot.getValue();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        mDatabaseReference.child(FIRSTPLAYERINDEX).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue()!=null){
+                    mCurrentStartPlayerIndex = dataSnapshot.getValue(Integer.TYPE);
+                    mCurrentStartPlayer = gameBroad.getPlayers().get(mCurrentStartPlayerIndex);
                 }
             }
 
@@ -1083,6 +1102,114 @@ public class MainActivity extends AppCompatActivity {
         },DELAYEDSECONDSFORMESSAGEVIE*1000);
     }
 
+    private void messageViewInformRelatedtoMoveAndView(GameData gameData) {
+        if (mCountSetUp==0){
+            messageViewReinformIsChiefElectedAndDetermineNextMove();
+        } else if (mCountSetUp==1 && mSecondCount==1) {
+            messageViewInformChiefRoomNumber(gameData);
+        } else if (mCountSetUp==mCurrentPlayerNumber*2) {
+            disableContinue();
+            mMessageView.setVisibility(View.VISIBLE);
+            mMessageView.setText("Room Selection is Finished, now we move character into the Room Individually");
+
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    String message = "";
+                    for (int i=0; i<roomspicked.size(); i++){
+                        message += "Player " + gameBroad.getPlayers().get(playersIndex.get(i)).getColor() + " to Room " + roomspicked.get(i);
+                    }
+                    mMessageView.setText("Player Choises are: " + message);
+                    Handler handler1 = new Handler();
+                    handler1.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            int nextMove = 0;
+                            for (int i=0; i<colors.size(); i++){
+                                if (mCurrentStartPlayer.getColor().equalsIgnoreCase(colors.get(i))){
+                                    nextMove = i;
+                                }
+                            }
+                            mDatabaseReference.child(TURN).setValue(nextMove);
+                        }
+                    },10*1000);
+                }
+            },DELAYEDSECONDSFORMESSAGEVIE * 1000);
+        }
+    }
+
+    private void messageViewReinformIsChiefElectedAndDetermineNextMove() {
+        disableContinue();
+        mMessageView.setVisibility(View.VISIBLE);
+        Handler handler = new Handler();
+        if (mIsChiefSelected){
+            mMessageView.setText("Due to no chief, a ramdom player will start first");
+        } else {
+            mMessageView.setText("Chief was elected, chief will perform view and choose room number");
+        }
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                int nextMove = 0;
+                for (int i=0; i<colors.size(); i++){
+                    if (mCurrentStartPlayer.getColor().equalsIgnoreCase(colors.get(i))){
+                        nextMove = i;
+                    }
+                }
+                mDatabaseReference.child(TURN).setValue(nextMove);
+            }
+        },DELAYEDSECONDSFORMESSAGEVIE * 1000);
+    }
+
+    private void messageViewInformChiefRoomNumber(GameData gameData) {
+        disableContinue();
+        mMessageView.setVisibility(View.VISIBLE);
+        int chiefElection = gameData.getItemNumber();
+        String roomName = gameBroad.matchRoom(chiefElection).getName();
+        mDatabaseReference.child(PREVTURN).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue()!=null){
+                    int prevTurn = dataSnapshot.getValue(Integer.TYPE);
+                    if (mMyPlayerID!= prevTurn){
+                        updateDataFromFireBase(0,gameData,prevTurn);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        mMessageView.setText("After reviewing the security cameara, chief will move to Room " + chiefElection + " : " + roomName);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                ++mCountSetUp;
+                int q = mCurrentStartPlayerIndex + 1;
+                int i = 0;
+                if (q < gameBroad.getPlayers().size()) {
+                    i = q;
+                } else {
+                    i = q - gameBroad.getPlayers().size();
+                }
+                int nextMove = 0;
+                for (int k=0; k<colors.size(); k++){
+                    if (gameBroad.getPlayers().get(i).getColor().equalsIgnoreCase(colors.get(k))){
+                        nextMove = k;
+                    }
+                }
+                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount,mCurrentRoomPickedNumber,5);
+                mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
+                mDatabaseReference.child(TURN).setValue(nextMove);
+            }
+        },DELAYEDSECONDSFORMESSAGEVIE*1000);
+    }
+
     private void rotateTurnAccoridngtoFirebase(int turn) {
         mPlayerButtons.get(turn).setVisibility(View.VISIBLE);
         mDatabaseReference.child(PREVTURN).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -1215,6 +1342,11 @@ public class MainActivity extends AppCompatActivity {
                 }
                 mCurrentVoteColor = colors.get(turn);
             }
+        } else if (gameData.getmPassingType()==5){
+            int choosedRoomNumber = gameData.getSelectedRoomPhaseFive();
+            int playerIndex = gameData.getPlayerIndex();
+            roomspicked.add(choosedRoomNumber);
+            playersIndex.add(playerIndex);
         }
     }
 
@@ -2317,14 +2449,29 @@ public class MainActivity extends AppCompatActivity {
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivityForResult(intent,REQUEST_CODE_ROOM);
                 overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
-                playersIndex.add(mCurrentStartPlayerIndex);
+                playersIndex.add(mMyPlayerID);
             }
             if (mCountSetUp==1) {
                 System.out.println("Colleting first player room");
                 roomspicked.add(mCurrentRoomPickedNumber);
                 ++mCountSetUp;
-                if (mCountSetUp!=2)
-                viewAndMove();
+                int q = mCurrentStartPlayerIndex + 1;
+                int i = 0;
+                if (q < mCurrentPlayerNumber) {
+                    i = q;
+                } else {
+                    i = q - mCurrentPlayerNumber;
+                }
+                int nextMove = 0;
+                for (int k=0; k<colors.size(); k++){
+                    if (gameBroad.getPlayers().get(i).getColor().equalsIgnoreCase(colors.get(k))){
+                        nextMove = k;
+                    }
+                }
+                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount,mCurrentRoomPickedNumber,mCurrentStartPlayerIndex);
+                mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
+                mDatabaseReference.child(TURN).setValue(nextMove);
             }
         }
         if (mCountSetUp<2 && mIsChiefSelected && mSecondCount<2){
@@ -2349,29 +2496,24 @@ public class MainActivity extends AppCompatActivity {
                 overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
             }
             if (mCountSetUp==1 && mSecondCount==1){
-                System.out.println("Chief Room revealing");
                 roomspicked.add(mCurrentRoomPickedNumber);
-                disableContinue();
-                mMessageView.setText("The chief will move to room " + mCurrentRoomPickedNumber);
-                mMessageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        enableContinue();
-                        ++mCountSetUp;
-                    }
-                });
+                GameData gameData =  new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount,mCurrentRoomPickedNumber,mCurrentStartPlayerIndex);
+                System.out.println("Chief Room revealing");
+                mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
+                mDatabaseReference.child(TURN).setValue(-1);
             }
         }
         if (mCountSetUp>=2 && mCountSetUp<mCurrentPlayerNumber*2) {
+            int q = mCurrentStartPlayerIndex + mCountSetUp / 2;
+            int i = 0;
+            if (q < mCurrentPlayerNumber) {
+                i = q;
+            } else {
+                i = q - mCurrentPlayerNumber;
+            }
             if (mCountSetUp % 2 == 0  && mCountSetUp<mCurrentPlayerNumber*2) {
                 System.out.println("Selecting Room");
-                int q = mCurrentStartPlayerIndex + mCountSetUp / 2;
-                int i = 0;
-                if (q < mCurrentPlayerNumber) {
-                    i = q;
-                } else {
-                    i = q - mCurrentPlayerNumber;
-                }
                 playersIndex.add(i);
                 String playerColor = gameBroad.getPlayers().get(i).getColor();
                 String message = gameBroad.getPlayers().get(i) + " please select your room to move to";
@@ -2384,11 +2526,28 @@ public class MainActivity extends AppCompatActivity {
                 overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
             }
             if (mCountSetUp % 2 == 1 && mCountSetUp<mCurrentPlayerNumber*2) {
-                System.out.println("Collecting the Rooms");
                 roomspicked.add(mCurrentRoomPickedNumber);
                 ++mCountSetUp;
-                if (mCountSetUp!=mCurrentPlayerNumber*2 )
-                viewAndMove();
+                int z = 0;
+                if (i+1 < mCurrentPlayerNumber){
+                    z = i+1;
+                } else {
+                    z = i+1 - mCurrentPlayerNumber;
+                }
+                int nextMove = 0;
+                for (int k=0; k<colors.size(); k++){
+                    if (gameBroad.getPlayers().get(z).getColor().equalsIgnoreCase(colors.get(k))){
+                        nextMove = k;
+                    }
+                }
+                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount,mCurrentRoomPickedNumber,i);
+                mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
+                if (mCountSetUp==mCurrentPlayerNumber*2){
+                    mDatabaseReference.child(TURN).setValue(-1);
+                } else {
+                    mDatabaseReference.child(TURN).setValue(nextMove);
+                }
             }
         }
         if (mCountSetUp>=mCurrentPlayerNumber*2 && mCountSetUp<mCurrentPlayerNumber*4){

@@ -20,6 +20,9 @@ public class GameData {
     private Boolean mUsedItemThreat;
     private int mAffectedRoom;
     private int mItemNumber;
+    private int mSelectedRoomPhaseFive;
+    private int mPlayerIndex;
+
 
     public String getmSelectedCharacter() {
         return mSelectedCharacter;
@@ -102,7 +105,6 @@ public class GameData {
         this.mSixCount = mSixCount;
         this.mPassingType = 3;
         this.mUsedItemThreat = mUsedItem;
-
         this.mAffectedRoom = mAffectedRoom;
     }
 
@@ -123,11 +125,41 @@ public class GameData {
         this.mFourthCount = mFourthCount;
         this.mFifthCount = mFifthCount;
         this.mSixCount = mSixCount;
-        this.mPassingType = 4;
-
         this.mItemNumber = mItemNumber;
-
+        this.mPassingType = 4;
     }
+
+    public int getSelectedRoomPhaseFive() {
+        return mSelectedRoomPhaseFive;
+    }
+
+    public void setSelectedRoomPhaseFive(int selectedRoomPhaseFive) {
+        mSelectedRoomPhaseFive = selectedRoomPhaseFive;
+    }
+
+    public int getPlayerIndex() {
+        return mPlayerIndex;
+    }
+
+    public void setPlayerIndex(int playerIndex) {
+        mPlayerIndex = playerIndex;
+    }
+
+    public GameData(int mCountPhase, int mCountSetUp, int mSecondCount, int mThirdCount, int mFourthCount, int mFifthCount,
+                    int mSixCount, int mSelectRoomPhaseFive, int mPlayerIndex) {
+        this.mCountPhase = mCountPhase;
+        this.mCountSetUp = mCountSetUp;
+        this.mSecondCount = mSecondCount;
+        this.mThirdCount = mThirdCount;
+        this.mFourthCount = mFourthCount;
+        this.mFifthCount = mFifthCount;
+        this.mSixCount = mSixCount;
+        this.mPassingType = 5;
+        this.mSelectedRoomPhaseFive = mSelectRoomPhaseFive;
+        this.mPlayerIndex = mPlayerIndex;
+    }
+
+
 
     public int getmCountPhase() {
         return mCountPhase;

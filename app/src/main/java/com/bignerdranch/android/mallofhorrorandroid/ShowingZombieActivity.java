@@ -2,6 +2,7 @@ package com.bignerdranch.android.mallofhorrorandroid;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -50,18 +51,19 @@ public class ShowingZombieActivity extends AppCompatActivity {
 
         ++mCountSetUp;
 
-        mContinueButton = findViewById(R.id.okButton_showZombie);
-        mContinueButton.setOnClickListener(new View.OnClickListener() {
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
             @Override
-            public void onClick(View v) {
-                System.out.println(mCountSetUp);
+            public void run() {
                 Intent data = new Intent();
                 data.putExtra(SETUPCOUNTED, mCountSetUp);
                 setResult(RESULT_OK, data);
                 finish();
                 overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
             }
-        });
+        }, 10*1000);
+
 
         for (int i=0; i<mRooms.size(); i++){
             if (mRooms.get(i)==1){
