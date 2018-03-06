@@ -474,6 +474,9 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                otherCommonSetUp();
+                Log.i(TAG, "theTeam: " + mCurrentTeam);
+                Log.i(TAG, "colors: " + colors);
                 mMessageView.setVisibility(View.INVISIBLE);
                 int firstSearch = 0;
                 for (int i=0; i<colors.size(); i++){
@@ -1411,6 +1414,7 @@ public class MainActivity extends AppCompatActivity {
 
         mLoading.startAnimation(animRotate);
 
+        colors.clear();
         colors.add("Red");
         colors.add("Yellow");
         colors.add("Blue");
@@ -1418,6 +1422,7 @@ public class MainActivity extends AppCompatActivity {
         colors.add("Brown");
         colors.add("Black");
 
+        items.clear();
         items.add(new Threat());
         items.add(new SecurityCamera());
         items.add(new Axe());
