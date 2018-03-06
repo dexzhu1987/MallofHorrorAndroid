@@ -254,85 +254,81 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
-
-    <ImageView
-        android:id="@+id/shadow_gunman"
-        android:layout_width="59dp"
-        android:layout_height="65dp"
-        android:layout_marginBottom="2dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="24dp"
-        android:scaleType="fitXY"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.995"
-        app:srcCompat="@drawable/showdowdrop" />
-
-    <ImageView
-        android:id="@+id/shadow_toughguy"
-        android:layout_width="59dp"
-        android:layout_height="65dp"
-        android:layout_marginBottom="2dp"
-        android:layout_marginStart="63dp"
-        android:layout_marginTop="24dp"
-        android:scaleType="fitXY"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@drawable/showdowdrop" />
-
-    <ImageView
-        android:id="@+id/shadow_model"
-        android:layout_width="59dp"
-        android:layout_height="65dp"
-        android:layout_marginBottom="2dp"
-        android:layout_marginStart="116dp"
-        android:layout_marginTop="24dp"
-        android:scaleType="fitXY"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@drawable/showdowdrop" />
-
-    <ImageButton
-        android:id="@+id/redtoughman_button"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginBottom="24dp"
-        android:layout_marginStart="68dp"
-        android:background="@drawable/round_button"
-        android:scaleType="fitXY"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/redtoughguybttn" />
-
-    <ImageButton
-        android:id="@+id/redmodel_button"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginBottom="24dp"
-        android:layout_marginStart="120dp"
-        android:background="@drawable/round_button"
-        android:scaleType="fitXY"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/redmodelbttn" />
-
-    <ImageButton
-        android:id="@+id/redgunman_button"
-        style="@android:style/Widget.DeviceDefault.ImageButton"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+<!--character icon-->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:layout_marginBottom="24dp"
         android:layout_marginStart="16dp"
-        android:background="@drawable/round_button"
-        android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/redgunmanbttn" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.995">
+
+        <ImageButton
+            android:id="@+id/redgunman_button"
+            style="@android:style/Widget.DeviceDefault.ImageButton"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_marginRight="3dp"
+            android:background="@drawable/round_button"
+            android:scaleType="fitXY"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/redgunmanbttn" />
+
+        <ImageButton
+            android:id="@+id/redtoughman_button"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/round_button"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/redtoughguybttn" />
+
+        <ImageButton
+            android:id="@+id/redmodel_button"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:background="@drawable/round_button"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/redmodelbttn" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginLeft="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.995">
+
+        <ImageView
+            android:id="@+id/shadow_gumman"
+            android:layout_width="59dp"
+            android:layout_height="65dp"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/showdowdrop" />
+
+        <ImageView
+            android:id="@+id/shadow_toughguy"
+            android:layout_width="59dp"
+            android:layout_height="65dp"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/showdowdrop" />
+
+        <ImageView
+            android:id="@+id/shadow_model"
+            android:layout_width="59dp"
+            android:layout_height="65dp"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/showdowdrop" />
+    </LinearLayout>
+
 
 
     <ImageButton
@@ -422,7 +418,7 @@
         android:layout_width="59dp"
         android:layout_height="65dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="123dp"
+        android:layout_marginEnd="7dp"
         android:layout_marginTop="8dp"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -436,7 +432,7 @@
         android:layout_width="60dp"
         android:layout_height="65dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="12dp"
+        android:layout_marginEnd="5dp"
         android:layout_marginTop="8dp"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -462,7 +458,7 @@
         android:layout_width="55dp"
         android:layout_height="35dp"
         android:layout_marginBottom="32dp"
-        android:layout_marginEnd="160dp"
+        android:layout_marginEnd="9dp"
         android:padding="0dp"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -601,18 +597,18 @@
 
     <android.support.v7.widget.CardView
         android:id="@+id/cardviewitem1"
-        android:layout_width="45dp"
-        android:layout_height="57dp"
-        android:layout_marginBottom="63dp"
-        android:layout_marginEnd="100dp"
+        android:layout_width="55dp"
+        android:layout_height="67dp"
+        android:layout_marginBottom="250dp"
+        android:layout_marginEnd="75dp"
         app:cardElevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <ImageButton
             android:id="@+id/itemSolt1"
-            android:layout_width="45dp"
-            android:layout_height="57dp"
+            android:layout_width="55dp"
+            android:layout_height="67dp"
             android:layout_marginBottom="168dp"
             android:layout_marginEnd="64dp"
             android:background="@drawable/button_shawdow"
@@ -626,18 +622,18 @@
 
     <android.support.v7.widget.CardView
         android:id="@+id/cardviewitem2"
-        android:layout_width="45dp"
-        android:layout_height="57dp"
-        android:layout_marginBottom="63dp"
-        android:layout_marginEnd="50dp"
+        android:layout_width="55dp"
+        android:layout_height="67dp"
+        android:layout_marginBottom="250dp"
+        android:layout_marginEnd="10dp"
         app:cardElevation="10dp"
         app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <ImageButton
             android:id="@+id/itemSolt2"
-            android:layout_width="45dp"
-            android:layout_height="57dp"
+            android:layout_width="55dp"
+            android:layout_height="67dp"
             android:layout_marginBottom="168dp"
             android:layout_marginEnd="8dp"
             android:padding="0dp"
@@ -650,18 +646,18 @@
 
     <android.support.v7.widget.CardView
         android:id="@+id/cardviewitem3"
-        android:layout_width="45dp"
-        android:layout_height="57dp"
-        android:layout_marginBottom="63dp"
-        android:layout_marginEnd="0dp"
+        android:layout_width="55dp"
+        android:layout_height="67dp"
+        android:layout_marginBottom="180dp"
+        android:layout_marginEnd="75dp"
         app:cardElevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <ImageButton
             android:id="@+id/itemSolt3"
-            android:layout_width="45dp"
-            android:layout_height="57dp"
+            android:layout_width="55dp"
+            android:layout_height="67dp"
             android:layout_marginBottom="100dp"
             android:layout_marginEnd="64dp"
             android:padding="0dp"
@@ -674,18 +670,18 @@
 
     <android.support.v7.widget.CardView
         android:id="@+id/cardviewitem4"
-        android:layout_width="45dp"
-        android:layout_height="57dp"
-        android:layout_marginBottom="3dp"
-        android:layout_marginEnd="100dp"
+        android:layout_width="55dp"
+        android:layout_height="67dp"
+        android:layout_marginBottom="180dp"
+        android:layout_marginEnd="10dp"
         app:cardElevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <ImageButton
             android:id="@+id/itemSolt4"
-            android:layout_width="45dp"
-            android:layout_height="57dp"
+            android:layout_width="55dp"
+            android:layout_height="67dp"
             android:layout_marginBottom="100dp"
             android:layout_marginEnd="8dp"
             android:padding="0dp"
@@ -698,18 +694,18 @@
 
     <android.support.v7.widget.CardView
         android:id="@+id/cardviewitem5"
-        android:layout_width="45dp"
-        android:layout_height="57dp"
-        android:layout_marginBottom="3dp"
-        android:layout_marginEnd="50dp"
+        android:layout_width="55dp"
+        android:layout_height="67dp"
+        android:layout_marginBottom="110dp"
+        android:layout_marginEnd="75dp"
         app:cardElevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <ImageButton
             android:id="@+id/itemSolt5"
-            android:layout_width="45dp"
-            android:layout_height="57dp"
+            android:layout_width="55dp"
+            android:layout_height="67dp"
             android:layout_marginBottom="32dp"
             android:layout_marginEnd="64dp"
             android:padding="0dp"
@@ -722,18 +718,18 @@
 
     <android.support.v7.widget.CardView
         android:id="@+id/cardviewitem6"
-        android:layout_width="45dp"
-        android:layout_height="57dp"
-        android:layout_marginBottom="3dp"
-        android:layout_marginEnd="0dp"
+        android:layout_width="55dp"
+        android:layout_height="67dp"
+        android:layout_marginBottom="110dp"
+        android:layout_marginEnd="10dp"
         app:cardElevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <ImageButton
             android:id="@+id/itemSolt6"
-            android:layout_width="45dp"
-            android:layout_height="57dp"
+            android:layout_width="55dp"
+            android:layout_height="67dp"
             android:layout_marginBottom="32dp"
             android:layout_marginEnd="8dp"
             android:padding="0dp"

@@ -195,7 +195,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.713" />
+<RelativeLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
+
+</RelativeLayout>
     <ImageButton
         android:id="@+id/red_button"
         android:layout_width="60dp"
@@ -204,8 +209,7 @@
         android:padding="0dp"
         android:scaleType="fitXY"
         android:src="@drawable/redtoughguybttn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <ImageButton
         android:id="@+id/yellow_button"

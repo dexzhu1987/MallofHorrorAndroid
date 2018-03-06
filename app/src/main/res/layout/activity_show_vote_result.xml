@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    android:background="#000000"
+    android:background="@drawable/messagebg"
     tools:context="com.bignerdranch.android.mallofhorrorandroid.ShowVoteResultActivity">
     <LinearLayout
         android:layout_width="wrap_content"
@@ -15,11 +15,32 @@
         android:layout_gravity="center">
 
         <LinearLayout
+            android:layout_width="250dp"
+            android:layout_height="40dp"
+            android:orientation="vertical"
+            android:background="#010101"
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/digital"
+                android:text="Vote Result"
+                android:textAlignment="center"
+                android:textColor="#00FE00"
+                android:layout_gravity="center"
+                android:textSize="35dp" />
+        </LinearLayout>
+
+
+
+        <LinearLayout
             android:layout_width="550dp"
             android:layout_height="30dp"
             android:orientation="horizontal"
             android:padding="2dp"
-            android:background="#808080">
+            android:background="#000000">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -112,8 +133,6 @@
                 app:srcCompat="@drawable/votingnormalbttn" />
         </LinearLayout>
 
-
-
         <LinearLayout
             android:layout_width="550dp"
             android:layout_height="30dp"
@@ -125,7 +144,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="225dp"
-                android:textColor="#329932"
+                android:textColor="#00FE00"
                 android:layout_marginLeft="50dp"
                 android:textSize="20sp"
                 android:layout_gravity="center"
@@ -198,17 +217,18 @@
         android:layout_gravity="center">
 
         <LinearLayout
-            android:layout_width="550dp"
+            android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:background="#000000"
+            android:gravity="center">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#FFFFFF"
                 android:textSize="20dp"
-                android:text="SUMMARY:"
-                android:layout_gravity="center"/>
+                android:text="SUMMARY:"/>
         </LinearLayout>
 
         <LinearLayout
@@ -287,7 +307,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#ffff00"
-                android:layout_marginRight="20dp"
+                android:layout_marginRight="18dp"
                 android:textSize="20dp"
                 android:text="YELLOW:"
                 android:layout_gravity="center"/>
@@ -297,7 +317,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginRight="40dp"
+                android:layout_marginRight="50dp"
                 android:fontFamily="@font/digital"
                 android:text="0"
                 android:textColor="#ffff00"
@@ -307,7 +327,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#00ff00"
-                android:layout_marginRight="40dp"
+                android:layout_marginRight="20dp"
                 android:textSize="20dp"
                 android:text="GREEN:"
                 android:layout_gravity="center"/>
@@ -316,7 +336,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginRight="88dp"
+                android:layout_marginRight="90dp"
                 android:fontFamily="@font/digital"
                 android:text="0"
                 android:textColor="#00ff00"
