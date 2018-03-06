@@ -429,7 +429,7 @@ public class MainActivity extends AppCompatActivity {
         if (mThirdCount==0){
             messageViewInformExistedMembers(4);
         } else if (mCountSetUp == mCurrentTeam.size()*2  && mSecondCount == 0){
-            messageViewInformVoteResult(gameData);
+            messageViewInformVoteResult(gameData,4);
         } else if (mCountSetUp >= mCurrentTeam.size()*2 && mSecondCount > 0 && mCountSetUp < mCurrentTeam.size()*4) {
             if (mSecondCount==1){
                 messageViewInformThreatUsingCanChangedVoteResult();
@@ -437,9 +437,9 @@ public class MainActivity extends AppCompatActivity {
                 messageViewInformIsThreatUsed(gameData);
             }
         } else if (mCountSetUp == mCurrentTeam.size()*4 && mSecondCount == 2 ){
-            messageViewInformVoteSummary(gameData);
+            messageViewInformVoteSummary(gameData,4);
         } else if (mCountSetUp == mCurrentTeam.size()*4 && mSecondCount == 3){
-            messageInformTieorWinner();
+            messageInformTieorWinner(4);
         } else if (mCountSetUp == mCurrentTeam.size()*4+3){
             messageViewInformMovingToChiefElect();
         }
@@ -489,7 +489,7 @@ public class MainActivity extends AppCompatActivity {
         },DELAYEDSECONDSFORMESSAGEVIE * 1000);
     }
 
-    private void messageViewInformVoteResult(GameData gameData) {
+    private void messageViewInformVoteResult(GameData gameData, int roomNumber) {
         mDatabaseReference.child(PREVTURN).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -515,8 +515,8 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 Log.i(TAG, "vote results: " + votes);
                 mMessageView.setVisibility(View.INVISIBLE);
-                gameBroad.matchRoom(4).resetVoteResult();
-                gameBroad.matchRoom(4).voteResultAfterVote(votes);
+                gameBroad.matchRoom(roomNumber).resetVoteResult();
+                gameBroad.matchRoom(roomNumber).voteResultAfterVote(votes);
                 ArrayList votes1 = (ArrayList<String>) votes;
                 System.out.println("Step III: show vote result");
                 System.out.println(votes1);
@@ -661,7 +661,7 @@ public class MainActivity extends AppCompatActivity {
         },1000);
     }
 
-    private void messageViewInformVoteSummary(GameData gameData) {
+    private void messageViewInformVoteSummary(GameData gameData, int roomNumber) {
         mDatabaseReference.child(PREVTURN).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -687,7 +687,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 mMessageView.setVisibility(View.INVISIBLE);
                 System.out.println("Show summary");
-                HashMap<String, Integer> results = gameBroad.matchRoom(4).getCurrentVoteResult();
+                HashMap<String, Integer> results = gameBroad.matchRoom(roomNumber).getCurrentVoteResult();
                 Intent intent = ShowSimpleVoteResultActivity.newVoteResultIntent(MainActivity.this,results,mSecondCount);
                 startActivityForResult(intent,REQUEST_CODE_VIEWSIMPLERESULT);
                 overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
@@ -695,8 +695,8 @@ public class MainActivity extends AppCompatActivity {
         },DELAYEDSECONDSFORMESSAGEVIE * 1000);
     }
 
-    private void messageInformTieorWinner() {
-        if (gameBroad.matchRoom(4).winner().equals("TIE")){
+    private void messageInformTieorWinner(int roomNumber) {
+        if (gameBroad.matchRoom(roomNumber).winner().equals("TIE")){
             System.out.println("Result is Tie");
             disableContinue();
             mMessageView.setText("Result is TIE. " + " No Searching will be performed");
@@ -713,7 +713,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             System.out.println("Winner determined");
             disableContinue();
-            String winnercolor = gameBroad.matchRoom(4).winner();
+            String winnercolor = gameBroad.matchRoom(roomNumber).winner();
             mMessageView.setText("Winner is " + gameBroad.matchPlayer(winnercolor) +
                     "\nAnd would search items");
             gameBroad.getItemDeck().shuffle();
@@ -846,7 +846,7 @@ public class MainActivity extends AppCompatActivity {
         if (mThirdCount==0){
             messageViewInformExistedMembers(5);
         } else if (mCountSetUp == mCurrentTeam.size()*2  && mSecondCount == 0){
-            messageViewInformVoteResult(gameData);
+            messageViewInformVoteResult(gameData,5);
         } else if (mCountSetUp >= mCurrentTeam.size()*2 && mSecondCount > 0 && mCountSetUp < mCurrentTeam.size()*4) {
             if (mSecondCount==1){
                 messageViewInformThreatUsingCanChangedVoteResult();
@@ -854,7 +854,7 @@ public class MainActivity extends AppCompatActivity {
                 messageViewInformIsThreatUsed(gameData);
             }
         } else if (mCountSetUp == mCurrentTeam.size()*4 && mSecondCount == 2 ){
-            messageViewInformVoteSummary(gameData);
+            messageViewInformVoteSummary(gameData,5);
         }
     }
 
