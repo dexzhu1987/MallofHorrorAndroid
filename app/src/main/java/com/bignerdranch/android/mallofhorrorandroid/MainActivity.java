@@ -520,7 +520,7 @@ public class MainActivity extends AppCompatActivity {
                 ArrayList votes1 = (ArrayList<String>) votes;
                 System.out.println("Step III: show vote result");
                 System.out.println(votes1);
-                Intent intent = ShowVoteResultActivity.newVoteResultIntent(MainActivity.this, votes1,gameBroad.matchRoom(4).getCurrentVoteResult(),mSecondCount);
+                Intent intent = ShowVoteResultActivity.newVoteResultIntent(MainActivity.this, votes1,gameBroad.matchRoom(roomNumber).getCurrentVoteResult(),mSecondCount);
                 startActivityForResult(intent, REQUEST_CODE_VIEWRESULT);
                 overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
             }
