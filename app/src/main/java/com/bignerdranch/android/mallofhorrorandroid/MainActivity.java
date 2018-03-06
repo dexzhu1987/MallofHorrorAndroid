@@ -846,7 +846,7 @@ public class MainActivity extends AppCompatActivity {
             },DELAYEDSECONDSFORMESSAGEVIE * 1000);
         }
     }
-    
+
     private void messageViewRelatedChiefElectionWithElectionTeam(GameData gameData) {
         if (mThirdCount==0){
             messageViewInformExistedMembers(5);
@@ -868,9 +868,10 @@ public class MainActivity extends AppCompatActivity {
         mDatabaseReference.child(PREVTURN).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getValue()!=null){
-                    if (turn!=dataSnapshot.getValue(Integer.TYPE)){
-                        mPlayerButtons.get(dataSnapshot.getValue(Integer.TYPE)).setVisibility(View.INVISIBLE);
+                if (dataSnapshot.getValue()!=null ){
+                    int prevTurn = dataSnapshot.getValue(Integer.TYPE)
+                    if (turn!=prevTurn && prevTurn >= 0){
+                        mPlayerButtons.get(prevTurn).setVisibility(View.INVISIBLE);
                     }
                 }
             }
