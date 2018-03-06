@@ -79,6 +79,8 @@ public class MainActivity extends AppCompatActivity {
     private final String PREVTURN = "PrevTurn";
     private final String GAMEDATA = "GameData";
     private final String PLAYERBOOLEANANSWERS = "PlayerBooleanAnswers";
+    private final String ZOMBIEROOMS = "ZombiesRooms";
+    private final String EXISTINGPLAYERIDS = "ExistedPlayerIds";
 
     private final int DELAYEDSECONDSFORMESSAGEVIE = 3;
     private final int DELAYEDSECONDSFOROPTIONSCHOSEN = 10;
@@ -246,7 +248,6 @@ public class MainActivity extends AppCompatActivity {
                     FirebaseDatabase.getInstance().getReference().child("game").child(mDatabaseGame.getRoomId()).setValue(null);
                 }
                 return;
-
             }
         }
     }
@@ -439,7 +440,7 @@ public class MainActivity extends AppCompatActivity {
         } else if (mCountSetUp == mCurrentTeam.size()*4 && mSecondCount == 2 ){
             messageViewInformVoteSummary(gameData,4);
         } else if (mCountSetUp == mCurrentTeam.size()*4 && mSecondCount == 3){
-            messageInformTieorWinner(4);
+            messageInformTieorWinnerForParking(4);
         } else if (mCountSetUp == mCurrentTeam.size()*4+3){
             messageViewInformMovingToChiefElect();
         }
@@ -611,12 +612,11 @@ public class MainActivity extends AppCompatActivity {
                                         for (int i=0; i<colors.size(); i++){
                                             if (mCurrentTeam.get(0).getColor().equalsIgnoreCase(colors.get(i))){
                                                 firstSearch = i;
-                                                break;
                                             }
                                         }
                                         Log.i(TAG, "firstsearch for parking: " + mCurrentTeam);
                                         Log.i(TAG, "firstsearch for parking: " + firstSearch);
-                                        if (mMyPlayerID!=firstSearch){
+                                        if (mMyPlayerID==firstSearch){
                                             GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                                             mDatabaseReference.child(GAMEDATA).setValue(gameData);
                                             mDatabaseReference.child(TURN).setValue(firstSearch);
@@ -695,7 +695,7 @@ public class MainActivity extends AppCompatActivity {
         },DELAYEDSECONDSFORMESSAGEVIE * 1000);
     }
 
-    private void messageInformTieorWinner(int roomNumber) {
+    private void messageInformTieorWinnerForParking(int roomNumber) {
         if (gameBroad.matchRoom(roomNumber).winner().equals("TIE")){
             System.out.println("Result is Tie");
             disableContinue();
@@ -736,7 +736,7 @@ public class MainActivity extends AppCompatActivity {
                             break;
                         }
                     }
-                    mSecondCount++;
+                    mSecondCount=4;
                     GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                     mDatabaseReference.child(GAMEDATA).setValue(gameData);
                     mDatabaseReference.child(TURN).setValue(turnValue);
@@ -855,7 +855,232 @@ public class MainActivity extends AppCompatActivity {
             }
         } else if (mCountSetUp == mCurrentTeam.size()*4 && mSecondCount == 2 ){
             messageViewInformVoteSummary(gameData,5);
+        } else if (mCountSetUp == mCurrentTeam.size()*4 && mSecondCount == 3 ){
+            messageViewInformTieorWinnerForSecurity();
+        } else if (mCountSetUp < (mCurrentTeam.size()*4 + gameBroad.getPlayers().size() * 2) && mSecondCount==4) {
+            messageViewInformUsingSecurityCamera();
+        } else if (mCountSetUp < (mCurrentTeam.size()*4 + gameBroad.getPlayers().size() * 2) && mSecondCount==5) {
+            messageViewInformIsCameraUsed(gameData);
+        } else if (mCountSetUp == mCurrentTeam.size()*4 + gameBroad.getPlayers().size() * 3){
+            messageViewInformMovetoViewAndMove();
         }
+    }
+
+    private void messageViewInformTieorWinnerForSecurity() {
+        if (gameBroad.matchRoom(5).winner().equals("TIE") || gameBroad.matchRoom(5).isEmpty()){
+            disableContinue();
+            mMessageView.setText("No chief is elected." + " A ramdom player will start first");
+            mIsChiefSelected=false;
+        } else {
+            System.out.println("Winner determined");
+            disableContinue();
+            String winnercolor = gameBroad.matchRoom(5).winner();
+            mMessageView.setText("Winner is " + gameBroad.matchPlayer(winnercolor) +
+                    "\nAnd would see the approaching zombies");
+            mIsChiefSelected = true;
+        }
+        mCurrentYesNo=false;
+        mCurrentYesNoMain = false;
+        System.out.println("Preparing Zombies");
+        TwoPairofDice fourdices = new TwoPairofDice();
+        int DiceOne = fourdices.rollDieOne();
+        int DiceTwo = fourdices.rollDieTwo();
+        int DiceThree = fourdices.rollDieThree();
+        int DiceFour = fourdices.rollDieFour();
+        List<Integer> dices = new ArrayList<>();
+        dices.add(DiceOne);
+        dices.add(DiceTwo);
+        dices.add(DiceThree);
+        dices.add(DiceFour);
+        int startplayer = 0;
+        int startplayerroomnumber = 0;
+        mCurrentZombiesRooms = (ArrayList<Integer>) dices;
+        mCurrentStartPlayerIndex = startplayer;
+        mCurrentStartRoom = startplayerroomnumber;
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mSecondCount=4;
+                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                mDatabaseReference.child(TURN).setValue(-1);
+                int firstSearch = 0;
+                for (int i=0; i<colors.size(); i++){
+                    if (mCurrentTeam.get(0).getColor().equalsIgnoreCase(colors.get(i))){
+                        firstSearch = i;
+                        break;
+                    }
+                }
+                Log.i(TAG, "firstsearch for parking: " + firstSearch);
+                if (mMyPlayerID==firstSearch){
+                    mDatabaseReference.child(ZOMBIEROOMS).setValue(mCurrentZombiesRooms);
+                }
+            }
+        },DELAYEDSECONDSFORMESSAGEVIE*1000);
+    }
+
+    private void messageViewInformUsingSecurityCamera() {
+        mMessageView.setText("Approaching zombies can also be viewed by using security camera, please confirm you want to use security camera");
+        mDatabaseReference.child(ZOMBIEROOMS).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue()!=null){
+                    mCurrentZombiesRooms = (ArrayList<Integer>) dataSnapshot.getValue();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Handler handler1 = new Handler();
+                handler1.postDelayed( new Runnable() {
+                    @Override
+                    public void run() {
+                        mDatabaseReference.child(PLAYERBOOLEANANSWERS).push().setValue(false);
+                    }
+                },DELAYEDSECONDSFOROPTIONSCHOSEN * 1000);
+
+                Handler handler2 = new Handler();
+                handler2.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        disableYesNo();
+                        mSecondCount = 5;
+                        GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                        mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                        mDatabaseReference.child(TURN).setValue(-2);
+                    }
+                }, DELAYEDSECONDSFOROPTIONSCHOSEN * 1000);
+
+                mMessageView.setVisibility(View.INVISIBLE);
+                enableYesNo();
+                mYesButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        handler1.removeCallbacksAndMessages(null);
+                        mMessageView.setVisibility(View.VISIBLE);
+                        mMessageView.setText("Thank you, Please wait for other players");
+                        disableYesNo();
+                        mDatabaseReference.child(PLAYERBOOLEANANSWERS).push().setValue(true);
+
+                    }
+                });
+                mNoButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        disableYesNo();
+                        mMessageView.setVisibility(View.VISIBLE);
+                        mMessageView.setText("Thank you, Please wait for other players");
+                    }
+                });
+
+            }
+        },DELAYEDSECONDSFORMESSAGEVIE * 1000);
+    }
+
+    private void messageViewInformIsCameraUsed(GameData gameData) {
+        mMessageView.setText("Collecting Information");
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mDatabaseReference.child(PLAYERBOOLEANANSWERS).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        List<Boolean> usersChoises = new ArrayList<>();
+                        for (DataSnapshot snapshot: dataSnapshot.getChildren()){
+                            usersChoises.add(snapshot.getValue(Boolean.TYPE));
+                        }
+                        Boolean isThereTrue = false;
+                        for (int i=0; i<usersChoises.size(); i++){
+                            if (usersChoises.get(i)){
+                                isThereTrue = true;
+                                break;
+                            }
+                        }
+                        if (gameData!=null){
+                            if (isThereTrue){
+                                mMessageView.setText("One of the players will used Security Camera");
+                                Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mMessageView.setVisibility(View.INVISIBLE);
+                                        int firstMove = 0;
+                                        for (int i=0; i<colors.size(); i++){
+                                            if (gameBroad.getPlayers().get(0).getColor().equalsIgnoreCase(colors.get(i))){
+                                                firstMove = i;
+                                            }
+                                        }
+                                        if (mMyPlayerID==firstMove){
+                                            mSecondCount=6;
+                                            GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                                            mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                                            mDatabaseReference.child(TURN).setValue(firstMove);
+                                        }
+                                    }
+                                },DELAYEDSECONDSFORMESSAGEVIE * 1000);
+                            } else {
+                                mMessageView.setText("Security camera will not be used");
+                                Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mMessageView.setVisibility(View.INVISIBLE);
+                                        mCountSetUp = mCurrentTeam.size()*4 + gameBroad.getPlayers().size() * 3;
+                                        GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                                        mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                                        mDatabaseReference.child(TURN).setValue(-1);
+
+                                    }
+                                },DELAYEDSECONDSFORMESSAGEVIE * 1000);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        },1000);
+    }
+
+    private void messageViewInformMovetoViewAndMove() {
+        disableContinue();
+        mMessageView.setText("Game Phase III: Chief Viewing and Moving");
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mMessageView.setVisibility(View.INVISIBLE);
+                enableContinue();
+                mCountPhase=5;
+                mCountSetUp=0;
+                mSecondCount=0;
+                mThirdCount=0;
+                mFourthCount=0;
+                mFifthCount=0;
+                mSixCount=0;
+                votes.clear();
+                mCurrentTeam.clear();
+                mCurrentItemOptions.clear();
+                mCurrentYesNoMain = false;
+                mCurrentYesNo = false;
+                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                mDatabaseReference.child(TURN).setValue(-2);
+                mDatabaseReference.child(PREVTURN).setValue(-1);
+            }
+        },DELAYEDSECONDSFORMESSAGEVIE*1000);
     }
 
     private void rotateTurnAccoridngtoFirebase(int turn) {
@@ -1988,74 +2213,75 @@ public class MainActivity extends AppCompatActivity {
                     });
                 }
             }
-            if (mCountSetUp < (mCurrentTeam.size()*4 + gameBroad.getPlayers().size() * 2) && (mSecondCount==4 || mSecondCount==5)) {
-                if (teamHasSecurityCamera(gameBroad.getPlayers()) || mCurrentYesNoMain) {
-                    System.out.println("Has Camera");
-                    if (mSecondCount==4){
-                        disableContinue();
-                        mMessageView.setText("Other Players: You can also see the results by using Security Camera, please confirm you want to use it");
-                        mMessageView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                mMessageView.setVisibility(View.INVISIBLE);
-                                mMessageView.setEnabled(false);
-                                enableYesNo();
-                            }
-                        });
+            if (mCountSetUp < (mCurrentTeam.size()*4 + gameBroad.getPlayers().size() * 3) && mSecondCount==6) {
+                if (mCountSetUp % 3 == 0) {
+                    int q = mCountSetUp - (4 * mCurrentTeam.size());
+                    int i = (q == 0) ? 0 : (q / 3);
+                    Playable teammember = gameBroad.getPlayers().get(i);
+                    String color = gameBroad.getPlayers().get(i).getColor();
+                    String message = teammember + " please confirm you want to use Security";
+                    ArrayList rooms = (ArrayList<Room>) gameBroad.getRooms();
+                    ArrayList<Item> items = (ArrayList<Item>) gameBroad.getPlayers().get(i).getCurrentItem();
+                    Boolean yesAndNo = false;
+                    if (teammember.hasSecurityCamera()) {
+                        yesAndNo = true;
                     }
-                    if (mSecondCount==5){
-                        if (mCurrentYesNoMain) {
-                            if (mCountSetUp % 2 == 0) {
-                                int q = mCountSetUp - (4 * mCurrentTeam.size());
-                                int i = (q == 0) ? 0 : (q / 2);
-                                Playable teammember = gameBroad.getPlayers().get(i);
-                                String color = gameBroad.getPlayers().get(i).getColor();
-                                String message = teammember + " please confirm you want to use Security";
-                                ArrayList rooms = (ArrayList<Room>) gameBroad.getRooms();
-                                ArrayList<Item> items = (ArrayList<Item>) gameBroad.getPlayers().get(i).getCurrentItem();
-                                Boolean yesAndNo = false;
-                                if (teammember.hasSecurityCamera()) {
-                                    yesAndNo = true;
-                                }
-                                Intent intent = PlayerActivity.newYesNoIntent(MainActivity.this, rooms, color, items, yesAndNo, message, mCountSetUp, 5);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                                startActivityForResult(intent, REQUEST_CODE_YESNO);
-                                overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
-                            }
-                            if (mCountSetUp % 2 == 1) {
-                                int q = mCountSetUp - (4 * mCurrentTeam.size());
-                                int i = (q == 0) ? 0 : (q / 2);
-                                Playable teammember = gameBroad.getPlayers().get(i);
-                                if (mCurrentYesNo) {
-                                    Intent intent = ShowingZombieActivity.newShowZombiesIntent(MainActivity.this, mCurrentZombiesRooms,mCountSetUp);
-                                    startActivityForResult(intent, REQUEST_CODE_VIEWZOMBIE);
-                                    overridePendingTransition(android.support.v7.appcompat.R.anim.abc_popup_enter,android.support.v7.appcompat.R.anim.abc_popup_exit );
-                                    Item securityCamera = gameBroad.matchItem(teammember, "SecurityCamera");
-                                    teammember.usedItem(securityCamera);
-                                } else {
-                                    mCountSetUp++;
-                                    if (mCountSetUp != mCurrentTeam.size()*4)
-                                    electChief();
-                                }
-
-                            }
+                    Intent intent = PlayerActivity.newYesNoIntent(MainActivity.this, rooms, color, items, yesAndNo, message, mCountSetUp, 5);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    startActivityForResult(intent, REQUEST_CODE_YESNO);
+                    overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
+                }
+                if (mCountSetUp % 3 == 1) {
+                    int q = mCountSetUp - (4 * mCurrentTeam.size());
+                    int i = (q == 0) ? 0 : (q / 3);
+                    Playable teammember = gameBroad.getPlayers().get(i);
+                    if (mCurrentYesNo) {
+                        Intent intent = ShowingZombieActivity.newShowZombiesIntent(MainActivity.this, mCurrentZombiesRooms,mCountSetUp);
+                        startActivityForResult(intent, REQUEST_CODE_VIEWZOMBIE);
+                        overridePendingTransition(android.support.v7.appcompat.R.anim.abc_popup_enter,android.support.v7.appcompat.R.anim.abc_popup_exit );
+                        Item securityCamera = gameBroad.matchItem(teammember, "SecurityCamera");
+                        teammember.usedItem(securityCamera);
+                    } else {
+                        mCountSetUp+=2;
+                        GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                        mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                        mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
+                        if (mCountSetUp == mCurrentTeam.size()*4 + gameBroad.getPlayers().size() * 3){
+                            mDatabaseReference.child(TURN).setValue(-1);
                         } else {
-                            mCountSetUp += gameBroad.getPlayers().size() * 2;
+                            int nextSearch = 0;
+                            for (int k=0; k<colors.size(); k++){
+                                if (gameBroad.getPlayers().get(i+1).getColor().equalsIgnoreCase(colors.get(k))){
+                                    nextSearch = k;
+                                    break;
+                                }
+                            }
+                            mDatabaseReference.child(TURN).setValue(nextSearch);
                         }
                     }
-
-                } else {
-                    System.out.println("No security Camera");
-                    mCountSetUp = mCurrentTeam.size()*4 + gameBroad.getPlayers().size() * 2;
-                    mSecondCount += 1;
-                    if (mCountSetUp != mCurrentTeam.size()*4)
-                    electChief();
+                }
+                if (mCountSetUp % 3==2){
+                    int q = mCountSetUp - (4 * mCurrentTeam.size());
+                    int i = (q == 0) ? 0 : (q / 3);
+                    GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                    mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                    mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
+                    if (mCountSetUp == mCurrentTeam.size()*4 + gameBroad.getPlayers().size() * 3){
+                        mDatabaseReference.child(TURN).setValue(-1);
+                    } else {
+                        int nextSearch = 0;
+                        for (int k=0; k<colors.size(); k++){
+                            if (gameBroad.getPlayers().get(i+1).getColor().equalsIgnoreCase(colors.get(k))){
+                                nextSearch = k;
+                                break;
+                            }
+                        }
+                        mDatabaseReference.child(TURN).setValue(nextSearch);
+                    }
                 }
             }
-            if (mCountSetUp == mCurrentTeam.size()*4 + gameBroad.getPlayers().size() * 2) {
-                System.out.println("Display message again");
+            if (mCountSetUp == mCurrentTeam.size()*4 + gameBroad.getPlayers().size() * 3) {
                 disableContinue();
-                String winnercolor = gameBroad.matchRoom(4).winner();
                 mMessageView.setText("Game Phase III: Chief Viewing and Moving");
                 mMessageView.setOnClickListener(new View.OnClickListener() {
                     @Override
