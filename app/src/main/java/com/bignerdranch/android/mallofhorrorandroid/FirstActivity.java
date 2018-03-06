@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Build;
+import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -65,9 +66,9 @@ public class FirstActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_first);
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
-        Animation animTranslate = AnimationUtils.loadAnimation(this, R.anim.anim_translate);
-        mPlayButton = findViewById(R.id.multiplayer_button);
-        mPlayButton.startAnimation(animTranslate);
+//        Animation animTranslate = AnimationUtils.loadAnimation(this, R.anim.anim_translate);
+//        mPlayButton = findViewById(R.id.multiplayer_button);
+//        mPlayButton.startAnimation(animTranslate);
 
         mHowToPlayButton = findViewById(R.id.how_to_play_button);
         mSettingButton = findViewById(R.id.btn_setting);
@@ -76,6 +77,7 @@ public class FirstActivity extends AppCompatActivity {
 
 
         firstActivity = FirstActivity.this;
+        blinkText();
 
 
 //        mPlayButton = findViewById(R.id.play_button);
@@ -131,8 +133,8 @@ public class FirstActivity extends AppCompatActivity {
             binding.login.setVisibility(VISIBLE);
             binding.inputPassword.setVisibility(VISIBLE);
         } else {
-            Animation animTranslate = AnimationUtils.loadAnimation(this, R.anim.anim_bounce);
-            mPlayButton.startAnimation(animTranslate);
+//            Animation animTranslate = AnimationUtils.loadAnimation(this, R.anim.anim_bounce);
+//            mPlayButton.startAnimation(animTranslate);
             startUserListActivity();
         }
     }
@@ -296,5 +298,13 @@ public class FirstActivity extends AppCompatActivity {
         });
         AlertDialog dialog = alert.create();
         dialog.show();
+    }
+
+    private void blinkText(){
+        TextView textView = findViewById(R.id.flash_text);
+        Animation fade_in_animation = AnimationUtils.loadAnimation(this, R.anim.fade_in);
+        Animation fade_out_animation = AnimationUtils.loadAnimation(this, R.anim.fade_out);
+        textView.startAnimation(fade_in_animation);
+        textView.startAnimation(fade_out_animation);
     }
 }

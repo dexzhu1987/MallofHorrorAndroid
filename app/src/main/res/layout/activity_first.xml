@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     tools:context="com.bignerdranch.android.mallofhorrorandroid.FirstActivity"
     android:orientation="vertical"
+    android:onClick="startMultilayer"
     android:background="@drawable/firstbackground">
 
 
@@ -51,17 +52,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="180dp"
+        android:layout_marginTop="170dp"
         android:gravity="center">
 
-        <ImageButton
-            android:id="@+id/multiplayer_button"
-            android:layout_width="130dp"
-            android:layout_height="40dp"
-            android:onClick="startMultilayer"
-            android:padding="0dp"
-            android:scaleType="fitXY"
-            android:background="@drawable/play_button" />
+        <!--<ImageButton-->
+            <!--android:id="@+id/multiplayer_button"-->
+            <!--android:layout_width="130dp"-->
+            <!--android:layout_height="40dp"-->
+            <!--android:padding="0dp"-->
+            <!--android:scaleType="fitXY"-->
+            <!--android:background="@drawable/play_button" />-->
+        <TextView
+            android:id="@+id/flash_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="#ffffff"
+            android:text="PLEASE TOUCH SCREEN TO START..."/>
     </LinearLayout>
 
 
@@ -85,8 +92,12 @@
                 android:layout_height="wrap_content"
                 android:hint="Name"
                 android:minWidth="100dp"
+                android:padding="5dp"
+                android:layout_marginRight="2dp"
+                android:background="@drawable/edittext_style"
                 android:textColorHint="@android:color/holo_red_light"
                 android:textSize="12dp"
+                android:textAlignment="center"
                 android:visibility="gone" />
 
             <EditText
@@ -95,8 +106,12 @@
                 android:layout_height="wrap_content"
                 android:hint="Email"
                 android:minWidth="100dp"
+                android:layout_marginRight="2dp"
+                android:padding="5dp"
                 android:textColorHint="@android:color/holo_red_light"
+                android:background="@drawable/edittext_style"
                 android:textSize="12dp"
+                android:textAlignment="center"
                 android:visibility="gone" />
 
             <EditText
@@ -106,8 +121,11 @@
                 android:hint="Password"
                 android:inputType="textPassword"
                 android:minWidth="100dp"
+                android:padding="5dp"
                 android:textColorHint="@android:color/holo_red_light"
+                android:background="@drawable/edittext_style"
                 android:textSize="12dp"
+                android:textAlignment="center"
                 android:visibility="gone" />
         </LinearLayout>
 
