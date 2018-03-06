@@ -869,7 +869,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue()!=null ){
-                    int prevTurn = dataSnapshot.getValue(Integer.TYPE)
+                    int prevTurn = dataSnapshot.getValue(Integer.TYPE);
                     if (turn!=prevTurn && prevTurn >= 0){
                         mPlayerButtons.get(prevTurn).setVisibility(View.INVISIBLE);
                     }

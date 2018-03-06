@@ -1,191 +1,333 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/votingwindowbg"
+    android:orientation="vertical"
     tools:context="com.bignerdranch.android.mallofhorrorandroid.ShowVoteResultActivity">
-
-<LinearLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
-
-
-
-</LinearLayout>
-    <ImageView
-        android:id="@+id/redvoted"
-        android:layout_width="99dp"
-        android:layout_height="23dp"
-        android:layout_marginBottom="320dp"
-        android:layout_marginEnd="80dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@drawable/votingnormalbttn" />
-
-    <ImageView
-        android:id="@+id/yellowvoted"
-        android:layout_width="99dp"
-        android:layout_height="23dp"
-        android:layout_marginBottom="288dp"
-        android:layout_marginEnd="80dp"
-        android:layout_marginTop="5dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/redvoted"
-        app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@drawable/votingnormalbttn" />
-
-    <ImageView
-        android:id="@+id/bluevoted"
-        android:layout_width="99dp"
-        android:layout_height="23dp"
-        android:layout_marginBottom="258dp"
-        android:layout_marginEnd="80dp"
-        android:layout_marginTop="6dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/yellowvoted"
-        app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@drawable/votingnormalbttn" />
-
-    <ImageView
-        android:id="@+id/greenvoted"
-        android:layout_width="99dp"
-        android:layout_height="23dp"
-        android:layout_marginBottom="164dp"
-        android:layout_marginEnd="80dp"
-        android:layout_marginTop="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bluevoted"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/votingnormalbttn" />
-
-    <ImageView
-        android:id="@+id/brownvoted"
-        android:layout_width="99dp"
-        android:layout_height="23dp"
-        android:layout_marginBottom="196dp"
-        android:layout_marginEnd="80dp"
-        android:layout_marginTop="3dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/greenvoted"
-        app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@drawable/votingnormalbttn" />
-
-    <ImageView
-        android:id="@+id/blackvoted"
-        android:layout_width="99dp"
-        android:layout_height="23dp"
-        android:layout_marginBottom="160dp"
-        android:layout_marginEnd="80dp"
-        android:layout_marginTop="3dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/brownvoted"
-        app:srcCompat="@drawable/votingnormalbttn" />
-
-    <TextView
-        android:id="@+id/redresult"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="98dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:fontFamily="@font/digital"
-        android:text="0"
-        android:textColor="#ff0000"
-        android:textSize="25dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.234"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.995" />
+        android:orientation="vertical"
+        android:layout_gravity="center">
 
-    <TextView
-        android:id="@+id/yellowresult"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="70dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:fontFamily="@font/digital"
-        android:text="0"
-        android:textColor="#ffff00"
-        android:textSize="25dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.234"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        <LinearLayout
+            android:layout_width="550dp"
+            android:layout_height="30dp"
+            android:orientation="horizontal"
+            android:padding="2dp"
+            android:background="#7a0000">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="110dp"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:text="PLAYER:"/>
 
-    <TextView
-        android:id="@+id/blueresult"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="98dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:fontFamily="@font/digital"
-        android:text="0"
-        android:textColor="#0000ff"
-        android:textSize="25dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.542"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.995" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="250dp"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:text="VOTE:"/>
+        </LinearLayout>
 
-    <TextView
-        android:id="@+id/greenresult"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="70dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:fontFamily="@font/digital"
-        android:text="0"
-        android:textColor="#00ff00"
-        android:textSize="25dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.542"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        <LinearLayout
+            android:layout_width="550dp"
+            android:layout_height="30dp"
+            android:orientation="horizontal"
+            android:padding="2dp"
+            android:background="#7a0000">
 
-    <TextView
-        android:id="@+id/brownresult"
-        android:layout_width="wrap_content"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="250dp"
+                android:layout_marginLeft="50dp"
+                android:textColor="#FF0000"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:text="RED:"/>
+
+            <ImageView
+                android:id="@+id/redvoted"
+                android:layout_width="99dp"
+                android:layout_height="23dp"
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/votingnormalbttn" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="550dp"
+            android:layout_height="30dp"
+            android:orientation="horizontal"
+            android:padding="2dp"
+            android:background="#b2b200">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="250dp"
+                android:layout_marginLeft="50dp"
+                android:textColor="#ffff00"
+                android:layout_gravity="center"
+                android:textSize="20sp"
+                android:text="YELLOW:"/>
+
+            <ImageView
+                android:id="@+id/yellowvoted"
+                android:layout_width="99dp"
+                android:layout_height="23dp"
+                app:srcCompat="@drawable/votingnormalbttn" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="550dp"
+            android:layout_height="30dp"
+            android:orientation="horizontal"
+            android:padding="2dp"
+            android:background="#00007f">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="250dp"
+                android:layout_marginLeft="50dp"
+                android:textColor="#9999ff"
+                android:layout_gravity="center"
+                android:textSize="20sp"
+                android:text="BLUE:"/>
+
+            <ImageView
+                android:id="@+id/bluevoted"
+                android:layout_width="99dp"
+                android:layout_height="23dp"
+                app:srcCompat="@drawable/votingnormalbttn" />
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="550dp"
+            android:layout_height="30dp"
+            android:orientation="horizontal"
+            android:padding="2dp"
+            android:background="#004c00">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="250dp"
+                android:textColor="#329932"
+                android:layout_marginLeft="50dp"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:text="GREEN:"/>
+
+            <ImageView
+                android:id="@+id/greenvoted"
+                android:layout_width="99dp"
+                android:layout_height="23dp"
+                app:srcCompat="@drawable/votingnormalbttn" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="550dp"
+            android:layout_height="30dp"
+            android:orientation="horizontal"
+            android:padding="2dp"
+            android:background="#310c0c">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="250dp"
+                android:textColor="#842121"
+                android:layout_gravity="center"
+                android:layout_marginLeft="50dp"
+                android:textSize="20sp"
+                android:text="BROWN:"/>
+
+            <ImageView
+                android:id="@+id/brownvoted"
+                android:layout_width="99dp"
+                android:layout_height="23dp"
+                app:srcCompat="@drawable/votingnormalbttn" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="550dp"
+            android:layout_height="30dp"
+            android:orientation="horizontal"
+            android:padding="2dp"
+            android:background="#000000">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="250dp"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:layout_marginLeft="50dp"
+                android:layout_gravity="center"
+                android:text="BLACK:"/>
+
+            <ImageView
+                android:id="@+id/blackvoted"
+                android:layout_width="99dp"
+                android:layout_height="23dp"
+                app:srcCompat="@drawable/votingnormalbttn" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="550dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="98dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:fontFamily="@font/digital"
-        android:text="0"
-        android:textColor="	#A52A2A"
-        android:textSize="25dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.893"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.995" />
+        android:layout_marginTop="40dp"
+        android:orientation="vertical"
+        android:background="4c4c4c"
+        android:layout_gravity="center">
+
+        <LinearLayout
+            android:layout_width="550dp"
+            android:layout_height="30dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:textSize="20dp"
+                android:text="SUMMARY:"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="550dp"
+            android:layout_height="30dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#FF0000"
+                android:layout_marginRight="20dp"
+                android:textSize="20dp"
+                android:text="RED:"
+                android:layout_gravity="center"/>
+
+            <TextView
+                android:id="@+id/redresult"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/digital"
+                android:text="0"
+                android:textColor="#ff0000"
+                android:layout_gravity="center"
+                android:textSize="25dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#0000FF"
+                android:layout_marginLeft="100dp"
+                android:layout_marginRight="20dp"
+                android:textSize="20dp"
+                android:text="BLUE:"
+                android:layout_gravity="center"/>
+
+            <TextView
+                android:id="@+id/blueresult"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/digital"
+                android:text="0"
+                android:textColor="#0000ff"
+                android:layout_gravity="center"
+                android:textSize="25dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#521515"
+                android:layout_marginLeft="100dp"
+                android:layout_marginRight="20dp"
+                android:textSize="20dp"
+                android:text="BROWN:"
+                android:layout_gravity="center"/>
+            <TextView
+                android:id="@+id/brownresult"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/digital"
+                android:text="0"
+                android:layout_gravity="center"
+                android:textColor="	#521515"
+                android:textSize="25dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="550dp"
+            android:layout_height="30dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#ffff00"
+                android:layout_marginRight="20dp"
+                android:textSize="20dp"
+                android:text="YELLOW:"
+                android:layout_gravity="center"/>
+
+            <TextView
+                android:id="@+id/yellowresult"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginRight="40dp"
+                android:fontFamily="@font/digital"
+                android:text="0"
+                android:textColor="#ffff00"
+                android:textSize="25dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#00ff00"
+                android:layout_marginRight="20dp"
+                android:textSize="20dp"
+                android:text="GREEN:"
+                android:layout_gravity="center"/>
+            <TextView
+                android:id="@+id/greenresult"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/digital"
+                android:text="0"
+                android:textColor="#00ff00"
+                android:textSize="25dp" />
+
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+
+
 
     <TextView
         android:id="@+id/blackresult"
@@ -207,4 +349,4 @@
         app:layout_constraintVertical_bias="1.0" />
 
 
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>
