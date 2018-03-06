@@ -385,18 +385,40 @@ public class MainActivity extends AppCompatActivity {
         mMainActivityLayout.invalidate();
         mMessageView.setVisibility(View.VISIBLE);
         if (mSecondCount==0){
-            mMessageView.setText("Due to Parking is empty (or no more item avaiable), no searching will be performed");
+            mMessageView.setText("Due to Parking is empty (or no more item is available, no election will be performed");
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     mMessageView.setVisibility(View.INVISIBLE);
                     if (mMyPlayerID==0){
-                        mCountSetUp = mCurrentTeam.size()*4;
-                        mSecondCount = 3;
                         GameData gameData = new GameData(mCountPhase,mCountSetUp,2,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                         mDatabaseReference.child(GAMEDATA).setValue(gameData);
                         mDatabaseReference.child(TURN).setValue(-1);
+                    }
+                }
+            },DELAYEDSECONDSFORMESSAGEVIE * 1000);
+        } else {
+            mMessageView.setText("Game Phase II: Security Chief selected");
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mMessageView.setVisibility(View.INVISIBLE);
+                    if (mMyPlayerID==0){
+                        mCountPhase++;
+                        mCountSetUp=0;
+                        mSecondCount=0;
+                        mThirdCount=0;
+                        votes.clear();
+                        mCurrentTeam.clear();
+                        mCurrentItemOptions.clear();
+                        mCurrentZombiesRooms.clear();
+                        mCurrentYesNo=false;
+                        mCurrentYesNoMain = false;
+                        GameData gameData = new GameData(mCountPhase,mCountSetUp,2,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                        mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                        mDatabaseReference.child(TURN).setValue(-2);
                     }
                 }
             },DELAYEDSECONDSFORMESSAGEVIE * 1000);
@@ -424,12 +446,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void messageViewInformExistedMembers(int roomNumber) {
-        HashSet<Playable> searchteam = new HashSet<>();
-        if (roomNumber==4){
-            searchteam = gameBroad.WhoCan(gameBroad.matchRoom(4).existCharacterColor());
-        } else if (roomNumber==5){
-            searchteam = gameBroad.WhoCan(gameBroad.matchRoom(5).existCharacterColor());
-        }
+        HashSet<Playable> searchteam = gameBroad.WhoCan(gameBroad.matchRoom(roomNumber).existCharacterColor());
         List<Playable> searchTeam = new ArrayList<>();
         for (Playable player : searchteam) {
             searchTeam.add(player);
@@ -441,6 +458,7 @@ public class MainActivity extends AppCompatActivity {
                 return o1.getColor().compareTo(o2.getColor());
             }
         });
+        Log.i(TAG, "searchTeam: " + mCurrentTeam);
         disableContinue();
         mMessageView.setVisibility(View.VISIBLE);
         if (roomNumber==4){
@@ -460,7 +478,6 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     }
                 }
-                Log.i(TAG, "firstsearch for parking: " + mCurrentTeam);
                 Log.i(TAG, "firstsearch for parking: " + firstSearch);
                 if (mMyPlayerID==firstSearch){
                     mThirdCount++;
@@ -814,33 +831,11 @@ public class MainActivity extends AppCompatActivity {
                 public void run() {
                     mMessageView.setVisibility(View.INVISIBLE);
                     if (mMyPlayerID==0){
+                        mCountSetUp = mCurrentTeam.size()*4;
+                        mSecondCount = 3;
                         GameData gameData = new GameData(mCountPhase,mCountSetUp,2,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                         mDatabaseReference.child(GAMEDATA).setValue(gameData);
                         mDatabaseReference.child(TURN).setValue(-1);
-                    }
-                }
-            },DELAYEDSECONDSFORMESSAGEVIE * 1000);
-        } else {
-            mMessageView.setText("Game Phase II: Security Chief selected");
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mMessageView.setVisibility(View.INVISIBLE);
-                    if (mMyPlayerID==0){
-                        mCountPhase++;
-                        mCountSetUp=0;
-                        mSecondCount=0;
-                        mThirdCount=0;
-                        votes.clear();
-                        mCurrentTeam.clear();
-                        mCurrentItemOptions.clear();
-                        mCurrentZombiesRooms.clear();
-                        mCurrentYesNo=false;
-                        mCurrentYesNoMain = false;
-                        GameData gameData = new GameData(mCountPhase,mCountSetUp,2,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                        mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                        mDatabaseReference.child(TURN).setValue(-2);
                     }
                 }
             },DELAYEDSECONDSFORMESSAGEVIE * 1000);
@@ -869,7 +864,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue()!=null ){
-                    int prevTurn = dataSnapshot.getValue(Integer.TYPE)
+                    int prevTurn = dataSnapshot.getValue(Integer.TYPE);
                     if (turn!=prevTurn && prevTurn >= 0){
                         mPlayerButtons.get(prevTurn).setVisibility(View.INVISIBLE);
                     }
@@ -1735,6 +1730,8 @@ public class MainActivity extends AppCompatActivity {
                     mMessageView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            mMessageView.setVisibility(View.INVISIBLE);
+                            mMessageView.setEnabled(false);
                             enableContinue();
                             mSecondCount++;
                         }
