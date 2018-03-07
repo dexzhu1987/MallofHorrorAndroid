@@ -1124,35 +1124,44 @@ public class MainActivity extends AppCompatActivity {
         } else if (mCountSetUp==1 && mSecondCount==1) {
             messageViewInformChiefRoomNumber(gameData);
         } else if (mCountSetUp==mCurrentPlayerNumber*2) {
-            disableContinue();
-            mMessageView.setVisibility(View.VISIBLE);
-            mMessageView.setText("Room Selection is Finished, now we move character into the Room Individually");
-
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    String message = "";
-                    for (int i=0; i<roomspicked.size(); i++){
-                        message += "Player " + gameBroad.getPlayers().get(playersIndex.get(i)).getColor() + " to Room " + roomspicked.get(i);
-                    }
-                    mMessageView.setText("Player Choises are: " + message);
-                    Handler handler1 = new Handler();
-                    handler1.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            int nextMove = 0;
-                            for (int i=0; i<colors.size(); i++){
-                                if (mCurrentStartPlayer.getColor().equalsIgnoreCase(colors.get(i))){
-                                    nextMove = i;
-                                }
-                            }
-                            mDatabaseReference.child(TURN).setValue(nextMove);
-                        }
-                    },10*1000);
-                }
-            },DELAYEDSECONDSFORMESSAGEVIE * 1000);
+            messageInformRoomSelectionSummary();
         }
+    }
+
+    private void messageInformRoomSelectionSummary() {
+        disableContinue();
+        mMessageView.setVisibility(View.VISIBLE);
+        mMessageView.setText("Room Selection is Finished, now we move character into the Room Individually");
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                String message = "";
+                Log.i(TAG, "Player Index: " + playersIndex);
+                Log.i(TAG, "Room: " + roomspicked);
+
+                for (int i=0; i<roomspicked.size(); i++){
+                    message += "/nPlayer " + gameBroad.getPlayers().get(playersIndex.get(i)).getColor() + " to Room " + roomspicked.get(i) ;
+                }
+                Log.i(TAG,"message: " +  message);
+
+                mMessageView.setText("Player Choises are: " + message);
+                Handler handler1 = new Handler();
+                handler1.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        int nextMove = 0;
+                        for (int i=0; i<colors.size(); i++){
+                            if (mCurrentStartPlayer.getColor().equalsIgnoreCase(colors.get(i))){
+                                nextMove = i;
+                            }
+                        }
+                        mDatabaseReference.child(TURN).setValue(nextMove);
+                    }
+                },10*1000);
+            }
+        },DELAYEDSECONDSFORMESSAGEVIE * 1000);
     }
 
     private void messageViewReinformIsChiefElectedAndDetermineNextMove() {
@@ -1167,6 +1176,7 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                mMessageView.setVisibility(View.INVISIBLE);
                 int nextMove = 0;
                 for (int i=0; i<colors.size(); i++){
                     if (mCurrentStartPlayer.getColor().equalsIgnoreCase(colors.get(i))){
@@ -1204,6 +1214,7 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                mMessageView.setVisibility(View.INVISIBLE);
                 ++mCountSetUp;
                 int q = mCurrentStartPlayerIndex + 1;
                 int i = 0;
@@ -1218,9 +1229,9 @@ public class MainActivity extends AppCompatActivity {
                         nextMove = k;
                     }
                 }
-                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount,mCurrentRoomPickedNumber,5);
+                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                 mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
+                mDatabaseReference.child(PREVTURN).setValue(-1);
                 mDatabaseReference.child(TURN).setValue(nextMove);
             }
         },DELAYEDSECONDSFORMESSAGEVIE*1000);
