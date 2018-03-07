@@ -462,7 +462,6 @@ public class MainActivity extends AppCompatActivity {
                 return o1.getColor().compareTo(o2.getColor());
             }
         });
-        Log.i(TAG, "searchTeam: " + mCurrentTeam);
         disableContinue();
         mMessageView.setVisibility(View.VISIBLE);
         if (roomNumber==4){
@@ -520,6 +519,7 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                mDatabaseReference.child(PLAYERBOOLEANANSWERS).setValue(null);
                 Log.i(TAG, "vote results: " + votes);
                 mMessageView.setVisibility(View.INVISIBLE);
                 gameBroad.matchRoom(roomNumber).resetVoteResult();
@@ -535,6 +535,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void messageViewInformThreatUsingCanChangedVoteResult() {
+
         mMessageView.setText("Voting result can be changed by item THREAT, anyone want to change the result?");
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -921,6 +922,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 Log.i(TAG, "firstsearch for parking: " + firstSearch);
                 if (mMyPlayerID==firstSearch){
+                    mDatabaseReference.child(PLAYERBOOLEANANSWERS).setValue(null);
                     mDatabaseReference.child(ZOMBIEROOMS).setValue(mCurrentZombiesRooms);
                     mDatabaseReference.child(FIRSTPLAYERINDEX).setValue(mCurrentPlayerNumber);
                 }
@@ -2351,9 +2353,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             if (mCountSetUp < (mCurrentTeam.size()*4 + gameBroad.getPlayers().size() * 3) && mSecondCount==6) {
-                if (mCountSetUp % 3 == 0) {
-                    int q = mCountSetUp - (4 * mCurrentTeam.size());
-                    int i = (q == 0) ? 0 : (q / 3);
+                int q = mCountSetUp - (4 * mCurrentTeam.size());
+                int i = (q == 0) ? 0 : (q / 3);
+                if (q % 3 == 0) {
                     Playable teammember = gameBroad.getPlayers().get(i);
                     String color = gameBroad.getPlayers().get(i).getColor();
                     String message = teammember + " please confirm you want to use Security";
@@ -2368,9 +2370,7 @@ public class MainActivity extends AppCompatActivity {
                     startActivityForResult(intent, REQUEST_CODE_YESNO);
                     overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
                 }
-                if (mCountSetUp % 3 == 1) {
-                    int q = mCountSetUp - (4 * mCurrentTeam.size());
-                    int i = (q == 0) ? 0 : (q / 3);
+                if (q % 3 == 1) {
                     Playable teammember = gameBroad.getPlayers().get(i);
                     if (mCurrentYesNo) {
                         Intent intent = ShowingZombieActivity.newShowZombiesIntent(MainActivity.this, mCurrentZombiesRooms,mCountSetUp);
@@ -2397,9 +2397,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 }
-                if (mCountSetUp % 3==2){
-                    int q = mCountSetUp - (4 * mCurrentTeam.size());
-                    int i = (q == 0) ? 0 : (q / 3);
+                if (q % 3==2){
                     GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                     mDatabaseReference.child(GAMEDATA).setValue(gameData);
                     mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
