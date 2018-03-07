@@ -2398,6 +2398,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 if (q % 3==2){
+                    mCountSetUp++;
                     GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                     mDatabaseReference.child(GAMEDATA).setValue(gameData);
                     mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
@@ -2436,7 +2437,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
     }
-
+x
     private void viewAndMove() {
         mCurrentPlayerNumber = gameBroad.getPlayers().size();
         System.out.println("mCountSetup: " + mCountSetUp +  " mSecondCount: " + mSecondCount + " mThirdCount: " + mThirdCount);
