@@ -70,6 +70,7 @@
             android:textSize="20sp"
             android:textColor="#00FE00"
             android:textAlignment="center"
+            android:visibility="visible"
             android:text="PLEASE TOUCH SCREEN TO START..."/>
     </LinearLayout>
 

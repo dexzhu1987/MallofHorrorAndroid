@@ -195,31 +195,32 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.713" />
-<RelativeLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
 
-
-</RelativeLayout>
     <ImageButton
         android:id="@+id/red_button"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginRight="35dp"
+        android:layout_marginBottom="320dp"
         android:padding="0dp"
         android:scaleType="fitXY"
         android:src="@drawable/redtoughguybttn"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
         android:id="@+id/yellow_button"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginRight="35dp"
+        android:layout_marginBottom="320dp"
         android:padding="0dp"
         android:scaleType="fitXY"
         android:src="@drawable/yellowtoughguybttn"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
         <!--app:layout_constraintTop_toBottomOf="@+id/red_button" />-->
 
     <ImageButton
@@ -227,10 +228,13 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginRight="35dp"
+        android:layout_marginBottom="320dp"
         android:padding="0dp"
         android:scaleType="fitXY"
         android:src="@drawable/bluetoughguybttn"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
         <!--app:layout_constraintTop_toBottomOf="@+id/yellow_button" />-->
 
     <ImageButton
@@ -238,10 +242,13 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginRight="35dp"
+        android:layout_marginBottom="320dp"
         android:padding="0dp"
         android:scaleType="fitXY"
         android:src="@drawable/greentoughguybttn"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
         <!--app:layout_constraintTop_toBottomOf="@+id/blue_button" />-->
 
     <ImageButton
@@ -249,10 +256,13 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginRight="35dp"
+        android:layout_marginBottom="320dp"
         android:padding="0dp"
         android:scaleType="fitXY"
         android:src="@drawable/browntoughguybttn"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
         <!--app:layout_constraintTop_toBottomOf="@+id/green_button" />-->
 
     <ImageButton
@@ -260,10 +270,13 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginRight="35dp"
+        android:layout_marginBottom="320dp"
         android:padding="0dp"
         android:scaleType="fitXY"
         android:src="@drawable/blacktoughguybttn"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
         <!--app:layout_constraintTop_toBottomOf="@+id/brown_button" />-->
 
 

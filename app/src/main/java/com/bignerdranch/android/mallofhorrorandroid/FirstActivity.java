@@ -130,6 +130,7 @@ public class FirstActivity extends AppCompatActivity {
                 AlertDialog mAlertDialog = builder.create();
                 mAlertDialog.show();
             }
+            textView.clearAnimation();
             textView.setVisibility(View.INVISIBLE);
             binding.inputEmail.setVisibility(VISIBLE);
             binding.inputName.setVisibility(VISIBLE);
