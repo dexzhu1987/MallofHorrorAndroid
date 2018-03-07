@@ -476,6 +476,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 otherCommonSetUp();
+                HashSet<Playable> searchteam = gameBroad.WhoCan(gameBroad.matchRoom(roomNumber).existCharacterColor());
+                List<Playable> searchTeam = new ArrayList<>();
+                for (Playable player : searchteam) {
+                    searchTeam.add(player);
+                }
                 mCurrentTeam = (ArrayList<Playable>) searchTeam;
                 Collections.sort(mCurrentTeam, new Comparator<Playable>() {
                     @Override
@@ -483,7 +488,8 @@ public class MainActivity extends AppCompatActivity {
                         return o1.getColor().compareTo(o2.getColor());
                     }
                 });
-                Log.i(TAG, "theTeam: " + mCurrentTeam);
+
+                Log.i(TAG, "mCurrentTeam: " + mCurrentTeam + " searchTeam List: " + searchTeam + " searchTeam Set: " + searchteam);
                 Log.i(TAG, "colors: " + colors);
                 mMessageView.setVisibility(View.INVISIBLE);
                 int firstSearch = 0;
