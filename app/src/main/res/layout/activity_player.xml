@@ -142,10 +142,10 @@
         android:id="@+id/play"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_marginRight="30dp"
+        android:layout_marginRight="35dp"
         android:padding="0dp"
         android:scaleType="fitXY"
-        android:src="@drawable/redgunmanbttn"
+        android:src="@drawable/redtoughguybttn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 <!--enter romm-->
