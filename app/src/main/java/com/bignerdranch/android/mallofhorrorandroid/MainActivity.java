@@ -82,7 +82,8 @@ public class MainActivity extends AppCompatActivity {
     private final String ZOMBIEROOMS = "ZombiesRooms";
     private final String FIRSTPLAYERINDEX = "FirstPlayerIndex";
     private final String ISCHIEFELECTED = "IsChiefElected";
-    private final String INDEXANDROOMS = "IndexAndRoom";
+    private final String INDEXS = "Indexs";
+    private final String ROOMS = "ROOMS";
 
 
     private final int DELAYEDSECONDSFORMESSAGEVIE = 3;
@@ -1204,11 +1205,11 @@ public class MainActivity extends AppCompatActivity {
         Log.i(TAG, "Displaying Chief Selection");
         disableContinue();
         mMessageView.setVisibility(View.VISIBLE);
-        mDatabaseReference.child(INDEXANDROOMS).addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabaseReference.child(ROOMS).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue()!=null){
-                    int chiefElection = Integer.valueOf(dataSnapshot.getKey());
+                    int chiefElection = dataSnapshot.getValue(Integer.TYPE);
                     Room roomName = gameBroad.matchRoom(chiefElection);
                     mDatabaseReference.child(PREVTURN).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -1226,30 +1227,43 @@ public class MainActivity extends AppCompatActivity {
 
                         }
                     });
-                    mMessageView.setText("After reviewing the security cameara, chief will move to Room " + chiefElection + " : " + roomName);
+                    mMessageView.setText("After reviewing the security cameara, chief will move to "  + roomName);
                     Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             mMessageView.setVisibility(View.INVISIBLE);
                             ++mCountSetUp;
-                            int q = mCurrentStartPlayerIndex + 1;
-                            int i = 0;
-                            if (q < gameBroad.getPlayers().size()) {
-                                i = q;
-                            } else {
-                                i = q - gameBroad.getPlayers().size();
-                            }
-                            int nextMove = 0;
-                            for (int k=0; k<colors.size(); k++){
-                                if (gameBroad.getPlayers().get(i).getColor().equalsIgnoreCase(colors.get(k))){
-                                    nextMove = k;
+                            mDatabaseReference.child(INDEXS).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot!=null){
+                                        mCurrentStartPlayerIndex = dataSnapshot.getValue(Integer.TYPE);
+                                        int q = mCurrentStartPlayerIndex + 1;
+                                        int i = 0;
+                                        if (q < gameBroad.getPlayers().size()) {
+                                            i = q;
+                                        } else {
+                                            i = q - gameBroad.getPlayers().size();
+                                        }
+                                        int nextMove = 0;
+                                        for (int k=0; k<colors.size(); k++){
+                                            if (gameBroad.getPlayers().get(i).getColor().equalsIgnoreCase(colors.get(k))){
+                                                nextMove = k;
+                                            }
+                                        }
+                                        GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                                        mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                                        mDatabaseReference.child(PREVTURN).setValue(-1);
+                                        mDatabaseReference.child(TURN).setValue(nextMove);
+                                    }
                                 }
-                            }
-                            GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                            mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                            mDatabaseReference.child(PREVTURN).setValue(-1);
-                            mDatabaseReference.child(TURN).setValue(nextMove);
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
                         }
                     },DELAYEDSECONDSFORMESSAGEVIE*1000);
                 }
@@ -1289,14 +1303,29 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mDatabaseReference.child(INDEXANDROOMS).addListenerForSingleValueEvent(new ValueEventListener() {
+                mDatabaseReference.child(INDEXS).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.getValue()!=null){
                             playersIndex.clear();
+
+                            for (DataSnapshot snapshot: dataSnapshot.getChildren()){
+                                playersIndex.add(snapshot.getValue(Integer.TYPE));
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+                mDatabaseReference.child(ROOMS).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.getValue()!=null){
                             roomspicked.clear();
                             for (DataSnapshot snapshot: dataSnapshot.getChildren()){
-                                playersIndex.add(Integer.parseInt(snapshot.getKey()));
                                 roomspicked.add(snapshot.getValue(Integer.TYPE));
                             }
                         }
@@ -2620,7 +2649,8 @@ public class MainActivity extends AppCompatActivity {
                 }
                 GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount,mCurrentRoomPickedNumber,mCurrentStartPlayerIndex);
 
-                mDatabaseReference.child(INDEXANDROOMS).child(Integer.toString(mCurrentStartPlayerIndex)).setValue(mCurrentRoomPickedNumber);
+                mDatabaseReference.child(INDEXS).push().setValue(mCurrentStartPlayerIndex);
+                mDatabaseReference.child(ROOMS).push().setValue(mCurrentRoomPickedNumber);
                 mDatabaseReference.child(GAMEDATA).setValue(gameData);
                 mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
                 mDatabaseReference.child(TURN).setValue(nextMove);
@@ -2671,7 +2701,8 @@ public class MainActivity extends AppCompatActivity {
                 mDatabaseReference.child(GAMEDATA).setValue(gameData);
                 mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
                 mDatabaseReference.child(TURN).setValue(-5);
-                mDatabaseReference.child(INDEXANDROOMS).child(Integer.toString(mCurrentStartPlayerIndex)).setValue(mCurrentRoomPickedNumber);
+                mDatabaseReference.child(INDEXS).push().setValue(mCurrentStartPlayerIndex);
+                mDatabaseReference.child(ROOMS).push().setValue(mCurrentRoomPickedNumber);
             }
         }
         if (mCountSetUp>=2 && mCountSetUp<mCurrentPlayerNumber*2) {
@@ -2713,7 +2744,8 @@ public class MainActivity extends AppCompatActivity {
                 GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount,mCurrentRoomPickedNumber,i);
                 mDatabaseReference.child(GAMEDATA).setValue(gameData);
                 mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
-                mDatabaseReference.child(INDEXANDROOMS).child(Integer.toString(i)).setValue(mCurrentRoomPickedNumber);
+                mDatabaseReference.child(INDEXS).push().setValue(i);
+                mDatabaseReference.child(ROOMS).push().setValue(mCurrentRoomPickedNumber);
                 if (mCountSetUp==mCurrentPlayerNumber*2){
                     mDatabaseReference.child(TURN).setValue(-1);
                 } else {
