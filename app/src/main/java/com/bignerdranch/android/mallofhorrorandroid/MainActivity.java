@@ -1257,7 +1257,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                    Log.e(TAG, "dataerror" databaseError.toString())
+                    Log.e(TAG, "dataerror" + databaseError.toString());
             }
         });
 
