@@ -64,10 +64,12 @@
             <!--android:background="@drawable/play_button" />-->
         <TextView
             android:id="@+id/flash_text"
-            android:layout_width="wrap_content"
+            android:background="#000000"
+            android:layout_width="400dp"
             android:layout_height="wrap_content"
             android:textSize="20sp"
-            android:textColor="#ffffff"
+            android:textColor="#00FE00"
+            android:textAlignment="center"
             android:text="PLEASE TOUCH SCREEN TO START..."/>
     </LinearLayout>
 
