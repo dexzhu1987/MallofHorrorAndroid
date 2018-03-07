@@ -82,7 +82,7 @@
         android:id="@+id/cachou_area"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="220dp"
+        android:layout_marginStart="210dp"
         android:layout_marginTop="52dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -107,7 +107,7 @@
         android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
-        android:layout_marginTop="190dp"
+        android:layout_marginTop="180dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -117,8 +117,8 @@
         android:id="@+id/security_area"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="220dp"
-        android:layout_marginTop="190dp"
+        android:layout_marginStart="210dp"
+        android:layout_marginTop="180dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -130,7 +130,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="130dp"
         android:layout_marginStart="340dp"
-        android:layout_marginTop="190dp"
+        android:layout_marginTop="180dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -138,23 +138,23 @@
     </GridLayout>
 
 
-    <ImageButton
-        android:id="@+id/play"
-        android:layout_width="110dp"
-        android:layout_height="52dp"
-        android:padding="0dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/redbg"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+    <!--<ImageButton-->
+        <!--android:id="@+id/play"-->
+        <!--android:layout_width="110dp"-->
+        <!--android:layout_height="52dp"-->
+        <!--android:padding="0dp"-->
+        <!--android:scaleType="fitXY"-->
+        <!--android:src="@drawable/redbg"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintTop_toTopOf="parent" />-->
+<!--enter romm-->
     <ImageButton
         android:id="@+id/enter_restroom"
         android:layout_width="40dp"
         android:layout_height="45dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="32dp"
-        android:layout_marginTop="105dp"
+        android:layout_marginTop="100dp"
         android:padding="0dp"
         android:scaleType="fitXY"
         android:src="@drawable/enter_door"
@@ -172,7 +172,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="32dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="105dp"
+        android:layout_marginTop="100dp"
         android:padding="0dp"
         android:scaleType="fitXY"
         android:src="@drawable/enter_door"
@@ -190,7 +190,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="235dp"
+        android:layout_marginTop="230dp"
         android:padding="0dp"
         android:scaleType="fitXY"
         android:src="@drawable/enter_door"
@@ -208,7 +208,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="32dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="235dp"
+        android:layout_marginTop="230dp"
         android:padding="0dp"
         android:scaleType="fitXY"
         android:src="@drawable/enter_door"
@@ -225,7 +225,7 @@
         android:layout_height="45dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="32dp"
-        android:layout_marginTop="235dp"
+        android:layout_marginTop="230dp"
         android:padding="0dp"
         android:scaleType="fitXY"
         android:src="@drawable/enter_door"
@@ -243,7 +243,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="105dp"
+        android:layout_marginTop="100dp"
         android:padding="0dp"
         android:scaleType="fitXY"
         android:src="@drawable/enter_door"

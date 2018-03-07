@@ -348,15 +348,13 @@ public class PlayerActivity extends AppCompatActivity {
                     mNoShadow.startAnimation(mFlash);
                 }
             });
-
         }
-
 
     }
 
     private void otherCommonSetUp() {
         mPlayerActivityLayout = findViewById(R.id.player_activity);
-        mPlayerButton = findViewById(R.id.play);
+//        mPlayerButton = findViewById(R.id.play);
         mLoading = findViewById(R.id.loading_player);
 
         final Animation animRotate = AnimationUtils.loadAnimation(this, R.anim.anim_rotate);
@@ -1069,7 +1067,6 @@ public class PlayerActivity extends AppCompatActivity {
                                 }
 
                             }
-
 
                         }
                     });

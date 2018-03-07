@@ -59,6 +59,7 @@ public class FirstActivity extends AppCompatActivity {
     private String roomID;
     private Context firstActivity ;
     private AudioManager audioManager;
+    TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +73,7 @@ public class FirstActivity extends AppCompatActivity {
 
         mHowToPlayButton = findViewById(R.id.how_to_play_button);
         mSettingButton = findViewById(R.id.btn_setting);
+        textView = findViewById(R.id.flash_text);
 
 //        overridePendingTransition(android.support.v7.appcompat.R.anim.abc_grow_fade_in_from_bottom,android.support.v7.appcompat.R.anim.abc_shrink_fade_out_from_bottom );
 
@@ -128,6 +130,7 @@ public class FirstActivity extends AppCompatActivity {
                 AlertDialog mAlertDialog = builder.create();
                 mAlertDialog.show();
             }
+            textView.setVisibility(View.INVISIBLE);
             binding.inputEmail.setVisibility(VISIBLE);
             binding.inputName.setVisibility(VISIBLE);
             binding.login.setVisibility(VISIBLE);
@@ -301,7 +304,6 @@ public class FirstActivity extends AppCompatActivity {
     }
 
     private void blinkText(){
-        TextView textView = findViewById(R.id.flash_text);
         Animation fade_in_animation = AnimationUtils.loadAnimation(this, R.anim.fade_in);
         Animation fade_out_animation = AnimationUtils.loadAnimation(this, R.anim.fade_out);
         textView.startAnimation(fade_in_animation);
