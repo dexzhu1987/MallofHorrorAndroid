@@ -159,6 +159,21 @@ public class GameData {
         this.mPlayerIndex = mPlayerIndex;
     }
 
+    public GameData(int mCountPhase, int mCountSetUp, int mSecondCount, int mThirdCount, int mFourthCount, int mFifthCount,
+                    int mSixCount,int mPlayerIndex,  int mSelectRoomPhaseFive, String mSelectedCharacter) {
+        this.mCountPhase = mCountPhase;
+        this.mCountSetUp = mCountSetUp;
+        this.mSecondCount = mSecondCount;
+        this.mThirdCount = mThirdCount;
+        this.mFourthCount = mFourthCount;
+        this.mFifthCount = mFifthCount;
+        this.mSixCount = mSixCount;
+        this.mPassingType = 6;
+        this.mSelectedRoomPhaseFive = mSelectRoomPhaseFive;
+        this.mPlayerIndex = mPlayerIndex;
+        this.mSelectedCharacter = mSelectedCharacter;
+    }
+
 
 
     public int getmCountPhase() {

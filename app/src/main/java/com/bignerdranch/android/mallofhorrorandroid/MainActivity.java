@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
     private final String ZOMBIEROOMS = "ZombiesRooms";
     private final String FIRSTPLAYERINDEX = "FirstPlayerIndex";
     private final String ISCHIEFELECTED = "IsChiefElected";
+    private final String INDEXANDROOMS = "IndexAndRoom";
 
 
     private final int DELAYEDSECONDSFORMESSAGEVIE = 3;
@@ -1123,6 +1124,8 @@ public class MainActivity extends AppCompatActivity {
             messageViewInformChiefRoomNumber(gameData);
         } else if (mCountSetUp==mCurrentPlayerNumber*2) {
             messageInformRoomSelectionSummary(gameData);
+        } else if (mCountSetUp==mCurrentPlayerNumber*4) {
+
         }
     }
 
@@ -1180,16 +1183,54 @@ public class MainActivity extends AppCompatActivity {
     private void messageViewInformChiefRoomNumber(GameData gameData) {
         disableContinue();
         mMessageView.setVisibility(View.VISIBLE);
-        int chiefElection = gameData.getItemNumber();
-        String roomName = gameBroad.matchRoom(chiefElection).getName();
-        mDatabaseReference.child(PREVTURN).addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabaseReference.child(INDEXANDROOMS).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue()!=null){
-                    int prevTurn = dataSnapshot.getValue(Integer.TYPE);
-                    if (mMyPlayerID!= prevTurn){
-                        updateDataFromFireBase(0,gameData,prevTurn);
-                    }
+                    int chiefElection = Integer.parseInt(dataSnapshot.getKey());
+                    Room roomName = gameBroad.matchRoom(chiefElection);
+                    mDatabaseReference.child(PREVTURN).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.getValue()!=null){
+                                int prevTurn = dataSnapshot.getValue(Integer.TYPE);
+                                if (mMyPlayerID!= prevTurn){
+                                    updateDataFromFireBase(0,gameData,prevTurn);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                    mMessageView.setText("After reviewing the security cameara, chief will move to Room " + chiefElection + " : " + roomName);
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mMessageView.setVisibility(View.INVISIBLE);
+                            ++mCountSetUp;
+                            int q = mCurrentStartPlayerIndex + 1;
+                            int i = 0;
+                            if (q < gameBroad.getPlayers().size()) {
+                                i = q;
+                            } else {
+                                i = q - gameBroad.getPlayers().size();
+                            }
+                            int nextMove = 0;
+                            for (int k=0; k<colors.size(); k++){
+                                if (gameBroad.getPlayers().get(i).getColor().equalsIgnoreCase(colors.get(k))){
+                                    nextMove = k;
+                                }
+                            }
+                            GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                            mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                            mDatabaseReference.child(PREVTURN).setValue(-1);
+                            mDatabaseReference.child(TURN).setValue(nextMove);
+                        }
+                    },DELAYEDSECONDSFORMESSAGEVIE*1000);
                 }
             }
 
@@ -1198,32 +1239,9 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        mMessageView.setText("After reviewing the security cameara, chief will move to Room " + chiefElection + " : " + roomName);
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mMessageView.setVisibility(View.INVISIBLE);
-                ++mCountSetUp;
-                int q = mCurrentStartPlayerIndex + 1;
-                int i = 0;
-                if (q < gameBroad.getPlayers().size()) {
-                    i = q;
-                } else {
-                    i = q - gameBroad.getPlayers().size();
-                }
-                int nextMove = 0;
-                for (int k=0; k<colors.size(); k++){
-                    if (gameBroad.getPlayers().get(i).getColor().equalsIgnoreCase(colors.get(k))){
-                        nextMove = k;
-                    }
-                }
-                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                mDatabaseReference.child(PREVTURN).setValue(-1);
-                mDatabaseReference.child(TURN).setValue(nextMove);
-            }
-        },DELAYEDSECONDSFORMESSAGEVIE*1000);
+        int chiefElection = gameData.getItemNumber();
+
+
     }
 
     private void messageInformRoomSelectionSummary(GameData gameData) {
@@ -1246,15 +1264,32 @@ public class MainActivity extends AppCompatActivity {
         disableContinue();
         mMessageView.setVisibility(View.VISIBLE);
         mMessageView.setText("Room Selection is Finished, now we move character into the Room Individually");
-
+        mMessageView.setEnabled(false);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                mDatabaseReference.child(INDEXANDROOMS).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.getValue()!=null){
+                            playersIndex.clear();
+                            roomspicked.clear();
+                            for (DataSnapshot snapshot: dataSnapshot.getChildren()){
+                                playersIndex.add(Integer.parseInt(snapshot.getKey()));
+                                roomspicked.add(snapshot.getValue(Integer.TYPE));
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
                 String message = "";
                 Log.i(TAG, "Player Index: " + playersIndex);
                 Log.i(TAG, "Room: " + roomspicked);
-
                 for (int i=0; i<roomspicked.size(); i++){
                     message += "\nPlayer " + gameBroad.getPlayers().get(playersIndex.get(i)).getColor() + " to Room " + roomspicked.get(i) ;
                 }
@@ -1415,6 +1450,17 @@ public class MainActivity extends AppCompatActivity {
             int playerIndex = gameData.getPlayerIndex();
             roomspicked.add(choosedRoomNumber);
             playersIndex.add(playerIndex);
+        } else if (gameData.getmPassingType()==6){
+            Room destination = gameBroad.matchRoom(gameData.getSelectedRoomPhaseFive());
+            Playable actualPlayer = gameBroad.getPlayers().get(gameData.getPlayerIndex());
+            GameCharacter selectedCharacter2 = gameBroad.matchGameCharacter(actualPlayer,gameData.getmSelectedCharacter());
+            Room leavingRoom2 = gameBroad.inWhichRoom(selectedCharacter2);
+            leavingRoom2.leave(selectedCharacter2);
+            if (gameBroad.matchRoom(gameData.getSelectedRoomPhaseFive()).isFull()){
+                gameBroad.matchRoom(4).enter(selectedCharacter2);
+            }else {
+                gameBroad.matchRoom(gameData.getSelectedRoomPhaseFive()).enter(selectedCharacter2);
+            }
         }
     }
 
@@ -2552,6 +2598,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount,mCurrentRoomPickedNumber,mCurrentStartPlayerIndex);
+
+                mDatabaseReference.child(INDEXANDROOMS).child(Integer.toString(mCurrentStartPlayerIndex)).setValue(mCurrentRoomPickedNumber);
                 mDatabaseReference.child(GAMEDATA).setValue(gameData);
                 mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
                 mDatabaseReference.child(TURN).setValue(nextMove);
@@ -2642,6 +2690,7 @@ public class MainActivity extends AppCompatActivity {
                 GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount,mCurrentRoomPickedNumber,i);
                 mDatabaseReference.child(GAMEDATA).setValue(gameData);
                 mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
+                mDatabaseReference.child(INDEXANDROOMS).child(Integer.toString(i)).setValue(mCurrentRoomPickedNumber);
                 if (mCountSetUp==mCurrentPlayerNumber*2){
                     mDatabaseReference.child(TURN).setValue(-1);
                 } else {
@@ -2674,14 +2723,35 @@ public class MainActivity extends AppCompatActivity {
                 GameCharacter selectedCharacter2 = gameBroad.matchGameCharacter(actualPlayer,mCurrentGameCharacterSelected);
                 Room leavingRoom2 = gameBroad.inWhichRoom(selectedCharacter2);
                 leavingRoom2.leave(selectedCharacter2);
+
                 if (gameBroad.matchRoom(roomspicked.get(q)).isFull()){
                     gameBroad.matchRoom(4).enter(selectedCharacter2);
                 }else {
                     gameBroad.matchRoom(roomspicked.get(q)).enter(selectedCharacter2);
                 }
                 ++mCountSetUp;
-                if (mCountSetUp!=mCurrentPlayerNumber*4)
-                viewAndMove();
+
+                int z = 0;
+                if (q+1 < mCurrentPlayerNumber){
+                    z = q+1;
+                } else {
+                    z = q+1 - mCurrentPlayerNumber;
+                }
+                int nextMove = 0;
+                for (int k=0; k<colors.size(); k++){
+                    if (gameBroad.getPlayers().get(z).getColor().equalsIgnoreCase(colors.get(k))){
+                        nextMove = k;
+                    }
+                }
+                if (mCountSetUp==mCurrentPlayerNumber*2){
+                    mDatabaseReference.child(TURN).setValue(-1);
+                } else {
+                    mDatabaseReference.child(TURN).setValue(nextMove);
+                }
+                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount, playersIndex.get(q),roomspicked.get(q), mCurrentGameCharacterSelected);
+                mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
+
             }
         }
         if (mCountSetUp==mCurrentPlayerNumber*4){
