@@ -286,6 +286,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 GameData gameData = dataSnapshot.getValue(GameData.class);
+                Log.i(TAG, gameData.toString());
                 mCountPhase=gameData.getmCountPhase();
                 mCountSetUp=gameData.getmCountSetUp();
                 mSecondCount=gameData.getmSecondCount();
@@ -1144,7 +1145,7 @@ public class MainActivity extends AppCompatActivity {
         } else if (mCountSetUp==gameBroad.getPlayers().size()*2) {
             messageInformRoomSelectionSummary(gameData);
         } else if (mCountSetUp==gameBroad.getPlayers().size()) {
-            
+
         }
     }
 
@@ -1200,13 +1201,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void messageViewInformChiefRoomNumber(GameData gameData) {
+        Log.i(TAG, "Displaying Chief Selection");
         disableContinue();
         mMessageView.setVisibility(View.VISIBLE);
         mDatabaseReference.child(INDEXANDROOMS).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue()!=null){
-                    int chiefElection = Integer.parseInt(dataSnapshot.getKey());
+                    int chiefElection = Integer.valueOf(dataSnapshot.getKey());
                     Room roomName = gameBroad.matchRoom(chiefElection);
                     mDatabaseReference.child(PREVTURN).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -1255,10 +1257,9 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                    Log.e(TAG, "dataerror" databaseError.toString())
             }
         });
-        int chiefElection = gameData.getItemNumber();
 
 
     }
@@ -2585,6 +2586,7 @@ public class MainActivity extends AppCompatActivity {
     private void viewAndMove() {
         mCurrentPlayerNumber = gameBroad.getPlayers().size();
         System.out.println("mCountSetup: " + mCountSetUp +  " mSecondCount: " + mSecondCount + " mThirdCount: " + mThirdCount);
+
         if (mCountSetUp<2 && !mIsChiefSelected){
             if (mCountSetUp == 0) {
                 System.out.println("No chief first player move");
@@ -2668,7 +2670,7 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println("Chief Room revealing");
                 mDatabaseReference.child(GAMEDATA).setValue(gameData);
                 mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
-                mDatabaseReference.child(TURN).setValue(-1);
+                mDatabaseReference.child(TURN).setValue(-5);
             }
         }
         if (mCountSetUp>=2 && mCountSetUp<mCurrentPlayerNumber*2) {

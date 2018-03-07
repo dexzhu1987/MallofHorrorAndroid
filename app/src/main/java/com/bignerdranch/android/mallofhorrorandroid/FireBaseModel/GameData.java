@@ -263,4 +263,10 @@ public class GameData {
     public void setmAffectedRoom(int mAffectedRoom) {
         this.mAffectedRoom = mAffectedRoom;
     }
+
+    @Override
+    public String toString() {
+        return "GameData: mCountPhase: " + mCountPhase + " mCountSetup: " + mCountSetUp + " mSecondCount: " + mSecondCount + " mThirdCount: " + mThirdCount +
+                " mFourthCount: " + mFourthCount + " mFifthCount: " + mFifthCount + " mSixthCount: " + mSixCount;
+    }
 }
