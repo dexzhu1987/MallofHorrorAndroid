@@ -908,11 +908,7 @@ public class MainActivity extends AppCompatActivity {
         dices.add(DiceTwo);
         dices.add(DiceThree);
         dices.add(DiceFour);
-        int startplayer = 0;
-        int startplayerroomnumber = 0;
         mCurrentZombiesRooms = (ArrayList<Integer>) dices;
-        mCurrentStartPlayerIndex = startplayer;
-        mCurrentStartRoom = startplayerroomnumber;
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -1139,7 +1135,7 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue()!=null){
                     mIsChiefSelected = dataSnapshot.getValue(Boolean.TYPE);
-                    if (mIsChiefSelected){
+                    if (!mIsChiefSelected){
                         mMessageView.setText("Due to no chief, a ramdom player will start first");
                     } else {
                         mMessageView.setText("Chief was elected, chief will perform view and choose room number");
