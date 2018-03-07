@@ -2671,6 +2671,7 @@ public class MainActivity extends AppCompatActivity {
                 mDatabaseReference.child(GAMEDATA).setValue(gameData);
                 mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
                 mDatabaseReference.child(TURN).setValue(-5);
+                mDatabaseReference.child(INDEXANDROOMS).child(Integer.toString(mCurrentStartPlayerIndex)).setValue(mCurrentRoomPickedNumber);
             }
         }
         if (mCountSetUp>=2 && mCountSetUp<mCurrentPlayerNumber*2) {
