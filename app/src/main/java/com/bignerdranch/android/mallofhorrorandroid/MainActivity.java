@@ -474,6 +474,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 otherCommonSetUp();
+                mCurrentTeam = (ArrayList<Playable>) searchTeam;
+                Collections.sort(mCurrentTeam, new Comparator<Playable>() {
+                    @Override
+                    public int compare(Playable o1, Playable o2) {
+                        return o1.getColor().compareTo(o2.getColor());
+                    }
+                });
                 Log.i(TAG, "theTeam: " + mCurrentTeam);
                 Log.i(TAG, "colors: " + colors);
                 mMessageView.setVisibility(View.INVISIBLE);
@@ -924,7 +931,7 @@ public class MainActivity extends AppCompatActivity {
                 if (mMyPlayerID==firstSearch){
                     mDatabaseReference.child(PLAYERBOOLEANANSWERS).setValue(null);
                     mDatabaseReference.child(ZOMBIEROOMS).setValue(mCurrentZombiesRooms);
-                    mDatabaseReference.child(FIRSTPLAYERINDEX).setValue(mCurrentPlayerNumber);
+                    mDatabaseReference.child(FIRSTPLAYERINDEX).setValue(mCurrentStartPlayerIndex);
                 }
             }
         },DELAYEDSECONDSFORMESSAGEVIE*1000);
@@ -936,7 +943,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue()!=null){
-                    mCurrentZombiesRooms = (ArrayList<Integer>) dataSnapshot.getValue();
+                    mCurrentZombiesRooms.clear();
+                    for (DataSnapshot snapshot: dataSnapshot.getChildren()){
+                        mCurrentZombiesRooms.add(snapshot.getValue(Integer.TYPE));
+                    }
+
                 }
             }
 
@@ -2373,6 +2384,7 @@ public class MainActivity extends AppCompatActivity {
                 if (q % 3 == 1) {
                     Playable teammember = gameBroad.getPlayers().get(i);
                     if (mCurrentYesNo) {
+                        mCurrentZombiesRooms = (ArrayList<Integer>) mCurrentZombiesRooms;
                         Intent intent = ShowingZombieActivity.newShowZombiesIntent(MainActivity.this, mCurrentZombiesRooms,mCountSetUp);
                         startActivityForResult(intent, REQUEST_CODE_VIEWZOMBIE);
                         overridePendingTransition(android.support.v7.appcompat.R.anim.abc_popup_enter,android.support.v7.appcompat.R.anim.abc_popup_exit );
