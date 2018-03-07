@@ -2437,7 +2437,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
     }
-x
+
     private void viewAndMove() {
         mCurrentPlayerNumber = gameBroad.getPlayers().size();
         System.out.println("mCountSetup: " + mCountSetUp +  " mSecondCount: " + mSecondCount + " mThirdCount: " + mThirdCount);
