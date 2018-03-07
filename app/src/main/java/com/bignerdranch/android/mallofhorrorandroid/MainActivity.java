@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
     private final String PLAYERBOOLEANANSWERS = "PlayerBooleanAnswers";
     private final String ZOMBIEROOMS = "ZombiesRooms";
     private final String FIRSTPLAYERINDEX = "FirstPlayerIndex";
+    private final String ISCHIEFELECTED = "IsChiefElected";
 
 
     private final int DELAYEDSECONDSFORMESSAGEVIE = 3;
@@ -932,6 +933,7 @@ public class MainActivity extends AppCompatActivity {
                     mDatabaseReference.child(PLAYERBOOLEANANSWERS).setValue(null);
                     mDatabaseReference.child(ZOMBIEROOMS).setValue(mCurrentZombiesRooms);
                     mDatabaseReference.child(FIRSTPLAYERINDEX).setValue(mCurrentStartPlayerIndex);
+                    mDatabaseReference.child(ISCHIEFELECTED).setValue(mIsChiefSelected);
                 }
             }
         },DELAYEDSECONDSFORMESSAGEVIE*1000);
@@ -1128,62 +1130,53 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void messageInformRoomSelectionSummary() {
-        disableContinue();
-        mMessageView.setVisibility(View.VISIBLE);
-        mMessageView.setText("Room Selection is Finished, now we move character into the Room Individually");
-
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                String message = "";
-                Log.i(TAG, "Player Index: " + playersIndex);
-                Log.i(TAG, "Room: " + roomspicked);
-
-                for (int i=0; i<roomspicked.size(); i++){
-                    message += "/nPlayer " + gameBroad.getPlayers().get(playersIndex.get(i)).getColor() + " to Room " + roomspicked.get(i) ;
-                }
-                Log.i(TAG,"message: " +  message);
-
-                mMessageView.setText("Player Choises are: " + message);
-                Handler handler1 = new Handler();
-                handler1.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        int nextMove = 0;
-                        for (int i=0; i<colors.size(); i++){
-                            if (mCurrentStartPlayer.getColor().equalsIgnoreCase(colors.get(i))){
-                                nextMove = i;
-                            }
-                        }
-                        mDatabaseReference.child(TURN).setValue(nextMove);
-                    }
-                },10*1000);
-            }
-        },DELAYEDSECONDSFORMESSAGEVIE * 1000);
-    }
-
     private void messageViewReinformIsChiefElectedAndDetermineNextMove() {
         disableContinue();
         mMessageView.setVisibility(View.VISIBLE);
         Handler handler = new Handler();
-        if (mIsChiefSelected){
-            mMessageView.setText("Due to no chief, a ramdom player will start first");
-        } else {
-            mMessageView.setText("Chief was elected, chief will perform view and choose room number");
-        }
+        mDatabaseReference.child(ISCHIEFELECTED).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue()!=null){
+                    mIsChiefSelected = dataSnapshot.getValue(Boolean.TYPE);
+                    if (mIsChiefSelected){
+                        mMessageView.setText("Due to no chief, a ramdom player will start first");
+                    } else {
+                        mMessageView.setText("Chief was elected, chief will perform view and choose room number");
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 mMessageView.setVisibility(View.INVISIBLE);
-                int nextMove = 0;
-                for (int i=0; i<colors.size(); i++){
-                    if (mCurrentStartPlayer.getColor().equalsIgnoreCase(colors.get(i))){
-                        nextMove = i;
+                mDatabaseReference.child(FIRSTPLAYERINDEX).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.getValue()!=null){
+                            mCurrentStartPlayerIndex = dataSnapshot.getValue(Integer.TYPE);
+                            mCurrentStartPlayer = gameBroad.getPlayers().get(mCurrentStartPlayerIndex);
+                            int nextMove = 0;
+                            for (int i=0; i<colors.size(); i++){
+                                if (mCurrentStartPlayer.getColor().equalsIgnoreCase(colors.get(i))){
+                                    nextMove = i;
+                                }
+                            }
+                            mDatabaseReference.child(TURN).setValue(nextMove);
+                        }
                     }
-                }
-                mDatabaseReference.child(TURN).setValue(nextMove);
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
             }
         },DELAYEDSECONDSFORMESSAGEVIE * 1000);
     }
@@ -1235,6 +1228,42 @@ public class MainActivity extends AppCompatActivity {
                 mDatabaseReference.child(TURN).setValue(nextMove);
             }
         },DELAYEDSECONDSFORMESSAGEVIE*1000);
+    }
+
+    private void messageInformRoomSelectionSummary() {
+        disableContinue();
+        mMessageView.setVisibility(View.VISIBLE);
+        mMessageView.setText("Room Selection is Finished, now we move character into the Room Individually");
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                String message = "";
+                Log.i(TAG, "Player Index: " + playersIndex);
+                Log.i(TAG, "Room: " + roomspicked);
+
+                for (int i=0; i<roomspicked.size(); i++){
+                    message += "/nPlayer " + gameBroad.getPlayers().get(playersIndex.get(i)).getColor() + " to Room " + roomspicked.get(i) ;
+                }
+                Log.i(TAG,"message: " +  message);
+
+                mMessageView.setText("Player Choises are: " + message);
+                Handler handler1 = new Handler();
+                handler1.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        int nextMove = 0;
+                        for (int i=0; i<colors.size(); i++){
+                            if (mCurrentStartPlayer.getColor().equalsIgnoreCase(colors.get(i))){
+                                nextMove = i;
+                            }
+                        }
+                        mDatabaseReference.child(TURN).setValue(nextMove);
+                    }
+                },10*1000);
+            }
+        },DELAYEDSECONDSFORMESSAGEVIE * 1000);
     }
 
     private void rotateTurnAccoridngtoFirebase(int turn) {
@@ -2395,12 +2424,27 @@ public class MainActivity extends AppCompatActivity {
                 if (q % 3 == 1) {
                     Playable teammember = gameBroad.getPlayers().get(i);
                     if (mCurrentYesNo) {
-                        mCurrentZombiesRooms = (ArrayList<Integer>) mCurrentZombiesRooms;
-                        Intent intent = ShowingZombieActivity.newShowZombiesIntent(MainActivity.this, mCurrentZombiesRooms,mCountSetUp);
-                        startActivityForResult(intent, REQUEST_CODE_VIEWZOMBIE);
-                        overridePendingTransition(android.support.v7.appcompat.R.anim.abc_popup_enter,android.support.v7.appcompat.R.anim.abc_popup_exit );
-                        Item securityCamera = gameBroad.matchItem(teammember, "SecurityCamera");
-                        teammember.usedItem(securityCamera);
+                        mDatabaseReference.child(ZOMBIEROOMS).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.getValue()!=null){
+                                    mCurrentZombiesRooms.clear();
+                                    for (DataSnapshot snapshot: dataSnapshot.getChildren()){
+                                        mCurrentZombiesRooms.add(snapshot.getValue(Integer.TYPE));
+                                    }
+                                    Intent intent = ShowingZombieActivity.newShowZombiesIntent(MainActivity.this, mCurrentZombiesRooms,mCountSetUp);
+                                    startActivityForResult(intent, REQUEST_CODE_VIEWZOMBIE);
+                                    overridePendingTransition(android.support.v7.appcompat.R.anim.abc_popup_enter,android.support.v7.appcompat.R.anim.abc_popup_exit );
+                                    Item securityCamera = gameBroad.matchItem(teammember, "SecurityCamera");
+                                    teammember.usedItem(securityCamera);
+                                }
+                            }
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
                     } else {
                         mCountSetUp+=2;
                         GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
@@ -2504,11 +2548,27 @@ public class MainActivity extends AppCompatActivity {
         if (mCountSetUp<2 && mIsChiefSelected && mSecondCount<2){
             System.out.println("With chief, first player move");
             if (mSecondCount==0 && mCountSetUp==0){
-                System.out.println("Showing Chief the zombies");
-                Intent intent = ShowingZombieActivity.newShowZombiesIntent(MainActivity.this, mCurrentZombiesRooms,mSecondCount);
-                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivityForResult(intent, REQUEST_CODE_VIEWZOMBIECHIEF);
-                overridePendingTransition(android.support.v7.appcompat.R.anim.abc_popup_enter,android.support.v7.appcompat.R.anim.abc_popup_exit );
+                mDatabaseReference.child(ZOMBIEROOMS).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.getValue()!=null){
+                            mCurrentZombiesRooms.clear();
+                            for (DataSnapshot snapshot: dataSnapshot.getChildren()){
+                                mCurrentZombiesRooms.add(snapshot.getValue(Integer.TYPE));
+                            }
+                        }
+                        System.out.println("Showing Chief the zombies");
+                        Intent intent = ShowingZombieActivity.newShowZombiesIntent(MainActivity.this, mCurrentZombiesRooms,mSecondCount);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                        startActivityForResult(intent, REQUEST_CODE_VIEWZOMBIECHIEF);
+                        overridePendingTransition(android.support.v7.appcompat.R.anim.abc_popup_enter,android.support.v7.appcompat.R.anim.abc_popup_exit );
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
             }
             if (mSecondCount==1 && mCountSetUp==0){
                 System.out.println("Chief Seleting Room");
