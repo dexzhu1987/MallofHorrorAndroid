@@ -2288,7 +2288,7 @@ public class MainActivity extends AppCompatActivity {
                                         teammember.usedItem(threat);
                                     }
                                     mCountSetUp++;
-                                    GameData gameData = new GameData(mCountPhase,mCountSetUp, mSecondCount, mThirdCount, mFourthCount, mFifthCount, mSixCount,mCurrentYesNo,4);
+                                    GameData gameData = new GameData(mCountPhase,mCountSetUp, mSecondCount, mThirdCount, mFourthCount, mFifthCount, mSixCount,mCurrentYesNo,5);
                                     mDatabaseReference.child(GAMEDATA).setValue(gameData);
                                     mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
                                     if (mCountSetUp==4*mCurrentTeam.size()) {
