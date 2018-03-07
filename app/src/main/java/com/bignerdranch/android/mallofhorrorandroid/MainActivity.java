@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
     private final String FIRSTPLAYERINDEX = "FirstPlayerIndex";
     private final String ISCHIEFELECTED = "IsChiefElected";
     private final String INDEXS = "Indexs";
-    private final String ROOMS = "ROOMS";
+    private final String ROOMS = "Rooms";
 
 
     private final int DELAYEDSECONDSFORMESSAGEVIE = 3;
@@ -424,9 +424,10 @@ public class MainActivity extends AppCompatActivity {
                         mCurrentZombiesRooms.clear();
                         mCurrentYesNo=false;
                         mCurrentYesNoMain = false;
-                        GameData gameData = new GameData(mCountPhase,mCountSetUp,2,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                        GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                         mDatabaseReference.child(GAMEDATA).setValue(gameData);
                         mDatabaseReference.child(TURN).setValue(-2);
+                        mDatabaseReference.child(PREVTURN).setValue(-1);
                     }
                 }
             },DELAYEDSECONDSFORMESSAGEVIE * 1000);
@@ -1308,7 +1309,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.getValue()!=null){
                             playersIndex.clear();
-
+                            Log.i(TAG, "reloading playerindex");
                             for (DataSnapshot snapshot: dataSnapshot.getChildren()){
                                 playersIndex.add(snapshot.getValue(Integer.TYPE));
                             }
@@ -1325,6 +1326,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.getValue()!=null){
                             roomspicked.clear();
+                            Log.i(TAG, "reloading rooms");
                             for (DataSnapshot snapshot: dataSnapshot.getChildren()){
                                 roomspicked.add(snapshot.getValue(Integer.TYPE));
                             }
@@ -2456,60 +2458,60 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-        if (mCountSetUp == mCurrentTeam.size()*4 && mSecondCount == 3) {
-                mCurrentYesNo=false;
-                mCurrentYesNoMain = false;
-                System.out.println("Preparing Zombies");
-                TwoPairofDice fourdices = new TwoPairofDice();
-                int DiceOne = fourdices.rollDieOne();
-                int DiceTwo = fourdices.rollDieTwo();
-                int DiceThree = fourdices.rollDieThree();
-                int DiceFour = fourdices.rollDieFour();
-                List<Integer> dices = new ArrayList<>();
-                dices.add(DiceOne);
-                dices.add(DiceTwo);
-                dices.add(DiceThree);
-                dices.add(DiceFour);
-                int startplayer = 0;
-                int startplayerroomnumber = 0;
-                mCurrentZombiesRooms = (ArrayList<Integer>) dices;
-                mCurrentStartPlayerIndex = startplayer;
-                mCurrentStartRoom = startplayerroomnumber;
-                if (gameBroad.matchRoom(5).winner().equals("TIE") || gameBroad.matchRoom(5).isEmpty() ){
-                    System.out.println("No chief");
-                    Random generator = new Random();
-                    startplayer = generator.nextInt(gameBroad.getPlayers().size());
-                    mCurrentStartPlayerIndex = startplayer;
-                    mCurrentStartPlayer = gameBroad.getPlayers().get(mCurrentStartPlayerIndex);
-                    disableContinue();
-                    mMessageView.setText("No chief selected. A ramdon player will start first");
-                    mMessageView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            enableContinue();
-                            mSecondCount++;
-                            mIsChiefSelected = false;
-                        }
-                    });
-                } else {
-                    System.out.println("Chief selected");
-                    disableContinue();
-                    String winnercolor = gameBroad.matchRoom(5).winner();
-                    startplayer = gameBroad.getPlayers().indexOf(gameBroad.matchPlayer(winnercolor));
-                    mCurrentStartPlayerIndex = startplayer;
-                    mCurrentStartPlayer = gameBroad.getPlayers().get(mCurrentStartPlayerIndex);
-                    mMessageView.setText("Winner is " + gameBroad.matchPlayer(winnercolor) +
-                            "\nAnd would see the approaching zombies");
-                    mMessageView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            enableContinue();
-                            mSecondCount++;
-                            mIsChiefSelected  = true;
-                        }
-                    });
-                }
-            }
+//        if (mCountSetUp == mCurrentTeam.size()*4 && mSecondCount == 3) {
+//                mCurrentYesNo=false;
+//                mCurrentYesNoMain = false;
+//                System.out.println("Preparing Zombies");
+//                TwoPairofDice fourdices = new TwoPairofDice();
+//                int DiceOne = fourdices.rollDieOne();
+//                int DiceTwo = fourdices.rollDieTwo();
+//                int DiceThree = fourdices.rollDieThree();
+//                int DiceFour = fourdices.rollDieFour();
+//                List<Integer> dices = new ArrayList<>();
+//                dices.add(DiceOne);
+//                dices.add(DiceTwo);
+//                dices.add(DiceThree);
+//                dices.add(DiceFour);
+//                int startplayer = 0;
+//                int startplayerroomnumber = 0;
+//                mCurrentZombiesRooms = (ArrayList<Integer>) dices;
+//                mCurrentStartPlayerIndex = startplayer;
+//                mCurrentStartRoom = startplayerroomnumber;
+//                if (gameBroad.matchRoom(5).winner().equals("TIE") || gameBroad.matchRoom(5).isEmpty() ){
+//                    System.out.println("No chief");
+//                    Random generator = new Random();
+//                    startplayer = generator.nextInt(gameBroad.getPlayers().size());
+//                    mCurrentStartPlayerIndex = startplayer;
+//                    mCurrentStartPlayer = gameBroad.getPlayers().get(mCurrentStartPlayerIndex);
+//                    disableContinue();
+//                    mMessageView.setText("No chief selected. A ramdon player will start first");
+//                    mMessageView.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            enableContinue();
+//                            mSecondCount++;
+//                            mIsChiefSelected = false;
+//                        }
+//                    });
+//                } else {
+//                    System.out.println("Chief selected");
+//                    disableContinue();
+//                    String winnercolor = gameBroad.matchRoom(5).winner();
+//                    startplayer = gameBroad.getPlayers().indexOf(gameBroad.matchPlayer(winnercolor));
+//                    mCurrentStartPlayerIndex = startplayer;
+//                    mCurrentStartPlayer = gameBroad.getPlayers().get(mCurrentStartPlayerIndex);
+//                    mMessageView.setText("Winner is " + gameBroad.matchPlayer(winnercolor) +
+//                            "\nAnd would see the approaching zombies");
+//                    mMessageView.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            enableContinue();
+//                            mSecondCount++;
+//                            mIsChiefSelected  = true;
+//                        }
+//                    });
+//                }
+//            }
             if (mCountSetUp < (mCurrentTeam.size()*4 + gameBroad.getPlayers().size() * 3) && mSecondCount==6) {
                 int q = mCountSetUp - (4 * mCurrentTeam.size());
                 int i = (q == 0) ? 0 : (q / 3);
