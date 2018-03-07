@@ -859,6 +859,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void messageViewRelatedChiefElectionWithElectionTeam(GameData gameData) {
+        mCurrentTeam.clear();
+        HashSet<Playable> searchteam = gameBroad.WhoCan(gameBroad.matchRoom(5).existCharacterColor());
+        List<Playable> searchTeam = new ArrayList<>();
+        for (Playable player : searchteam) {
+            searchTeam.add(player);
+        }
+        mCurrentTeam = (ArrayList<Playable>) searchTeam;
+        Collections.sort(mCurrentTeam, new Comparator<Playable>() {
+            @Override
+            public int compare(Playable o1, Playable o2) {
+                return o1.getColor().compareTo(o2.getColor());
+            }
+        });
         if (mThirdCount==0){
             messageViewInformExistedMembers(5);
         } else if (mCountSetUp == mCurrentTeam.size()*2  && mSecondCount == 0){
