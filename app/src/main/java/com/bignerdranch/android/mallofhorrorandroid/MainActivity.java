@@ -1122,7 +1122,7 @@ public class MainActivity extends AppCompatActivity {
         } else if (mCountSetUp==1 && mSecondCount==1) {
             messageViewInformChiefRoomNumber(gameData);
         } else if (mCountSetUp==mCurrentPlayerNumber*2) {
-            messageInformRoomSelectionSummary();
+            messageInformRoomSelectionSummary(gameData);
         }
     }
 
@@ -1226,7 +1226,23 @@ public class MainActivity extends AppCompatActivity {
         },DELAYEDSECONDSFORMESSAGEVIE*1000);
     }
 
-    private void messageInformRoomSelectionSummary() {
+    private void messageInformRoomSelectionSummary(GameData gameData) {
+        mDatabaseReference.child(PREVTURN).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue()!=null){
+                    int prevTurn = dataSnapshot.getValue(Integer.TYPE);
+                    if (mMyPlayerID!=prevTurn){
+                        updateDataFromFireBase(0,gameData,prevTurn);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
         disableContinue();
         mMessageView.setVisibility(View.VISIBLE);
         mMessageView.setText("Room Selection is Finished, now we move character into the Room Individually");
@@ -1240,7 +1256,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.i(TAG, "Room: " + roomspicked);
 
                 for (int i=0; i<roomspicked.size(); i++){
-                    message += "/nPlayer " + gameBroad.getPlayers().get(playersIndex.get(i)).getColor() + " to Room " + roomspicked.get(i) ;
+                    message += "\nPlayer " + gameBroad.getPlayers().get(playersIndex.get(i)).getColor() + " to Room " + roomspicked.get(i) ;
                 }
                 Log.i(TAG,"message: " +  message);
 
