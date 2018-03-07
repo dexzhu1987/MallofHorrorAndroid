@@ -1139,12 +1139,12 @@ public class MainActivity extends AppCompatActivity {
     private void messageViewInformRelatedtoMoveAndView(GameData gameData) {
         if (mCountSetUp==0){
             messageViewReinformIsChiefElectedAndDetermineNextMove();
-        } else if (mCountSetUp==1 && mSecondCount==1) {
+        } else if (mCountSetUp==1 && mSecondCount==1 && mThirdCount==1) {
             messageViewInformChiefRoomNumber(gameData);
-        } else if (mCountSetUp==mCurrentPlayerNumber*2) {
+        } else if (mCountSetUp==gameBroad.getPlayers().size()*2) {
             messageInformRoomSelectionSummary(gameData);
-        } else if (mCountSetUp==mCurrentPlayerNumber*4) {
-
+        } else if (mCountSetUp==gameBroad.getPlayers().size()) {
+            
         }
     }
 
@@ -2662,6 +2662,7 @@ public class MainActivity extends AppCompatActivity {
                 overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
             }
             if (mCountSetUp==1 && mSecondCount==1){
+                mThirdCount++;
                 roomspicked.add(mCurrentRoomPickedNumber);
                 GameData gameData =  new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount,mCurrentRoomPickedNumber,mCurrentStartPlayerIndex);
                 System.out.println("Chief Room revealing");
