@@ -957,7 +957,7 @@ public class MainActivity extends AppCompatActivity {
                     if (mMyPlayerID==0){
                         mCountSetUp = mCurrentTeam.size()*4;
                         mSecondCount = 3;
-                        GameData gameData = new GameData(mCountPhase,mCountSetUp,2,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                        GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                         mDatabaseReference.child(GAMEDATA).setValue(gameData);
                         mDatabaseReference.child(TURN).setValue(-1);
                     }
@@ -1508,6 +1508,7 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue()!=null){
                     GameData gameData = dataSnapshot.getValue(GameData.class);
+                    Log.i(TAG, gameData.toString());
                     if (mMyPlayerID==turn){
                         mDatabaseReference.child(PREVTURN).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
