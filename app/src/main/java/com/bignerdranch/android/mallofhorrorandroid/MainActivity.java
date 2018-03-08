@@ -957,6 +957,7 @@ public class MainActivity extends AppCompatActivity {
                     if (mMyPlayerID==0){
                         mCountSetUp = mCurrentTeam.size()*4;
                         mSecondCount = 3;
+                        mThirdCount=2;
                         GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                         mDatabaseReference.child(GAMEDATA).setValue(gameData);
                         mDatabaseReference.child(TURN).setValue(-1);
@@ -984,7 +985,7 @@ public class MainActivity extends AppCompatActivity {
             messageViewInformExistedMembers(5);
         } else if (mCountSetUp == mCurrentTeam.size()*2  && mSecondCount == 0){
             messageViewInformVoteResult(gameData,5);
-        } else if (mCountSetUp >= mCurrentTeam.size()*2 && mSecondCount > 0 && mCountSetUp < mCurrentTeam.size()*4) {
+        } else if (mCountSetUp >= mCurrentTeam.size()*2 && mSecondCount > 0 && mSecondCount<=2 && mCountSetUp < mCurrentTeam.size()*4) {
             if (mSecondCount==1){
                 messageViewInformThreatUsingCanChangedVoteResult();
             } else if (mSecondCount==2){
