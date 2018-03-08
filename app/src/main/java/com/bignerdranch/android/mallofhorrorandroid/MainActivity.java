@@ -1308,6 +1308,40 @@ public class MainActivity extends AppCompatActivity {
         mMessageView.setVisibility(View.VISIBLE);
         mMessageView.setText("Room Selection is Finished, now we move character into the Room Individually");
         mMessageView.setEnabled(false);
+        mDatabaseReference.child(INDEXS).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue()!=null){
+                    playersIndex.clear();
+                    Log.i(TAG, "reloading playerindex");
+                    for (DataSnapshot snapshot: dataSnapshot.getChildren()){
+                        playersIndex.add(snapshot.getValue(Integer.TYPE));
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        mDatabaseReference.child(ROOMS).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue()!=null){
+                    roomspicked.clear();
+                    Log.i(TAG, "reloading rooms");
+                    for (DataSnapshot snapshot: dataSnapshot.getChildren()){
+                        roomspicked.add(snapshot.getValue(Integer.TYPE));
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
