@@ -320,6 +320,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                 } else if (mCountPhase==5) {
                     messageViewInformRelatedtoMoveAndView(gameData);
+                } else if (mCountPhase==6) {
+                    messageViewRelatedtoRevealandAttack();
                 }
             }
 
@@ -328,6 +330,101 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void messageViewRelatedtoRevealandAttack() {
+        if (mFourthCount==0){
+            messageViewShowZombiestoAll();
+        } else if (mFourthCount==1){
+            messageViewInformMoreZomibies();
+        }
+    }
+
+    private void messageViewShowZombiestoAll() {
+        mMessageView.setEnabled(false);
+        mMessageView.setVisibility(View.VISIBLE);
+        mMessageView.setText("Now zombies approacing room numbers reveal");
+        mDatabaseReference.child(ZOMBIEROOMS).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue()!=null){
+                    mCurrentZombiesRooms.clear();
+                    for (DataSnapshot snapshot: dataSnapshot.getChildren()){
+                        mCurrentZombiesRooms.add(snapshot.getValue(Integer.TYPE));
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mMessageView.setVisibility(View.INVISIBLE);
+                System.out.println("Showing Chief the zombies");
+                Intent intent = ShowingZombieActivity.newShowZombiesIntent(MainActivity.this, mCurrentZombiesRooms,mFourthCount);
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivityForResult(intent, REQUEST_CODE_VIEWZOMBIECHIEF);
+                overridePendingTransition(android.support.v7.appcompat.R.anim.abc_popup_enter,android.support.v7.appcompat.R.anim.abc_popup_exit );
+            }
+        }, DELAYEDSECONDSFORMESSAGEVIE * 1000);
+    }
+
+    private void messageViewInformMoreZomibies() {
+        mMessageView.setEnabled(false);
+        mMessageView.setVisibility(View.VISIBLE);
+        mMessageView.setText("There are more zombies coming");
+        mDatabaseReference.child(ZOMBIEROOMS).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue()!=null){
+                    mCurrentZombiesRooms.clear();
+                    for (DataSnapshot snapshot: dataSnapshot.getChildren()){
+                        mCurrentZombiesRooms.add(snapshot.getValue(Integer.TYPE));
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mMessageView.setVisibility(View.INVISIBLE);
+                if (mCurrentMoreZombies.size() == 0) {
+                    for (int roomNumber: mCurrentZombiesRooms){
+                        gameBroad.matchRoom(roomNumber).zombieApproached();
+                    }
+                    System.out.println("Showing More Zombie");
+                    if (gameBroad.mostPeople().getRoomNum()==7){
+                        mCurrentMoreZombies.add(0);
+                    } else {
+                        gameBroad.mostPeople().zombieApproached();
+                        mCurrentMoreZombies.add(gameBroad.mostPeople().getRoomNum());
+                    }
+                    if (gameBroad.mostModel().getRoomNum()==7){
+                        mCurrentMoreZombies.add(0);
+                    } else {
+                        gameBroad.mostModel().zombieApproached();
+                        mCurrentMoreZombies.add(gameBroad.mostModel().getRoomNum());
+                    }
+                }
+                Log.i(TAG, "More zombies: " + mCurrentMoreZombies);
+                Intent intent = ShowMoreZombiesActivity.newShowZombiesIntent(MainActivity.this, mCurrentMoreZombies,mFourthCount);
+                startActivityForResult(intent, REQUEST_CODE_VIEWZOMBIEALLMORE);
+                overridePendingTransition(android.support.v7.appcompat.R.anim.abc_popup_enter,android.support.v7.appcompat.R.anim.abc_popup_exit );
+            }
+        },DELAYEDSECONDSFORMESSAGEVIE*1000);
     }
 
     private void messageViewInformPregameChooseRoom() {
@@ -1354,7 +1451,7 @@ public class MainActivity extends AppCompatActivity {
             }
         },DELAYEDSECONDSFORMESSAGEVIE * 1000);
     }
-    
+
     private void messageViewInformMovetoZombieRevealAndAttack() {
         disableContinue();
         mMessageView.setVisibility(View.VISIBLE);
@@ -3556,12 +3653,18 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             mFourthCount = ShowingZombieActivity.getCountedSetUp(data);
+            GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+            mDatabaseReference.child(GAMEDATA).setValue(gameData);
+            mDatabaseReference.child(TURN).setValue(-10);
         }
         if (requestCode == REQUEST_CODE_VIEWZOMBIEALLMORE){
             if (data == null){
                 return;
             }
             mFourthCount = ShowMoreZombiesActivity.getCountedSetUp(data);
+            GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+            mDatabaseReference.child(GAMEDATA).setValue(gameData);
+            mDatabaseReference.child(TURN).setValue(-15);
         }
         if (requestCode == REQUEST_CODE_ITEM){
             if (data == null){
