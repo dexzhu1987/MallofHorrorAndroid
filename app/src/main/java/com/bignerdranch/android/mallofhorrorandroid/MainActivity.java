@@ -2927,16 +2927,10 @@ public class MainActivity extends AppCompatActivity {
                     if (mCountSetUp==mCurrentPlayerNumber*2){
                         mDatabaseReference.child(TURN).setValue(-1);
                     } else {
-                        int z = 0;
-                        int current_index =  roomspicked.get(q+1);
-                        if (current_index+1 < mCurrentPlayerNumber){
-                            z = current_index+1;
-                        } else {
-                            z = current_index+1 - mCurrentPlayerNumber;
-                        }
+                        int next_index =  roomspicked.get(q+1);
                         int nextMove = 0;
                         for (int k=0; k<colors.size(); k++){
-                            if (gameBroad.getPlayers().get(z).getColor().equalsIgnoreCase(colors.get(k))){
+                            if (gameBroad.getPlayers().get(next_index).getColor().equalsIgnoreCase(colors.get(k))){
                                 nextMove = k;
                             }
                         }
