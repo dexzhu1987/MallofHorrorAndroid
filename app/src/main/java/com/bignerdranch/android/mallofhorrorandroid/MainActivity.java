@@ -2924,21 +2924,22 @@ public class MainActivity extends AppCompatActivity {
                     }
                     ++mCountSetUp;
 
-                    int z = 0;
-                    if (q+1 < mCurrentPlayerNumber){
-                        z = q+1;
-                    } else {
-                        z = q+1 - mCurrentPlayerNumber;
-                    }
-                    int nextMove = 0;
-                    for (int k=0; k<colors.size(); k++){
-                        if (gameBroad.getPlayers().get(z).getColor().equalsIgnoreCase(colors.get(k))){
-                            nextMove = k;
-                        }
-                    }
                     if (mCountSetUp==mCurrentPlayerNumber*2){
                         mDatabaseReference.child(TURN).setValue(-1);
                     } else {
+                        int z = 0;
+                        int current_index =  roomspicked.get(q+1);
+                        if (current_index+1 < mCurrentPlayerNumber){
+                            z = current_index+1;
+                        } else {
+                            z = current_index+1 - mCurrentPlayerNumber;
+                        }
+                        int nextMove = 0;
+                        for (int k=0; k<colors.size(); k++){
+                            if (gameBroad.getPlayers().get(z).getColor().equalsIgnoreCase(colors.get(k))){
+                                nextMove = k;
+                            }
+                        }
                         mDatabaseReference.child(TURN).setValue(nextMove);
                     }
                     GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount, playersIndex.get(q),roomspicked.get(q), mCurrentGameCharacterSelected);
