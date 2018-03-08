@@ -254,6 +254,8 @@ public class FirstActivity extends AppCompatActivity {
     public void start_how_to_play(View view) {
         Animation animTranslate = AnimationUtils.loadAnimation(this, R.anim.anim_bounce);
         mHowToPlayButton.startAnimation(animTranslate);
+        Intent intent = new Intent(this, TutorialActivity.class);
+        startActivity(intent);
     }
 
     public void start_settings(View view) {
