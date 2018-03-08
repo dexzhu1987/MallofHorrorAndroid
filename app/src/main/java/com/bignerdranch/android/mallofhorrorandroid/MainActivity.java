@@ -1040,20 +1040,11 @@ public class MainActivity extends AppCompatActivity {
                 GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                 mDatabaseReference.child(GAMEDATA).setValue(gameData);
                 mDatabaseReference.child(TURN).setValue(-1);
-                int firstSearch = 0;
-                for (int i=0; i<colors.size(); i++){
-                    if (mCurrentTeam.get(0).getColor().equalsIgnoreCase(colors.get(i))){
-                        firstSearch = i;
-                        break;
-                    }
-                }
-                Log.i(TAG, "firstsearch for parking: " + firstSearch);
-                if (mMyPlayerID==firstSearch){
-                    mDatabaseReference.child(PLAYERBOOLEANANSWERS).setValue(null);
-                    mDatabaseReference.child(ZOMBIEROOMS).setValue(mCurrentZombiesRooms);
-                    mDatabaseReference.child(FIRSTPLAYERINDEX).setValue(mCurrentStartPlayerIndex);
-                    mDatabaseReference.child(ISCHIEFELECTED).setValue(mIsChiefSelected);
-                }
+                mDatabaseReference.child(PLAYERBOOLEANANSWERS).setValue(null);
+                mDatabaseReference.child(ZOMBIEROOMS).setValue(mCurrentZombiesRooms);
+                mDatabaseReference.child(FIRSTPLAYERINDEX).setValue(mCurrentStartPlayerIndex);
+                mDatabaseReference.child(ISCHIEFELECTED).setValue(mIsChiefSelected);
+
             }
         },DELAYEDSECONDSFORMESSAGEVIE*1000);
     }
