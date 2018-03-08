@@ -1325,6 +1325,8 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     if (dataSnapshot!=null){
+                                        mThirdCount++;
+                                        mCountSetUp=2;
                                         mCurrentStartPlayerIndex = dataSnapshot.getValue(Integer.TYPE);
                                         int q = mCurrentStartPlayerIndex + 1;
                                         int i = 0;
