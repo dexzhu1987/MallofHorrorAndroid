@@ -313,7 +313,7 @@ public class MainActivity extends AppCompatActivity {
                         messageViewRelatedParkingSearchWithSearchTeam(gameData);
                     }
                 } else if (mCountPhase==4) {
-                    if (mCountSetUp==0 && gameBroad.matchRoom(5).isEmpty()){
+                    if (mCountSetUp==0 && mSecondCount==0 && gameBroad.matchRoom(5).isEmpty()){
                         messageViewInformSecurityIsEmptyandMovetoNextPhase();
                     } else {
                         messageViewRelatedChiefElectionWithElectionTeam(gameData);
