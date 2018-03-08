@@ -1039,7 +1039,7 @@ public class MainActivity extends AppCompatActivity {
                 mSecondCount=4;
                 GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                 mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                mDatabaseReference.child(TURN).setValue(-1);
+                mDatabaseReference.child(TURN).setValue(-5);
                 mDatabaseReference.child(PLAYERBOOLEANANSWERS).setValue(null);
                 mDatabaseReference.child(ZOMBIEROOMS).setValue(mCurrentZombiesRooms);
                 mDatabaseReference.child(FIRSTPLAYERINDEX).setValue(mCurrentStartPlayerIndex);
