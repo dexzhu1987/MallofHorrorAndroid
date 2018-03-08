@@ -1216,22 +1216,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                     int chiefElection = roomspicked.get(0);
                     Room roomName = gameBroad.matchRoom(chiefElection);
-                    mDatabaseReference.child(PREVTURN).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.getValue()!=null){
-                                int prevTurn = dataSnapshot.getValue(Integer.TYPE);
-                                if (mMyPlayerID!= prevTurn){
-                                    updateDataFromFireBase(0,gameData,prevTurn);
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
                     mMessageView.setText("After reviewing the security cameara, chief will move to "  + roomName);
                     Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
@@ -1239,15 +1223,11 @@ public class MainActivity extends AppCompatActivity {
                         public void run() {
                             mMessageView.setVisibility(View.INVISIBLE);
                             ++mCountSetUp;
-                            mDatabaseReference.child(INDEXS).addListenerForSingleValueEvent(new ValueEventListener() {
+                            mDatabaseReference.child(FIRSTPLAYERINDEX).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     if (dataSnapshot!=null){
-                                        playersIndex.clear();
-                                        for (DataSnapshot snapshot: dataSnapshot.getChildren()){
-                                            playersIndex.add(snapshot.getValue(Integer.TYPE));
-                                        }
-                                        mCurrentStartPlayerIndex = playersIndex.get(0);
+                                        mCurrentStartPlayerIndex = dataSnapshot.getValue(Integer.TYPE);
                                         int q = mCurrentStartPlayerIndex + 1;
                                         int i = 0;
                                         if (q < gameBroad.getPlayers().size()) {
@@ -1308,23 +1288,6 @@ public class MainActivity extends AppCompatActivity {
         mMessageView.setVisibility(View.VISIBLE);
         mMessageView.setText("Room Selection is Finished, now we move character into the Room Individually");
         mMessageView.setEnabled(false);
-        mDatabaseReference.child(INDEXS).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getValue()!=null){
-                    playersIndex.clear();
-                    Log.i(TAG, "reloading playerindex");
-                    for (DataSnapshot snapshot: dataSnapshot.getChildren()){
-                        playersIndex.add(snapshot.getValue(Integer.TYPE));
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
         mDatabaseReference.child(ROOMS).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -1346,40 +1309,6 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mDatabaseReference.child(INDEXS).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.getValue()!=null){
-                            playersIndex.clear();
-                            Log.i(TAG, "reloading playerindex");
-                            for (DataSnapshot snapshot: dataSnapshot.getChildren()){
-                                playersIndex.add(snapshot.getValue(Integer.TYPE));
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-                mDatabaseReference.child(ROOMS).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.getValue()!=null){
-                            roomspicked.clear();
-                            Log.i(TAG, "reloading rooms");
-                            for (DataSnapshot snapshot: dataSnapshot.getChildren()){
-                                roomspicked.add(snapshot.getValue(Integer.TYPE));
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
                 String message = "";
                 Log.i(TAG, "Player Index: " + playersIndex);
                 Log.i(TAG, "Room: " + roomspicked);
@@ -2690,9 +2619,8 @@ public class MainActivity extends AppCompatActivity {
                         nextMove = k;
                     }
                 }
-                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount,mCurrentRoomPickedNumber,mCurrentStartPlayerIndex);
+                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
 
-                mDatabaseReference.child(INDEXS).push().setValue(mCurrentStartPlayerIndex);
                 mDatabaseReference.child(ROOMS).push().setValue(mCurrentRoomPickedNumber);
                 mDatabaseReference.child(GAMEDATA).setValue(gameData);
                 mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
@@ -2739,12 +2667,11 @@ public class MainActivity extends AppCompatActivity {
             if (mCountSetUp==1 && mSecondCount==1){
                 mThirdCount++;
                 roomspicked.add(mCurrentRoomPickedNumber);
-                GameData gameData =  new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount,mCurrentRoomPickedNumber,mCurrentStartPlayerIndex);
+                GameData gameData =  new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                 System.out.println("Chief Room revealing");
                 mDatabaseReference.child(GAMEDATA).setValue(gameData);
                 mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
                 mDatabaseReference.child(TURN).setValue(-5);
-                mDatabaseReference.child(INDEXS).push().setValue(mCurrentStartPlayerIndex);
                 mDatabaseReference.child(ROOMS).push().setValue(mCurrentRoomPickedNumber);
             }
         }
@@ -2784,10 +2711,9 @@ public class MainActivity extends AppCompatActivity {
                         nextMove = k;
                     }
                 }
-                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount,mCurrentRoomPickedNumber,i);
+                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                 mDatabaseReference.child(GAMEDATA).setValue(gameData);
                 mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
-                mDatabaseReference.child(INDEXS).push().setValue(i);
                 mDatabaseReference.child(ROOMS).push().setValue(mCurrentRoomPickedNumber);
                 if (mCountSetUp==mCurrentPlayerNumber*2){
                     mDatabaseReference.child(TURN).setValue(-1);
