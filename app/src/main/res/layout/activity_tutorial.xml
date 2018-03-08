@@ -5,9 +5,33 @@
     android:id="@+id/tr_linear"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:onClick="next_tr_page"
+    android:orientation="horizontal"
+    android:weightSum="2"
     tools:context="com.bignerdranch.android.mallofhorrorandroid.TutorialActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:onClick="left_slide_click">
+        <TextView
+            android:id="@+id/tv_page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#000000"
+            android:textColor="#00FE00"
+            android:textSize="20sp"
+            android:layout_margin="5px"
+            android:padding="3dp"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:onClick="right_slide_click">
+
+    </LinearLayout>
 
 
 

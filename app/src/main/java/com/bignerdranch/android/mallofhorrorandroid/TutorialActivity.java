@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 public class TutorialActivity extends AppCompatActivity {
 
@@ -14,6 +15,7 @@ public class TutorialActivity extends AppCompatActivity {
     private LinearLayout linearLayout;
     private int index = 1;
     private int max = imageRec.length;
+    private TextView mTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,14 +24,40 @@ public class TutorialActivity extends AppCompatActivity {
         linearLayout = findViewById(R.id.tr_linear);
         linearLayout.setBackgroundResource(imageRec[0]);
 
+        mTextView = findViewById(R.id.tv_page);
+        mTextView.setText(index+ "/" + max);
+
+
     }
 
-    public void next_tr_page(View view) {
+//    public void next_tr_page(View view) {
+//        if (index == max){
+//            Intent intent = new Intent(this, FirstActivity.class);
+//            startActivity(intent);
+//        }else{
+//            index++;
+//            linearLayout.setBackgroundResource(imageRec[index -1]);
+//        }
+//    }
+
+    public void left_slide_click(View view) {
+        if (index == 1){
+            return;
+        }else{
+            index--;
+            mTextView.setText(index+ "/" + max);
+            linearLayout.setBackgroundResource(imageRec[index -1]);
+        }
+
+    }
+
+    public void right_slide_click(View view) {
         if (index == max){
             Intent intent = new Intent(this, FirstActivity.class);
             startActivity(intent);
         }else{
             index++;
+            mTextView.setText(index+ "/" + max);
             linearLayout.setBackgroundResource(imageRec[index -1]);
         }
     }
