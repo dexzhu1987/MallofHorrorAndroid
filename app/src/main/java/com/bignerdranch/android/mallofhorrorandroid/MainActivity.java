@@ -1210,7 +1210,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue()!=null){
-                    int chiefElection = dataSnapshot.getValue(Integer.TYPE);
+                    roomspicked.clear();
+                    for (DataSnapshot snapshot: dataSnapshot.getChildren()){
+                        roomspicked.add(snapshot.getValue(Integer.TYPE));
+                    }
+                    int chiefElection = roomspicked.get(0);
                     Room roomName = gameBroad.matchRoom(chiefElection);
                     mDatabaseReference.child(PREVTURN).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -1239,7 +1243,11 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     if (dataSnapshot!=null){
-                                        mCurrentStartPlayerIndex = dataSnapshot.getValue(Integer.TYPE);
+                                        playersIndex.clear();
+                                        for (DataSnapshot snapshot: dataSnapshot.getChildren()){
+                                            playersIndex.add(snapshot.getValue(Integer.TYPE));
+                                        }
+                                        mCurrentStartPlayerIndex = playersIndex.get(0);
                                         int q = mCurrentStartPlayerIndex + 1;
                                         int i = 0;
                                         if (q < gameBroad.getPlayers().size()) {
@@ -1345,7 +1353,6 @@ public class MainActivity extends AppCompatActivity {
                     message += "\nPlayer " + gameBroad.getPlayers().get(playersIndex.get(i)).getColor() + " to Room " + roomspicked.get(i) ;
                 }
                 Log.i(TAG,"message: " +  message);
-
                 mMessageView.setText("Player Choises are: " + message);
                 Handler handler1 = new Handler();
                 handler1.postDelayed(new Runnable() {
