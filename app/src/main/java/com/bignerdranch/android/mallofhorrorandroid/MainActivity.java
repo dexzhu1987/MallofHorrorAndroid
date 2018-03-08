@@ -1436,6 +1436,7 @@ public class MainActivity extends AppCompatActivity {
                                 nextMove = i;
                             }
                         }
+                        mFourthCount=1;
                         mCountSetUp = 2*gameBroad.getPlayers().size();
                         GameData gameData = new GameData(mCountPhase, mCountSetUp, mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                         mDatabaseReference.child(TURN).setValue(nextMove);
@@ -2743,143 +2744,145 @@ public class MainActivity extends AppCompatActivity {
         if (!mIsDataPushed) {
             mCurrentPlayerNumber = gameBroad.getPlayers().size();
             System.out.println("mCountSetup: " + mCountSetUp +  " mSecondCount: " + mSecondCount + " mThirdCount: " + mThirdCount);
-            if (mCountSetUp<2 && !mIsChiefSelected){
-                if (mCountSetUp == 0) {
-                    System.out.println("No chief first player move");
-                    String playerColor = mCurrentStartPlayer.getColor();
-                    String message = mCurrentStartPlayer +  " please select your room to move to";
-                    ArrayList rooms = (ArrayList<Room>)gameBroad.getRooms();
-                    ArrayList<Item> items = (ArrayList<Item>) mCurrentStartPlayer.getCurrentItem();
-                    ArrayList options = (ArrayList) gameBroad.roomsOptions(mCurrentStartPlayer);
-                    Intent intent = PlayerActivity.newChoosingRoomIntent(MainActivity.this,rooms,playerColor,items, options,message,mCountSetUp,1);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    startActivityForResult(intent,REQUEST_CODE_ROOM);
-                    overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
-                    playersIndex.add(mMyPlayerID);
+            if (mFourthCount==0){
+                if (mCountSetUp<2 && !mIsChiefSelected){
+                    if (mCountSetUp == 0) {
+                        System.out.println("No chief first player move");
+                        String playerColor = mCurrentStartPlayer.getColor();
+                        String message = mCurrentStartPlayer +  " please select your room to move to";
+                        ArrayList rooms = (ArrayList<Room>)gameBroad.getRooms();
+                        ArrayList<Item> items = (ArrayList<Item>) mCurrentStartPlayer.getCurrentItem();
+                        ArrayList options = (ArrayList) gameBroad.roomsOptions(mCurrentStartPlayer);
+                        Intent intent = PlayerActivity.newChoosingRoomIntent(MainActivity.this,rooms,playerColor,items, options,message,mCountSetUp,1);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                        startActivityForResult(intent,REQUEST_CODE_ROOM);
+                        overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
+                        playersIndex.add(mMyPlayerID);
+                    }
+                    if (mCountSetUp==1) {
+                        System.out.println("Colleting first player room");
+                        roomspicked.add(mCurrentRoomPickedNumber);
+                        ++mCountSetUp;
+                        int q = mCurrentStartPlayerIndex + 1;
+                        int i = 0;
+                        if (q < mCurrentPlayerNumber) {
+                            i = q;
+                        } else {
+                            i = q - mCurrentPlayerNumber;
+                        }
+                        int nextMove = 0;
+                        for (int k=0; k<colors.size(); k++){
+                            if (gameBroad.getPlayers().get(i).getColor().equalsIgnoreCase(colors.get(k))){
+                                nextMove = k;
+                            }
+                        }
+                        GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                        mDatabaseReference.child(INDEXS).push().setValue(mCurrentStartPlayerIndex);
+                        mDatabaseReference.child(ROOMS).push().setValue(mCurrentRoomPickedNumber);
+                        mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                        mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
+                        mDatabaseReference.child(TURN).setValue(nextMove);
+                        mIsDataPushed = true;
+                    }
                 }
-                if (mCountSetUp==1) {
-                    System.out.println("Colleting first player room");
-                    roomspicked.add(mCurrentRoomPickedNumber);
-                    ++mCountSetUp;
-                    int q = mCurrentStartPlayerIndex + 1;
+                if (mCountSetUp<2 && mIsChiefSelected && mSecondCount<2){
+                    System.out.println("With chief, first player move");
+                    if (mSecondCount==0 && mCountSetUp==0){
+                        mDatabaseReference.child(ZOMBIEROOMS).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.getValue()!=null){
+                                    mCurrentZombiesRooms.clear();
+                                    for (DataSnapshot snapshot: dataSnapshot.getChildren()){
+                                        mCurrentZombiesRooms.add(snapshot.getValue(Integer.TYPE));
+                                    }
+                                }
+                                System.out.println("Showing Chief the zombies");
+                                Intent intent = ShowingZombieActivity.newShowZombiesIntent(MainActivity.this, mCurrentZombiesRooms,mSecondCount);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                                startActivityForResult(intent, REQUEST_CODE_VIEWZOMBIECHIEF);
+                                overridePendingTransition(android.support.v7.appcompat.R.anim.abc_popup_enter,android.support.v7.appcompat.R.anim.abc_popup_exit );
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+                    if (mSecondCount==1 && mCountSetUp==0){
+                        System.out.println("Chief Seleting Room");
+                        playersIndex.add(mCurrentStartPlayerIndex);
+                        String playerColor = mCurrentStartPlayer.getColor();
+                        String message = mCurrentStartPlayer +  " please select your room to move to";
+                        ArrayList rooms = (ArrayList<Room>)gameBroad.getRooms();
+                        ArrayList<Item> items = (ArrayList<Item>) mCurrentStartPlayer.getCurrentItem();
+                        ArrayList options = (ArrayList) gameBroad.roomsOptions(mCurrentStartPlayer);
+                        Intent intent = PlayerActivity.newChoosingRoomIntent(MainActivity.this,rooms,playerColor,items, options,message,mCountSetUp,1);
+                        startActivityForResult(intent,REQUEST_CODE_ROOM);
+                        overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
+                    }
+                    if (mCountSetUp==1 && mSecondCount==1){
+                        mThirdCount++;
+                        roomspicked.add(mCurrentRoomPickedNumber);
+                        GameData gameData =  new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                        System.out.println("Chief Room revealing");
+                        mDatabaseReference.child(INDEXS).push().setValue(mCurrentStartPlayerIndex);
+                        mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                        mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
+                        mDatabaseReference.child(TURN).setValue(-5);
+                        mDatabaseReference.child(ROOMS).push().setValue(mCurrentRoomPickedNumber);
+                        mIsDataPushed = true;
+                    }
+                }
+                if (mCountSetUp>=2 && mCountSetUp<mCurrentPlayerNumber*2) {
+                    int q = mCurrentStartPlayerIndex + mCountSetUp / 2;
                     int i = 0;
                     if (q < mCurrentPlayerNumber) {
                         i = q;
                     } else {
                         i = q - mCurrentPlayerNumber;
                     }
-                    int nextMove = 0;
-                    for (int k=0; k<colors.size(); k++){
-                        if (gameBroad.getPlayers().get(i).getColor().equalsIgnoreCase(colors.get(k))){
-                            nextMove = k;
-                        }
+                    if (mCountSetUp % 2 == 0  && mCountSetUp<mCurrentPlayerNumber*2) {
+                        System.out.println("Selecting Room");
+                        playersIndex.add(i);
+                        String playerColor = gameBroad.getPlayers().get(i).getColor();
+                        String message = gameBroad.getPlayers().get(i) + " please select your room to move to";
+                        ArrayList rooms = (ArrayList<Room>) gameBroad.getRooms();
+                        ArrayList<Item> items = (ArrayList<Item>) gameBroad.getPlayers().get(i).getCurrentItem();
+                        List<Integer> options = gameBroad.roomsOptions(gameBroad.getPlayers().get(i));
+                        Intent intent = PlayerActivity.newChoosingRoomIntent(MainActivity.this, rooms, playerColor, items, (ArrayList<Integer>) options, message, mCountSetUp, 1);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                        startActivityForResult(intent, REQUEST_CODE_ROOM);
+                        overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
                     }
-                    GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                    mDatabaseReference.child(INDEXS).push().setValue(mCurrentStartPlayerIndex);
-                    mDatabaseReference.child(ROOMS).push().setValue(mCurrentRoomPickedNumber);
-                    mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                    mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
-                    mDatabaseReference.child(TURN).setValue(nextMove);
-                    mIsDataPushed = true;
-                }
-            }
-            if (mCountSetUp<2 && mIsChiefSelected && mSecondCount<2){
-                System.out.println("With chief, first player move");
-                if (mSecondCount==0 && mCountSetUp==0){
-                    mDatabaseReference.child(ZOMBIEROOMS).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.getValue()!=null){
-                                mCurrentZombiesRooms.clear();
-                                for (DataSnapshot snapshot: dataSnapshot.getChildren()){
-                                    mCurrentZombiesRooms.add(snapshot.getValue(Integer.TYPE));
-                                }
+                    if (mCountSetUp % 2 == 1 && mCountSetUp<mCurrentPlayerNumber*2) {
+                        roomspicked.add(mCurrentRoomPickedNumber);
+                        ++mCountSetUp;
+                        int z = 0;
+                        if (i+1 < mCurrentPlayerNumber){
+                            z = i+1;
+                        } else {
+                            z = i+1 - mCurrentPlayerNumber;
+                        }
+                        int nextMove = 0;
+                        for (int k=0; k<colors.size(); k++){
+                            if (gameBroad.getPlayers().get(z).getColor().equalsIgnoreCase(colors.get(k))){
+                                nextMove = k;
                             }
-                            System.out.println("Showing Chief the zombies");
-                            Intent intent = ShowingZombieActivity.newShowZombiesIntent(MainActivity.this, mCurrentZombiesRooms,mSecondCount);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                            startActivityForResult(intent, REQUEST_CODE_VIEWZOMBIECHIEF);
-                            overridePendingTransition(android.support.v7.appcompat.R.anim.abc_popup_enter,android.support.v7.appcompat.R.anim.abc_popup_exit );
                         }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
+                        GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                        mDatabaseReference.child(INDEXS).push().setValue(i);
+                        mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                        mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
+                        mDatabaseReference.child(ROOMS).push().setValue(mCurrentRoomPickedNumber);
+                        if (mCountSetUp==mCurrentPlayerNumber*2){
+                            mDatabaseReference.child(TURN).setValue(-1);
+                        } else {
+                            mDatabaseReference.child(TURN).setValue(nextMove);
                         }
-                    });
-                }
-                if (mSecondCount==1 && mCountSetUp==0){
-                    System.out.println("Chief Seleting Room");
-                    playersIndex.add(mCurrentStartPlayerIndex);
-                    String playerColor = mCurrentStartPlayer.getColor();
-                    String message = mCurrentStartPlayer +  " please select your room to move to";
-                    ArrayList rooms = (ArrayList<Room>)gameBroad.getRooms();
-                    ArrayList<Item> items = (ArrayList<Item>) mCurrentStartPlayer.getCurrentItem();
-                    ArrayList options = (ArrayList) gameBroad.roomsOptions(mCurrentStartPlayer);
-                    Intent intent = PlayerActivity.newChoosingRoomIntent(MainActivity.this,rooms,playerColor,items, options,message,mCountSetUp,1);
-                    startActivityForResult(intent,REQUEST_CODE_ROOM);
-                    overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
-                }
-                if (mCountSetUp==1 && mSecondCount==1){
-                    mThirdCount++;
-                    roomspicked.add(mCurrentRoomPickedNumber);
-                    GameData gameData =  new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                    System.out.println("Chief Room revealing");
-                    mDatabaseReference.child(INDEXS).push().setValue(mCurrentStartPlayerIndex);
-                    mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                    mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
-                    mDatabaseReference.child(TURN).setValue(-5);
-                    mDatabaseReference.child(ROOMS).push().setValue(mCurrentRoomPickedNumber);
-                    mIsDataPushed = true;
-                }
-            }
-            if (mCountSetUp>=2 && mCountSetUp<mCurrentPlayerNumber*2) {
-                int q = mCurrentStartPlayerIndex + mCountSetUp / 2;
-                int i = 0;
-                if (q < mCurrentPlayerNumber) {
-                    i = q;
-                } else {
-                    i = q - mCurrentPlayerNumber;
-                }
-                if (mCountSetUp % 2 == 0  && mCountSetUp<mCurrentPlayerNumber*2) {
-                    System.out.println("Selecting Room");
-                    playersIndex.add(i);
-                    String playerColor = gameBroad.getPlayers().get(i).getColor();
-                    String message = gameBroad.getPlayers().get(i) + " please select your room to move to";
-                    ArrayList rooms = (ArrayList<Room>) gameBroad.getRooms();
-                    ArrayList<Item> items = (ArrayList<Item>) gameBroad.getPlayers().get(i).getCurrentItem();
-                    List<Integer> options = gameBroad.roomsOptions(gameBroad.getPlayers().get(i));
-                    Intent intent = PlayerActivity.newChoosingRoomIntent(MainActivity.this, rooms, playerColor, items, (ArrayList<Integer>) options, message, mCountSetUp, 1);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    startActivityForResult(intent, REQUEST_CODE_ROOM);
-                    overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
-                }
-                if (mCountSetUp % 2 == 1 && mCountSetUp<mCurrentPlayerNumber*2) {
-                    roomspicked.add(mCurrentRoomPickedNumber);
-                    ++mCountSetUp;
-                    int z = 0;
-                    if (i+1 < mCurrentPlayerNumber){
-                        z = i+1;
-                    } else {
-                        z = i+1 - mCurrentPlayerNumber;
+                        mIsDataPushed = true;
                     }
-                    int nextMove = 0;
-                    for (int k=0; k<colors.size(); k++){
-                        if (gameBroad.getPlayers().get(z).getColor().equalsIgnoreCase(colors.get(k))){
-                            nextMove = k;
-                        }
-                    }
-                    GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                    mDatabaseReference.child(INDEXS).push().setValue(i);
-                    mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                    mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
-                    mDatabaseReference.child(ROOMS).push().setValue(mCurrentRoomPickedNumber);
-                    if (mCountSetUp==mCurrentPlayerNumber*2){
-                        mDatabaseReference.child(TURN).setValue(-1);
-                    } else {
-                        mDatabaseReference.child(TURN).setValue(nextMove);
-                    }
-                    mIsDataPushed = true;
                 }
             }
             if (mCountSetUp>=mCurrentPlayerNumber*2 && mCountSetUp<mCurrentPlayerNumber*4){
@@ -2918,7 +2921,7 @@ public class MainActivity extends AppCompatActivity {
                     if (mCountSetUp==mCurrentPlayerNumber*2){
                         mDatabaseReference.child(TURN).setValue(-1);
                     } else {
-                        int next_index =  roomspicked.get(q+1);
+                        int next_index =  playersIndex.get(q+1);
                         int nextMove = 0;
                         for (int k=0; k<colors.size(); k++){
                             if (gameBroad.getPlayers().get(next_index).getColor().equalsIgnoreCase(colors.get(k))){
