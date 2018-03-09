@@ -2777,13 +2777,13 @@ public class MainActivity extends AppCompatActivity {
                                 nextMove = k;
                             }
                         }
+                        mIsDataPushed = true;
                         GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                         mDatabaseReference.child(INDEXS).push().setValue(mCurrentStartPlayerIndex);
                         mDatabaseReference.child(ROOMS).push().setValue(mCurrentRoomPickedNumber);
                         mDatabaseReference.child(GAMEDATA).setValue(gameData);
                         mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
                         mDatabaseReference.child(TURN).setValue(nextMove);
-                        mIsDataPushed = true;
                     }
                 }
                 if (mCountSetUp<2 && mIsChiefSelected && mSecondCount<2){
