@@ -321,7 +321,7 @@ public class MainActivity extends AppCompatActivity {
                 } else if (mCountPhase==5) {
                     messageViewInformRelatedtoMoveAndView(gameData);
                 } else if (mCountPhase==6) {
-                    messageViewRelatedtoRevealandAttack();
+                    messageViewRelatedtoRevealandAttack(gameData);
                 }
             }
 
@@ -557,7 +557,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void messageViewInformThreatUsingCanChangedVoteResult() {
-
         mMessageView.setText("Voting result can be changed by item THREAT, anyone want to change the result?");
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -1370,6 +1369,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        mMainActivityLayout.invalidate();
         mMessageView.setVisibility(View.VISIBLE);
         mMessageView.setText("Game Phase IV: Zombies Revealed and Attacked");
         mMessageView.setEnabled(false);
@@ -1401,11 +1401,13 @@ public class MainActivity extends AppCompatActivity {
         }, DELAYEDSECONDSFORMESSAGEVIE*1000);
     }
 
-    private void messageViewRelatedtoRevealandAttack() {
+    private void messageViewRelatedtoRevealandAttack(GameData gameData) {
         if (mFourthCount==0){
             messageViewShowZombiestoAll();
         } else if (mFourthCount==1){
             messageViewInformMoreZomibies();
+        } else if (mFifthCount<6 &&  mFourthCount>=2) {
+            messageViewRelatedtoFallenCalculationsAndZombiesAttack(gameData);
         }
     }
 
@@ -1445,6 +1447,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void messageViewInformMoreZomibies() {
+        mDatabaseReference.child(PLAYERBOOLEANANSWERS).setValue(null);
         mMessageView.setEnabled(false);
         mMessageView.setVisibility(View.VISIBLE);
         mMessageView.setText("There are more zombies coming");
@@ -1494,6 +1497,441 @@ public class MainActivity extends AppCompatActivity {
                 overridePendingTransition(android.support.v7.appcompat.R.anim.abc_popup_enter,android.support.v7.appcompat.R.anim.abc_popup_exit );
             }
         },DELAYEDSECONDSFORMESSAGEVIE*1000);
+    }
+
+    private void messageViewRelatedtoFallenCalculationsAndZombiesAttack(GameData gameData) {
+        final Room theCurrentRoom = gameBroad.matchRoom(mFifthCount+1);
+        HashSet<Playable> playersInTheRoom = gameBroad.WhoCan(theCurrentRoom.existCharacterColor());
+        List<Playable> playersInTheRoomList = new ArrayList<>();
+        for (Playable player : playersInTheRoom) {
+            playersInTheRoomList.add(player);
+        }
+        if (mFourthCount==2){
+            messageViewInformifRoomisFallenAndItemsUsing(theCurrentRoom, playersInTheRoomList, gameData);
+        } else if (mFourthCount==3){
+            messageViewRelatedtoFallenRoomVoteAndThreatUsed(gameData, theCurrentRoom);
+        }
+    }
+
+    private void messageViewInformifRoomisFallenAndItemsUsing(Room theCurrentRoom, List<Playable> playersInTheRoomList, GameData gameData) {
+        if (!theCurrentRoom.isFallen()){
+            System.out.println(theCurrentRoom.getName() +  " is not fallen");
+            mCountSetUp=0;
+            mSecondCount=0;
+            mThirdCount=0;
+            mFourthCount=5;
+            GameData gameData1 = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+            mDatabaseReference.child(GAMEDATA).setValue(gameData1);
+            mDatabaseReference.child(TURN).setValue(-20);
+        } else if (theCurrentRoom.isFallen() && theCurrentRoom.getRoomNum()==4){
+            System.out.println(theCurrentRoom.getName() + "  is fallen");
+            disableContinue();
+            mMessageView.setVisibility(View.VISIBLE);
+            mMessageView.setEnabled(false);
+            mMessageView.setText("Parking has fallen, but items can not be triggered here");
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mMessageView.setVisibility(View.INVISIBLE);
+                    mCountSetUp=0;
+                    mSecondCount=0;
+                    mThirdCount=0;
+                    mFourthCount=3;
+                    mSixCount++;
+                    GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                    mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                    mDatabaseReference.child(TURN).setValue(-20);
+                }
+            },DELAYEDSECONDSFORMESSAGEVIE*1000);
+        } else if (theCurrentRoom.isFallen() && theCurrentRoom.getRoomNum()!=4) {
+            mSixCount++;
+            if (mSecondCount==0){
+                messageViewInformItemCanbeUsed(theCurrentRoom);
+            } else if (mSecondCount==1 && mCountSetUp==0){
+                messageViewInformIsItemUsing (theCurrentRoom);
+            } else if (mCountSetUp>0 && mCountSetUp<playersInTheRoomList.size()*2){
+                messageViewInformWhatItemHasBeenUsed(gameData,theCurrentRoom);
+            } else if (mCountSetUp==playersInTheRoomList.size()*2){
+                messageViewInformCurrentIsStillFallenAfterItemUsed(theCurrentRoom);
+            }
+        }
+    }
+
+    private void messageViewInformItemCanbeUsed(Room theCurrentRoom) {
+        disableContinue();
+        mMessageView.setText(theCurrentRoom.getName() +  " has fallen and can use item to revised by items, please confirm if you want to use item");
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Handler handler1 = new Handler();
+                handler1.postDelayed( new Runnable() {
+                    @Override
+                    public void run() {
+                        mDatabaseReference.child(PLAYERBOOLEANANSWERS).push().setValue(false);
+                    }
+                },DELAYEDSECONDSFOROPTIONSCHOSEN * 1000);
+                Handler handler2 = new Handler();
+                handler2.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        disableYesNo();
+                        mSecondCount = 1;
+                        GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                        mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                        mDatabaseReference.child(TURN).setValue(-1);
+                    }
+                }, DELAYEDSECONDSFOROPTIONSCHOSEN * 1000);
+                mMessageView.setVisibility(View.INVISIBLE);
+                enableYesNo();
+                mYesButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        handler1.removeCallbacksAndMessages(null);
+                        mMessageView.setVisibility(View.VISIBLE);
+                        mMessageView.setText("Thank you, Please wait for other players");
+                        disableYesNo();
+                        mDatabaseReference.child(PLAYERBOOLEANANSWERS).push().setValue(true);
+
+                    }
+                });
+                mNoButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        disableYesNo();
+                        mMessageView.setVisibility(View.VISIBLE);
+                        mMessageView.setText("Thank you, Please wait for other players");
+                    }
+                });
+
+            }
+        },DELAYEDSECONDSFORMESSAGEVIE * 1000);
+        System.out.println("Confirm if want to use item");
+    }
+
+    private void messageViewInformIsItemUsing(Room theCurrentRoom) {
+        HashSet<Playable> playersInTheRoom = gameBroad.WhoCan(theCurrentRoom.existCharacterColor());
+        List<Playable> playersInTheRoomList = new ArrayList<>();
+        for (Playable player : playersInTheRoom) {
+            playersInTheRoomList.add(player);
+        }
+        mCurrentTeam = (ArrayList<Playable>) playersInTheRoomList;
+        Collections.sort(mCurrentTeam, new Comparator<Playable>() {
+            @Override
+            public int compare(Playable o1, Playable o2) {
+                return o1.getColor().compareTo(o2.getColor());
+            }
+        });
+        mMessageView.setText("Collecting Information");
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mDatabaseReference.child(PLAYERBOOLEANANSWERS).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        List<Boolean> usersChoises = new ArrayList<>();
+                        for (DataSnapshot snapshot: dataSnapshot.getChildren()){
+                            usersChoises.add(snapshot.getValue(Boolean.TYPE));
+                        }
+                        Boolean isThereTrue = false;
+                        for (int i=0; i<usersChoises.size(); i++){
+                            if (usersChoises.get(i)){
+                                isThereTrue = true;
+                                break;
+                            }
+                        }
+                        if (isThereTrue){
+                            mMessageView.setText("One of the players will used item");
+                            Handler handler = new Handler();
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mMessageView.setVisibility(View.INVISIBLE);
+                                    int firstSearch = 0;
+                                    for (int i=0; i<colors.size(); i++){
+                                        if (mCurrentTeam.get(0).getColor().equalsIgnoreCase(colors.get(i))){
+                                            firstSearch = i;
+                                        }
+                                    }
+                                    Log.i(TAG, "fallen team for item using: " + mCurrentTeam);
+                                    Log.i(TAG, "firstitemuse for item using: " + firstSearch);
+                                    if (mMyPlayerID==firstSearch){
+                                        GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                                        mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                                        mDatabaseReference.child(TURN).setValue(firstSearch);
+                                    }
+                                }
+                            },DELAYEDSECONDSFORMESSAGEVIE * 1000);
+                        }else {
+                            mMessageView.setText("Item will not be used");
+                            Handler handler = new Handler();
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mMessageView.setVisibility(View.INVISIBLE);
+                                    int firstSearch = 0;
+                                    for (int i=0; i<colors.size(); i++){
+                                        if (mCurrentTeam.get(0).getColor().equalsIgnoreCase(colors.get(i))){
+                                            firstSearch = i;
+                                            break;
+                                        }
+                                    }
+                                    Log.i(TAG, "firstsearch for parking: " + mCurrentTeam);
+                                    Log.i(TAG, "firstsearch for parking: " + firstSearch);
+                                    if (mMyPlayerID!=firstSearch){
+                                        mCountSetUp=0;
+                                        mSecondCount=0;
+                                        mThirdCount=0;
+                                        mFourthCount=3;
+                                        GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                                        mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                                        mDatabaseReference.child(TURN).setValue(-2);
+                                    }
+                                }
+                            },DELAYEDSECONDSFORMESSAGEVIE * 1000);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        },1000);
+    }
+
+    private void messageViewInformWhatItemHasBeenUsed(GameData gameData,Room theCurrentRoom) {
+        HashSet<Playable> playersInTheRoom = gameBroad.WhoCan(theCurrentRoom.existCharacterColor());
+        List<Playable> playersInTheRoomList = new ArrayList<>();
+        for (Playable player : playersInTheRoom) {
+            playersInTheRoomList.add(player);
+        }
+        mCurrentTeam = (ArrayList<Playable>) playersInTheRoomList;
+        Collections.sort(mCurrentTeam, new Comparator<Playable>() {
+            @Override
+            public int compare(Playable o1, Playable o2) {
+                return o1.getColor().compareTo(o2.getColor());
+            }
+        });
+        Playable prevPlayer = mCurrentTeam.get(gameData.getmPrevICount());
+        boolean isItemUsed  = gameData.getmIsUsedItem();
+        mMessageView.setVisibility(View.VISIBLE);
+        mMessageView.setEnabled(false);
+        if (isItemUsed){
+            int itemNumber = gameData.getItemNumber();
+            for (int i=0; i<items.size(); i++){
+                if (itemNumber==items.get(i).getItemNum()){
+                    mCurrentSelectedItem = items.get(i);
+                }
+            }
+            String characterName = gameData.getmAffectedGameCharacter();
+            GameCharacter affectedCharacter = gameBroad.matchGameCharacter(prevPlayer,characterName);
+            mCurrentSelectedItem.setAfteraffectedRoomNumber(gameData.getmAfterAffectedRoomNumber());
+            mCurrentSelectedItem.setAffectedGameCharacter(affectedCharacter);
+            mUsedItem.add(mCurrentSelectedItem);
+            mPlayersUsedItem.add(prevPlayer);
+            if (mCurrentSelectedItem.getItemNum()==3){
+                disableContinue();
+                mMessageView.setText(prevPlayer + " used Axe, one zombie has been killed");
+                mMessageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        theCurrentRoom.zombieKilled();
+                    }
+                });
+            }
+            if (mCurrentSelectedItem.getItemNum()==4){
+                disableContinue();
+                mMessageView.setText(prevPlayer + " used Shotgun, two zombie has been killed");
+                mMessageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        theCurrentRoom.zombieKilled();
+                        theCurrentRoom.zombieKilled();
+                    }
+                });
+            }
+            if (mCurrentSelectedItem.getItemNum()==5){
+                disableContinue();
+                mMessageView.setText(prevPlayer + " used Hareware, one zombie has been temporary block");
+                mMessageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        theCurrentRoom.zombieKilled();
+                    }
+                });
+            }
+            if (mCurrentSelectedItem.getItemNum()==6){
+                disableContinue();
+                mMessageView.setText(prevPlayer + " used Hidden, his/her" + mCurrentSelectedItem.getAffectedGameCharacter() + " is hiding in the room");
+                mMessageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        theCurrentRoom.leave(gameBroad.matchGameCharacter(prevPlayer,mCurrentSelectedItem.getAffectedGameCharacter().getName()));
+                    }
+                });
+            }
+            if (mCurrentSelectedItem.getItemNum()==7){
+                disableContinue();
+                mMessageView.setText(prevPlayer + " used Sprint, his/her" + mCurrentSelectedItem.getAffectedGameCharacter() + " has left the room");
+                mMessageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        theCurrentRoom.leave(gameBroad.matchGameCharacter(prevPlayer,mCurrentSelectedItem.getAffectedGameCharacter().getName()));
+                    }
+                });
+            }
+        } else {
+            mMessageView.setText(prevPlayer + " did not use any item");
+        }
+        Handler handler =  new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mMessageView.setVisibility(View.INVISIBLE);
+                HashSet<Playable> playersInTheRoom = gameBroad.WhoCan(theCurrentRoom.existCharacterColor());
+                List<Playable> playersInTheRoomList = new ArrayList<>();
+                for (Playable player : playersInTheRoom) {
+                    playersInTheRoomList.add(player);
+                }
+                mCurrentTeam = (ArrayList<Playable>) playersInTheRoomList;
+                Collections.sort(mCurrentTeam, new Comparator<Playable>() {
+                    @Override
+                    public int compare(Playable o1, Playable o2) {
+                        return o1.getColor().compareTo(o2.getColor());
+                    }
+                });
+                mCountSetUp++;
+                int nextMove = 0;
+                if (mCountSetUp==playersInTheRoomList.size()*2){
+                    nextMove = -1;
+                } else {
+                    for (int i=0; i<colors.size(); i++){
+                        if (mCurrentTeam.get(gameData.getmPrevICount()+1).getColor().equalsIgnoreCase(colors.get(i))) {
+                            nextMove = i;
+                        }
+                    }
+                }
+                GameData gameData = new GameData(mCountPhase, mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                mDatabaseReference.child(TURN).setValue(nextMove);
+                mDatabaseReference.child(PREVTURN).setValue(-1);
+            }
+        },DELAYEDSECONDSFORMESSAGEVIE*1000);
+    }
+
+    private void messageViewInformCurrentIsStillFallenAfterItemUsed(Room theCurrentRoom) {
+        disableContinue();
+        mMessageView.setEnabled(false);
+        mMessageView.setVisibility(View.VISIBLE);
+        if (theCurrentRoom.isFallen()){
+            System.out.println("still fallen after the item used");
+            mMessageView.setText(theCurrentRoom.getName() +  " is still fallen after item used");
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mCountSetUp=0;
+                    mSecondCount=0;
+                    mThirdCount=0;
+                    mFourthCount=3;
+                    GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                    mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                    mDatabaseReference.child(TURN).setValue(-20);
+                }
+            },DELAYEDSECONDSFORMESSAGEVIE*1000);
+        }else {
+            mMessageView.setText(theCurrentRoom.getName() +  " is not fallen after item used");
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mCountSetUp=0;
+                    mSecondCount=0;
+                    mThirdCount=0;
+                    mFourthCount=4;
+                    GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                    mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                    mDatabaseReference.child(TURN).setValue(-20);
+                }
+            },DELAYEDSECONDSFORMESSAGEVIE*1000);
+            System.out.println("Not fallen after the item used");
+        }
+    }
+
+    private void messageViewRelatedtoFallenRoomVoteAndThreatUsed(GameData gameData, Room theCurrentRoom) {
+        if (mThirdCount==0){
+            messageViewInformFallenRoomTeamMembers(theCurrentRoom);
+        } else if (mCountSetUp == mCurrentTeam.size()*2  && mSecondCount == 0){
+            messageViewInformVoteResult(gameData,theCurrentRoom.getRoomNum());
+        } else if (mCountSetUp >= mCurrentTeam.size()*2 && mSecondCount > 0 && mCountSetUp < mCurrentTeam.size()*4) {
+            if (mSecondCount==1){
+                messageViewInformThreatUsingCanChangedVoteResult();
+            } else if (mSecondCount==2){
+                messageViewInformIsThreatUsed(gameData);
+            }
+        } else if (mCountSetUp == mCurrentTeam.size()*4 && mSecondCount == 2 ){
+            messageViewInformVoteSummary(gameData,theCurrentRoom.getRoomNum());
+        } else if (mCountSetUp == mCurrentTeam.size()*4 && mSecondCount == 3){
+            
+        }
+    }
+
+    private void messageViewInformFallenRoomTeamMembers(Room theCurrrentRoom) {
+        HashSet<Playable> searchteam = gameBroad.WhoCan(gameBroad.matchRoom(theCurrrentRoom.getRoomNum()).existCharacterColor());
+        List<Playable> searchTeam = new ArrayList<>();
+        for (Playable player : searchteam) {
+            searchTeam.add(player);
+        }
+        mCurrentTeam = (ArrayList<Playable>) searchTeam;
+        Collections.sort(mCurrentTeam, new Comparator<Playable>() {
+            @Override
+            public int compare(Playable o1, Playable o2) {
+                return o1.getColor().compareTo(o2.getColor());
+            }
+        });
+        disableContinue();
+        mMessageView.setVisibility(View.VISIBLE);
+        mMessageView.setText(mCurrentTeam + " are in the fallen Room " + theCurrrentRoom.getRoomNum() + ": " + theCurrrentRoom.getName());
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                otherCommonSetUp();
+                HashSet<Playable> searchteam = gameBroad.WhoCan(gameBroad.matchRoom(theCurrrentRoom.getRoomNum()).existCharacterColor());
+                List<Playable> searchTeam = new ArrayList<>();
+                for (Playable player : searchteam) {
+                    searchTeam.add(player);
+                }
+                mCurrentTeam = (ArrayList<Playable>) searchTeam;
+                Collections.sort(mCurrentTeam, new Comparator<Playable>() {
+                    @Override
+                    public int compare(Playable o1, Playable o2) {
+                        return o1.getColor().compareTo(o2.getColor());
+                    }
+                });
+                Log.i(TAG, "mCurrentTeam: " + mCurrentTeam + " fallenTeam List: " + searchTeam + " fallenTeam Set: " + searchteam);
+                Log.i(TAG, "colors: " + colors);
+                mMessageView.setVisibility(View.INVISIBLE);
+                int firstSearch = 0;
+                for (int i=0; i<colors.size(); i++){
+                    if (mCurrentTeam.get(0).getColor().equalsIgnoreCase(colors.get(i))){
+                        firstSearch = i;
+                        break;
+                    }
+                }
+                Log.i(TAG, "firstvote for fallling: " + firstSearch);
+                if (mMyPlayerID==firstSearch){
+                    mThirdCount++;
+                    GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                    mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                    mDatabaseReference.child(TURN).setValue(firstSearch);
+                }
+            }
+        },DELAYEDSECONDSFORMESSAGEVIE * 1000);
     }
 
     private void rotateTurnAccoridngtoFirebase(int turn) {
@@ -2977,35 +3415,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void showZombie() {
         System.out.println("mCountSetup: " + mCountSetUp +  " mSecondCount: " + mSecondCount + " mThirdCount: " + mThirdCount + " mFourthCount: " + mFourthCount + " mFifth Count: " + mFifthCount + " mSixth Count: " + mSixCount);
-        if (mFourthCount==0){
-            System.out.println("Showing Zombie to all");
-            Intent intent = ShowingZombieActivity.newShowZombiesIntent(MainActivity.this, mCurrentZombiesRooms,mFourthCount);
-            startActivityForResult(intent, REQUEST_CODE_VIEWZOMBIEAll);
-            overridePendingTransition(android.support.v7.appcompat.R.anim.abc_popup_enter,android.support.v7.appcompat.R.anim.abc_popup_exit );
-        }
-        if (mFourthCount==1){
-            if (mCurrentMoreZombies.size() == 0) {
-                for (int roomNumber: mCurrentZombiesRooms){
-                    gameBroad.matchRoom(roomNumber).zombieApproached();
-                }
-                System.out.println("Showing More Zombie");
-                if (gameBroad.mostPeople().getRoomNum()==7){
-                    mCurrentMoreZombies.add(0);
-                } else {
-                    gameBroad.mostPeople().zombieApproached();
-                    mCurrentMoreZombies.add(gameBroad.mostPeople().getRoomNum());
-                }
-                if (gameBroad.mostModel().getRoomNum()==7){
-                    mCurrentMoreZombies.add(0);
-                } else {
-                    gameBroad.mostModel().zombieApproached();
-                    mCurrentMoreZombies.add(gameBroad.mostModel().getRoomNum());
-                }
-            }
-            Intent intent = ShowMoreZombiesActivity.newShowZombiesIntent(MainActivity.this, mCurrentMoreZombies,mFourthCount);
-            startActivityForResult(intent, REQUEST_CODE_VIEWZOMBIEALLMORE);
-            overridePendingTransition(android.support.v7.appcompat.R.anim.abc_popup_enter,android.support.v7.appcompat.R.anim.abc_popup_exit );
-        }
         if (mFifthCount<6 &&  mFourthCount>=2){
             final Room fallenRoom = gameBroad.matchRoom(mFifthCount+1);
             HashSet<Playable> playersInTheRoom = gameBroad.WhoCan(fallenRoom.existCharacterColor());
@@ -3015,308 +3424,160 @@ public class MainActivity extends AppCompatActivity {
             }
             System.out.println(fallenRoom.getName());
             if (mFourthCount==2){
-                if (!fallenRoom.isFallen()){
-                    System.out.println(fallenRoom.getName() +  " is not fallen");
-                    mFourthCount=4;
-                }
-                if (fallenRoom.isFallen() && fallenRoom.getRoomNum()==4){
-                    System.out.println(fallenRoom.getName() + " is parking");
-                    mCountSetUp=0;
-                    mSecondCount=0;
-                    mThirdCount=0;
-                    mFourthCount++;
-                    mSixCount++;
-                }
-                if (fallenRoom.isFallen() && fallenRoom.getRoomNum()!=4) {
-                    System.out.println(fallenRoom.getName() + " is not parking");
-                    mSixCount++;
-                    if (mSecondCount==0){
-                        System.out.println("Confirm if want to use item");
-                        disableContinue();
-                        mMessageView.setText(fallenRoom.getName() +  " has fallen, please confirm anyone want to use item");
-                        mMessageView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                mMessageView.setVisibility(View.INVISIBLE);
-                                mMessageView.setEnabled(false);
-                                enableYesNo();
-                            }
-                        });
-                    }
-                    if (mSecondCount==1 && mCountSetUp<playersInTheRoomList.size()*2){
-                        System.out.println("Determining if use item");
-                        if (mCurrentYesNoMain){
-                            System.out.println("One player will use ITEM");
-                            if (mCountSetUp%2==0){
-                                System.out.println("using Item");
-                                int i = mCountSetUp==0? 0: mCountSetUp/2;
-                                String playerColor = playersInTheRoomList.get(i).getColor();
-                                String message =  playersInTheRoomList.get(i) +  " please select your item (press no to choose nothing)";
-                                ArrayList rooms = (ArrayList<Room>)gameBroad.getRooms();
-                                ArrayList<Item> items = (ArrayList<Item>) playersInTheRoomList.get(i).otherItemsList();
-                                HashSet<GameCharacter> existedCharacters = fallenRoom.existChracterForThatPlayer(playersInTheRoomList.get(i));
-                                List<GameCharacter> existedCharactersList = new ArrayList<>();
-                                for (GameCharacter character: existedCharacters){
-                                    existedCharactersList.add(character);
-                                }
-                                Intent intent = PlayerActivity.newChoosingItemIntent(MainActivity.this,rooms,playerColor,items,fallenRoom.getRoomNum(), (ArrayList<GameCharacter>) existedCharactersList,  message,mCountSetUp,6);
-                                startActivityForResult(intent,REQUEST_CODE_ITEM);
-                                overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
-                            }
-                            if (mCountSetUp%2==1){
-                                int i = mCountSetUp/2;
-                                final Playable player = playersInTheRoomList.get(i);
-                                System.out.println("triggering the item or show the player did not use item");
-                                if (mCurrentYesNo){
-                                    System.out.println("Player use item");
-                                    mUsedItem.add(mCurrentSelectedItem);
-                                    mPlayersUsedItem.add(player);
-                                    if (mCurrentSelectedItem.getItemNum()==3){
-                                        disableContinue();
-                                        mMessageView.setText(player + " used Axe, one zombie has been killed");
-                                        mMessageView.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                fallenRoom.zombieKilled();
-                                                enableContinue();
-                                                mCountSetUp++;
-                                            }
-                                        });
-                                    }
-                                    if (mCurrentSelectedItem.getItemNum()==4){
-                                        disableContinue();
-                                        mMessageView.setText(player + " used Shotgun, two zombie has been killed");
-                                        mMessageView.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                fallenRoom.zombieKilled();
-                                                fallenRoom.zombieKilled();
-                                                enableContinue();
-                                                mCountSetUp++;
-                                            }
-                                        });
-                                    }
-                                    if (mCurrentSelectedItem.getItemNum()==5){
-                                        disableContinue();
-                                        mMessageView.setText(player + " used Hareware, one zombie has been temporary block");
-                                        mMessageView.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                fallenRoom.zombieKilled();
-                                                enableContinue();
-                                                mCountSetUp++;
-                                            }
-                                        });
-                                    }
-                                    if (mCurrentSelectedItem.getItemNum()==6){
-                                        disableContinue();
-                                        mMessageView.setText(player + " used Hidden, his/her" + mCurrentSelectedItem.getAffectedGameCharacter() + " is hiding in the room");
-                                        mMessageView.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                fallenRoom.leave(gameBroad.matchGameCharacter(player,mCurrentSelectedItem.getAffectedGameCharacter().getName()));
-                                                enableContinue();
-                                                mCountSetUp++;
-                                            }
-                                        });
-                                    }
-                                    if (mCurrentSelectedItem.getItemNum()==7){
-                                        disableContinue();
-                                        mMessageView.setText(player + " used Sprint, his/her" + mCurrentSelectedItem.getAffectedGameCharacter() + " has left the room");
-                                        mMessageView.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                fallenRoom.leave(gameBroad.matchGameCharacter(player,mCurrentSelectedItem.getAffectedGameCharacter().getName()));
-                                                enableContinue();
-                                                mCountSetUp++;
-                                            }
-                                        });
-                                    }
-                                } else {
-                                    System.out.println("Player do not use item");
-                                    disableContinue();
-                                    mMessageView.setText(player + " did not use any item");
-                                    mMessageView.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            enableContinue();
-                                            mCountSetUp++;
-                                        }
-                                    });
-                                }
-                            }
-                        }else {
-                            mCountSetUp=playersInTheRoomList.size()*2;
+                if (mSecondCount==1 && mCountSetUp<playersInTheRoomList.size()*2){
+                    if (mCountSetUp%2==0){
+                        System.out.println("using Item");
+                        int i = mCountSetUp==0? 0: mCountSetUp/2;
+                        String playerColor = playersInTheRoomList.get(i).getColor();
+                        String message =  playersInTheRoomList.get(i) +  " please select your item (press no to choose nothing)";
+                        ArrayList rooms = (ArrayList<Room>)gameBroad.getRooms();
+                        ArrayList<Item> items = (ArrayList<Item>) playersInTheRoomList.get(i).otherItemsList();
+                        HashSet<GameCharacter> existedCharacters = fallenRoom.existChracterForThatPlayer(playersInTheRoomList.get(i));
+                        List<GameCharacter> existedCharactersList = new ArrayList<>();
+                        for (GameCharacter character: existedCharacters){
+                            existedCharactersList.add(character);
                         }
+                        Intent intent = PlayerActivity.newChoosingItemIntent(MainActivity.this,rooms,playerColor,items,fallenRoom.getRoomNum(), (ArrayList<GameCharacter>) existedCharactersList,  message,mCountSetUp,6);
+                        startActivityForResult(intent,REQUEST_CODE_ITEM);
+                        overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
                     }
-                } else {
-                    mCountSetUp= playersInTheRoomList.size()*2;
-                    mSecondCount+=1;
-                }
-                if (mCountSetUp==playersInTheRoomList.size()*2 && fallenRoom.isFallen()){
-                    System.out.println("still fallen after the item used");
-                    disableContinue();
-                    mMessageView.setText(fallenRoom.getName() +  " is still fallen. /nPlease vote who will be eaten");
-                    mMessageView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            enableContinue();
-                            mCountSetUp=0;
-                            mSecondCount=0;
-                            mThirdCount=0;
-                            mFourthCount++;
-                        }
-                    });
-                }
-                if (mCountSetUp==playersInTheRoomList.size()*2 && !fallenRoom.isFallen()){
-                    System.out.println("Not fallen after the item used");
-                    mCountSetUp=0;
-                    mSecondCount=0;
-                    mThirdCount=0;
-                    mFourthCount+=2;
+                    if (mCountSetUp%2==1){
+                        int i = mCountSetUp/2;
+                        System.out.println("putting item into Firebase");
+                        int itemNumber =  mCurrentSelectedItem.getItemNum();
+                        int afterRoomNumber = mCurrentSelectedItem.getAfteraffectedRoomNumber();
+                        String characterName =  mCurrentSelectedItem.getAffectedGameCharacter().getName();
+                        boolean isItemUsed =  mCurrentYesNo;
+                        GameData gameData = new GameData(mCountPhase, mCountSetUp, mSecondCount, mThirdCount,mFourthCount,mFifthCount,mSixCount,
+                                isItemUsed, itemNumber, characterName,afterRoomNumber,i);
+                        mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                        mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
+                        mDatabaseReference.child(TURN).setValue(-1);
+                    }
                 }
             }
             if (mFourthCount==3){
-                HashSet<Playable> searchteam = gameBroad.WhoCan(fallenRoom.existCharacterColor());
+                HashSet<Playable> searchteam = gameBroad.WhoCan(gameBroad.matchRoom(fallenRoom.getRoomNum()).existCharacterColor());
                 List<Playable> searchTeam = new ArrayList<>();
                 for (Playable player : searchteam) {
                     searchTeam.add(player);
                 }
-                System.out.println("Calculated searchteam: " +  searchTeam);
                 mCurrentTeam = (ArrayList<Playable>) searchTeam;
-                System.out.println("Doing the fallen calculation");
-                    if (mThirdCount==0 ){
-                        System.out.println("getting the team");
-                        disableContinue();
-                        mMessageView.setText("For " + fallenRoom.getName() +  ": please select the victim");
-                        mMessageView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                enableContinue();
-                                mThirdCount++;
-                                mCountSetUp=0;
-                                mSecondCount=0;
-
-                            }
-                        });
+                Collections.sort(mCurrentTeam, new Comparator<Playable>() {
+                    @Override
+                    public int compare(Playable o1, Playable o2) {
+                        return o1.getColor().compareTo(o2.getColor());
                     }
-                    if (mThirdCount==1) {
-                        System.out.println(mCurrentTeam.size());
-                        if (mCountSetUp % 2 == 0 && (mCountSetUp < 2 * mCurrentTeam.size())) {
-                            int i = (mCountSetUp == 0) ? 0 : mCountSetUp / 2;
-                            Playable teammember = mCurrentTeam.get(i);
-                            ArrayList rooms = (ArrayList<Room>) gameBroad.getRooms();
-                            String playercolor = teammember.getColor();
-                            String message = teammember + "  please vote whose character will be eaten";
-                            ArrayList voteOptions = mCurrentTeam;
-                            ArrayList<Item> items = (ArrayList<Item>) mCurrentTeam.get(i).getCurrentItem();
-                            System.out.println("Step I: calling vote" + " mCount: " + mCountSetUp + " i: " + i);
-                            System.out.println(mCurrentTeam);
-                            Intent intent = PlayerActivity.newVotingIntent(MainActivity.this, rooms, playercolor, items, voteOptions, message, mCountSetUp, 4);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                            startActivityForResult(intent, REQUEST_CODE_VOTE);
-                            overridePendingTransition(android.support.v7.appcompat.R.anim.abc_popup_enter,android.support.v7.appcompat.R.anim.abc_popup_exit );
-                        }
-                        String vote = mCurrentVoteColor;
-                        if (mCountSetUp % 2 == 1 && (mCountSetUp < 2 * mCurrentTeam.size())) {
-                            int i = (mCountSetUp == 0) ? 0 : mCountSetUp / 2;
-                            Playable teammember = mCurrentTeam.get(i);
-                            votes.add(teammember.getColor());
-                            votes.add(vote);
-                            System.out.println("Step II: colleting vote" + " mCount: " + mCountSetUp + " i: " + i);
-                            System.out.println(mCurrentTeam);
-                            System.out.println(votes);
-                            ++mCountSetUp;
-                            if (mCountSetUp != mCurrentTeam.size() * 2)
-                            showZombie();
-                        }
-                        if (mCountSetUp == mCurrentTeam.size() * 2 && mSecondCount == 0) {
-                            fallenRoom.resetVoteResult();
-                            fallenRoom.voteResultAfterVote(votes);
-                            ArrayList votes1 = (ArrayList<String>) votes;
-                            System.out.println("Step III: show vote result");
-                            System.out.println(votes1);
-                            Intent intent2 = ShowVoteResultActivity.newVoteResultIntent(MainActivity.this, votes1, gameBroad.matchRoom(5).getCurrentVoteResult(), mSecondCount);
-                            intent2.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                            startActivityForResult(intent2, REQUEST_CODE_VIEWRESULT);
-                            overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
-                            mCurrentYesNoMain =false;
-                        }
-                        if (mCountSetUp >= mCurrentTeam.size() * 2 && mSecondCount > 0 && mCountSetUp < mCurrentTeam.size() * 4) {
-                            System.out.println("Step IV: using threat");
-                            if (teamHasThreat(mCurrentTeam) || mCurrentYesNoMain) {
-                                System.out.println("has threat");
-                                if (mSecondCount == 1) {
-                                    disableContinue();
-                                    mMessageView.setText("Voting result can be changed by item THREAT, anyone want to change the result?");
-                                    mMessageView.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            mMessageView.setVisibility(View.INVISIBLE);
-                                            mMessageView.setEnabled(false);
-                                            enableYesNo();
-                                        }
-                                    });
-                                }
-                                if (mSecondCount == 2) {
-                                    if (mCurrentYesNoMain) {
-                                        if (mCountSetUp % 2 == 0) {
-                                            int q = mCountSetUp - (2 * mCurrentTeam.size());
-                                            int i = (q == 0) ? 0 : (q / 2);
-                                            Playable teammember = mCurrentTeam.get(i);
-                                            String color = mCurrentTeam.get(i).getColor();
-                                            String message = teammember + " please confirm you want to use THREAT";
-                                            ArrayList rooms = (ArrayList<Room>) gameBroad.getRooms();
-                                            ArrayList<Item> items = (ArrayList<Item>) mCurrentTeam.get(i).getCurrentItem();
-                                            Boolean yesAndNo = false;
-                                            if (teammember.hasThreat()) {
-                                                yesAndNo = true;
-                                            }
-                                            Intent intent = PlayerActivity.newYesNoIntent(MainActivity.this, rooms, color, items, yesAndNo, message, mCountSetUp, 5);
-                                            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                                            startActivityForResult(intent, REQUEST_CODE_YESNO);
-                                            overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
-                                        }
-                                        if (mCountSetUp % 2 == 1) {
-                                            int q = mCountSetUp - (2 * mCurrentTeam.size());
-                                            int i = (q == 0) ? 0 : (q / 2);
-                                            Playable teammember = mCurrentTeam.get(i);
-                                            if (mCurrentYesNo) {
-                                                String effectedColor = "";
-                                                for (int k = 0; k < votes.size(); k += 2) {
-                                                    if (teammember.getColor().equalsIgnoreCase(votes.get(k))) {
-                                                        effectedColor = votes.get(k + 1);
-                                                    }
-                                                }
-                                                effectedColor = effectedColor.toUpperCase();
-                                                fallenRoom.voteResultAfterItem(effectedColor, 1);
-//                                    for (int q = 0; q < numThreat; q++) {
-                                                Item threat = gameBroad.matchItem(teammember, "Threat");
-                                                teammember.usedItem(threat);
-                                            }
-                                            mCountSetUp++;
-                                            if (mCountSetUp != mCurrentTeam.size() * 4)
-                                            showZombie();
-                                        }
-                                    } else {
-                                        mCountSetUp = mCurrentTeam.size() * 4;
-                                    }
-                                }
-                            } else {
-                                System.out.println("No threat");
-                                mCountSetUp = mCurrentTeam.size() * 4;
-                                mSecondCount = 2;
-                                if (mCountSetUp != mCurrentTeam.size() * 4)
-                                showZombie();
+                });
+                System.out.println(mCurrentTeam.size());
+                if (mCountSetUp % 2 == 0 && (mCountSetUp < 2 * mCurrentTeam.size())) {
+                    int i = (mCountSetUp == 0) ? 0 : mCountSetUp / 2;
+                    Playable teammember = mCurrentTeam.get(i);
+                    ArrayList rooms = (ArrayList<Room>) gameBroad.getRooms();
+                    String playercolor = teammember.getColor();
+                    String message = teammember + "  please vote whose character will be eaten";
+                    ArrayList voteOptions = mCurrentTeam;
+                    ArrayList<Item> items = (ArrayList<Item>) mCurrentTeam.get(i).getCurrentItem();
+                    System.out.println("Step I: calling vote" + " mCount: " + mCountSetUp + " i: " + i);
+                    System.out.println(mCurrentTeam);
+                    Intent intent = PlayerActivity.newVotingIntent(MainActivity.this, rooms, playercolor, items, voteOptions, message, mCountSetUp, 4);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    startActivityForResult(intent, REQUEST_CODE_VOTE);
+                    overridePendingTransition(android.support.v7.appcompat.R.anim.abc_popup_enter,android.support.v7.appcompat.R.anim.abc_popup_exit );
+                }
+                String vote = mCurrentVoteColor;
+                if (mCountSetUp % 2 == 1 && (mCountSetUp < 2 * mCurrentTeam.size())) {
+                    int i = (mCountSetUp == 0) ? 0 : mCountSetUp / 2;
+                    Playable teammember = mCurrentTeam.get(i);
+                    votes.add(teammember.getColor());
+                    votes.add(vote);
+                    System.out.println("Step II: colleting vote" + " mCount: " + mCountSetUp + " i: " + i);
+                    System.out.println(mCurrentTeam);
+                    System.out.println(votes);
+                    ++mCountSetUp;
+                    GameData gameData = new GameData(mCountPhase,mCountSetUp, mSecondCount, mThirdCount, mFourthCount, mFifthCount,
+                            mSixCount, teammember.getColor(), vote);
+                    mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                    mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
+                    if (mCountSetUp==2*mCurrentTeam.size()) {
+                        mDatabaseReference.child(TURN).setValue(-1);
+                    } else {
+                        int nextSearch = 0;
+                        Playable nextSearchTeamMember = mCurrentTeam.get(i + 1);
+                        for (int q = 0; q < colors.size(); q++) {
+                            if (nextSearchTeamMember.getColor().equalsIgnoreCase(colors.get(q))) {
+                                nextSearch = q;
                             }
                         }
-                        if (mCountSetUp == mCurrentTeam.size() * 4 && mSecondCount == 2) {
-                            System.out.println("Show summary");
-                            HashMap<String, Integer> results = fallenRoom.getCurrentVoteResult();
-                            Intent intent = ShowSimpleVoteResultActivity.newVoteResultIntent(MainActivity.this, results, mSecondCount);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                            startActivityForResult(intent, REQUEST_CODE_VIEWSIMPLERESULT);
-                            overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
+                        mDatabaseReference.child(TURN).setValue(nextSearch);
+                    }
+                }
+                if (mCountSetUp >= mCurrentTeam.size() * 2 && mSecondCount > 0 && mCountSetUp < mCurrentTeam.size() * 4) {
+                    System.out.println("Step IV: using threat");
+                        System.out.println("has threat");
+                        if (mSecondCount == 1) {
+                            disableContinue();
+                            mMessageView.setText("Voting result can be changed by item THREAT, anyone want to change the result?");
+                            mMessageView.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    mMessageView.setVisibility(View.INVISIBLE);
+                                    mMessageView.setEnabled(false);
+                                    enableYesNo();
+                                }
+                            });
+                        }
+                        if (mSecondCount == 2) {
+                            if (mCountSetUp % 2 == 0) {
+                                int q = mCountSetUp - (2 * mCurrentTeam.size());
+                                int i = (q == 0) ? 0 : (q / 2);
+                                Playable teammember = mCurrentTeam.get(i);
+                                String color = mCurrentTeam.get(i).getColor();
+                                String message = teammember + " please confirm you want to use THREAT";
+                                ArrayList rooms = (ArrayList<Room>) gameBroad.getRooms();
+                                ArrayList<Item> items = (ArrayList<Item>) mCurrentTeam.get(i).getCurrentItem();
+                                Boolean yesAndNo = false;
+                                if (teammember.hasThreat()) {
+                                    yesAndNo = true;
+                                }
+                                Intent intent = PlayerActivity.newYesNoIntent(MainActivity.this, rooms, color, items, yesAndNo, message, mCountSetUp, 5);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                                startActivityForResult(intent, REQUEST_CODE_YESNO);
+                                overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
+                            }
+                            if (mCountSetUp % 2 == 1) {
+                                int q = mCountSetUp - (2 * mCurrentTeam.size());
+                                int i = (q == 0) ? 0 : (q / 2);
+                                Playable teammember = mCurrentTeam.get(i);
+                                if (mCurrentYesNo) {
+                                    String effectedColor = "";
+                                    for (int k = 0; k < votes.size(); k += 2) {
+                                        if (teammember.getColor().equalsIgnoreCase(votes.get(k))) {
+                                            effectedColor = votes.get(k + 1);
+                                        }
+                                    }
+                                    effectedColor = effectedColor.toUpperCase();
+                                    fallenRoom.voteResultAfterItem(effectedColor, 1);
+                                    Item threat = gameBroad.matchItem(teammember, "Threat");
+                                    teammember.usedItem(threat);
+                                }
+                                mCountSetUp++;
+                                GameData gameData = new GameData(mCountPhase,mCountSetUp, mSecondCount, mThirdCount, mFourthCount, mFifthCount, mSixCount,mCurrentYesNo,4);
+                                mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                                mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
+                                if (mCountSetUp==4*mCurrentTeam.size()) {
+                                    mDatabaseReference.child(TURN).setValue(-1);
+                                } else {
+                                    int nextSearch = 0;
+                                    for (int k=0; k<colors.size(); k++){
+                                        if (mCurrentTeam.get(i+1).getColor().equalsIgnoreCase(colors.get(k))){
+                                            nextSearch = k;
+                                            break;
+                                        }
+                                    }
+                                    mDatabaseReference.child(TURN).setValue(nextSearch);
+                                }
+                            }
                         }
                     }
                 if (mCountSetUp == mCurrentTeam.size()*4 && mSecondCount == 3) {

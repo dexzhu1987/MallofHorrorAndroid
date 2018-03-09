@@ -98,22 +98,22 @@ public abstract class Item implements Parcelable,Serializable {
     public void setName(String name) {
         this.name = name;
     }
-
-    public int getAffectedRoomNumber() {
-        return afteraffectedRoomNumber;
-    }
-
-    public void setAffectedRoomNumber(int affectedRoomNumber) {
-        this.afteraffectedRoomNumber = affectedRoomNumber;
-    }
-
-    public GameCharacter getGameCharacter() {
-        return affectedGameCharacter;
-    }
-
-    public void setGameCharacter(GameCharacter gameCharacter) {
-        this.affectedGameCharacter = gameCharacter;
-    }
+//
+//    public int getAffectedRoomNumber() {
+//        return afteraffectedRoomNumber;
+//    }
+//
+//    public void setAffectedRoomNumber(int affectedRoomNumber) {
+//        this.afteraffectedRoomNumber = affectedRoomNumber;
+//    }
+//
+//    public GameCharacter getGameCharacter() {
+//        return affectedGameCharacter;
+//    }
+//
+//    public void setGameCharacter(GameCharacter gameCharacter) {
+//        this.affectedGameCharacter = gameCharacter;
+//    }
 
     public String getName() {
         return name;

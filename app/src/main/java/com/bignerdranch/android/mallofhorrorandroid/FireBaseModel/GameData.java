@@ -22,6 +22,10 @@ public class GameData {
     private int mItemNumber;
     private int mSelectedRoomPhaseFive;
     private int mPlayerIndex;
+    private Boolean mIsUsedItem;
+    private int mPrevICount;
+    private int mAfterAffectedRoomNumber;
+    private String mAffectedGameCharacter;
 
 
     public String getmSelectedCharacter() {
@@ -172,6 +176,55 @@ public class GameData {
         this.mSelectedRoomPhaseFive = mSelectRoomPhaseFive;
         this.mPlayerIndex = mPlayerIndex;
         this.mSelectedCharacter = mSelectedCharacter;
+    }
+
+    public Boolean getmIsUsedItem() {
+        return mIsUsedItem;
+    }
+
+    public void setmIsUsedItem(Boolean mIsUsedItem) {
+        this.mIsUsedItem = mIsUsedItem;
+    }
+
+    public int getmPrevICount() {
+        return mPrevICount;
+    }
+
+    public void setmPrevICount(int mPrevICount) {
+        this.mPrevICount = mPrevICount;
+    }
+
+    public int getmAfterAffectedRoomNumber() {
+        return mAfterAffectedRoomNumber;
+    }
+
+    public void setmAfterAffectedRoomNumber(int mAfterAffectedRoomNumber) {
+        this.mAfterAffectedRoomNumber = mAfterAffectedRoomNumber;
+    }
+
+    public String getmAffectedGameCharacter() {
+        return mAffectedGameCharacter;
+    }
+
+    public void setmAffectedGameCharacter(String mAffectedGameCharacter) {
+        this.mAffectedGameCharacter = mAffectedGameCharacter;
+    }
+
+    public GameData(int mCountPhase, int mCountSetUp, int mSecondCount, int mThirdCount, int mFourthCount, int mFifthCount,
+                    int mSixCount, boolean mIsUsedItem, int mItemNumber, String mAffectedGameCharacter, int mAfterAffectedRoomNumber, int mPrevICount) {
+        this.mCountPhase = mCountPhase;
+        this.mCountSetUp = mCountSetUp;
+        this.mSecondCount = mSecondCount;
+        this.mThirdCount = mThirdCount;
+        this.mFourthCount = mFourthCount;
+        this.mFifthCount = mFifthCount;
+        this.mSixCount = mSixCount;
+        this.mPassingType = 7;
+        this.mIsUsedItem = mIsUsedItem;
+        this.mItemNumber = mItemNumber;
+        this.mAffectedGameCharacter = mAffectedGameCharacter;
+        this.mAffectedRoom = mAfterAffectedRoomNumber;
+        this.mPrevICount = mPrevICount;
     }
 
 
