@@ -2921,6 +2921,7 @@ public class MainActivity extends AppCompatActivity {
                     if (mCountSetUp==mCurrentPlayerNumber*2){
                         mDatabaseReference.child(TURN).setValue(-1);
                     } else {
+                        Log.i(TAG, "q: " + q);
                         int next_index =  playersIndex.get(q+1);
                         int nextMove = 0;
                         for (int k=0; k<colors.size(); k++){
