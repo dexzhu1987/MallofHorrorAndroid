@@ -332,101 +332,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void messageViewRelatedtoRevealandAttack() {
-        if (mFourthCount==0){
-            messageViewShowZombiestoAll();
-        } else if (mFourthCount==1){
-            messageViewInformMoreZomibies();
-        }
-    }
-
-    private void messageViewShowZombiestoAll() {
-        mMessageView.setEnabled(false);
-        mMessageView.setVisibility(View.VISIBLE);
-        mMessageView.setText("Now zombies approacing room numbers reveal");
-        mDatabaseReference.child(ZOMBIEROOMS).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getValue()!=null){
-                    mCurrentZombiesRooms.clear();
-                    for (DataSnapshot snapshot: dataSnapshot.getChildren()){
-                        mCurrentZombiesRooms.add(snapshot.getValue(Integer.TYPE));
-                    }
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mMessageView.setVisibility(View.INVISIBLE);
-                System.out.println("Showing Chief the zombies");
-                Intent intent = ShowingZombieActivity.newShowZombiesIntent(MainActivity.this, mCurrentZombiesRooms,mFourthCount);
-                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivityForResult(intent, REQUEST_CODE_VIEWZOMBIECHIEF);
-                overridePendingTransition(android.support.v7.appcompat.R.anim.abc_popup_enter,android.support.v7.appcompat.R.anim.abc_popup_exit );
-            }
-        }, DELAYEDSECONDSFORMESSAGEVIE * 1000);
-    }
-
-    private void messageViewInformMoreZomibies() {
-        mMessageView.setEnabled(false);
-        mMessageView.setVisibility(View.VISIBLE);
-        mMessageView.setText("There are more zombies coming");
-        mDatabaseReference.child(ZOMBIEROOMS).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getValue()!=null){
-                    mCurrentZombiesRooms.clear();
-                    for (DataSnapshot snapshot: dataSnapshot.getChildren()){
-                        mCurrentZombiesRooms.add(snapshot.getValue(Integer.TYPE));
-                    }
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mMessageView.setVisibility(View.INVISIBLE);
-                if (mCurrentMoreZombies.size() == 0) {
-                    for (int roomNumber: mCurrentZombiesRooms){
-                        gameBroad.matchRoom(roomNumber).zombieApproached();
-                    }
-                    System.out.println("Showing More Zombie");
-                    if (gameBroad.mostPeople().getRoomNum()==7){
-                        mCurrentMoreZombies.add(0);
-                    } else {
-                        gameBroad.mostPeople().zombieApproached();
-                        mCurrentMoreZombies.add(gameBroad.mostPeople().getRoomNum());
-                    }
-                    if (gameBroad.mostModel().getRoomNum()==7){
-                        mCurrentMoreZombies.add(0);
-                    } else {
-                        gameBroad.mostModel().zombieApproached();
-                        mCurrentMoreZombies.add(gameBroad.mostModel().getRoomNum());
-                    }
-                }
-                Log.i(TAG, "More zombies: " + mCurrentMoreZombies);
-                Intent intent = ShowMoreZombiesActivity.newShowZombiesIntent(MainActivity.this, mCurrentMoreZombies,mFourthCount);
-                startActivityForResult(intent, REQUEST_CODE_VIEWZOMBIEALLMORE);
-                overridePendingTransition(android.support.v7.appcompat.R.anim.abc_popup_enter,android.support.v7.appcompat.R.anim.abc_popup_exit );
-            }
-        },DELAYEDSECONDSFORMESSAGEVIE*1000);
-    }
-
     private void messageViewInformPregameChooseRoom() {
         mMessageView.setText("PRE-GAME SETTING PHASE ONE : CHOOSE ROOM");
         Handler handler = new Handler();
@@ -1238,7 +1143,7 @@ public class MainActivity extends AppCompatActivity {
         } else if (mCountSetUp==gameBroad.getPlayers().size()*2) {
             messageInformRoomSelectionSummary(gameData);
         } else if (mCountSetUp==gameBroad.getPlayers().size()*4) {
-            messageViewInformMovetoZombieRevealAndAttack();
+            messageViewInformMovetoZombieRevealAndAttack(gameData);
         }
     }
 
@@ -1447,8 +1352,24 @@ public class MainActivity extends AppCompatActivity {
         },DELAYEDSECONDSFORMESSAGEVIE * 1000);
     }
 
-    private void messageViewInformMovetoZombieRevealAndAttack() {
+    private void messageViewInformMovetoZombieRevealAndAttack(GameData gameData) {
         disableContinue();
+        mDatabaseReference.child(PREVTURN).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue()!=null){
+                    int prevTurn = dataSnapshot.getValue(Integer.TYPE);
+                    if (mMyPlayerID!=prevTurn){
+                        updateDataFromFireBase(0,gameData,prevTurn);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
         mMessageView.setVisibility(View.VISIBLE);
         mMessageView.setText("Game Phase IV: Zombies Revealed and Attacked");
         mMessageView.setEnabled(false);
@@ -1460,6 +1381,7 @@ public class MainActivity extends AppCompatActivity {
                 mCountSetUp=0;
                 mSecondCount=0;
                 mThirdCount=0;
+                mFourthCount=0;
                 votes.clear();
                 mCurrentTeam.clear();
                 mCurrentItemOptions.clear();
@@ -1477,6 +1399,101 @@ public class MainActivity extends AppCompatActivity {
                 mDatabaseReference.child(PREVTURN).setValue(-1);
             }
         }, DELAYEDSECONDSFORMESSAGEVIE*1000);
+    }
+
+    private void messageViewRelatedtoRevealandAttack() {
+        if (mFourthCount==0){
+            messageViewShowZombiestoAll();
+        } else if (mFourthCount==1){
+            messageViewInformMoreZomibies();
+        }
+    }
+
+    private void messageViewShowZombiestoAll() {
+        mMessageView.setEnabled(false);
+        mMessageView.setVisibility(View.VISIBLE);
+        mMessageView.setText("Now zombies approacing room numbers reveal");
+        mDatabaseReference.child(ZOMBIEROOMS).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue()!=null){
+                    mCurrentZombiesRooms.clear();
+                    for (DataSnapshot snapshot: dataSnapshot.getChildren()){
+                        mCurrentZombiesRooms.add(snapshot.getValue(Integer.TYPE));
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mMessageView.setVisibility(View.INVISIBLE);
+                System.out.println("Showing Chief the zombies");
+                Intent intent = ShowingZombieActivity.newShowZombiesIntent(MainActivity.this, mCurrentZombiesRooms,mFourthCount);
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivityForResult(intent, REQUEST_CODE_VIEWZOMBIECHIEF);
+                overridePendingTransition(android.support.v7.appcompat.R.anim.abc_popup_enter,android.support.v7.appcompat.R.anim.abc_popup_exit );
+            }
+        }, DELAYEDSECONDSFORMESSAGEVIE * 1000);
+    }
+
+    private void messageViewInformMoreZomibies() {
+        mMessageView.setEnabled(false);
+        mMessageView.setVisibility(View.VISIBLE);
+        mMessageView.setText("There are more zombies coming");
+        mDatabaseReference.child(ZOMBIEROOMS).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue()!=null){
+                    mCurrentZombiesRooms.clear();
+                    for (DataSnapshot snapshot: dataSnapshot.getChildren()){
+                        mCurrentZombiesRooms.add(snapshot.getValue(Integer.TYPE));
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mMessageView.setVisibility(View.INVISIBLE);
+                if (mCurrentMoreZombies.size() == 0) {
+                    for (int roomNumber: mCurrentZombiesRooms){
+                        gameBroad.matchRoom(roomNumber).zombieApproached();
+                    }
+                    System.out.println("Showing More Zombie");
+                    if (gameBroad.mostPeople().getRoomNum()==7){
+                        mCurrentMoreZombies.add(0);
+                    } else {
+                        gameBroad.mostPeople().zombieApproached();
+                        mCurrentMoreZombies.add(gameBroad.mostPeople().getRoomNum());
+                    }
+                    if (gameBroad.mostModel().getRoomNum()==7){
+                        mCurrentMoreZombies.add(0);
+                    } else {
+                        gameBroad.mostModel().zombieApproached();
+                        mCurrentMoreZombies.add(gameBroad.mostModel().getRoomNum());
+                    }
+                }
+                Log.i(TAG, "More zombies: " + mCurrentMoreZombies);
+                Intent intent = ShowMoreZombiesActivity.newShowZombiesIntent(MainActivity.this, mCurrentMoreZombies,mFourthCount);
+                startActivityForResult(intent, REQUEST_CODE_VIEWZOMBIEALLMORE);
+                overridePendingTransition(android.support.v7.appcompat.R.anim.abc_popup_enter,android.support.v7.appcompat.R.anim.abc_popup_exit );
+            }
+        },DELAYEDSECONDSFORMESSAGEVIE*1000);
     }
 
     private void rotateTurnAccoridngtoFirebase(int turn) {
@@ -2742,7 +2759,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void viewAndMove() {
-        Log.i(TAG, "IsDataPushed: " + mIsDataPushed);
         mCurrentPlayerNumber = gameBroad.getPlayers().size();
         System.out.println("mCountSetup: " + mCountSetUp +  " mSecondCount: " + mSecondCount + " mThirdCount: " + mThirdCount + " mFourthCount: " + mFourthCount);
         if (mCountSetUp<2 && !mIsChiefSelected){
