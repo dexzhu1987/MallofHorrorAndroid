@@ -1439,6 +1439,7 @@ public class MainActivity extends AppCompatActivity {
                         mFourthCount=1;
                         mCountSetUp = 2*gameBroad.getPlayers().size();
                         GameData gameData = new GameData(mCountPhase, mCountSetUp, mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                        mDatabaseReference.child(GAMEDATA).setValue(gameData);
                         mDatabaseReference.child(TURN).setValue(nextMove);
                     }
                 },15*1000);
