@@ -1212,7 +1212,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     int chiefElection = roomspicked.get(0);
                     Room roomName = gameBroad.matchRoom(chiefElection);
-                    mMessageView.setText("After reviewing the security cameara, chief will move to "  + roomName.getName());
+                    mMessageView.setText("After reviewing the security cameara, chief will move to " + roomName.getRoomNum() + ": " + roomName.getName());
                     Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         @Override
