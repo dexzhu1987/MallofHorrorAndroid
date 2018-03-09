@@ -955,7 +955,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void messageViewInformUsingSecurityCamera() {
-        mMessageView.setText("Approaching zombies can also be viewed by using security camera, please confirm you want to use security camera");
+        mMessageView.setText("Please confirm if you want to use security camera to view the approaching zombies");
         mDatabaseReference.child(ZOMBIEROOMS).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -1438,7 +1438,7 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println("Showing Chief the zombies");
                 Intent intent = ShowingZombieActivity.newShowZombiesIntent(MainActivity.this, mCurrentZombiesRooms,mFourthCount);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivityForResult(intent, REQUEST_CODE_VIEWZOMBIECHIEF);
+                startActivityForResult(intent, REQUEST_CODE_VIEWZOMBIEAll);
                 overridePendingTransition(android.support.v7.appcompat.R.anim.abc_popup_enter,android.support.v7.appcompat.R.anim.abc_popup_exit );
             }
         }, DELAYEDSECONDSFORMESSAGEVIE * 1000);
