@@ -1237,7 +1237,7 @@ public class MainActivity extends AppCompatActivity {
             messageViewInformChiefRoomNumber(gameData);
         } else if (mCountSetUp==gameBroad.getPlayers().size()*2) {
             messageInformRoomSelectionSummary(gameData);
-        } else if (mCountSetUp==gameBroad.getPlayers().size()) {
+        } else if (mCountSetUp==gameBroad.getPlayers().size()*4) {
             messageViewInformMovetoZombieRevealAndAttack();
         }
     }
@@ -2918,9 +2918,10 @@ public class MainActivity extends AppCompatActivity {
                     }
                     ++mCountSetUp;
 
-                    if (mCountSetUp==mCurrentPlayerNumber*2){
+                    if (mCountSetUp==mCurrentPlayerNumber*4){
                         mDatabaseReference.child(TURN).setValue(-1);
                     } else {
+                        Log.i(TAG, "q: " + q);
                         int next_index =  playersIndex.get(q+1);
                         int nextMove = 0;
                         for (int k=0; k<colors.size(); k++){
