@@ -1501,8 +1501,8 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue()!=null){
                     GameData gameData = dataSnapshot.getValue(GameData.class);
-                    Log.i(TAG, gameData.toString());
                     if (mMyPlayerID==turn){
+                        Log.i(TAG, "My Turn: " +  gameData.toString());
                         mDatabaseReference.child(PREVTURN).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -2741,9 +2741,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void viewAndMove() {
+        Log.i(TAG, "IsDataPushed: " + mIsDataPushed);
         if (!mIsDataPushed) {
             mCurrentPlayerNumber = gameBroad.getPlayers().size();
-            System.out.println("mCountSetup: " + mCountSetUp +  " mSecondCount: " + mSecondCount + " mThirdCount: " + mThirdCount);
+            System.out.println("mCountSetup: " + mCountSetUp +  " mSecondCount: " + mSecondCount + " mThirdCount: " + mThirdCount + " mFourthCount: " + mFourthCount);
             if (mFourthCount==0){
                 if (mCountSetUp<2 && !mIsChiefSelected){
                     if (mCountSetUp == 0) {
@@ -2845,7 +2846,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     if (mCountSetUp % 2 == 0  && mCountSetUp<mCurrentPlayerNumber*2) {
                         System.out.println("Selecting Room");
-                        playersIndex.add(i);
+//                        playersIndex.add(i);
                         String playerColor = gameBroad.getPlayers().get(i).getColor();
                         String message = gameBroad.getPlayers().get(i) + " please select your room to move to";
                         ArrayList rooms = (ArrayList<Room>) gameBroad.getRooms();
@@ -2857,7 +2858,7 @@ public class MainActivity extends AppCompatActivity {
                         overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
                     }
                     if (mCountSetUp % 2 == 1 && mCountSetUp<mCurrentPlayerNumber*2) {
-                        roomspicked.add(mCurrentRoomPickedNumber);
+//                        roomspicked.add(mCurrentRoomPickedNumber);
                         ++mCountSetUp;
                         int z = 0;
                         if (i+1 < mCurrentPlayerNumber){
@@ -2871,17 +2872,19 @@ public class MainActivity extends AppCompatActivity {
                                 nextMove = k;
                             }
                         }
+                        mIsDataPushed = true;
                         GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                         mDatabaseReference.child(INDEXS).push().setValue(i);
                         mDatabaseReference.child(GAMEDATA).setValue(gameData);
                         mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
                         mDatabaseReference.child(ROOMS).push().setValue(mCurrentRoomPickedNumber);
+                        mFourthCount++;
                         if (mCountSetUp==mCurrentPlayerNumber*2){
                             mDatabaseReference.child(TURN).setValue(-1);
                         } else {
                             mDatabaseReference.child(TURN).setValue(nextMove);
                         }
-                        mIsDataPushed = true;
+
                     }
                 }
             }
