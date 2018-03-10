@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/activity_chat"
-    android:layout_margin="5dp"
+    android:padding="15dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <android.support.design.widget.FloatingActionButton
@@ -27,7 +27,6 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Input"
             android:id="@+id/input"
             />
     </android.support.design.widget.TextInputLayout>

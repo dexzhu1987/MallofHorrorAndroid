@@ -4391,6 +4391,7 @@ public class MainActivity extends AppCompatActivity {
         View chatLayout = inflater.inflate(R.layout.chat_layout, null);
         AlertDialog.Builder chatbox = new AlertDialog.Builder(this);
 
+
         FloatingActionButton fab = chatLayout.findViewById(R.id.fab);
 
         fab.setOnClickListener(new View.OnClickListener() {
