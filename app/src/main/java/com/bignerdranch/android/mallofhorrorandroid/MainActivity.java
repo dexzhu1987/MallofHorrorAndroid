@@ -4412,7 +4412,6 @@ public class MainActivity extends AppCompatActivity {
                         .setValue(new ChatMessage(input.getText().toString(),
                                 mUserName)
                         );
-
                 // Clear the input
                 input.setText("");
             }
@@ -4422,7 +4421,9 @@ public class MainActivity extends AppCompatActivity {
         listOfMessages.setAdapter(adapter);
 
         chatbox.setView(chatLayout);
-        chatbox.show();
+        AlertDialog dialog = chatbox.create();
+        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogTheme;
+        dialog.show();
     }
 
     private void displayMessage() {
