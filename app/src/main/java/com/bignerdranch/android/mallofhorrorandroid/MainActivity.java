@@ -2009,9 +2009,7 @@ public class MainActivity extends AppCompatActivity {
                 GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                 mDatabaseReference.child(GAMEDATA).setValue(gameData);
                 mDatabaseReference.child(TURN).setValue(-5);
-                if (mMyPlayerID==puttingiD){
-                    mDatabaseReference.child(VICTIMCOLOR).setValue(mCurrentVictim.getColor());
-                }
+                mDatabaseReference.child(VICTIMCOLOR).setValue(mCurrentVictim.getColor());
             }
         },DELAYEDSECONDSFORMESSAGEVIE*1000);
     }
@@ -2095,6 +2093,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot!=null){
+                    Log.i(TAG, "victim color: " + dataSnapshot.getValue());
                     String victimColor = dataSnapshot.getValue().toString();
                     for (int i=0; i<gameBroad.getPlayers().size(); i++){
                         if (victimColor.equalsIgnoreCase(gameBroad.getPlayers().get(i).getColor())){
