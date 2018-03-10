@@ -1,23 +1,30 @@
 package com.bignerdranch.android.mallofhorrorandroid;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
+import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.Game;
@@ -35,10 +42,14 @@ import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.Sprin
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.Threat;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Playable.Playable;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Room.Room;
+import com.firebase.ui.database.FirebaseListAdapter;
+import com.firebase.ui.database.FirebaseListOptions;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -168,8 +179,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         gettingReady();
         updateRoom(MainActivity.this);
-    }
 
+        displayMessage();
+    }
 
     @Override
     protected void onResume() {
@@ -3975,4 +3987,106 @@ public class MainActivity extends AppCompatActivity {
         _idleHandler.removeCallbacks(_idleRunnable);
         _idleHandler.postDelayed(_idleRunnable, (delayMinutes * 1000 * 60));
     }
+
+    FirebaseListAdapter<ChatMessage> adapter;
+
+    public void open_chat(View view) {
+        LayoutInflater inflater = getLayoutInflater();
+        View chatLayout = inflater.inflate(R.layout.chat_layout, null);
+        AlertDialog.Builder chatbox = new AlertDialog.Builder(this);
+
+        FloatingActionButton fab = chatLayout.findViewById(R.id.fab);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EditText input = (EditText)chatLayout.findViewById(R.id.input);
+
+                // Read the input field and push a new instance
+                // of ChatMessage to the Firebase database
+                FirebaseDatabase.getInstance()
+                        .getReference()
+                        .child("chats")
+                        .push()
+                        .setValue(new ChatMessage(input.getText().toString(),
+                                mUserName)
+                        );
+
+                // Clear the input
+                input.setText("");
+            }
+        });
+
+
+        ListView listOfMessages = chatLayout.findViewById(R.id.list_of_messages);
+
+//        Query query = FirebaseDatabase.getInstance().getReference().child("chats");
+//        FirebaseListOptions<ChatMessage> options = new FirebaseListOptions.Builder<ChatMessage>()
+//                .setQuery(query, ChatMessage.class)
+//                .setLayout(R.layout.message)
+//                .build();
+
+//        adapter = new FirebaseListAdapter<ChatMessage>(options) {
+//            @Override
+//            protected void populateView(View v, ChatMessage model, int position) {
+//                // Get references to the views of message.xml
+//                TextView messageText = (TextView)v.findViewById(R.id.message_text);
+//                TextView messageUser = (TextView)v.findViewById(R.id.message_user);
+//                TextView messageTime = (TextView)v.findViewById(R.id.message_time);
+//
+//                // Set their text
+//                messageText.setText(model.getMessageText());
+//                messageUser.setText(model.getMessageUser());
+//
+//                // Format the date before showing it
+//                messageTime.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)",
+//                        model.getMessageTime()));
+//            }
+//        };
+
+        listOfMessages.setAdapter(adapter);
+
+        chatbox.setView(chatLayout);
+        chatbox.show();
+    }
+
+    private void displayMessage() {
+        Query query = FirebaseDatabase.getInstance().getReference().child("chats");
+        FirebaseListOptions<ChatMessage> options = new FirebaseListOptions.Builder<ChatMessage>()
+                .setQuery(query, ChatMessage.class)
+                .setLayout(R.layout.message)
+                .build();
+        adapter = new FirebaseListAdapter<ChatMessage>(options) {
+            @Override
+            protected void populateView(View v, ChatMessage model, int position) {
+                // Get references to the views of message.xml
+                TextView messageText = (TextView)v.findViewById(R.id.message_text);
+                TextView messageUser = (TextView)v.findViewById(R.id.message_user);
+                TextView messageTime = (TextView)v.findViewById(R.id.message_time);
+
+                // Set their text
+                messageText.setText(model.getMessageText());
+                messageUser.setText(model.getMessageUser());
+
+                // Format the date before showing it
+                messageTime.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)",
+                        model.getMessageTime()));
+            }
+        };
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        adapter.startListening();
+    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        adapter.stopListening();
+    }
+
+
 }

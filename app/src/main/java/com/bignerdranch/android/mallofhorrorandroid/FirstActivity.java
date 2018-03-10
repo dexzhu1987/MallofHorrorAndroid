@@ -302,8 +302,8 @@ public class FirstActivity extends AppCompatActivity {
 
             }
         });
-        AlertDialog dialog = alert.create();
-        dialog.show();
+//        AlertDialog dialog = alert.create();
+        alert.show();
     }
 
     private void blinkText(){
