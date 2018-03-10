@@ -198,13 +198,17 @@ public class MainActivity extends AppCompatActivity {
         adapter.startListening();
     }
 
-
     @Override
     protected void onStop() {
         super.onStop();
         adapter.stopListening();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        FirebaseDatabase.getInstance().getReference().child("chats").setValue(null);
+    }
 
     private void gettingReady() {
         mPlayerNumber = getIntent().getIntExtra(PLAYER_NUMBER,0);
