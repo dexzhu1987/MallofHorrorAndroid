@@ -1584,8 +1584,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             },DELAYEDSECONDSFORMESSAGEVIE*1000);
         } else if (theCurrentRoom.isFallen() && theCurrentRoom.getRoomNum()!=4) {
-            mSixCount++;
             if (mSecondCount==0){
+                mSixCount++;
                 messageViewInformItemCanbeUsed(theCurrentRoom);
             } else if (mSecondCount==1 && mCountSetUp==0){
                 messageViewInformIsItemUsing (theCurrentRoom);
@@ -1775,57 +1775,28 @@ public class MainActivity extends AppCompatActivity {
             if (mCurrentSelectedItem.getItemNum()==3){
                 disableContinue();
                 mMessageView.setText(prevPlayer + " used Axe, one zombie has been killed");
-                mMessageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        theCurrentRoom.zombieKilled();
-                    }
-                });
+                theCurrentRoom.zombieKilled();
             }
             if (mCurrentSelectedItem.getItemNum()==4){
-                disableContinue();
                 mMessageView.setText(prevPlayer + " used Shotgun, two zombie has been killed");
-                mMessageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        theCurrentRoom.zombieKilled();
-                        theCurrentRoom.zombieKilled();
-                    }
-                });
+                theCurrentRoom.zombieKilled();
+                theCurrentRoom.zombieKilled();
             }
             if (mCurrentSelectedItem.getItemNum()==5){
-                disableContinue();
                 mMessageView.setText(prevPlayer + " used Hareware, one zombie has been temporary block");
-                mMessageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        theCurrentRoom.zombieKilled();
-                    }
-                });
+                theCurrentRoom.zombieKilled();
                 mUsedItem.add(mCurrentSelectedItem);
                 mPlayersUsedItem.add(prevPlayer);
             }
             if (mCurrentSelectedItem.getItemNum()==6){
-                disableContinue();
                 mMessageView.setText(prevPlayer + " used Hidden, his/her" + mCurrentSelectedItem.getAffectedGameCharacter() + " is hiding in the room");
-                mMessageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        theCurrentRoom.leave(gameBroad.matchGameCharacter(prevPlayer,mCurrentSelectedItem.getAffectedGameCharacter().getName()));
-                    }
-                });
+                theCurrentRoom.leave(gameBroad.matchGameCharacter(prevPlayer,mCurrentSelectedItem.getAffectedGameCharacter().getName()));
                 mUsedItem.add(mCurrentSelectedItem);
                 mPlayersUsedItem.add(prevPlayer);
             }
             if (mCurrentSelectedItem.getItemNum()==7){
-                disableContinue();
                 mMessageView.setText(prevPlayer + " used Sprint, his/her" + mCurrentSelectedItem.getAffectedGameCharacter() + " has left the room");
-                mMessageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        theCurrentRoom.leave(gameBroad.matchGameCharacter(prevPlayer,mCurrentSelectedItem.getAffectedGameCharacter().getName()));
-                    }
-                });
+                theCurrentRoom.leave(gameBroad.matchGameCharacter(prevPlayer,mCurrentSelectedItem.getAffectedGameCharacter().getName()));
                 mUsedItem.add(mCurrentSelectedItem);
                 mPlayersUsedItem.add(prevPlayer);
             }
@@ -1852,7 +1823,7 @@ public class MainActivity extends AppCompatActivity {
                 mCountSetUp++;
                 int nextMove = 0;
                 if (mCountSetUp==playersInTheRoomList.size()*2){
-                    nextMove = -1;
+                    nextMove = -2;
                 } else {
                     for (int i=0; i<colors.size(); i++){
                         if (mCurrentTeam.get(gameData.getmPrevICount()+1).getColor().equalsIgnoreCase(colors.get(i))) {
@@ -1865,7 +1836,7 @@ public class MainActivity extends AppCompatActivity {
                 mDatabaseReference.child(TURN).setValue(nextMove);
                 mDatabaseReference.child(PREVTURN).setValue(-1);
             }
-        },DELAYEDSECONDSFORMESSAGEVIE*1000);
+        },DELAYEDSECONDSFOROPTIONSCHOSEN*1000);
     }
 
     private void messageViewInformCurrentIsStillFallenAfterItemUsed(Room theCurrentRoom) {
