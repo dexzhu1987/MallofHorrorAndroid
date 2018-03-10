@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Playable> mCurrentTeam = new ArrayList<>();
 
 
-    private ViewGroup mMainActivityLayout;
+    private ConstraintLayout mMainActivityLayout;
     private ImageButton mRedButton, mYellowButton, mBlueButton, mGreenButton, mBrownButton, mBlackButton;
     private ImageButton mContinueButton;
     private ImageButton mYesButton, mNoButton;
@@ -1246,7 +1246,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     int chiefElection = roomspicked.get(0);
                     Room roomName = gameBroad.matchRoom(chiefElection);
-                    mMessageView.setText("After reviewing the security cameara, chief will move to " + roomName.getRoomNum() + ": " + roomName.getName());
+                    mMessageView.setText("After reviewing the security cameara, chief will move to Room " + roomName.getRoomNum() + ": " + roomName.getName());
                     Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         @Override
@@ -1864,7 +1864,7 @@ public class MainActivity extends AppCompatActivity {
                     mDatabaseReference.child(GAMEDATA).setValue(gameData);
                     mDatabaseReference.child(TURN).setValue(-20);
                 }
-            },DELAYEDSECONDSFORMESSAGEVIE*1000);
+            },DELAYEDSECONDSFOROPTIONSCHOSEN*1000);
         }else {
             mMessageView.setText(theCurrentRoom.getName() +  " is not fallen after item used");
             Handler handler = new Handler();
@@ -1879,7 +1879,7 @@ public class MainActivity extends AppCompatActivity {
                     mDatabaseReference.child(GAMEDATA).setValue(gameData);
                     mDatabaseReference.child(TURN).setValue(-20);
                 }
-            },DELAYEDSECONDSFORMESSAGEVIE*1000);
+            },DELAYEDSECONDSFOROPTIONSCHOSEN*1000);
             System.out.println("Not fallen after the item used");
         }
     }
@@ -1907,8 +1907,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void messageViewInformFallenRoomTeamMembers(Room theCurrrentRoom) {
-        mDatabaseReference.child(VICTIMCOLOR).setValue(null);
-        mDatabaseReference.child(DEATHCHARACTER).setValue(null);
         HashSet<Playable> searchteam = gameBroad.WhoCan(gameBroad.matchRoom(theCurrrentRoom.getRoomNum()).existCharacterColor());
         List<Playable> searchTeam = new ArrayList<>();
         for (Playable player : searchteam) {
@@ -1988,12 +1986,10 @@ public class MainActivity extends AppCompatActivity {
                     return o1.getColor().compareTo(o2.getColor());
                 }
             });
-            if (mMyPlayerID==deterId){
-                Random generator = new Random();
-                int num = generator.nextInt(mCurrentTeam.size());
-                mCurrentVictim = mCurrentTeam.get(num);
-                mMessageView.setText("Result is TIE. " + "The system will ramdomly select a victim in the team");
-            }
+            Random generator = new Random();
+            int num = generator.nextInt(mCurrentTeam.size());
+            mCurrentVictim = mCurrentTeam.get(num);
+            mMessageView.setText("Result is TIE. " + "The system will ramdomly select a victim in the team");
         } else {
             System.out.println("Loser determined");
             String losercolor = gameBroad.matchRoom(roomNumber).winner();
@@ -3347,10 +3343,10 @@ public class MainActivity extends AppCompatActivity {
                         String playercolor = teammember.getColor();
                         String message = "";
                         if (gameBroad.matchPlayer(givecolor).getCurrentItem().size()<6){
-                            message = "You received " + itemgiveselect;
+                            message = "You received " + itemgiveselect.getName();
                             teammember.getItem(itemgiveselect);
                         } else {
-                            message = "You should have received " + itemgiveselect + ". Howver, due to your bag is full. You cannot carry more items.";
+                            message = "You should have received " + itemgiveselect.getName() + ". Howver, due to your bag is full. You cannot carry more items.";
                         }
                         ArrayList<Item> items = (ArrayList<Item>) teammember.getCurrentItem();
                         Intent intent = PlayerActivity.newMessageIntent(MainActivity.this,rooms,playercolor,items,message,mCountSetUp,3);
