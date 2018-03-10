@@ -192,6 +192,20 @@ public class MainActivity extends AppCompatActivity {
         updateRoom(MainActivity.this);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        adapter.startListening();
+    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        adapter.stopListening();
+    }
+
+
     private void gettingReady() {
         mPlayerNumber = getIntent().getIntExtra(PLAYER_NUMBER,0);
         gameBroad.setPlayersNumber(mPlayerNumber);
@@ -4458,18 +4472,6 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        adapter.startListening();
-    }
-
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        adapter.stopListening();
-    }
 
 
 }
