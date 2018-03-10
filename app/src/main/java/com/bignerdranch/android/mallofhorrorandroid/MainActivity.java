@@ -1366,7 +1366,7 @@ public class MainActivity extends AppCompatActivity {
                     message += "\nPlayer " + gameBroad.getPlayers().get(playersIndex.get(i)).getColor() + " to Room " + roomspicked.get(i) ;
                 }
                 Log.i(TAG,"message: " +  message);
-                mMessageView.setText("Player Choises are: " + message);
+                mMessageView.setText("Players' Choises are: " + message);
                 Handler handler1 = new Handler();
                 handler1.postDelayed(new Runnable() {
                     @Override
@@ -1383,7 +1383,7 @@ public class MainActivity extends AppCompatActivity {
                         mDatabaseReference.child(GAMEDATA).setValue(gameData);
                         mDatabaseReference.child(TURN).setValue(nextMove);
                     }
-                },15*1000);
+                },10*1000);
             }
         },DELAYEDSECONDSFORMESSAGEVIE * 1000);
     }
@@ -1961,7 +1961,7 @@ public class MainActivity extends AppCompatActivity {
                     mDatabaseReference.child(TURN).setValue(firstSearch);
                 }
             }
-        },DELAYEDSECONDSFORMESSAGEVIE * 1000);
+        },DELAYEDSECONDSFORLONGMESSAGE * 1000);
     }
 
     private void messageViewInformTieorLoserForFallenRoom( int roomNumber) {
@@ -2069,16 +2069,23 @@ public class MainActivity extends AppCompatActivity {
                 });
 
                 mMessageView.setText("Victim is " + mCurrentVictim);
-                mSecondCount=5;
-                int nextMove = 0;
-                for (int i=0; i<colors.size(); i++){
-                    if (mCurrentVictim.getColor().equalsIgnoreCase(colors.get(i))){
-                        nextMove = i;
+                Handler handler1 = new Handler();
+                handler1.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mSecondCount=5;
+                        int nextMove = 0;
+                        for (int i=0; i<colors.size(); i++){
+                            if (mCurrentVictim.getColor().equalsIgnoreCase(colors.get(i))){
+                                nextMove = i;
+                            }
+                        }
+                        GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                        mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                        mDatabaseReference.child(TURN).setValue(nextMove);
                     }
-                }
-                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                mDatabaseReference.child(TURN).setValue(nextMove);
+                },DELAYEDSECONDSFORLONGMESSAGE * 1000);
+
             }
         },DELAYEDSECONDSFORMESSAGEVIE * 1000);
 
@@ -2266,7 +2273,7 @@ public class MainActivity extends AppCompatActivity {
                     mThirdCount=0;
                     GameData gameData = new GameData(mCountPhase,mCountSetUp, mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                     mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                    mDatabaseReference.child(TURN).setValue(-20);
+                    mDatabaseReference.child(TURN).setValue(-40);
                 }
             },DELAYEDSECONDSFORMESSAGEVIE*1000);
         }
