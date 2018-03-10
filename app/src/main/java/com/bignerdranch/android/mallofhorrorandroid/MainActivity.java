@@ -4419,33 +4419,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         ListView listOfMessages = chatLayout.findViewById(R.id.list_of_messages);
-
-//        Query query = FirebaseDatabase.getInstance().getReference().child("chats");
-//        FirebaseListOptions<ChatMessage> options = new FirebaseListOptions.Builder<ChatMessage>()
-//                .setQuery(query, ChatMessage.class)
-//                .setLayout(R.layout.message)
-//                .build();
-
-//        adapter = new FirebaseListAdapter<ChatMessage>(options) {
-//            @Override
-//            protected void populateView(View v, ChatMessage model, int position) {
-//                // Get references to the views of message.xml
-//                TextView messageText = (TextView)v.findViewById(R.id.message_text);
-//                TextView messageUser = (TextView)v.findViewById(R.id.message_user);
-//                TextView messageTime = (TextView)v.findViewById(R.id.message_time);
-//
-//                // Set their text
-//                messageText.setText(model.getMessageText());
-//                messageUser.setText(model.getMessageUser());
-//
-//                // Format the date before showing it
-//                messageTime.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)",
-//                        model.getMessageTime()));
-//            }
-//        };
-
         listOfMessages.setAdapter(adapter);
 
         chatbox.setView(chatLayout);
