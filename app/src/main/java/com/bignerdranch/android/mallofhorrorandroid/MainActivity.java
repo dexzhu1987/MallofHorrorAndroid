@@ -1907,6 +1907,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void messageViewInformFallenRoomTeamMembers(Room theCurrrentRoom) {
+        mDatabaseReference.child(VICTIMCOLOR).setValue(null);
+        mDatabaseReference.child(DEATHCHARACTER).setValue(null);
         HashSet<Playable> searchteam = gameBroad.WhoCan(gameBroad.matchRoom(theCurrrentRoom.getRoomNum()).existCharacterColor());
         List<Playable> searchTeam = new ArrayList<>();
         for (Playable player : searchteam) {
@@ -1962,6 +1964,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void messageViewInformTieorLoserForFallenRoom( int roomNumber) {
         disableContinue();
+
         mMessageView.setVisibility(View.VISIBLE);
         mMessageView.setEnabled(false);
         HashSet<Playable> searchteam = gameBroad.WhoCan(gameBroad.matchRoom(roomNumber).existCharacterColor());
@@ -2356,8 +2359,6 @@ public class MainActivity extends AppCompatActivity {
         mDatabaseReference.child(ISCHIEFELECTED).setValue(null);
         mDatabaseReference.child(INDEXS).setValue(null);
         mDatabaseReference.child(ROOMS).setValue(null);
-        mDatabaseReference.child(VICTIMCOLOR).setValue(null);
-        mDatabaseReference.child(DEATHCHARACTER).setValue(null);
         mDatabaseReference.child(PLAYERBOOLEANANSWERS).setValue(null);
         mPlayersUsedItem.clear();
         ;
@@ -2421,8 +2422,6 @@ public class MainActivity extends AppCompatActivity {
                         mDatabaseReference.child(ISCHIEFELECTED).setValue(null);
                         mDatabaseReference.child(INDEXS).setValue(null);
                         mDatabaseReference.child(ROOMS).setValue(null);
-                        mDatabaseReference.child(VICTIMCOLOR).setValue(null);
-                        mDatabaseReference.child(DEATHCHARACTER).setValue(null);
                         mDatabaseReference.child(PLAYERBOOLEANANSWERS).setValue(null);
                         mDatabaseReference.child(ZOMBIEROOMS).setValue(null);
                         GameData gameData = new GameData(mCountPhase, mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
@@ -3961,6 +3960,7 @@ public class MainActivity extends AppCompatActivity {
                             playable.usedItem(mCurrentSelectedItem);
                         }
                         System.out.println("putting item into Firebase");
+                        Log.i(TAG, "item: " + mCurrentSelectedItem);
                         int itemNumber =  mCurrentSelectedItem.getItemNum();
                         int afterRoomNumber = mCurrentSelectedItem.getAfteraffectedRoomNumber();
                         String characterName =  mCurrentSelectedItem.getAffectedGameCharacter().getName();

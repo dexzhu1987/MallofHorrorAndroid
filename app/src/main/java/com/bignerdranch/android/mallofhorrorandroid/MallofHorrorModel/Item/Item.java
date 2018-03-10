@@ -149,7 +149,9 @@ public abstract class Item implements Parcelable,Serializable {
 
     @Override
     public String toString() {
-        return name ;
+        return  itemNum +  " name: " + name +  " currentAffectedRoom: " +  currentaffectedRoomNumber +
+                 " affectedGameCharacter: " +  affectedGameCharacter +
+                 " afterAffectedRoomNumber" + afteraffectedRoomNumber   ;
     }
 
     /**
@@ -166,4 +168,6 @@ public abstract class Item implements Parcelable,Serializable {
      */
     public void afterEffect(GameBroad gameBroad){
     }
+
+
 }
