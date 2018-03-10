@@ -79,6 +79,7 @@ public class FirstActivity extends AppCompatActivity {
 //        overridePendingTransition(android.support.v7.appcompat.R.anim.abc_grow_fade_in_from_bottom,android.support.v7.appcompat.R.anim.abc_shrink_fade_out_from_bottom );
 
         MediaPlayer ring= MediaPlayer.create(FirstActivity.this,R.raw.the_walking_dead);
+//        ring.setLooping(true);
         ring.start();
 
         firstActivity = FirstActivity.this;
@@ -270,6 +271,7 @@ public class FirstActivity extends AppCompatActivity {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
         SeekBar mSoundBar = alertLayout.findViewById(R.id.sound_seekbar);
+        ImageButton sound_off_btn = alertLayout.findViewById(R.id.sound_off_btn);
 //        TextView mSeekBar_Value = alertLayout.findViewById(R.id.seekbar_value);
 //        mSeekBar_Value.setText("0");
 
@@ -305,8 +307,9 @@ public class FirstActivity extends AppCompatActivity {
 
             }
         });
-//        AlertDialog dialog = alert.create();
-        alert.show();
+        AlertDialog dialog = alert.create();
+        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogTheme;
+        dialog.show();
     }
 
     private void blinkText(){

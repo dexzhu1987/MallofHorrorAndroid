@@ -20,9 +20,10 @@
         android:gravity="center">
 
         <ImageButton
+            android:id="@+id/sound_off_btn"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:background="@drawable/btn_setting_sound"/>
+            android:background="@drawable/btn_setting_sound" />
 
         <SeekBar
             android:id="@+id/sound_seekbar"
