@@ -81,6 +81,8 @@ public class FirstActivity extends AppCompatActivity {
         MediaPlayer ring= MediaPlayer.create(FirstActivity.this,R.raw.the_walking_dead);
 //        ring.setLooping(true);
         ring.start();
+//        ring.setLooping(true);
+
 
         firstActivity = FirstActivity.this;
         blinkText();
