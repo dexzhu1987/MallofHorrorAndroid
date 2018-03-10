@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
@@ -77,6 +78,8 @@ public class FirstActivity extends AppCompatActivity {
 
 //        overridePendingTransition(android.support.v7.appcompat.R.anim.abc_grow_fade_in_from_bottom,android.support.v7.appcompat.R.anim.abc_shrink_fade_out_from_bottom );
 
+        MediaPlayer ring= MediaPlayer.create(FirstActivity.this,R.raw.the_walking_dead);
+        ring.start();
 
         firstActivity = FirstActivity.this;
         blinkText();
