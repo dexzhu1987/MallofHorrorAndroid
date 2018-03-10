@@ -101,6 +101,8 @@ public class MainActivity extends AppCompatActivity {
 
     private final int DELAYEDSECONDSFORMESSAGEVIE = 3;
     private final int DELAYEDSECONDSFOROPTIONSCHOSEN = 10;
+    private final int DELAYEDSECONDSFORLONGMESSAGE = 5;
+
 
     private DatabaseReference mDatabaseReference;
     private Game mDatabaseGame;
@@ -1774,6 +1776,7 @@ public class MainActivity extends AppCompatActivity {
             String characterName = gameData.getmAffectedGameCharacter();
             GameCharacter affectedCharacter = gameBroad.matchGameCharacter(prevPlayer,characterName);
             mCurrentSelectedItem.setAfteraffectedRoomNumber(gameData.getmAfterAffectedRoomNumber());
+            Log.i (TAG, " AfterAffectedRoomNumber From Data: " + gameData.getmAfterAffectedRoomNumber());
             if (gameData.getmAffectedGameCharacter()!=null){
                 mCurrentSelectedItem.setAffectedGameCharacter(affectedCharacter);
             }
@@ -1812,8 +1815,9 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Log.i(TAG,"item used: " + mUsedItem + "player used " + mPlayersUsedItem);
+                Log.i(TAG,"item used: " + mUsedItem + " player used " + mPlayersUsedItem);
                 mMessageView.setVisibility(View.INVISIBLE);
+                otherCommonSetUp();
                 HashSet<Playable> playersInTheRoom = gameBroad.WhoCan(theCurrentRoom.existCharacterColor());
                 List<Playable> playersInTheRoomList = new ArrayList<>();
                 for (Playable player : playersInTheRoom) {
@@ -2426,7 +2430,7 @@ public class MainActivity extends AppCompatActivity {
                         mDatabaseReference.child(PREVTURN).setValue(-1);
 
                     }
-                }, DELAYEDSECONDSFORMESSAGEVIE * 1000);
+                }, DELAYEDSECONDSFORLONGMESSAGE * 1000);
 
 
             }
@@ -2584,6 +2588,8 @@ public class MainActivity extends AppCompatActivity {
                 gameBroad.matchRoom(gameData.getSelectedRoomPhaseFive()).enter(selectedCharacter2);
             }
         }
+        updateRoom(MainActivity.this);
+        mMainActivityLayout.invalidate();
     }
 
     private void continueButtonMethod() {
@@ -3001,7 +3007,7 @@ public class MainActivity extends AppCompatActivity {
                 ArrayList rooms = (ArrayList<Room>)gameBroad.getRooms();
                 String playercolor = gameBroad.getPlayers().get(i).getColor();
                 Item starterItem = gameBroad.getItemDeck().deal();
-                String message = gameBroad.getPlayers().get(i) +  " get " + starterItem;
+                String message = gameBroad.getPlayers().get(i) +  " get " + starterItem.getName();
                 gameBroad.getPlayers().get(i).getItem(starterItem);
                 ArrayList<Item> items = (ArrayList<Item>) gameBroad.getPlayers().get(i).getCurrentItem();
                 Intent intent = PlayerActivity.newMessageIntent(MainActivity.this,rooms,playercolor,items,message,mCountSetUp,3);

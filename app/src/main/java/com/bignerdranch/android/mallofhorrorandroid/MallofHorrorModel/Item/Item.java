@@ -151,7 +151,7 @@ public abstract class Item implements Parcelable,Serializable {
     public String toString() {
         return  itemNum +  " name: " + name +  " currentAffectedRoom: " +  currentaffectedRoomNumber +
                  " affectedGameCharacter: " +  affectedGameCharacter +
-                 " afterAffectedRoomNumber" + afteraffectedRoomNumber   ;
+                 " afterAffectedRoomNumber: " + afteraffectedRoomNumber   ;
     }
 
     /**
