@@ -385,6 +385,7 @@ public class MainActivity extends AppCompatActivity {
         if (mMyPlayerID!=mPlayerNumber-1){
             updateDataFromFireBase(0, gameData, mPlayerNumber-1);
         }
+        updateRoom(MainActivity.this);
         mMainActivityLayout.invalidate();
         mMessageView.setText("PRE-GAME SETTING PHASE TWO: GETTING STARTER ITEM");
         Handler handler = new Handler();
@@ -406,6 +407,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void messageViewInformMovetoParksearch() {
         disableContinue();
+        updateRoom(MainActivity.this);
         mMainActivityLayout.invalidate();
         mMessageView.setText("Game Phase I: Parking Search");
         Handler handler = new Handler();
@@ -425,6 +427,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void messageViewInformParkingIsEmptyandMovetoNextPhase() {
+        updateRoom(MainActivity.this);
         mMainActivityLayout.invalidate();
         mMessageView.setVisibility(View.VISIBLE);
         if (mSecondCount==0){
@@ -880,6 +883,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void messageViewInformSecurityIsEmptyandMovetoNextPhase() {
+        updateRoom(MainActivity.this);
         mMainActivityLayout.invalidate();
         mMessageView.setVisibility(View.VISIBLE);
         if (mSecondCount==0){
@@ -1400,6 +1404,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        updateRoom(MainActivity.this);
         mMainActivityLayout.invalidate();
         mMessageView.setVisibility(View.VISIBLE);
         mMessageView.setText("Game Phase IV: Zombies Revealed and Attacked");
@@ -1807,6 +1812,7 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                Log.i(TAG,"item used: " + mUsedItem + "player used " + mPlayersUsedItem);
                 mMessageView.setVisibility(View.INVISIBLE);
                 HashSet<Playable> playersInTheRoom = gameBroad.WhoCan(theCurrentRoom.existCharacterColor());
                 List<Playable> playersInTheRoomList = new ArrayList<>();
@@ -2159,6 +2165,7 @@ public class MainActivity extends AppCompatActivity {
                 theCurrentRoom.leave(deathCharacter);
                 theCurrentRoom.setCurrentZombienumber(0);
                 disableContinue();
+                updateRoom(MainActivity.this);
                 mMainActivityLayout.invalidate();
                 mMessageView.setText(mCurrentVictim + " has lost his/her " + deathCharacter.getName() +
                         "\nZombies have their feast, and returned back to somewhere else to find their next target! " +
@@ -2167,6 +2174,7 @@ public class MainActivity extends AppCompatActivity {
                 handler1.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        updateRoom(MainActivity.this);
                         mMainActivityLayout.invalidate();
                         if (theCurrentRoom.getRoomNum()==4){
                             mFourthCount=5;
@@ -2182,7 +2190,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 },DELAYEDSECONDSFORMESSAGEVIE * 1000);
             }
-        },DELAYEDSECONDSFORMESSAGEVIE*1000);
+        },DELAYEDSECONDSFOROPTIONSCHOSEN*1000);
     }
 
     private void messageViewDisplayItemAfterEffect(Room fallenRoom) {
@@ -2212,6 +2220,7 @@ public class MainActivity extends AppCompatActivity {
                         handler1.postDelayed(new Runnable() {
                             @Override
                             public void run() {
+                                updateRoom(MainActivity.this);
                                 mMainActivityLayout.invalidate();
                                 mSecondCount++;
                                 GameData gameData = new GameData(mCountPhase,mCountSetUp, mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
@@ -2228,6 +2237,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         mMessageView.setVisibility(View.INVISIBLE);
+                        updateRoom(MainActivity.this);
                         mMainActivityLayout.invalidate();
                         mFourthCount=5;
                         mCountSetUp=0;
@@ -2246,6 +2256,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     mMessageView.setVisibility(View.INVISIBLE);
+                    updateRoom(MainActivity.this);
                     mMainActivityLayout.invalidate();
                     mFourthCount=5;
                     mCountSetUp=0;
@@ -2281,6 +2292,7 @@ public class MainActivity extends AppCompatActivity {
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        updateRoom(MainActivity.this);
                         mMainActivityLayout.invalidate();
                         mSecondCount++;
                         GameData gameData = new GameData(mCountPhase,mCountSetUp, mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
@@ -2298,6 +2310,7 @@ public class MainActivity extends AppCompatActivity {
                             gameBroad.getPlayers().remove(player);
                         }
                         mMessageView.setVisibility(View.INVISIBLE);
+                        updateRoom(MainActivity.this);
                         mMainActivityLayout.invalidate();
                         mFourthCount=6;
                         mCountSetUp=0;
@@ -2315,6 +2328,7 @@ public class MainActivity extends AppCompatActivity {
             handler1.postDelayed(new Runnable() {
                 @Override
                 public void run() {
+                    updateRoom(MainActivity.this);
                     mMessageView.setVisibility(View.INVISIBLE);
                     mMainActivityLayout.invalidate();
                     mFourthCount=6;
