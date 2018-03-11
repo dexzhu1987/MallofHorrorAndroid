@@ -20,6 +20,7 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
@@ -4413,6 +4414,7 @@ public class MainActivity extends AppCompatActivity {
     FirebaseListAdapter<ChatMessage> adapter;
 
     public void open_chat(View view) {
+
         LayoutInflater inflater = getLayoutInflater();
         View chatLayout = inflater.inflate(R.layout.chat_layout, null);
         AlertDialog.Builder chatbox = new AlertDialog.Builder(this);
@@ -4472,7 +4474,6 @@ public class MainActivity extends AppCompatActivity {
             }
         };
     }
-
 
 
 }
