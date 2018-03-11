@@ -4412,8 +4412,7 @@ public class MainActivity extends AppCompatActivity {
 
         ListView listOfMessages = chatLayout.findViewById(R.id.list_of_messages);
         listOfMessages.setAdapter(adapter);
-        listOfMessages.setSelection(listOfMessages.getAdapter().getCount()-1);
-
+        
         chatbox.setView(chatLayout);
         AlertDialog dialog = chatbox.create();
         dialog.getWindow().getAttributes().windowAnimations = R.style.DialogTheme;
