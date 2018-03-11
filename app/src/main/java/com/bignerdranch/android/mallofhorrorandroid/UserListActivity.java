@@ -291,9 +291,14 @@ public class UserListActivity extends AppCompatActivity {
         }
     };
 
-
     private void delayedIdle(int delayMinutes) {
         _idleHandler.removeCallbacks(_idleRunnable);
         _idleHandler.postDelayed(_idleRunnable,(delayMinutes * 1000 * 60));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        _idleHandler.removeCallbacks(_idleRunnable);
     }
 }
