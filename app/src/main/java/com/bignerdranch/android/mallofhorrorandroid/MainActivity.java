@@ -127,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
     final static List<Item> items = new ArrayList<>();
     final static List<String> actualcolors= new ArrayList<>();
     private ArrayList<Playable> mCurrentTeam = new ArrayList<>();
+    private int originalTeamSize ;
 
 
     private ConstraintLayout mMainActivityLayout;
@@ -1616,11 +1617,19 @@ public class MainActivity extends AppCompatActivity {
             if (mSecondCount==0){
                 mSixCount++;
                 messageViewInformItemCanbeUsed(theCurrentRoom);
+                originalTeamSize = playersInTheRoomList.size();
+                mCurrentTeam = (ArrayList<Playable>) playersInTheRoomList;
+                Collections.sort(mCurrentTeam, new Comparator<Playable>() {
+                    @Override
+                    public int compare(Playable o1, Playable o2) {
+                        return o1.getColor().compareTo(o2.getColor());
+                    }
+                });
             } else if (mSecondCount==1 && mCountSetUp==0){
                 messageViewInformIsItemUsing (theCurrentRoom);
-            } else if (mCountSetUp>0 && mCountSetUp<playersInTheRoomList.size()*2){
+            } else if (mCountSetUp>0 && mCountSetUp< originalTeamSize *2){
                 messageViewInformWhatItemHasBeenUsed(gameData,theCurrentRoom);
-            } else if (mCountSetUp==playersInTheRoomList.size()*2){
+            } else if (mCountSetUp==originalTeamSize*2){
                 messageViewInformCurrentIsStillFallenAfterItemUsed(theCurrentRoom);
             }
         }
@@ -1774,18 +1783,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void messageViewInformWhatItemHasBeenUsed(GameData gameData,Room theCurrentRoom) {
-        HashSet<Playable> playersInTheRoom = gameBroad.WhoCan(theCurrentRoom.existCharacterColor());
-        List<Playable> playersInTheRoomList = new ArrayList<>();
-        for (Playable player : playersInTheRoom) {
-            playersInTheRoomList.add(player);
-        }
-        mCurrentTeam = (ArrayList<Playable>) playersInTheRoomList;
-        Collections.sort(mCurrentTeam, new Comparator<Playable>() {
-            @Override
-            public int compare(Playable o1, Playable o2) {
-                return o1.getColor().compareTo(o2.getColor());
-            }
-        });
         Playable prevPlayer = mCurrentTeam.get(gameData.getmPrevICount());
         boolean isItemUsed  = gameData.getmIsUsedItem();
         mMessageView.setVisibility(View.VISIBLE);
@@ -1832,6 +1829,8 @@ public class MainActivity extends AppCompatActivity {
                 mUsedItem.add(mCurrentSelectedItem);
                 mPlayersUsedItem.add(prevPlayer);
             }
+            updateRoom(MainActivity.this);
+            mMainActivityLayout.invalidate();
         } else {
             mMessageView.setText(prevPlayer + " did not use any item");
         }
@@ -1842,21 +1841,9 @@ public class MainActivity extends AppCompatActivity {
                 Log.i(TAG,"item used: " + mUsedItem + " player used " + mPlayersUsedItem);
                 mMessageView.setVisibility(View.INVISIBLE);
                 otherCommonSetUp();
-                HashSet<Playable> playersInTheRoom = gameBroad.WhoCan(theCurrentRoom.existCharacterColor());
-                List<Playable> playersInTheRoomList = new ArrayList<>();
-                for (Playable player : playersInTheRoom) {
-                    playersInTheRoomList.add(player);
-                }
-                mCurrentTeam = (ArrayList<Playable>) playersInTheRoomList;
-                Collections.sort(mCurrentTeam, new Comparator<Playable>() {
-                    @Override
-                    public int compare(Playable o1, Playable o2) {
-                        return o1.getColor().compareTo(o2.getColor());
-                    }
-                });
                 mCountSetUp++;
                 int nextMove = 0;
-                if (mCountSetUp==playersInTheRoomList.size()*2 || mCurrentTeam.size()==0){
+                if (mCountSetUp==originalTeamSize*2){
                     nextMove = -2;
                 } else {
                     for (int i=0; i<colors.size(); i++){
@@ -2056,29 +2043,30 @@ public class MainActivity extends AppCompatActivity {
             searchTeam.add(player);
         }
         mCurrentTeam = (ArrayList<Playable>) searchTeam;
+        mDatabaseReference.child(VICTIMCOLOR).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot!=null){
+                    String victimColor = dataSnapshot.getValue().toString();
+                    for (int i=0; i<gameBroad.getPlayers().size(); i++){
+                        if (victimColor.equalsIgnoreCase(gameBroad.getPlayers().get(i).getColor())){
+                            mCurrentVictim = gameBroad.getPlayers().get(i);
+                        }
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mDatabaseReference.child(VICTIMCOLOR).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot!=null){
-                            String victimColor = dataSnapshot.getValue().toString();
-                            for (int i=0; i<gameBroad.getPlayers().size(); i++){
-                                if (victimColor.equalsIgnoreCase(gameBroad.getPlayers().get(i).getColor())){
-                                    mCurrentVictim = gameBroad.getPlayers().get(i);
-                                }
-                            }
-                        }
 
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
                 mMessageView.setText("Victim is " + mCurrentVictim);
                 Handler handler1 = new Handler();
                 handler1.postDelayed(new Runnable() {
@@ -2302,6 +2290,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void messageViewInformPlayerHasNoCharacter() {
+        Log.i (TAG, "inform player has no character ");
         HashSet<Playable> removedPlayers = new HashSet<>();
         removedPlayers.clear();
         for (int i=0; i<gameBroad.getPlayers().size();i++) {
@@ -3993,7 +3982,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     if (mCountSetUp%2==1){
                         int i = mCountSetUp/2;
-                        if (mCurrentYesNo){
+                        if (mCurrentSelectedItem!=null){
                             Playable playable = mCurrentTeam.get(i);
                             playable.usedItem(mCurrentSelectedItem);
                         }
