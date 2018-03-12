@@ -1685,7 +1685,7 @@ public class MainActivity extends AppCompatActivity {
                 });
 
             }
-        },DELAYEDSECONDSFORMESSAGEVIE * 1000);
+        },DELAYEDSECONDSFOROPTIONSCHOSEN * 1000);
         System.out.println("Confirm if want to use item");
     }
 
@@ -1867,7 +1867,7 @@ public class MainActivity extends AppCompatActivity {
         mMessageView.setEnabled(false);
         mMessageView.setVisibility(View.VISIBLE);
         if (theCurrentRoom.isFallen()){
-            System.out.println("still fallen after the item used");
+            Log.i(TAG, "still fallen after item used");
             mMessageView.setText(theCurrentRoom.getName() +  " is still fallen after item used");
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
@@ -1885,6 +1885,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             },DELAYEDSECONDSFOROPTIONSCHOSEN*1000);
         }else {
+            Log.i(TAG, "not fallen after item used");
             mMessageView.setText(theCurrentRoom.getName() +  " is not fallen after item used");
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
@@ -2228,6 +2229,8 @@ public class MainActivity extends AppCompatActivity {
                             gameBroad.matchRoom(mUsedItem.get(mSecondCount).getAfteraffectedRoomNumber())
                                     .enter(gameBroad.matchGameCharacter(mPlayersUsedItem.get(mSecondCount), mUsedItem.get(mSecondCount).getAffectedGameCharacter().getName()));
                         }
+                        updateRoom(MainActivity.this);
+                        mMainActivityLayout.invalidate();
                         Handler handler1 = new Handler();
                         handler1.postDelayed(new Runnable() {
                             @Override
@@ -2331,7 +2334,6 @@ public class MainActivity extends AppCompatActivity {
                         for (Playable player: removedPlayers){
                             gameBroad.getPlayers().remove(player);
                         }
-                        mMessageView.setVisibility(View.INVISIBLE);
                         updateRoom(MainActivity.this);
                         mMainActivityLayout.invalidate();
                         mFourthCount=6;
@@ -2353,7 +2355,6 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     updateRoom(MainActivity.this);
-                    mMessageView.setVisibility(View.INVISIBLE);
                     mMainActivityLayout.invalidate();
                     mFourthCount=6;
                     mCountSetUp=0;
