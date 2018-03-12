@@ -349,6 +349,7 @@
         android:fontFamily="@font/digital"
         android:paddingBottom="10dp"
         android:paddingTop="10dp"
+        android:lineSpacingMultiplier="1.2"
         android:text="Loading Room Information"
         android:textAlignment="center"
         android:textColor="#00FE00"
