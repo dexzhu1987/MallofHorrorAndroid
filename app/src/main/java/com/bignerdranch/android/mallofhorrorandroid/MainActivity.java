@@ -1846,7 +1846,7 @@ public class MainActivity extends AppCompatActivity {
                   mMessageView.setText(prevPlayer +  " did not use any item");
                }
             }
-        },DELAYEDSECONDSFORLONGMESSAGE*1000);
+        },DELAYEDSECONDSFORMESSAGEVIE*1000);
         Handler handler1 =  new Handler();
         handler1.postDelayed(new Runnable() {
             @Override
@@ -3961,21 +3961,9 @@ public class MainActivity extends AppCompatActivity {
                 + mFourthCount + " mFifth Count: " + mFifthCount + " mSixth Count: " + mSixCount);
         if (mFifthCount<6 &&  mFourthCount>=2){
             final Room fallenRoom = gameBroad.matchRoom(mFifthCount+1);
-            HashSet<Playable> playersInTheRoom = gameBroad.WhoCan(fallenRoom.existCharacterColor());
-            List<Playable> playersInTheRoomList = new ArrayList<>();
-            for (Playable player : playersInTheRoom) {
-                playersInTheRoomList.add(player);
-            }
-            mCurrentTeam = (ArrayList<Playable>) playersInTheRoomList;
-            Collections.sort(mCurrentTeam, new Comparator<Playable>() {
-                @Override
-                public int compare(Playable o1, Playable o2) {
-                    return o1.getColor().compareTo(o2.getColor());
-                }
-            });
             System.out.println(fallenRoom.getName());
             if (mFourthCount==2){
-                if (mSecondCount==1 && mCountSetUp<playersInTheRoomList.size()*2){
+                if (mSecondCount==1 && mCountSetUp<originalTeamSize*2){
                     if (mCountSetUp%2==0){
                         System.out.println("using Item");
                         int i = mCountSetUp==0? 0: mCountSetUp/2;
