@@ -1856,7 +1856,7 @@ public class MainActivity extends AppCompatActivity {
                 });
                 mCountSetUp++;
                 int nextMove = 0;
-                if (mCountSetUp==playersInTheRoomList.size()*2){
+                if (mCountSetUp==playersInTheRoomList.size()*2 || mCurrentTeam.size()==0){
                     nextMove = -2;
                 } else {
                     for (int i=0; i<colors.size(); i++){

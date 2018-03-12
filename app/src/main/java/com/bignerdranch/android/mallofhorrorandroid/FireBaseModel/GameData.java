@@ -223,7 +223,7 @@ public class GameData {
         this.mIsUsedItem = mIsUsedItem;
         this.mItemNumber = mItemNumber;
         this.mAffectedGameCharacter = mAffectedGameCharacter;
-        this.mAffectedRoom = mAfterAffectedRoomNumber;
+        this.mAfterAffectedRoomNumber = mAfterAffectedRoomNumber;
         this.mPrevICount = mPrevICount;
     }
 
