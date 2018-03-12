@@ -4326,7 +4326,7 @@ public class MainActivity extends AppCompatActivity {
             mCurrentYesNo = PlayerActivity.choosedBoolean(data);
         }
     }
-    
+
     @Override
     public void onBackPressed() {
         Intent startMain = new Intent(Intent.ACTION_MAIN);
