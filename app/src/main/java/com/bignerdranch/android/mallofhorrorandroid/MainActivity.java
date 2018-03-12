@@ -316,6 +316,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     Log.i(TAG, "Turn value :  " + dataSnapshot.getValue());
                     if (dataSnapshot.getValue()!=null){
+                    disableContinue();
                     int turn = dataSnapshot.getValue(Integer.TYPE);
                     if(turn<0){
                         for (ImageButton imageButton: mPlayerButtons){
