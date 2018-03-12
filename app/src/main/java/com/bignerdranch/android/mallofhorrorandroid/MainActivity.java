@@ -1169,7 +1169,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 mMessageView.setVisibility(View.INVISIBLE);
-                enableContinue();
                 mCountPhase=5;
                 mCountSetUp=0;
                 mSecondCount=0;
@@ -1787,58 +1786,67 @@ public class MainActivity extends AppCompatActivity {
 
     private void messageViewInformWhatItemHasBeenUsed(GameData gameData,Room theCurrentRoom) {
         Playable prevPlayer = mCurrentTeam.get(gameData.getmPrevICount());
-        boolean isItemUsed  = gameData.getmIsUsedItem();
+        final boolean isItemUsed  = gameData.getmIsUsedItem();
         mMessageView.setVisibility(View.VISIBLE);
+        mMessageView.setText("Loading Information");
         mMessageView.setEnabled(false);
-        if (isItemUsed){
+        if (isItemUsed) {
             int itemNumber = gameData.getItemNumber();
-            for (int i=0; i<items.size(); i++){
-                if (itemNumber==items.get(i).getItemNum()){
+            for (int i = 0; i < items.size(); i++) {
+                if (itemNumber == items.get(i).getItemNum()) {
                     mCurrentSelectedItem = items.get(i);
                 }
             }
             String characterName = gameData.getmAffectedGameCharacter();
-            GameCharacter affectedCharacter = gameBroad.matchGameCharacter(prevPlayer,characterName);
+            GameCharacter affectedCharacter = gameBroad.matchGameCharacter(prevPlayer, characterName);
             mCurrentSelectedItem.setAfteraffectedRoomNumber(gameData.getmAfterAffectedRoomNumber());
-            Log.i (TAG, " AfterAffectedRoomNumber From Data: " + gameData.getmAfterAffectedRoomNumber());
-            if (gameData.getmAffectedGameCharacter()!=null){
+            Log.i(TAG, " AfterAffectedRoomNumber From Data: " + gameData.getmAfterAffectedRoomNumber());
+            if (gameData.getmAffectedGameCharacter() != null) {
                 mCurrentSelectedItem.setAffectedGameCharacter(affectedCharacter);
             }
-            if (mCurrentSelectedItem.getItemNum()==3){
-                disableContinue();
-                mMessageView.setText(prevPlayer + " used Axe, one zombie has been killed");
-                theCurrentRoom.zombieKilled();
-            }
-            if (mCurrentSelectedItem.getItemNum()==4){
-                mMessageView.setText(prevPlayer + " used Shotgun, two zombie has been killed");
-                theCurrentRoom.zombieKilled();
-                theCurrentRoom.zombieKilled();
-            }
-            if (mCurrentSelectedItem.getItemNum()==5){
-                mMessageView.setText(prevPlayer + " used Hareware, one zombie has been temporary block");
-                theCurrentRoom.zombieKilled();
-                mUsedItem.add(mCurrentSelectedItem);
-                mPlayersUsedItem.add(prevPlayer);
-            }
-            if (mCurrentSelectedItem.getItemNum()==6){
-                mMessageView.setText(prevPlayer + " used Hidden, his/her" + mCurrentSelectedItem.getAffectedGameCharacter() + " is hiding in the room");
-                theCurrentRoom.leave(gameBroad.matchGameCharacter(prevPlayer,mCurrentSelectedItem.getAffectedGameCharacter().getName()));
-                mUsedItem.add(mCurrentSelectedItem);
-                mPlayersUsedItem.add(prevPlayer);
-            }
-            if (mCurrentSelectedItem.getItemNum()==7){
-                mMessageView.setText(prevPlayer + " used Sprint, his/her" + mCurrentSelectedItem.getAffectedGameCharacter() + " has left the room");
-                theCurrentRoom.leave(gameBroad.matchGameCharacter(prevPlayer,mCurrentSelectedItem.getAffectedGameCharacter().getName()));
-                mUsedItem.add(mCurrentSelectedItem);
-                mPlayersUsedItem.add(prevPlayer);
-            }
-            updateRoom(MainActivity.this);
-            mMainActivityLayout.invalidate();
-        } else {
-            mMessageView.setText(prevPlayer + " did not use any item");
         }
-        Handler handler =  new Handler();
+        Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+               if (isItemUsed){
+                   if (mCurrentSelectedItem.getItemNum()==3){
+                       disableContinue();
+                       mMessageView.setText(prevPlayer + " used Axe, one zombie has been killed");
+                       theCurrentRoom.zombieKilled();
+                   }
+                   if (mCurrentSelectedItem.getItemNum()==4){
+                       mMessageView.setText(prevPlayer + " used Shotgun, two zombie has been killed");
+                       theCurrentRoom.zombieKilled();
+                       theCurrentRoom.zombieKilled();
+                   }
+                   if (mCurrentSelectedItem.getItemNum()==5){
+                       mMessageView.setText(prevPlayer + " used Hareware, one zombie has been temporary block");
+                       theCurrentRoom.zombieKilled();
+                       mUsedItem.add(mCurrentSelectedItem);
+                       mPlayersUsedItem.add(prevPlayer);
+                   }
+                   if (mCurrentSelectedItem.getItemNum()==6){
+                       mMessageView.setText(prevPlayer + " used Hidden, his/her" + mCurrentSelectedItem.getAffectedGameCharacter() + " is hiding in the room");
+                       theCurrentRoom.leave(gameBroad.matchGameCharacter(prevPlayer,mCurrentSelectedItem.getAffectedGameCharacter().getName()));
+                       mUsedItem.add(mCurrentSelectedItem);
+                       mPlayersUsedItem.add(prevPlayer);
+                   }
+                   if (mCurrentSelectedItem.getItemNum()==7){
+                       mMessageView.setText(prevPlayer + " used Sprint, his/her" + mCurrentSelectedItem.getAffectedGameCharacter() + " has left the room");
+                       theCurrentRoom.leave(gameBroad.matchGameCharacter(prevPlayer,mCurrentSelectedItem.getAffectedGameCharacter().getName()));
+                       mUsedItem.add(mCurrentSelectedItem);
+                       mPlayersUsedItem.add(prevPlayer);
+                   }
+                   updateRoom(MainActivity.this);
+                   mMainActivityLayout.invalidate();
+               } else {
+                  mMessageView.setText(prevPlayer +  " did not use any item");
+               }
+            }
+        },DELAYEDSECONDSFORLONGMESSAGE*1000);
+        Handler handler1 =  new Handler();
+        handler1.postDelayed(new Runnable() {
             @Override
             public void run() {
                 Log.i(TAG,"item used: " + mUsedItem + " player used " + mPlayersUsedItem);
