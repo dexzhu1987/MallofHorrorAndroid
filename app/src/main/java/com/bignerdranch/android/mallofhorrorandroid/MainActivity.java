@@ -4482,7 +4482,7 @@ public class MainActivity extends AppCompatActivity {
         FirebaseDatabase.getInstance().getReference().child("chats").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot != null){
+                if (dataSnapshot.getValue() != null){
                     Toast.makeText(MainActivity.this, "You have new message", Toast.LENGTH_SHORT).show();
                 }else{
                     return;
