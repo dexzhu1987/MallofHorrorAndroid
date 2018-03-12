@@ -27,6 +27,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.Game;
 import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.GameData;
@@ -185,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
         gettingReady();
         updateRoom(MainActivity.this);
         displayMessage();
+        messageHasUpdate();
     }
 
     @Override
@@ -4466,6 +4468,25 @@ public class MainActivity extends AppCompatActivity {
                         model.getMessageTime()));
             }
         };
+    }
+
+    private void messageHasUpdate(){
+        FirebaseDatabase.getInstance().getReference().child("chats").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot != null){
+                    Toast.makeText(MainActivity.this, "You have new message", Toast.LENGTH_SHORT).show();
+                }else{
+                    return;
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
 
