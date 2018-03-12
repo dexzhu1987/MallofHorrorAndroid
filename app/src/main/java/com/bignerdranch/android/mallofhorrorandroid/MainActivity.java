@@ -47,6 +47,7 @@ import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Room.Room;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.firebase.ui.database.FirebaseListOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -142,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
     private List<ImageButton> mActualPlayerButtons = new ArrayList<>();
     private TextView mMessageView;
     private ImageView mLoading;
+    private TextView chat_tv;
 
     private static List<String> votes = new ArrayList<>();
     private static int mThirdCount;
@@ -183,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        chat_tv = findViewById(R.id.chat_text);
         gettingReady();
         updateRoom(MainActivity.this);
         displayMessage();
@@ -4417,6 +4420,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 EditText input = (EditText)chatLayout.findViewById(R.id.input);
+                chat_tv.setVisibility(View.INVISIBLE);
 
                 // Read the input field and push a new instance
                 // of ChatMessage to the Firebase database
@@ -4467,14 +4471,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void messageHasUpdate(){
-        FirebaseDatabase.getInstance().getReference().child("chats").addValueEventListener(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference().child("chats").addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getValue() != null){
-                    Toast.makeText(MainActivity.this, "You have new message", Toast.LENGTH_SHORT).show();
-                }else{
-                    return;
-                }
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                chat_tv.setVisibility(View.VISIBLE);
+                Toast.makeText(MainActivity.this, "You have new Message", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
 
             }
 
@@ -4483,6 +4498,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
     }
 
 
