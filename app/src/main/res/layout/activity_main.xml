@@ -25,7 +25,7 @@
         app:layout_constraintLeft_toRightOf="@id/chat_btn"
         app:layout_constraintBottom_toBottomOf="@+id/chat_btn"
         android:textColor="#ff0000"
-        android:visibility="invisible"
+        android:visibility="gone"
         android:text="."/>
 
     <GridLayout
