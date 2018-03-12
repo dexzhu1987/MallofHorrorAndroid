@@ -116,15 +116,7 @@ public class UserListActivity extends AppCompatActivity {
                                         gameMain = dataSnapshot.getValue(Game.class);
                                         Intent intent = MainActivity.mainIntent(UserListActivity.this,4, gameMain, username, type);
                                         Log.i(LOG_TAG, "start main activity when reached 4 players");
-                                        _idleHandler.removeCallbacks(_idleRunnable);
-                                        Runnable clearDataLaterRunnerable = new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                Log.i(LOG_TAG, "set the data null due to startactivity");
-                                                FirebaseDatabase.getInstance().getReference().child("game").child(roomId).setValue(null);
-                                            }
-                                        };
-                                        _idleHandler.postDelayed(clearDataLaterRunnerable,(3 * 1000 * 60));
+                                        _idleHandler.removeCallbacksAndMessages(null);
                                         Intent serviceintent = OnClearFromRecentService.newServiceIntent(UserListActivity.this, roomId+"started");
                                         startService(serviceintent);
                                         startActivity(intent);
@@ -195,15 +187,7 @@ public class UserListActivity extends AppCompatActivity {
                                         public void onDataChange(DataSnapshot dataSnapshot) {
                                             gameMain = dataSnapshot.getValue(Game.class);
                                             Intent intent = MainActivity.mainIntent(UserListActivity.this,4, gameMain, username, type);
-                                            _idleHandler.removeCallbacks(_idleRunnable);
-                                            Runnable clearDataLaterRunnerable = new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    Log.i(LOG_TAG, "set the data null due to startactivity");
-                                                    FirebaseDatabase.getInstance().getReference().child("game").child(roomId).setValue(null);
-                                                }
-                                            };
-                                            _idleHandler.postDelayed(clearDataLaterRunnerable,(3 * 1000 * 60));
+                                            _idleHandler.removeCallbacksAndMessages(null);
                                             Log.i(LOG_TAG, "start main activity when reached 4 players");
                                             Intent serviceintent = OnClearFromRecentService.newServiceIntent(UserListActivity.this, roomId+"started");
                                             startService(serviceintent);
@@ -307,9 +291,14 @@ public class UserListActivity extends AppCompatActivity {
         }
     };
 
-
     private void delayedIdle(int delayMinutes) {
         _idleHandler.removeCallbacks(_idleRunnable);
         _idleHandler.postDelayed(_idleRunnable,(delayMinutes * 1000 * 60));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        _idleHandler.removeCallbacks(_idleRunnable);
     }
 }

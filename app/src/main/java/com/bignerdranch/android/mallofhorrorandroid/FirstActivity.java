@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
@@ -77,6 +78,9 @@ public class FirstActivity extends AppCompatActivity {
 
 //        overridePendingTransition(android.support.v7.appcompat.R.anim.abc_grow_fade_in_from_bottom,android.support.v7.appcompat.R.anim.abc_shrink_fade_out_from_bottom );
 
+        MediaPlayer ring= MediaPlayer.create(FirstActivity.this,R.raw.the_walking_dead);
+//        ring.setLooping(true);
+        ring.start();
 
         firstActivity = FirstActivity.this;
         blinkText();
@@ -262,15 +266,32 @@ public class FirstActivity extends AppCompatActivity {
         Animation animTranslate = AnimationUtils.loadAnimation(this, R.anim.anim_bounce);
         mSettingButton.startAnimation(animTranslate);
 
+
         LayoutInflater inflater = getLayoutInflater();
         View alertLayout = inflater.inflate(R.layout.setting_dialog, null);
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-
         SeekBar mSoundBar = alertLayout.findViewById(R.id.sound_seekbar);
+        audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+
+        ImageButton sound_off_btn = alertLayout.findViewById(R.id.sound_off_btn);
+        sound_off_btn.setOnClickListener(new View.OnClickListener() {
+            boolean mute = false;
+            @Override
+            public void onClick(View view) {
+                if (!mute){
+                    audioManager.setStreamMute(AudioManager.STREAM_MUSIC, true);
+                    mute = true;
+                }else{
+                    audioManager.setStreamMute(AudioManager.STREAM_MUSIC, false);
+                    mute = false;
+                }
+
+            }
+        });
 //        TextView mSeekBar_Value = alertLayout.findViewById(R.id.seekbar_value);
 //        mSeekBar_Value.setText("0");
 
-        audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+
         mSoundBar.setMax(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
         mSoundBar.setProgress(audioManager
                 .getStreamVolume(AudioManager.STREAM_MUSIC));
@@ -303,6 +324,7 @@ public class FirstActivity extends AppCompatActivity {
             }
         });
         AlertDialog dialog = alert.create();
+        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogTheme;
         dialog.show();
     }
 

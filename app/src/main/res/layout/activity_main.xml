@@ -10,6 +10,15 @@
     android:orientation="vertical"
     tools:context="com.bignerdranch.android.mallofhorrorandroid.MainActivity">
 
+    <Button
+        android:id="@+id/chat_btn"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:onClick="open_chat"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_margin="15dp"
+        android:background="@drawable/chat"/>
+
     <GridLayout
         android:id="@+id/restroom_area_main"
         android:layout_width="120dp"
@@ -402,6 +411,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/loading" />
+
 
 
 </android.support.constraint.ConstraintLayout>
