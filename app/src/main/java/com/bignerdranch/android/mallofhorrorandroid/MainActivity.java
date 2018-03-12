@@ -1687,7 +1687,7 @@ public class MainActivity extends AppCompatActivity {
                 });
 
             }
-        },DELAYEDSECONDSFOROPTIONSCHOSEN * 1000);
+        },DELAYEDSECONDSFORMESSAGEVIE * 1000);
         System.out.println("Confirm if want to use item");
     }
 
@@ -1885,7 +1885,7 @@ public class MainActivity extends AppCompatActivity {
                         mDatabaseReference.child(TURN).setValue(-20);
                     }
                 }
-            },DELAYEDSECONDSFOROPTIONSCHOSEN*1000);
+            },DELAYEDSECONDSFORLONGMESSAGE*1000);
         }else {
             Log.i(TAG, "not fallen after item used");
             mMessageView.setText(theCurrentRoom.getName() +  " is not fallen after item used");
@@ -1903,7 +1903,7 @@ public class MainActivity extends AppCompatActivity {
                         mDatabaseReference.child(TURN).setValue(-20);
                     }
                 }
-            },DELAYEDSECONDSFOROPTIONSCHOSEN*1000);
+            },DELAYEDSECONDSFORLONGMESSAGE*1000);
             System.out.println("Not fallen after the item used");
         }
     }
@@ -2181,8 +2181,7 @@ public class MainActivity extends AppCompatActivity {
                 updateRoom(MainActivity.this);
                 mMainActivityLayout.invalidate();
                 mMessageView.setText(mCurrentVictim + " has lost his/her " + deathCharacter.getName() +
-                        "\nZombies have their feast, and returned back to somewhere else to find their next target! " +
-                        "\n(The number of zombies in this room has returned to zero)");
+                        "\nZombies have their feast, and returned back to somewhere else to find their next target! ");
                 Handler handler1 = new Handler();
                 handler1.postDelayed(new Runnable() {
                     @Override
@@ -2387,10 +2386,9 @@ public class MainActivity extends AppCompatActivity {
         mDatabaseReference.child(ROOMS).setValue(null);
         mDatabaseReference.child(PLAYERBOOLEANANSWERS).setValue(null);
         mPlayersUsedItem.clear();
-        ;
+        mUsedItem.clear();
         mCurrentTeam.clear();
-        votes.clear();
-        ;
+        votes.clear();;
         mCurrentItemOptions.clear();
         playersIndex.clear();
         roomspicked.clear();
@@ -2442,6 +2440,7 @@ public class MainActivity extends AppCompatActivity {
                         mCurrentItemOptions.clear();
                         playersIndex.clear();
                         roomspicked.clear();
+                        mUsedItem.clear();
                         mCurrentYesNo=false;
                         mCurrentYesNoMain = false;
                         mCurrentMoreZombies.clear();
@@ -3987,7 +3986,8 @@ public class MainActivity extends AppCompatActivity {
                         int i = mCountSetUp/2;
                         if (mCurrentSelectedItem!=null){
                             Playable playable = mCurrentTeam.get(i);
-                            playable.usedItem(mCurrentSelectedItem);
+                            Item usedItem = gameBroad.matchItem(playable, mCurrentSelectedItem.getName());
+                            playable.usedItem(usedItem);
                         }
                         System.out.println("putting item into Firebase");
                         Log.i(TAG, "item: " + mCurrentSelectedItem);
