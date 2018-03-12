@@ -1578,7 +1578,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void messageViewInformifRoomisFallenAndItemsUsing(Room theCurrentRoom, List<Playable> playersInTheRoomList, GameData gameData) {
-        if (!theCurrentRoom.isFallen()){
+        if (!theCurrentRoom.isFallen() && mCountSetUp==0){
             System.out.println(theCurrentRoom.getName() +  " is not fallen");
             mCountSetUp=0;
             mSecondCount=0;
@@ -1632,6 +1632,8 @@ public class MainActivity extends AppCompatActivity {
             } else if (mCountSetUp==originalTeamSize*2){
                 messageViewInformCurrentIsStillFallenAfterItemUsed(theCurrentRoom);
             }
+        } else if (!theCurrentRoom.isFallen() && theCurrentRoom.getRoomNum()!=4 && mCountSetUp!=0){
+            messageViewInformCurrentIsStillFallenAfterItemUsed(theCurrentRoom);
         }
     }
 
