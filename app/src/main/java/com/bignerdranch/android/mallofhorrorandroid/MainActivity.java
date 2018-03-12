@@ -631,10 +631,12 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         disableYesNo();
-                        mSecondCount = 2;
-                        GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                        mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                        mDatabaseReference.child(TURN).setValue(-1);
+                        if (mMyPlayerID==getControlId()){
+                            mSecondCount = 2;
+                            GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                            mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                            mDatabaseReference.child(TURN).setValue(-1);
+                        }
                     }
                 }, DELAYEDSECONDSFOROPTIONSCHOSEN * 1000);
 
@@ -4374,7 +4376,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void alertNetworkNotAvailable(){
-        Toast.makeText(MainActivity.this, "Looks like you have disconnect from the internet, once you are connected, please press CONTINUE again", Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.this, "Oops! Looks like you have disconnected from the internet, once you are connected, please press CONTINUE again", Toast.LENGTH_SHORT).show();
     }
 
     FirebaseListAdapter<ChatMessage> adapter;
