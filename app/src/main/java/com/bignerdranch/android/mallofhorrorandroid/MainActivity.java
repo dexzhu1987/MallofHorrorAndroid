@@ -143,10 +143,7 @@ public class MainActivity extends AppCompatActivity {
     private List<ImageButton> mActualPlayerButtons = new ArrayList<>();
     private TextView mMessageView;
     private ImageView mLoading;
-<<<<<<< HEAD
-=======
     private Button chat_btn;
->>>>>>> 33d6dda2b39941772133564970e89c3e8b3b0ec7
 
     private static List<String> votes = new ArrayList<>();
     private static int mThirdCount;
@@ -188,10 +185,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-<<<<<<< HEAD
-=======
         chat_btn = findViewById(R.id.chat_btn);
->>>>>>> 33d6dda2b39941772133564970e89c3e8b3b0ec7
         gettingReady();
         updateRoom(MainActivity.this);
         displayMessage();
@@ -4467,20 +4461,14 @@ public class MainActivity extends AppCompatActivity {
         LayoutInflater inflater = getLayoutInflater();
         View chatLayout = inflater.inflate(R.layout.chat_layout, null);
         AlertDialog.Builder chatbox = new AlertDialog.Builder(this);
-<<<<<<< HEAD
-=======
         chat_btn.clearAnimation();
->>>>>>> 33d6dda2b39941772133564970e89c3e8b3b0ec7
+
 
         FloatingActionButton fab = chatLayout.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 EditText input = (EditText)chatLayout.findViewById(R.id.input);
-<<<<<<< HEAD
-
-=======
->>>>>>> 33d6dda2b39941772133564970e89c3e8b3b0ec7
 
                 // Read the input field and push a new instance
                 // of ChatMessage to the Firebase database
@@ -4535,13 +4523,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 if (dataSnapshot.getValue()!=null){
-<<<<<<< HEAD
                     Toast.makeText(MainActivity.this, "You have new Message", Toast.LENGTH_SHORT).show();
-=======
                     Animation animTranslate = AnimationUtils.loadAnimation(MainActivity.this, R.anim.anim_bounce);
                     chat_btn.startAnimation(animTranslate);
                     Toast.makeText(MainActivity.this, "You have a new Message", Toast.LENGTH_SHORT).show();
->>>>>>> 33d6dda2b39941772133564970e89c3e8b3b0ec7
                 }
 
             }
@@ -4568,6 +4553,5 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
 
 }
