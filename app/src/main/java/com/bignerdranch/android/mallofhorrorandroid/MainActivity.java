@@ -142,7 +142,6 @@ public class MainActivity extends AppCompatActivity {
     private List<ImageButton> mActualPlayerButtons = new ArrayList<>();
     private TextView mMessageView;
     private ImageView mLoading;
-    private TextView chat_tv;
 
     private static List<String> votes = new ArrayList<>();
     private static int mThirdCount;
@@ -184,7 +183,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        chat_tv = findViewById(R.id.chat_text);
         gettingReady();
         updateRoom(MainActivity.this);
         displayMessage();
@@ -4390,14 +4388,13 @@ public class MainActivity extends AppCompatActivity {
         View chatLayout = inflater.inflate(R.layout.chat_layout, null);
         AlertDialog.Builder chatbox = new AlertDialog.Builder(this);
 
-
         FloatingActionButton fab = chatLayout.findViewById(R.id.fab);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 EditText input = (EditText)chatLayout.findViewById(R.id.input);
-                chat_tv.setVisibility(View.GONE);
+
 
                 // Read the input field and push a new instance
                 // of ChatMessage to the Firebase database
@@ -4452,7 +4449,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 if (dataSnapshot.getValue()!=null){
-                    chat_tv.setVisibility(View.VISIBLE);
                     Toast.makeText(MainActivity.this, "You have new Message", Toast.LENGTH_SHORT).show();
                 }
 
