@@ -4397,7 +4397,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 EditText input = (EditText)chatLayout.findViewById(R.id.input);
-                chat_tv.setVisibility(View.INVISIBLE);
+                chat_tv.setVisibility(View.GONE);
 
                 // Read the input field and push a new instance
                 // of ChatMessage to the Firebase database
@@ -4451,8 +4451,11 @@ public class MainActivity extends AppCompatActivity {
         FirebaseDatabase.getInstance().getReference().child("chats").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                chat_tv.setVisibility(View.VISIBLE);
-                Toast.makeText(MainActivity.this, "You have new Message", Toast.LENGTH_SHORT).show();
+                if (dataSnapshot.getValue()!=null){
+                    chat_tv.setVisibility(View.VISIBLE);
+                    Toast.makeText(MainActivity.this, "You have new Message", Toast.LENGTH_SHORT).show();
+                }
+
             }
 
             @Override
