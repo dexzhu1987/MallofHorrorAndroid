@@ -30,7 +30,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.FirebaseRoom;
+import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.FireBaseGameCharacter;
 import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.Game;
 import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.GameData;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Character.GameCharacter;
@@ -103,7 +103,10 @@ public class MainActivity extends AppCompatActivity {
     private final String VICTIMCOLOR = "VictimColor";
     private final String DEATHCHARACTER = "DeathCharacter";
     private final String CURRENTTEAM = "CurrentTeam";
-    private final String ROOMSINGAME = "Rooms";
+    private final String ROOMSINGAME = "RoomsInGame";
+    private final String CAMECHARACTERS = "gamecharacters";
+    private final String ZOMBIESNUMBER = "zombiesnumber";
+
 
     private final int DELAYEDSECONDSFORMESSAGEVIE = 3;
     private final int DELAYEDSECONDSFOROPTIONSCHOSEN = 10;
@@ -4446,58 +4449,44 @@ public class MainActivity extends AppCompatActivity {
 
     private void writeRoomIntoFireBase(Room room){
         int zombieNumber = room.getCurrentZombienumber();
-        int roomNumber = room.getRoomNum();
         String name =  room.getName();
-        List<String> characters = new ArrayList<>();
-        for (GameCharacter character : room.getRoomCharaters()){
-            String characterInString =  character.getOwnercolor() + "_" + character.getName();
-            characters.add(characterInString);
+        mDatabaseReference.child(ROOMSINGAME).child(name).child(ZOMBIESNUMBER).setValue(zombieNumber);
+        for (GameCharacter character: room.getRoomCharaters()){
+            String ownerColor = character.getOwnercolor();
+            String characterName = character.getName();
+            FireBaseGameCharacter fireBaseGameCharacter = new FireBaseGameCharacter(ownerColor, characterName);
+            mDatabaseReference.child(ROOMSINGAME).child(name).child(CAMECHARACTERS).setValue(fireBaseGameCharacter);
         }
-        FirebaseRoom firebaseRoom = new FirebaseRoom(name,roomNumber, characters,zombieNumber);
-        mDatabaseReference.child(ROOMSINGAME).setValue(firebaseRoom);
     }
 
     private void readRoomsFromFirebase(){
-        mDatabaseReference.child(ROOMSINGAME).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                List<FirebaseRoom> roomsFromFirebase =  new ArrayList<>();
-                if (dataSnapshot.getValue()!=null){
-                    for (DataSnapshot snapshot: dataSnapshot.getChildren()){
-                        roomsFromFirebase.add(snapshot.getValue(FirebaseRoom.class));
-                    }
-
-                    for (FirebaseRoom firebaseRoom: roomsFromFirebase){
-                       int roomNumber = firebaseRoom.getRoomNumber();
-                       int zombieNumber = firebaseRoom.getZombieNumber();
-                       List<String> characters = firebaseRoom.getCharacters();
-                       List<GameCharacter> characterList = new ArrayList<>();
-                       for (String character: characters){
-                           String[] twoparts = character.split("_");
-                           String ownerColor = twoparts[0];
-                           String characterName = twoparts[1];
-                           Playable owner = gameBroad.matchPlayer(ownerColor);
-                           GameCharacter gameCharacter = gameBroad.matchGameCharacter(owner, characterName);
-                           characterList.add(gameCharacter);
-                       }
-                       for (int i=0; i<gameBroad.getRooms().size();i++){
-                           Room updateRoom = gameBroad.getRooms().get(i);
-                           if (updateRoom.getRoomNum()==roomNumber){
-                               updateRoom.setCurrentZombienumber(zombieNumber);
-                               updateRoom.setRoomCharaters(characterList);
-                           }
-                       }
+        for (Room room: gameBroad.getRooms()){
+            mDatabaseReference.child(ROOMSINGAME).child(room.getName()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.getValue()!=null){
+                        int zombieNumber = dataSnapshot.child(ZOMBIESNUMBER).getValue(Integer.TYPE);
+                        List<GameCharacter> gameCharacters = new ArrayList<>();
+                        for (DataSnapshot snapshot: dataSnapshot.child(CAMECHARACTERS).getChildren()){
+                            FireBaseGameCharacter fireBaseGameCharacter = snapshot.getValue(FireBaseGameCharacter.class);
+                            String ownerColor = fireBaseGameCharacter.getOwnerColor();
+                            String characterName = fireBaseGameCharacter.getCharacterName();
+                            Playable owner = gameBroad.matchPlayer(ownerColor);
+                            GameCharacter character = gameBroad.matchGameCharacter(owner,characterName);
+                            gameCharacters.add(character);
+                        }
+                        room.setRoomCharaters(gameCharacters);
+                        room.setCurrentZombienumber(zombieNumber);
                     }
                 }
 
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
+                }
+            });
+        }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
     }
 
 
