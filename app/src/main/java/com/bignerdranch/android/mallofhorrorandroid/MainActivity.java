@@ -1674,7 +1674,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 }, DELAYEDSECONDSFOROPTIONSCHOSEN * 1000);
-                mMessageView.setVisibility(View.INVISIBLE);
                 enableYesNo();
                 mYesButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -1739,7 +1738,6 @@ public class MainActivity extends AppCompatActivity {
                             handler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    mMessageView.setVisibility(View.INVISIBLE);
                                     int firstSearch = 0;
                                     for (int i=0; i<colors.size(); i++){
                                         if (mCurrentTeam.get(0).getColor().equalsIgnoreCase(colors.get(i))){
@@ -1761,7 +1759,6 @@ public class MainActivity extends AppCompatActivity {
                             handler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    mMessageView.setVisibility(View.INVISIBLE);
                                     int firstSearch = 0;
                                     for (int i=0; i<colors.size(); i++){
                                         if (mCurrentTeam.get(0).getColor().equalsIgnoreCase(colors.get(i))){
@@ -1860,7 +1857,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 Log.i(TAG,"item used: " + mUsedItem + " player used " + mPlayersUsedItem);
-                mMessageView.setVisibility(View.INVISIBLE);
                 otherCommonSetUp();
                 mCountSetUp++;
                 int nextMove = 0;
@@ -1983,8 +1979,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
                 Log.i(TAG, "mCurrentTeam: " + mCurrentTeam + " fallenTeam List: " + searchTeam + " fallenTeam Set: " + searchteam);
-                Log.i(TAG, "colors: " + colors);
-                mMessageView.setVisibility(View.INVISIBLE);
+                Log.i(TAG, "colors: " + colors);;
                 int firstSearch = 0;
                 for (int i=0; i<colors.size(); i++){
                     if (mCurrentTeam.get(0).getColor().equalsIgnoreCase(colors.get(i))){
@@ -2273,7 +2268,6 @@ public class MainActivity extends AppCompatActivity {
                 handler1.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        mMessageView.setVisibility(View.INVISIBLE);
                         updateRoom(MainActivity.this);
                         mMainActivityLayout.invalidate();
                         mFourthCount=5;
@@ -2295,7 +2289,6 @@ public class MainActivity extends AppCompatActivity {
             handler1.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    mMessageView.setVisibility(View.INVISIBLE);
                     updateRoom(MainActivity.this);
                     mMainActivityLayout.invalidate();
                     mFourthCount=5;
@@ -3940,16 +3933,19 @@ public class MainActivity extends AppCompatActivity {
                     if (mCountSetUp%2==1){
                         if (isNetworkAvailable()){
                             int i = mCountSetUp/2;
+                            int itemNumber =  0;
+                            int afterRoomNumber =  0;
+                            String characterName =  "Model";
                             if (mCurrentSelectedItem!=null){
                                 Playable playable = mCurrentTeam.get(i);
                                 Item usedItem = gameBroad.matchItem(playable, mCurrentSelectedItem.getName());
                                 playable.usedItem(usedItem);
+                                itemNumber =  mCurrentSelectedItem.getItemNum();
+                                afterRoomNumber = mCurrentSelectedItem.getAfteraffectedRoomNumber();
+                                characterName =  mCurrentSelectedItem.getAffectedGameCharacter().getName();
                             }
                             System.out.println("putting item into Firebase");
-                            Log.i(TAG, "item: " + mCurrentSelectedItem);
-                            int itemNumber =  mCurrentSelectedItem.getItemNum();
-                            int afterRoomNumber = mCurrentSelectedItem.getAfteraffectedRoomNumber();
-                            String characterName =  mCurrentSelectedItem.getAffectedGameCharacter().getName();
+                            Log.i(TAG, "item: " + mCurrentSelectedItem);;
                             boolean isItemUsed =  mCurrentYesNo;
                             GameData gameData = new GameData(mCountPhase, mCountSetUp, mSecondCount, mThirdCount,mFourthCount,mFifthCount,mSixCount,
                                     isItemUsed, itemNumber, characterName,afterRoomNumber,i);
