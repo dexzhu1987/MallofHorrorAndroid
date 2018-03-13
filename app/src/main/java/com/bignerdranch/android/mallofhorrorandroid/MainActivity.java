@@ -1639,7 +1639,11 @@ public class MainActivity extends AppCompatActivity {
                 messageViewInformCurrentIsStillFallenAfterItemUsed(theCurrentRoom);
             }
         } else if (!theCurrentRoom.isFallen() && theCurrentRoom.getRoomNum()!=4 && mCountSetUp!=0){
-            messageViewInformCurrentIsStillFallenAfterItemUsed(theCurrentRoom);
+            if (mCountSetUp>0 && mCountSetUp< originalTeamSize *2){
+                messageViewInformWhatItemHasBeenUsed(gameData,theCurrentRoom);
+            } else if (mCountSetUp==originalTeamSize*2){
+                messageViewInformCurrentIsStillFallenAfterItemUsed(theCurrentRoom);
+            }
         }
     }
 
