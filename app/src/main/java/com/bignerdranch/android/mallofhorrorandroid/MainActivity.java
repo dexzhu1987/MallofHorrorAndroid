@@ -30,6 +30,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.FirebaseRoom;
 import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.Game;
 import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.GameData;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Character.GameCharacter;
@@ -102,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
     private final String VICTIMCOLOR = "VictimColor";
     private final String DEATHCHARACTER = "DeathCharacter";
     private final String CURRENTTEAM = "CurrentTeam";
+    private final String ROOMSINGAME = "Rooms";
 
     private final int DELAYEDSECONDSFORMESSAGEVIE = 3;
     private final int DELAYEDSECONDSFOROPTIONSCHOSEN = 10;
@@ -2570,6 +2572,7 @@ public class MainActivity extends AppCompatActivity {
                                     if (prevTurn!=mMyPlayerID){
                                         updateDataFromFireBase(turn, gameData, prevTurn);
                                     }
+                                    Log.i(TAG, "Player " +  colors.get(turn) + " 's turn: " + gameData.toString());
                                     String whoseTurn = "Player " +  colors.get(turn) + " 's turn, please wait";
                                     mMessageView.setText(whoseTurn);
                                     mMessageView.setEnabled(false);
@@ -2651,6 +2654,7 @@ public class MainActivity extends AppCompatActivity {
                 gameBroad.matchRoom(gameData.getSelectedRoomPhaseFive()).enter(selectedCharacter2);
             }
         }
+        readRoomsFromFirebase();
         updateRoom(MainActivity.this);
         mMainActivityLayout.invalidate();
     }
@@ -3033,9 +3037,11 @@ public class MainActivity extends AppCompatActivity {
                 if (gameBroad.matchRoom(selectedRoom).isFull()) {
                     gameBroad.matchRoom(4).enter(gameBroad.getPlayers().get(q).selectchoose(selectedCharacter));
                     gameBroad.getPlayers().get(q).selectchooseremove(selectedCharacter);
+                    writeRoomIntoFireBase(gameBroad.matchRoom(4));
                 } else {
                     gameBroad.matchRoom(selectedRoom).enter(gameBroad.getPlayers().get(q).selectchoose(selectedCharacter));
                     gameBroad.getPlayers().get(q).selectchooseremove(selectedCharacter);
+                    writeRoomIntoFireBase(gameBroad.matchRoom(selectedRoom));
                 }
                 ++mCountSetUp;
                 GameData gameData = new GameData(mCountPhase, mCountSetUp, mSecondCount, mThirdCount, mFourthCount, mFifthCount, mSixCount,
@@ -4437,11 +4443,69 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+
+    private void writeRoomIntoFireBase(Room room){
+        int zombieNumber = room.getCurrentZombienumber();
+        int roomNumber = room.getRoomNum();
+        String name =  room.getName();
+        List<String> characters = new ArrayList<>();
+        for (GameCharacter character : room.getRoomCharaters()){
+            String characterInString =  character.getOwnercolor() + "_" + character.getName();
+            characters.add(characterInString);
+        }
+        FirebaseRoom firebaseRoom = new FirebaseRoom(name,roomNumber, characters,zombieNumber);
+        mDatabaseReference.child(ROOMSINGAME).setValue(firebaseRoom);
+    }
+
+    private void readRoomsFromFirebase(){
+        mDatabaseReference.child(ROOMSINGAME).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<FirebaseRoom> roomsFromFirebase =  new ArrayList<>();
+                if (dataSnapshot.getValue()!=null){
+                    for (DataSnapshot snapshot: dataSnapshot.getChildren()){
+                        roomsFromFirebase.add(snapshot.getValue(FirebaseRoom.class));
+                    }
+
+                    for (FirebaseRoom firebaseRoom: roomsFromFirebase){
+                       int roomNumber = firebaseRoom.getRoomNumber();
+                       int zombieNumber = firebaseRoom.getZombieNumber();
+                       List<String> characters = firebaseRoom.getCharacters();
+                       List<GameCharacter> characterList = new ArrayList<>();
+                       for (String character: characters){
+                           String[] twoparts = character.split("_");
+                           String ownerColor = twoparts[0];
+                           String characterName = twoparts[1];
+                           Playable owner = gameBroad.matchPlayer(ownerColor);
+                           GameCharacter gameCharacter = gameBroad.matchGameCharacter(owner, characterName);
+                           characterList.add(gameCharacter);
+                       }
+                       for (int i=0; i<gameBroad.getRooms().size();i++){
+                           Room updateRoom = gameBroad.getRooms().get(i);
+                           if (updateRoom.getRoomNum()==roomNumber){
+                               updateRoom.setCurrentZombienumber(zombieNumber);
+                               updateRoom.setRoomCharaters(characterList);
+                           }
+                       }
+                    }
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
+
     private void delayedIdle(int delayMinutes) {
         _idleHandler.removeCallbacks(_idleRunnable);
         _idleHandler.postDelayed(_idleRunnable, (delayMinutes * 1000 * 60));
     }
-
 
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
