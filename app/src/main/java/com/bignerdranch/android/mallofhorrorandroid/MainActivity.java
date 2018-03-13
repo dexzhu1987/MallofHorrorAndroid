@@ -2996,6 +2996,9 @@ public class MainActivity extends AppCompatActivity {
             GridLayout currentPane = roomHasList.get(i);
             for (int k=0; k<roomLabel.size(); k++){
                 currentPane.setColumnCount(3);
+                if (roomLabel.get(k).getParent()!=null){
+                    ((ViewGroup)roomLabel.get(k).getParent()).removeView(roomLabel.get(k));
+                }
                 currentPane.addView(roomLabel.get(k));
             }
         }
