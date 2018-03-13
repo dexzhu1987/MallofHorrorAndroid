@@ -3894,6 +3894,7 @@ public class MainActivity extends AppCompatActivity {
                     GameCharacter selectedCharacter2 = gameBroad.matchGameCharacter(actualPlayer,mCurrentGameCharacterSelected);
                     Room leavingRoom2 = gameBroad.inWhichRoom(selectedCharacter2);
                     leavingRoom2.leave(selectedCharacter2);
+                    writeRoomIntoFireBase(leavingRoom2);
 
                     if (gameBroad.matchRoom(roomspicked.get(q)).isFull()){
                         gameBroad.matchRoom(4).enter(selectedCharacter2);
