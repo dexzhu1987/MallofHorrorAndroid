@@ -143,7 +143,6 @@ public class MainActivity extends AppCompatActivity {
     private List<ImageButton> mActualPlayerButtons = new ArrayList<>();
     private TextView mMessageView;
     private ImageView mLoading;
-    private TextView chat_tv;
     private Button chat_btn;
 
     private static List<String> votes = new ArrayList<>();
