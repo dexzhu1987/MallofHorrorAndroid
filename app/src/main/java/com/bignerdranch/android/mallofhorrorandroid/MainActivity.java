@@ -4451,11 +4451,12 @@ public class MainActivity extends AppCompatActivity {
         int zombieNumber = room.getCurrentZombienumber();
         String name =  room.getName();
         mDatabaseReference.child(ROOMSINGAME).child(name).child(ZOMBIESNUMBER).setValue(zombieNumber);
+        mDatabaseReference.child(ROOMSINGAME).child(name).child(CAMECHARACTERS).setValue(null);
         for (GameCharacter character: room.getRoomCharaters()){
             String ownerColor = character.getOwnercolor();
             String characterName = character.getName();
             FireBaseGameCharacter fireBaseGameCharacter = new FireBaseGameCharacter(ownerColor, characterName);
-            mDatabaseReference.child(ROOMSINGAME).child(name).child(CAMECHARACTERS).setValue(fireBaseGameCharacter);
+            mDatabaseReference.child(ROOMSINGAME).child(name).child(CAMECHARACTERS).push().setValue(fireBaseGameCharacter);
         }
     }
 
