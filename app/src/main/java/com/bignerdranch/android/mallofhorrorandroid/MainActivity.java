@@ -1525,6 +1525,7 @@ public class MainActivity extends AppCompatActivity {
                     mCurrentZombiesRooms.clear();
                     for (DataSnapshot snapshot: dataSnapshot.getChildren()){
                         mCurrentZombiesRooms.add(snapshot.getValue(Integer.TYPE));
+
                     }
                 }
 
@@ -1543,18 +1544,21 @@ public class MainActivity extends AppCompatActivity {
                 if (mCurrentMoreZombies.size() == 0) {
                     for (int roomNumber: mCurrentZombiesRooms){
                         gameBroad.matchRoom(roomNumber).zombieApproached();
+                        writeRoomIntoFireBase(gameBroad.matchRoom(roomNumber));
                     }
                     System.out.println("Showing More Zombie");
                     if (gameBroad.mostPeople().getRoomNum()==7){
                         mCurrentMoreZombies.add(0);
                     } else {
                         gameBroad.mostPeople().zombieApproached();
+                        writeRoomIntoFireBase(gameBroad.mostPeople());
                         mCurrentMoreZombies.add(gameBroad.mostPeople().getRoomNum());
                     }
                     if (gameBroad.mostModel().getRoomNum()==7){
                         mCurrentMoreZombies.add(0);
                     } else {
                         gameBroad.mostModel().zombieApproached();
+                        writeRoomIntoFireBase(gameBroad.mostModel());
                         mCurrentMoreZombies.add(gameBroad.mostModel().getRoomNum());
                     }
                 }
@@ -1587,6 +1591,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void messageViewInformifRoomisFallenAndItemsUsing(Room theCurrentRoom, List<Playable> playersInTheRoomList, GameData gameData) {
+        readRoomsFromFirebase();
         if (!theCurrentRoom.isFallen() && mCountSetUp==0){
             System.out.println(theCurrentRoom.getName() +  " is not fallen");
             mCountSetUp=0;
@@ -1866,6 +1871,7 @@ public class MainActivity extends AppCompatActivity {
                                     mUsedItem.add(mCurrentSelectedItem);
                                     mPlayersUsedItem.add(prevPlayer);
                                 }
+                                writeRoomIntoFireBase(theCurrentRoom);
                                 updateRoom(MainActivity.this);
                                 mMainActivityLayout.invalidate();
                             } else {
@@ -3888,11 +3894,12 @@ public class MainActivity extends AppCompatActivity {
 
                     if (gameBroad.matchRoom(roomspicked.get(q)).isFull()){
                         gameBroad.matchRoom(4).enter(selectedCharacter2);
+                        writeRoomIntoFireBase(gameBroad.matchRoom(4));
                     }else {
                         gameBroad.matchRoom(roomspicked.get(q)).enter(selectedCharacter2);
+                        writeRoomIntoFireBase(gameBroad.matchRoom(roomspicked.get(q)));
                     }
                     ++mCountSetUp;
-
                     if (mCountSetUp==mCurrentPlayerNumber*4){
                         mDatabaseReference.child(TURN).setValue(-1);
                     } else {
