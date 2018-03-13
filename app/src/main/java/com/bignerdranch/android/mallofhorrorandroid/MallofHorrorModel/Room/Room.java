@@ -174,6 +174,10 @@ public class Room implements Parcelable {
         return true;
     }
 
+    public void setRoomCharaters(List<GameCharacter> roomCharaters) {
+        this.roomCharaters = roomCharaters;
+    }
+
     /**
      * count how many models in the room
      * @return the number of the model in the room
@@ -185,6 +189,7 @@ public class Room implements Parcelable {
                 modelNumber++;
             }
         }
+
         return modelNumber;
     }
 

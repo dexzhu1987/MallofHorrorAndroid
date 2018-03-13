@@ -21,6 +21,7 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
@@ -100,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
     private final String ROOMS = "Rooms";
     private final String VICTIMCOLOR = "VictimColor";
     private final String DEATHCHARACTER = "DeathCharacter";
+    private final String CURRENTTEAM = "CurrentTeam";
 
     private final int DELAYEDSECONDSFORMESSAGEVIE = 3;
     private final int DELAYEDSECONDSFOROPTIONSCHOSEN = 10;
@@ -126,7 +128,6 @@ public class MainActivity extends AppCompatActivity {
     private static Playable mCurrentVictim = new Playable();
     final static List<String> colors = new ArrayList<>();
     final static List<Item> items = new ArrayList<>();
-    final static List<String> actualcolors= new ArrayList<>();
     private ArrayList<Playable> mCurrentTeam = new ArrayList<>();
     private int originalTeamSize ;
 
@@ -142,6 +143,10 @@ public class MainActivity extends AppCompatActivity {
     private List<ImageButton> mActualPlayerButtons = new ArrayList<>();
     private TextView mMessageView;
     private ImageView mLoading;
+<<<<<<< HEAD
+=======
+    private Button chat_btn;
+>>>>>>> 33d6dda2b39941772133564970e89c3e8b3b0ec7
 
     private static List<String> votes = new ArrayList<>();
     private static int mThirdCount;
@@ -183,6 +188,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+<<<<<<< HEAD
+=======
+        chat_btn = findViewById(R.id.chat_btn);
+>>>>>>> 33d6dda2b39941772133564970e89c3e8b3b0ec7
         gettingReady();
         updateRoom(MainActivity.this);
         displayMessage();
@@ -555,7 +564,6 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.i(TAG, "mCurrentTeam: " + mCurrentTeam + " searchTeam List: " + searchTeam + " searchTeam Set: " + searchteam);
                 Log.i(TAG, "colors: " + colors);
-                mMessageView.setVisibility(View.INVISIBLE);
                 int firstSearch = 0;
                 for (int i=0; i<colors.size(); i++){
                     if (mCurrentTeam.get(0).getColor().equalsIgnoreCase(colors.get(i))){
@@ -1230,7 +1238,6 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mMessageView.setVisibility(View.INVISIBLE);
                 mDatabaseReference.child(FIRSTPLAYERINDEX).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -1275,7 +1282,6 @@ public class MainActivity extends AppCompatActivity {
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            mMessageView.setVisibility(View.INVISIBLE);
                             mDatabaseReference.child(FIRSTPLAYERINDEX).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -1623,12 +1629,12 @@ public class MainActivity extends AppCompatActivity {
                 messageViewInformItemCanbeUsed(theCurrentRoom);
                 originalTeamSize = playersInTheRoomList.size();
                 mCurrentTeam = (ArrayList<Playable>) playersInTheRoomList;
-                Collections.sort(mCurrentTeam, new Comparator<Playable>() {
-                    @Override
-                    public int compare(Playable o1, Playable o2) {
-                        return o1.getColor().compareTo(o2.getColor());
+
+                if (mMyPlayerID==getControlId()){
+                    for (Playable teammember:  mCurrentTeam){
+                        mDatabaseReference.child(CURRENTTEAM).push().child(teammember.getColor());
                     }
-                });
+                }
             } else if (mSecondCount==1 && mCountSetUp==0){
                 messageViewInformIsItemUsing (theCurrentRoom);
             } else if (mCountSetUp>0 && mCountSetUp< originalTeamSize *2){
@@ -1637,7 +1643,11 @@ public class MainActivity extends AppCompatActivity {
                 messageViewInformCurrentIsStillFallenAfterItemUsed(theCurrentRoom);
             }
         } else if (!theCurrentRoom.isFallen() && theCurrentRoom.getRoomNum()!=4 && mCountSetUp!=0){
-            messageViewInformCurrentIsStillFallenAfterItemUsed(theCurrentRoom);
+            if (mCountSetUp>0 && mCountSetUp< originalTeamSize *2){
+                messageViewInformWhatItemHasBeenUsed(gameData,theCurrentRoom);
+            } else if (mCountSetUp==originalTeamSize*2){
+                messageViewInformCurrentIsStillFallenAfterItemUsed(theCurrentRoom);
+            }
         }
     }
 
@@ -1665,11 +1675,12 @@ public class MainActivity extends AppCompatActivity {
                             GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                             mDatabaseReference.child(GAMEDATA).setValue(gameData);
                             mDatabaseReference.child(TURN).setValue(-1);
+                            mDatabaseReference.child(CURRENTTEAM).setValue(null);
                         }
                     }
                 }, DELAYEDSECONDSFOROPTIONSCHOSEN * 1000);
-                mMessageView.setVisibility(View.INVISIBLE);
                 enableYesNo();
+                mMessageView.setVisibility(View.INVISIBLE);
                 mYesButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -1733,7 +1744,6 @@ public class MainActivity extends AppCompatActivity {
                             handler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    mMessageView.setVisibility(View.INVISIBLE);
                                     int firstSearch = 0;
                                     for (int i=0; i<colors.size(); i++){
                                         if (mCurrentTeam.get(0).getColor().equalsIgnoreCase(colors.get(i))){
@@ -1755,7 +1765,6 @@ public class MainActivity extends AppCompatActivity {
                             handler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    mMessageView.setVisibility(View.INVISIBLE);
                                     int firstSearch = 0;
                                     for (int i=0; i<colors.size(); i++){
                                         if (mCurrentTeam.get(0).getColor().equalsIgnoreCase(colors.get(i))){
@@ -1789,92 +1798,115 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void messageViewInformWhatItemHasBeenUsed(GameData gameData,Room theCurrentRoom) {
-        Playable prevPlayer = mCurrentTeam.get(gameData.getmPrevICount());
-        final boolean isItemUsed  = gameData.getmIsUsedItem();
-        mMessageView.setVisibility(View.VISIBLE);
-        mMessageView.setText("Loading Information");
-        mMessageView.setEnabled(false);
-        if (isItemUsed) {
-            int itemNumber = gameData.getItemNumber();
-            for (int i = 0; i < items.size(); i++) {
-                if (itemNumber == items.get(i).getItemNum()) {
-                    mCurrentSelectedItem = items.get(i);
-                }
-            }
-            String characterName = gameData.getmAffectedGameCharacter();
-            GameCharacter affectedCharacter = gameBroad.matchGameCharacter(prevPlayer, characterName);
-            mCurrentSelectedItem.setAfteraffectedRoomNumber(gameData.getmAfterAffectedRoomNumber());
-            Log.i(TAG, " AfterAffectedRoomNumber From Data: " + gameData.getmAfterAffectedRoomNumber());
-            if (gameData.getmAffectedGameCharacter() != null) {
-                mCurrentSelectedItem.setAffectedGameCharacter(affectedCharacter);
-            }
-        }
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
+        mDatabaseReference.child(CURRENTTEAM).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void run() {
-               if (isItemUsed){
-                   if (mCurrentSelectedItem.getItemNum()==3){
-                       disableContinue();
-                       mMessageView.setText(prevPlayer + " used Axe, one zombie has been killed");
-                       theCurrentRoom.zombieKilled();
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue()!=null){
+                   mCurrentTeam.clear();
+                   for (DataSnapshot snapshot: dataSnapshot.getChildren()){
+                       String teamColor = snapshot.getValue().toString();
+                       Playable player = gameBroad.matchPlayer(teamColor);
+                       mCurrentTeam.add(player);
                    }
-                   if (mCurrentSelectedItem.getItemNum()==4){
-                       mMessageView.setText(prevPlayer + " used Shotgun, two zombie has been killed");
-                       theCurrentRoom.zombieKilled();
-                       theCurrentRoom.zombieKilled();
-                   }
-                   if (mCurrentSelectedItem.getItemNum()==5){
-                       mMessageView.setText(prevPlayer + " used Hareware, one zombie has been temporary block");
-                       theCurrentRoom.zombieKilled();
-                       mUsedItem.add(mCurrentSelectedItem);
-                       mPlayersUsedItem.add(prevPlayer);
-                   }
-                   if (mCurrentSelectedItem.getItemNum()==6){
-                       mMessageView.setText(prevPlayer + " used Hidden, his/her" + mCurrentSelectedItem.getAffectedGameCharacter() + " is hiding in the room");
-                       theCurrentRoom.leave(gameBroad.matchGameCharacter(prevPlayer,mCurrentSelectedItem.getAffectedGameCharacter().getName()));
-                       mUsedItem.add(mCurrentSelectedItem);
-                       mPlayersUsedItem.add(prevPlayer);
-                   }
-                   if (mCurrentSelectedItem.getItemNum()==7){
-                       mMessageView.setText(prevPlayer + " used Sprint, his/her" + mCurrentSelectedItem.getAffectedGameCharacter() + " has left the room");
-                       theCurrentRoom.leave(gameBroad.matchGameCharacter(prevPlayer,mCurrentSelectedItem.getAffectedGameCharacter().getName()));
-                       mUsedItem.add(mCurrentSelectedItem);
-                       mPlayersUsedItem.add(prevPlayer);
-                   }
-                   updateRoom(MainActivity.this);
-                   mMainActivityLayout.invalidate();
-               } else {
-                  mMessageView.setText(prevPlayer +  " did not use any item");
-               }
-            }
-        },DELAYEDSECONDSFORMESSAGEVIE*1000);
-        Handler handler1 =  new Handler();
-        handler1.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Log.i(TAG,"item used: " + mUsedItem + " player used " + mPlayersUsedItem);
-                mMessageView.setVisibility(View.INVISIBLE);
-                otherCommonSetUp();
-                mCountSetUp++;
-                int nextMove = 0;
-                if (mCountSetUp==originalTeamSize*2){
-                    nextMove = -2;
-                } else {
-                    for (int i=0; i<colors.size(); i++){
-                        if (mCurrentTeam.get(gameData.getmPrevICount()+1).getColor().equalsIgnoreCase(colors.get(i))) {
-                            nextMove = i;
+                    Collections.sort(mCurrentTeam, new Comparator<Playable>() {
+                        @Override
+                        public int compare(Playable o1, Playable o2) {
+                            return o1.getColor().compareTo(o2.getColor());
+                        }
+                    });
+                    Playable prevPlayer = mCurrentTeam.get(gameData.getmPrevICount());
+                    final boolean isItemUsed  = gameData.getmIsUsedItem();
+                    mMessageView.setVisibility(View.VISIBLE);
+                    mMessageView.setText("Loading Information");
+                    mMessageView.setEnabled(false);
+                    if (isItemUsed) {
+                        int itemNumber = gameData.getItemNumber();
+                        for (int i = 0; i < items.size(); i++) {
+                            if (itemNumber == items.get(i).getItemNum()) {
+                                mCurrentSelectedItem = items.get(i);
+                            }
+                        }
+                        String characterName = gameData.getmAffectedGameCharacter();
+                        GameCharacter affectedCharacter = gameBroad.matchGameCharacter(prevPlayer, characterName);
+                        mCurrentSelectedItem.setAfteraffectedRoomNumber(gameData.getmAfterAffectedRoomNumber());
+                        Log.i(TAG, " AfterAffectedRoomNumber From Data: " + gameData.getmAfterAffectedRoomNumber());
+                        if (gameData.getmAffectedGameCharacter() != null) {
+                            mCurrentSelectedItem.setAffectedGameCharacter(affectedCharacter);
                         }
                     }
-                }
-                if (mMyPlayerID==getControlId()){
-                    GameData gameData = new GameData(mCountPhase, mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                    mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                    mDatabaseReference.child(TURN).setValue(nextMove);
-                    mDatabaseReference.child(PREVTURN).setValue(-1);
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (isItemUsed){
+                                if (mCurrentSelectedItem.getItemNum()==3){
+                                    disableContinue();
+                                    mMessageView.setText(prevPlayer + " used Axe, one zombie has been killed");
+                                    theCurrentRoom.zombieKilled();
+                                }
+                                if (mCurrentSelectedItem.getItemNum()==4){
+                                    mMessageView.setText(prevPlayer + " used Shotgun, two zombie has been killed");
+                                    theCurrentRoom.zombieKilled();
+                                    theCurrentRoom.zombieKilled();
+                                }
+                                if (mCurrentSelectedItem.getItemNum()==5){
+                                    mMessageView.setText(prevPlayer + " used Hareware, one zombie has been temporary block");
+                                    theCurrentRoom.zombieKilled();
+                                    mUsedItem.add(mCurrentSelectedItem);
+                                    mPlayersUsedItem.add(prevPlayer);
+                                }
+                                if (mCurrentSelectedItem.getItemNum()==6){
+                                    mMessageView.setText(prevPlayer + " used Hidden, his/her" + mCurrentSelectedItem.getAffectedGameCharacter() + " is hiding in the room");
+                                    theCurrentRoom.leave(gameBroad.matchGameCharacter(prevPlayer,mCurrentSelectedItem.getAffectedGameCharacter().getName()));
+                                    mUsedItem.add(mCurrentSelectedItem);
+                                    mPlayersUsedItem.add(prevPlayer);
+                                }
+                                if (mCurrentSelectedItem.getItemNum()==7){
+                                    mMessageView.setText(prevPlayer + " used Sprint, his/her" + mCurrentSelectedItem.getAffectedGameCharacter() + " has left the room");
+                                    theCurrentRoom.leave(gameBroad.matchGameCharacter(prevPlayer,mCurrentSelectedItem.getAffectedGameCharacter().getName()));
+                                    mUsedItem.add(mCurrentSelectedItem);
+                                    mPlayersUsedItem.add(prevPlayer);
+                                }
+                                updateRoom(MainActivity.this);
+                                mMainActivityLayout.invalidate();
+                            } else {
+                                mMessageView.setText(prevPlayer +  " did not use any item");
+                            }
+                        }
+                    },DELAYEDSECONDSFORMESSAGEVIE*1000);
+                    Handler handler1 =  new Handler();
+                    handler1.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.i(TAG,"item used: " + mUsedItem + " player used " + mPlayersUsedItem);
+                            otherCommonSetUp();
+                            mCountSetUp++;
+                            int nextMove = 0;
+                            if (mCountSetUp==originalTeamSize*2){
+                                nextMove = -2;
+                            } else {
+                                for (int i=0; i<colors.size(); i++){
+                                    if (mCurrentTeam.get(gameData.getmPrevICount()+1).getColor().equalsIgnoreCase(colors.get(i))) {
+                                        nextMove = i;
+                                    }
+                                }
+                            }
+                            if (mMyPlayerID==getControlId()){
+                                GameData gameData = new GameData(mCountPhase, mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                                mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                                mDatabaseReference.child(TURN).setValue(nextMove);
+                                mDatabaseReference.child(PREVTURN).setValue(-1);
+                            }
+                        }
+                    },DELAYEDSECONDSFOROPTIONSCHOSEN*1000);
                 }
             }
-        },DELAYEDSECONDSFOROPTIONSCHOSEN*1000);
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void messageViewInformCurrentIsStillFallenAfterItemUsed(Room theCurrentRoom) {
@@ -1977,8 +2009,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
                 Log.i(TAG, "mCurrentTeam: " + mCurrentTeam + " fallenTeam List: " + searchTeam + " fallenTeam Set: " + searchteam);
-                Log.i(TAG, "colors: " + colors);
-                mMessageView.setVisibility(View.INVISIBLE);
+                Log.i(TAG, "colors: " + colors);;
                 int firstSearch = 0;
                 for (int i=0; i<colors.size(); i++){
                     if (mCurrentTeam.get(0).getColor().equalsIgnoreCase(colors.get(i))){
@@ -2215,9 +2246,9 @@ public class MainActivity extends AppCompatActivity {
                             mDatabaseReference.child(TURN).setValue(-20);
                         }
                     }
-                },DELAYEDSECONDSFORMESSAGEVIE * 1000);
+                },DELAYEDSECONDSFORLONGMESSAGE * 1000);
             }
-        },DELAYEDSECONDSFOROPTIONSCHOSEN*1000);
+        },DELAYEDSECONDSFORLONGMESSAGE*1000);
     }
 
     private void messageViewDisplayItemAfterEffect(Room fallenRoom) {
@@ -2267,7 +2298,6 @@ public class MainActivity extends AppCompatActivity {
                 handler1.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        mMessageView.setVisibility(View.INVISIBLE);
                         updateRoom(MainActivity.this);
                         mMainActivityLayout.invalidate();
                         mFourthCount=5;
@@ -2289,7 +2319,6 @@ public class MainActivity extends AppCompatActivity {
             handler1.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    mMessageView.setVisibility(View.INVISIBLE);
                     updateRoom(MainActivity.this);
                     mMainActivityLayout.invalidate();
                     mFourthCount=5;
@@ -3915,41 +3944,92 @@ public class MainActivity extends AppCompatActivity {
             if (mFourthCount==2){
                 if (mSecondCount==1 && mCountSetUp<originalTeamSize*2){
                     if (mCountSetUp%2==0){
-                        System.out.println("using Item");
-                        int i = mCountSetUp==0? 0: mCountSetUp/2;
-                        String playerColor = mCurrentTeam.get(i).getColor();
-                        String message =  mCurrentTeam.get(i) +  " please select your item (press no to choose nothing)";
-                        ArrayList rooms = (ArrayList<Room>)gameBroad.getRooms();
-                        ArrayList<Item> items = (ArrayList<Item>) mCurrentTeam.get(i).otherItemsList();
-                        HashSet<GameCharacter> existedCharacters = fallenRoom.existChracterForThatPlayer(mCurrentTeam.get(i));
-                        List<GameCharacter> existedCharactersList = new ArrayList<>();
-                        for (GameCharacter character: existedCharacters){
-                            existedCharactersList.add(character);
-                        }
-                        Intent intent = PlayerActivity.newChoosingItemIntent(MainActivity.this,rooms,playerColor,items,fallenRoom.getRoomNum(),
-                                (ArrayList<GameCharacter>) existedCharactersList,  message,mCountSetUp,6);
-                        startActivityForResult(intent,REQUEST_CODE_ITEM);
-                        overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
+                        mDatabaseReference.child(CURRENTTEAM).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.getValue()!=null){
+                                    mCurrentTeam.clear();
+                                    for (DataSnapshot snapshot: dataSnapshot.getChildren()){
+                                        String teamColor = snapshot.getValue().toString();
+                                        Playable player = gameBroad.matchPlayer(teamColor);
+                                        mCurrentTeam.add(player);
+                                    }
+                                    Collections.sort(mCurrentTeam, new Comparator<Playable>() {
+                                        @Override
+                                        public int compare(Playable o1, Playable o2) {
+                                            return o1.getColor().compareTo(o2.getColor());
+                                        }
+                                    });
+                                    System.out.println("using Item");
+                                    int i = mCountSetUp==0? 0: mCountSetUp/2;
+                                    String playerColor = mCurrentTeam.get(i).getColor();
+                                    String message =  mCurrentTeam.get(i) +  " please select your item (press no to choose nothing)";
+                                    ArrayList rooms = (ArrayList<Room>)gameBroad.getRooms();
+                                    ArrayList<Item> items = (ArrayList<Item>) mCurrentTeam.get(i).otherItemsList();
+                                    HashSet<GameCharacter> existedCharacters = fallenRoom.existChracterForThatPlayer(mCurrentTeam.get(i));
+                                    List<GameCharacter> existedCharactersList = new ArrayList<>();
+                                    for (GameCharacter character: existedCharacters){
+                                        existedCharactersList.add(character);
+                                    }
+                                    Intent intent = PlayerActivity.newChoosingItemIntent(MainActivity.this,rooms,playerColor,items,fallenRoom.getRoomNum(),
+                                            (ArrayList<GameCharacter>) existedCharactersList,  message,mCountSetUp,6);
+                                    startActivityForResult(intent,REQUEST_CODE_ITEM);
+                                    overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
                     }
                     if (mCountSetUp%2==1){
                         if (isNetworkAvailable()){
-                            int i = mCountSetUp/2;
-                            if (mCurrentSelectedItem!=null){
-                                Playable playable = mCurrentTeam.get(i);
-                                Item usedItem = gameBroad.matchItem(playable, mCurrentSelectedItem.getName());
-                                playable.usedItem(usedItem);
-                            }
-                            System.out.println("putting item into Firebase");
-                            Log.i(TAG, "item: " + mCurrentSelectedItem);
-                            int itemNumber =  mCurrentSelectedItem.getItemNum();
-                            int afterRoomNumber = mCurrentSelectedItem.getAfteraffectedRoomNumber();
-                            String characterName =  mCurrentSelectedItem.getAffectedGameCharacter().getName();
-                            boolean isItemUsed =  mCurrentYesNo;
-                            GameData gameData = new GameData(mCountPhase, mCountSetUp, mSecondCount, mThirdCount,mFourthCount,mFifthCount,mSixCount,
-                                    isItemUsed, itemNumber, characterName,afterRoomNumber,i);
-                            mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                            mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
-                            mDatabaseReference.child(TURN).setValue(-1);
+                            mDatabaseReference.child(CURRENTTEAM).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.getValue()!=null){
+                                        mCurrentTeam.clear();
+                                        for (DataSnapshot snapshot: dataSnapshot.getChildren()){
+                                            String teamColor = snapshot.getValue().toString();
+                                            Playable player = gameBroad.matchPlayer(teamColor);
+                                            mCurrentTeam.add(player);
+                                        }
+                                        Collections.sort(mCurrentTeam, new Comparator<Playable>() {
+                                            @Override
+                                            public int compare(Playable o1, Playable o2) {
+                                                return o1.getColor().compareTo(o2.getColor());
+                                            }
+                                        });
+                                        int i = mCountSetUp/2;
+                                        int itemNumber =  0;
+                                        int afterRoomNumber =  0;
+                                        String characterName =  "Model";
+                                        if (mCurrentSelectedItem!=null){
+                                            Playable playable = mCurrentTeam.get(i);
+                                            Item usedItem = gameBroad.matchItem(playable, mCurrentSelectedItem.getName());
+                                            playable.usedItem(usedItem);
+                                            itemNumber =  mCurrentSelectedItem.getItemNum();
+                                            afterRoomNumber = mCurrentSelectedItem.getAfteraffectedRoomNumber();
+                                            characterName =  mCurrentSelectedItem.getAffectedGameCharacter().getName();
+                                        }
+                                        System.out.println("putting item into Firebase");
+                                        Log.i(TAG, "item: " + mCurrentSelectedItem);;
+                                        boolean isItemUsed =  mCurrentYesNo;
+                                        GameData gameData = new GameData(mCountPhase, mCountSetUp, mSecondCount, mThirdCount,mFourthCount,mFifthCount,mSixCount,
+                                                isItemUsed, itemNumber, characterName,afterRoomNumber,i);
+                                        mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                                        mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
+                                        mDatabaseReference.child(TURN).setValue(-1);
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
                         } else {
                             alertNetworkNotAvailable();
                         }
@@ -4387,14 +4467,20 @@ public class MainActivity extends AppCompatActivity {
         LayoutInflater inflater = getLayoutInflater();
         View chatLayout = inflater.inflate(R.layout.chat_layout, null);
         AlertDialog.Builder chatbox = new AlertDialog.Builder(this);
+<<<<<<< HEAD
+=======
+        chat_btn.clearAnimation();
+>>>>>>> 33d6dda2b39941772133564970e89c3e8b3b0ec7
 
         FloatingActionButton fab = chatLayout.findViewById(R.id.fab);
-
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 EditText input = (EditText)chatLayout.findViewById(R.id.input);
+<<<<<<< HEAD
 
+=======
+>>>>>>> 33d6dda2b39941772133564970e89c3e8b3b0ec7
 
                 // Read the input field and push a new instance
                 // of ChatMessage to the Firebase database
@@ -4449,7 +4535,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 if (dataSnapshot.getValue()!=null){
+<<<<<<< HEAD
                     Toast.makeText(MainActivity.this, "You have new Message", Toast.LENGTH_SHORT).show();
+=======
+                    Animation animTranslate = AnimationUtils.loadAnimation(MainActivity.this, R.anim.anim_bounce);
+                    chat_btn.startAnimation(animTranslate);
+                    Toast.makeText(MainActivity.this, "You have a new Message", Toast.LENGTH_SHORT).show();
+>>>>>>> 33d6dda2b39941772133564970e89c3e8b3b0ec7
                 }
 
             }
