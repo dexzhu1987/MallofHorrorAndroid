@@ -4527,6 +4527,7 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder chatbox = new AlertDialog.Builder(this);
         chat_btn.clearAnimation();
 
+
         FloatingActionButton fab = chatLayout.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -4586,6 +4587,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 if (dataSnapshot.getValue()!=null){
+                    Toast.makeText(MainActivity.this, "You have new Message", Toast.LENGTH_SHORT).show();
                     Animation animTranslate = AnimationUtils.loadAnimation(MainActivity.this, R.anim.anim_bounce);
                     chat_btn.startAnimation(animTranslate);
                     Toast.makeText(MainActivity.this, "You have a new Message", Toast.LENGTH_SHORT).show();
@@ -4615,6 +4617,5 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
 
 }
