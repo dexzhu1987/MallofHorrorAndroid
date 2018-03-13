@@ -21,6 +21,7 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
@@ -143,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView mMessageView;
     private ImageView mLoading;
     private TextView chat_tv;
+    private Button chat_btn;
 
     private static List<String> votes = new ArrayList<>();
     private static int mThirdCount;
@@ -185,6 +187,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         chat_tv = findViewById(R.id.chat_text);
+        chat_btn = findViewById(R.id.chat_btn);
         gettingReady();
         updateRoom(MainActivity.this);
         displayMessage();
@@ -4393,15 +4396,13 @@ public class MainActivity extends AppCompatActivity {
         LayoutInflater inflater = getLayoutInflater();
         View chatLayout = inflater.inflate(R.layout.chat_layout, null);
         AlertDialog.Builder chatbox = new AlertDialog.Builder(this);
-
+        chat_btn.clearAnimation();
 
         FloatingActionButton fab = chatLayout.findViewById(R.id.fab);
-
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 EditText input = (EditText)chatLayout.findViewById(R.id.input);
-                chat_tv.setVisibility(View.GONE);
 
                 // Read the input field and push a new instance
                 // of ChatMessage to the Firebase database
@@ -4456,8 +4457,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 if (dataSnapshot.getValue()!=null){
-                    chat_tv.setVisibility(View.VISIBLE);
-                    Toast.makeText(MainActivity.this, "You have new Message", Toast.LENGTH_SHORT).show();
+                    Animation animTranslate = AnimationUtils.loadAnimation(MainActivity.this, R.anim.anim_bounce);
+                    chat_btn.startAnimation(animTranslate);
+                    Toast.makeText(MainActivity.this, "You have a new Message", Toast.LENGTH_SHORT).show();
                 }
 
             }
