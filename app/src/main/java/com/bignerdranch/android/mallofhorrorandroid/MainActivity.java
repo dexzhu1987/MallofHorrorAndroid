@@ -584,6 +584,7 @@ public class MainActivity extends AppCompatActivity {
                         GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                         mDatabaseReference.child(GAMEDATA).setValue(gameData);
                         mDatabaseReference.child(WINNERCOLOR).setValue(mCurrentTeam.get(0).getColor());
+                        mDatabaseReference.child(TURN).setValue(-30);
                     } else {
                         mThirdCount++;
                         GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
