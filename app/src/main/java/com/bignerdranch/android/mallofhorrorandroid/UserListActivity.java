@@ -123,6 +123,7 @@ public class UserListActivity extends AppCompatActivity {
                         }
                     }
 
+
                     for (int i=0; i<usersNames.size(); i++){
                         if (usersNames.get(i).getText().toString().equals("")){
                             break;

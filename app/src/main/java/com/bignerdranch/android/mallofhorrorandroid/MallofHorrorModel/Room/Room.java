@@ -19,6 +19,7 @@ public class Room implements Parcelable {
     protected List<GameCharacter> roomCharaters;
     protected HashMap<String, Integer> currentVoteResult;
     protected int currentZombienumber;
+    protected String winnerColor;
 
     public Room(int roomNum, String name, int capability) {
         this.roomNum = roomNum;
@@ -27,6 +28,7 @@ public class Room implements Parcelable {
         roomCharaters = new ArrayList<>();
         currentVoteResult = new HashMap<>();
         currentZombienumber = 0;
+        winnerColor = "";
     }
 
     @Override
@@ -42,6 +44,7 @@ public class Room implements Parcelable {
         dest.writeInt(currentZombienumber);
         dest.writeSerializable(currentVoteResult);
         dest.writeSerializable((Serializable) roomCharaters);
+        dest.writeString(winnerColor);
     }
 
     protected Room (final Parcel in){
@@ -51,6 +54,7 @@ public class Room implements Parcelable {
         currentZombienumber = in.readInt();
         currentVoteResult =(HashMap<String,Integer>)  in.readSerializable();
         roomCharaters = (List<GameCharacter>) in.readSerializable();
+        winnerColor = in.readString();
     }
 
 
@@ -261,31 +265,42 @@ public class Room implements Parcelable {
     public String winner(){
         List<String> keys = new ArrayList<>(currentVoteResult.keySet());
         List<Integer> values= new ArrayList<>(currentVoteResult.values());
-        if (values.size()>0){
-            int max=values.get(0);
-            for (int i=0; i<values.size(); i++){
-                if (max<values.get(i)){
-                    max=values.get(i);
+        if (keys.size()>0 && values.size()>0){
+            if (values.size()>0){
+                int max=values.get(0);
+                for (int i=0; i<values.size(); i++){
+                    if (max<values.get(i)){
+                        max=values.get(i);
+                    }
                 }
-            }
-            int q=0;
-            int count=0;
-            for (int i=0; i<values.size();i++){
-                if (max==values.get(i)){
-                    q=i;
-                    count++;
+                int q=0;
+                int count=0;
+                for (int i=0; i<values.size();i++){
+                    if (max==values.get(i)){
+                        q=i;
+                        count++;
+                    }
                 }
-            }
-            if (count>1){
-                return "TIE";
+                if (count>1){
+                    winnerColor = "TIE";
+                }
+                else {
+                    winnerColor = keys.get(q);
+                }
             }
             else {
-                return keys.get(q);
+                winnerColor = "TIE";
             }
         }
-        else {
-            return "TIE";
-        }
+        return winnerColor;
+    }
+
+    public String getWinnerColor() {
+        return winnerColor;
+    }
+
+    public void setWinnerColor(String winnerColor) {
+        this.winnerColor = winnerColor;
     }
 
     @Override
