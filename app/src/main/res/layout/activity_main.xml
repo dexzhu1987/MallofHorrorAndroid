@@ -302,7 +302,7 @@
         android:id="@+id/continue_button1"
         android:layout_width="105dp"
         android:layout_height="47dp"
-        android:layout_marginEnd="135dp"
+        android:layout_marginEnd="15dp"
         android:layout_marginStart="390dp"
         android:layout_marginTop="190dp"
         android:background="@drawable/ok_button"
@@ -310,7 +310,6 @@
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.8" />
 
@@ -401,13 +400,10 @@
         android:layout_width="111dp"
         android:layout_height="68dp"
         android:layout_marginBottom="2dp"
-        android:layout_marginEnd="135dp"
-        android:layout_marginStart="370dp"
+       android:layout_marginRight="10dp"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.669"
-        app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/showdowdrop" />
 
     <ImageView
