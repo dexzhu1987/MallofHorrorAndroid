@@ -2314,6 +2314,7 @@ public class MainActivity extends AppCompatActivity {
                                 mMessageView.setText("The affect of sprint has trigger, the left character has moved to the destination");
                                 gameBroad.matchRoom(mUsedItem.get(mSecondCount).getAfteraffectedRoomNumber())
                                         .enter(gameBroad.matchGameCharacter(mPlayersUsedItem.get(mSecondCount), mUsedItem.get(mSecondCount).getAffectedGameCharacter().getName()));
+                                writeRoomIntoFireBase(gameBroad.matchRoom(mUsedItem.get(mSecondCount).getAfteraffectedRoomNumber()));
                             }
                             writeRoomIntoFireBase(fallenRoom);
                             updateRoom(MainActivity.this);
@@ -2445,7 +2446,7 @@ public class MainActivity extends AppCompatActivity {
                 },DELAYEDSECONDSFORMESSAGEVIE*1000);
             }
         } else {
-            mMessageView.setText("No Player need to be removed this turn");
+            mMessageView.setText("Loading Information");
             Handler handler1 = new Handler();
             handler1.postDelayed(new Runnable() {
                 @Override
