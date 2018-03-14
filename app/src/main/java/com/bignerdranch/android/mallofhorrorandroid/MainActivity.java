@@ -640,10 +640,12 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         disableYesNo();
                         if (mMyPlayerID==getControlId()){
-                            mSecondCount = 2;
-                            GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                            mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                            mDatabaseReference.child(TURN).setValue(-1);
+                            do {
+                                mSecondCount = 2;
+                                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                                mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                                mDatabaseReference.child(TURN).setValue(-1);
+                            } while (!isNetworkAvailable());
                         }
                     }
                 }, DELAYEDSECONDSFOROPTIONSCHOSEN * 1000);
@@ -1600,9 +1602,11 @@ public class MainActivity extends AppCompatActivity {
             mFourthCount=6;
             Log.i(TAG, " mMyPlayerId: " + mMyPlayerID + " ControlId: " + getControlId());
             if (mMyPlayerID==getControlId()){
-                GameData gameData1 = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                mDatabaseReference.child(GAMEDATA).setValue(gameData1);
-                mDatabaseReference.child(TURN).setValue(-20);
+                do {
+                    GameData gameData1 = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                    mDatabaseReference.child(GAMEDATA).setValue(gameData1);
+                    mDatabaseReference.child(TURN).setValue(-20);
+                } while (!isNetworkAvailable());
             }
         } else if (theCurrentRoom.isFallen() && theCurrentRoom.getRoomNum()==4){
             System.out.println(theCurrentRoom.getName() + "  is fallen");
@@ -1621,9 +1625,11 @@ public class MainActivity extends AppCompatActivity {
                     mFourthCount=3;
                     mSixCount++;
                     if (mMyPlayerID==getControlId()){
-                        GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                        mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                        mDatabaseReference.child(TURN).setValue(-20);
+                        do {
+                            GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                            mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                            mDatabaseReference.child(TURN).setValue(-20);
+                        } while (!isNetworkAvailable());
                     }
                 }
             },DELAYEDSECONDSFORMESSAGEVIE*1000);
@@ -1669,10 +1675,12 @@ public class MainActivity extends AppCompatActivity {
                         disableYesNo();
                         mSecondCount = 1;
                         if (mMyPlayerID==getControlId()){
-                            GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                            mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                            mDatabaseReference.child(TURN).setValue(-1);
-                            mDatabaseReference.child(CURRENTTEAM).setValue(null);
+                            do {
+                                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                                mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                                mDatabaseReference.child(TURN).setValue(-1);
+                                mDatabaseReference.child(CURRENTTEAM).setValue(null);
+                            } while (!isNetworkAvailable());
                         }
                     }
                 }, DELAYEDSECONDSFOROPTIONSCHOSEN * 1000);
@@ -1893,10 +1901,12 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }
                             if (mMyPlayerID==getControlId()){
-                                GameData gameData = new GameData(mCountPhase, mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                                mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                                mDatabaseReference.child(TURN).setValue(nextMove);
-                                mDatabaseReference.child(PREVTURN).setValue(-1);
+                                do {
+                                    GameData gameData = new GameData(mCountPhase, mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                                    mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                                    mDatabaseReference.child(TURN).setValue(nextMove);
+                                    mDatabaseReference.child(PREVTURN).setValue(-1);
+                                } while (!isNetworkAvailable());
                             }
                         }
                     },DELAYEDSECONDSFOROPTIONSCHOSEN*1000);
@@ -1926,9 +1936,11 @@ public class MainActivity extends AppCompatActivity {
                     mThirdCount=0;
                     mFourthCount=3;
                     if (mMyPlayerID==getControlId()){
-                        GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                        mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                        mDatabaseReference.child(TURN).setValue(-20);
+                        do {
+                            GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                            mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                            mDatabaseReference.child(TURN).setValue(-20);
+                        } while (!isNetworkAvailable());
                     }
                 }
             },DELAYEDSECONDSFORLONGMESSAGE*1000);
@@ -1944,9 +1956,11 @@ public class MainActivity extends AppCompatActivity {
                     mThirdCount=0;
                     mFourthCount=4;
                     if (mMyPlayerID==getControlId()){
-                        GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                        mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                        mDatabaseReference.child(TURN).setValue(-20);
+                        do {
+                            GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                            mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                            mDatabaseReference.child(TURN).setValue(-20);
+                        } while (!isNetworkAvailable());
                     }
                 }
             },DELAYEDSECONDSFORLONGMESSAGE*1000);
@@ -2071,10 +2085,12 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 mSecondCount=4;
                 if (mMyPlayerID==getControlId()){
-                    GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                    mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                    mDatabaseReference.child(TURN).setValue(-5);
-                    mDatabaseReference.child(VICTIMCOLOR).setValue(mCurrentVictim.getColor());
+                    do {
+                        GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                        mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                        mDatabaseReference.child(TURN).setValue(-5);
+                        mDatabaseReference.child(VICTIMCOLOR).setValue(mCurrentVictim.getColor());
+                    } while (!isNetworkAvailable());
                 }
             }
         },DELAYEDSECONDSFORMESSAGEVIE*1000);
@@ -2128,9 +2144,11 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                         if (mMyPlayerID==getControlId()){
-                            GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                            mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                            mDatabaseReference.child(TURN).setValue(nextMove);
+                            do {
+                                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                                mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                                mDatabaseReference.child(TURN).setValue(nextMove);
+                            } while (!isNetworkAvailable());
                         }
                     }
                 },DELAYEDSECONDSFORLONGMESSAGE * 1000);
@@ -2243,9 +2261,11 @@ public class MainActivity extends AppCompatActivity {
                         mSecondCount=0;
                         mThirdCount=0;
                         if (mMyPlayerID==getControlId()){
-                            GameData gameData = new GameData(mCountPhase,mCountSetUp, mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                            mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                            mDatabaseReference.child(TURN).setValue(-20);
+                            do {
+                                GameData gameData = new GameData(mCountPhase,mCountSetUp, mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                                mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                                mDatabaseReference.child(TURN).setValue(-20);
+                            } while (!isNetworkAvailable());
                         }
                     }
                 },DELAYEDSECONDSFORLONGMESSAGE * 1000);
@@ -2269,34 +2289,38 @@ public class MainActivity extends AppCompatActivity {
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if (mUsedItem.get(mSecondCount).getItemNum()==5){
-                            mMessageView.setText("The affect of hareware has expired, the blocked zombie has returned");
-                            fallenRoom.zombieApproached();
-                        } else if (mUsedItem.get(mSecondCount).getItemNum()==6){
-                            mMessageView.setText("The affect of hidden has expired, the hidden character has returned");
-                            fallenRoom.enter(gameBroad.matchGameCharacter(mPlayersUsedItem.get(mSecondCount),mUsedItem.get(mSecondCount).getAffectedGameCharacter().getName()));
-                        } else if (mUsedItem.get(mSecondCount).getItemNum()==7){
-                            mMessageView.setText("The affect of sprint has trigger, the left character has moved to the destination");
-                            gameBroad.matchRoom(mUsedItem.get(mSecondCount).getAfteraffectedRoomNumber())
-                                    .enter(gameBroad.matchGameCharacter(mPlayersUsedItem.get(mSecondCount), mUsedItem.get(mSecondCount).getAffectedGameCharacter().getName()));
-                        }
-                        writeRoomIntoFireBase(fallenRoom);
-                        updateRoom(MainActivity.this);
-                        mMainActivityLayout.invalidate();
-                        Handler handler1 = new Handler();
-                        handler1.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                updateRoom(MainActivity.this);
-                                mMainActivityLayout.invalidate();
-                                mSecondCount++;
-                                if (mMyPlayerID==getControlId()){
-                                    GameData gameData = new GameData(mCountPhase,mCountSetUp, mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                                    mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                                    mDatabaseReference.child(TURN).setValue(-mSecondCount-1);
-                                }
+                        if (mSecondCount<mUsedItem.size()){
+                            if (mUsedItem.get(mSecondCount).getItemNum()==5){
+                                mMessageView.setText("The affect of hareware has expired, the blocked zombie has returned");
+                                fallenRoom.zombieApproached();
+                            } else if (mUsedItem.get(mSecondCount).getItemNum()==6){
+                                mMessageView.setText("The affect of hidden has expired, the hidden character has returned");
+                                fallenRoom.enter(gameBroad.matchGameCharacter(mPlayersUsedItem.get(mSecondCount),mUsedItem.get(mSecondCount).getAffectedGameCharacter().getName()));
+                            } else if (mUsedItem.get(mSecondCount).getItemNum()==7){
+                                mMessageView.setText("The affect of sprint has trigger, the left character has moved to the destination");
+                                gameBroad.matchRoom(mUsedItem.get(mSecondCount).getAfteraffectedRoomNumber())
+                                        .enter(gameBroad.matchGameCharacter(mPlayersUsedItem.get(mSecondCount), mUsedItem.get(mSecondCount).getAffectedGameCharacter().getName()));
                             }
-                        },DELAYEDSECONDSFORMESSAGEVIE*1000);
+                            writeRoomIntoFireBase(fallenRoom);
+                            updateRoom(MainActivity.this);
+                            mMainActivityLayout.invalidate();
+                            Handler handler1 = new Handler();
+                            handler1.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    updateRoom(MainActivity.this);
+                                    mMainActivityLayout.invalidate();
+                                    mSecondCount++;
+                                    if (mMyPlayerID==getControlId()){
+                                        do {
+                                            GameData gameData = new GameData(mCountPhase,mCountSetUp, mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                                            mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                                            mDatabaseReference.child(TURN).setValue(-mSecondCount-1);}
+                                        while (!isNetworkAvailable());
+                                    }
+                                }
+                            },DELAYEDSECONDSFORMESSAGEVIE*1000);
+                        }
                     }
                 },DELAYEDSECONDSFORMESSAGEVIE*1000);
             } else if (mSecondCount==mUsedItem.size()){
@@ -2312,9 +2336,11 @@ public class MainActivity extends AppCompatActivity {
                         mSecondCount=0;
                         mThirdCount=0;
                         if (mMyPlayerID==getControlId()){
-                            GameData gameData = new GameData(mCountPhase,mCountSetUp, mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                            mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                            mDatabaseReference.child(TURN).setValue(-20);
+                            do {
+                                GameData gameData = new GameData(mCountPhase,mCountSetUp, mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                                mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                                mDatabaseReference.child(TURN).setValue(-20);
+                            } while (!isNetworkAvailable());
                         }
 
                     }
@@ -2333,9 +2359,11 @@ public class MainActivity extends AppCompatActivity {
                     mSecondCount=0;
                     mThirdCount=0;
                     if (mMyPlayerID == getControlId()){
-                        GameData gameData = new GameData(mCountPhase,mCountSetUp, mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                        mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                        mDatabaseReference.child(TURN).setValue(-40);
+                        do{
+                            GameData gameData = new GameData(mCountPhase,mCountSetUp, mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                            mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                            mDatabaseReference.child(TURN).setValue(-40);
+                        }while (!isNetworkAvailable());
                     }
                 }
             },DELAYEDSECONDSFORMESSAGEVIE*1000);
@@ -2369,9 +2397,11 @@ public class MainActivity extends AppCompatActivity {
                         mMainActivityLayout.invalidate();
                         mSecondCount++;
                         if (mMyPlayerID==getControlId()){
-                            GameData gameData = new GameData(mCountPhase,mCountSetUp, mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                            mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                            mDatabaseReference.child(TURN).setValue(-mSecondCount);
+                            do {
+                                GameData gameData = new GameData(mCountPhase,mCountSetUp, mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                                mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                                mDatabaseReference.child(TURN).setValue(-mSecondCount);
+                            } while (!isNetworkAvailable());
                         }
                     }
                 },DELAYEDSECONDSFORMESSAGEVIE*1000);
@@ -2391,9 +2421,11 @@ public class MainActivity extends AppCompatActivity {
                         mSecondCount=0;
                         mThirdCount=0;
                         if (mMyPlayerID==getControlId()){
-                            GameData gameData = new GameData(mCountPhase,mCountSetUp, mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                            mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                            mDatabaseReference.child(TURN).setValue(-20);
+                            do{
+                                GameData gameData = new GameData(mCountPhase,mCountSetUp, mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                                mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                                mDatabaseReference.child(TURN).setValue(-20);}
+                            while (!isNetworkAvailable());
                         }
                     }
                 },DELAYEDSECONDSFORMESSAGEVIE*1000);
@@ -2411,9 +2443,11 @@ public class MainActivity extends AppCompatActivity {
                     mSecondCount=0;
                     mThirdCount=0;
                     if (mMyPlayerID==getControlId()){
-                        GameData gameData = new GameData(mCountPhase,mCountSetUp, mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                        mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                        mDatabaseReference.child(TURN).setValue(-25);
+                        do {
+                            GameData gameData = new GameData(mCountPhase,mCountSetUp, mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                            mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                            mDatabaseReference.child(TURN).setValue(-25);
+                        } while (!isNetworkAvailable());
                     }
                 }
             },DELAYEDSECONDSFORMESSAGEVIE*1000);
@@ -2444,10 +2478,12 @@ public class MainActivity extends AppCompatActivity {
         mCurrentYesNo=false;
         mCurrentYesNoMain = false;
         if (mMyPlayerID==getControlId()){
-            GameData gameData1 = new GameData(mCountPhase, mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-            mDatabaseReference.child(GAMEDATA).setValue(gameData1);
-            mDatabaseReference.child(TURN).setValue(-50);
-            mDatabaseReference.child(PREVTURN).setValue(-1);
+            do {
+                GameData gameData1 = new GameData(mCountPhase, mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                mDatabaseReference.child(GAMEDATA).setValue(gameData1);
+                mDatabaseReference.child(TURN).setValue(-50);
+                mDatabaseReference.child(PREVTURN).setValue(-1);
+            } while (!isNetworkAvailable());
         }
     }
 
@@ -2500,10 +2536,12 @@ public class MainActivity extends AppCompatActivity {
                         mDatabaseReference.child(PLAYERBOOLEANANSWERS).setValue(null);
                         mDatabaseReference.child(ZOMBIEROOMS).setValue(null);
                        if (mMyPlayerID==getControlId()){
-                           GameData gameData = new GameData(mCountPhase, mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                           mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                           mDatabaseReference.child(TURN).setValue(-30);
-                           mDatabaseReference.child(PREVTURN).setValue(-1);
+                           do {
+                               GameData gameData = new GameData(mCountPhase, mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                               mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                               mDatabaseReference.child(TURN).setValue(-30);
+                               mDatabaseReference.child(PREVTURN).setValue(-1);
+                           } while (!isNetworkAvailable());
                        }
                     }
                 }, DELAYEDSECONDSFORLONGMESSAGE * 1000);
