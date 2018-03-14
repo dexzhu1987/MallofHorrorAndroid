@@ -1632,16 +1632,6 @@ public class MainActivity extends AppCompatActivity {
                 mSixCount++;
                 messageViewInformItemCanbeUsed(theCurrentRoom);
                 originalTeamSize = playersInTheRoomList.size();
-                HashSet<Playable> playersInTheRoom = gameBroad.WhoCan(theCurrentRoom.existCharacterColor());
-                List<Playable> playersInTheRoomList1 = new ArrayList<>();
-                playersInTheRoomList1.addAll(playersInTheRoom);
-                mCurrentTeam = (ArrayList<Playable>) playersInTheRoomList1;
-                Log.i(TAG, "CurrentTeam for fallen original team: " + mCurrentTeam);
-                if (mMyPlayerID==getControlId()){
-                    for (Playable teammember:  mCurrentTeam){
-                        mDatabaseReference.child(CURRENTTEAM).push().setValue(teammember.getColor());
-                    }
-                }
             } else if (mSecondCount==1 && mCountSetUp==0){
                 messageViewInformIsItemUsing (theCurrentRoom);
             } else if (mCountSetUp>0 && mCountSetUp< originalTeamSize *2){
@@ -1760,6 +1750,9 @@ public class MainActivity extends AppCompatActivity {
                                     Log.i(TAG, "fallen team for item using: " + mCurrentTeam);
                                     Log.i(TAG, "firstitemuse for item using: " + firstSearch);
                                     if (mMyPlayerID==firstSearch){
+                                        for (Playable teammember:  mCurrentTeam){
+                                            mDatabaseReference.child(CURRENTTEAM).push().setValue(teammember.getColor());
+                                        }
                                         GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                                         mDatabaseReference.child(GAMEDATA).setValue(gameData);
                                         mDatabaseReference.child(TURN).setValue(firstSearch);
