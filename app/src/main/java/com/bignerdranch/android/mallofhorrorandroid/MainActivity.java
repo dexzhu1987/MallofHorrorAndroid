@@ -1633,10 +1633,9 @@ public class MainActivity extends AppCompatActivity {
                 messageViewInformItemCanbeUsed(theCurrentRoom);
                 originalTeamSize = playersInTheRoomList.size();
                 mCurrentTeam = (ArrayList<Playable>) playersInTheRoomList;
-
                 if (mMyPlayerID==getControlId()){
                     for (Playable teammember:  mCurrentTeam){
-                        mDatabaseReference.child(CURRENTTEAM).push().child(teammember.getColor());
+                        mDatabaseReference.child(CURRENTTEAM).push().setValue(teammember.getColor());
                     }
                 }
             } else if (mSecondCount==1 && mCountSetUp==0){
