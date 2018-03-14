@@ -4362,10 +4362,12 @@ public class MainActivity extends AppCompatActivity {
             if (data == null){
                 return;
             }
-            mSecondCount = ShowVoteResultActivity.getCountedSetUp(data);
-            GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-            mDatabaseReference.child(GAMEDATA).setValue(gameData);
-            mDatabaseReference.child(TURN).setValue(-10);
+            if (mMyPlayerID==getControlId()){
+                mSecondCount = ShowVoteResultActivity.getCountedSetUp(data);
+                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                mDatabaseReference.child(TURN).setValue(-10);
+            }
         }
         if (requestCode == REQUEST_CODE_YESNO){
             if (data == null){
@@ -4379,10 +4381,12 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println("data null");
                 return;
             }
-            mSecondCount = ShowSimpleVoteResultActivity.getCountedSetUp(data);
-            GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-            mDatabaseReference.child(GAMEDATA).setValue(gameData);
-            mDatabaseReference.child(TURN).setValue(-10);
+            if (mMyPlayerID==getControlId()){
+                mSecondCount = ShowSimpleVoteResultActivity.getCountedSetUp(data);
+                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                mDatabaseReference.child(TURN).setValue(-10);
+            }
         }
         if (requestCode == REQUEST_CODE_CHOOSINGITEM){
             if (data == null){
@@ -4408,19 +4412,23 @@ public class MainActivity extends AppCompatActivity {
             if (data == null){
                 return;
             }
-            mFourthCount = ShowingZombieActivity.getCountedSetUp(data);
-            GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-            mDatabaseReference.child(GAMEDATA).setValue(gameData);
-            mDatabaseReference.child(TURN).setValue(-10);
+            if (mMyPlayerID==getControlId()){
+                mFourthCount = ShowingZombieActivity.getCountedSetUp(data);
+                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                mDatabaseReference.child(TURN).setValue(-10);
+            }
         }
         if (requestCode == REQUEST_CODE_VIEWZOMBIEALLMORE){
             if (data == null){
                 return;
             }
-            mFourthCount = ShowMoreZombiesActivity.getCountedSetUp(data);
-            GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-            mDatabaseReference.child(GAMEDATA).setValue(gameData);
-            mDatabaseReference.child(TURN).setValue(-15);
+            if (mMyPlayerID==getControlId()){
+                mFourthCount = ShowMoreZombiesActivity.getCountedSetUp(data);
+                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                mDatabaseReference.child(TURN).setValue(-15);
+            }
         }
         if (requestCode == REQUEST_CODE_ITEM){
             if (data == null){
