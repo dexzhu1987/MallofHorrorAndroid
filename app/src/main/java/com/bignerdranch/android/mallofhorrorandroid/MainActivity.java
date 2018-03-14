@@ -483,20 +483,24 @@ public class MainActivity extends AppCompatActivity {
                 public void run() {
                     mMessageView.setVisibility(View.INVISIBLE);
                     if (mMyPlayerID==0){
-                        mCountPhase++;
-                        mCountSetUp=0;
-                        mSecondCount=0;
-                        mThirdCount=0;
                         votes.clear();
                         mCurrentTeam.clear();
                         mCurrentItemOptions.clear();
                         mCurrentZombiesRooms.clear();
                         mCurrentYesNo=false;
                         mCurrentYesNoMain = false;
-                        GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                        mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                        mDatabaseReference.child(TURN).setValue(-2);
-                        mDatabaseReference.child(PREVTURN).setValue(-1);
+                        if (mMyPlayerID==getControlId()){
+                            do {
+                                mCountPhase++;
+                                mCountSetUp=0;
+                                mSecondCount=0;
+                                mThirdCount=0;
+                                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                                mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                                mDatabaseReference.child(TURN).setValue(-2);
+                                mDatabaseReference.child(PREVTURN).setValue(-1);
+                            } while (!isNetworkAvailable());
+                        }
                     }
                 }
             },DELAYEDSECONDSFORMESSAGEVIE * 1000);
@@ -856,21 +860,25 @@ public class MainActivity extends AppCompatActivity {
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                mMessageView.setVisibility(View.INVISIBLE);
-                                mCountPhase++;
-                                mCountSetUp=0;
-                                mSecondCount=0;
-                                mThirdCount=0;
                                 votes.clear();
                                 mCurrentTeam.clear();
                                 mCurrentItemOptions.clear();
                                 mCurrentZombiesRooms.clear();
                                 mCurrentYesNo=false;
                                 mCurrentYesNoMain = false;
-                                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                                mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                                mDatabaseReference.child(TURN).setValue(-2);
-                                mDatabaseReference.child(PREVTURN).setValue(-1);
+                                if (mMyPlayerID==getControlId()){
+                                    do {
+                                        mCountPhase++;
+                                        mCountSetUp=0;
+                                        mSecondCount=0;
+                                        mThirdCount=0;
+                                        GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                                        mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                                        mDatabaseReference.child(TURN).setValue(-2);
+                                        mDatabaseReference.child(PREVTURN).setValue(-1);
+                                    } while (!isNetworkAvailable());
+                                }
+
 
                             }
                         },DELAYEDSECONDSFORMESSAGEVIE * 1000);
@@ -1444,11 +1452,6 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mCountPhase++;
-                mCountSetUp=0;
-                mSecondCount=0;
-                mThirdCount=0;
-                mFourthCount=0;
                 votes.clear();
                 mCurrentTeam.clear();
                 mCurrentItemOptions.clear();
@@ -1456,14 +1459,25 @@ public class MainActivity extends AppCompatActivity {
                 roomspicked.clear();
                 mCurrentYesNo=false;
                 mCurrentYesNoMain = false;
-                GameData gameData = new GameData(mCountPhase, mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                mDatabaseReference.child(FIRSTPLAYERINDEX).setValue(null);
-                mDatabaseReference.child(ROOMS).setValue(null);
-                mDatabaseReference.child(INDEXS).setValue(null);
-                mDatabaseReference.child(ISCHIEFELECTED).setValue(null);
-                mDatabaseReference.child(TURN).setValue(-2);
-                mDatabaseReference.child(PREVTURN).setValue(-1);
+                if (mMyPlayerID==getControlId()){
+                    do{
+                        mCountPhase++;
+                        mCountSetUp=0;
+                        mSecondCount=0;
+                        mThirdCount=0;
+                        mFourthCount=0;
+                        GameData gameData = new GameData(mCountPhase, mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                        mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                        mDatabaseReference.child(FIRSTPLAYERINDEX).setValue(null);
+                        mDatabaseReference.child(ROOMS).setValue(null);
+                        mDatabaseReference.child(INDEXS).setValue(null);
+                        mDatabaseReference.child(ISCHIEFELECTED).setValue(null);
+                        mDatabaseReference.child(TURN).setValue(-2);
+                        mDatabaseReference.child(PREVTURN).setValue(-1);
+                    }while (!isNetworkAvailable());
+                }
+
+
             }
         }, DELAYEDSECONDSFORMESSAGEVIE*1000);
     }
@@ -3109,18 +3123,6 @@ public class MainActivity extends AppCompatActivity {
                 alertNetworkNotAvailable();
             }
         }
-        if (mCountSetUp == 3*mPlayerNumber*3){
-            disableContinue();
-            mMessageView.setText("PRE-GAME SETTING PHASE TWO: GETTING STARTER ITEM");
-            mMessageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mCountPhase++;
-                    mCountSetUp=0;
-                    enableContinue();
-                }
-            });
-        }
     }
 
     private void gameSetUpGetItem() {
@@ -3156,18 +3158,6 @@ public class MainActivity extends AppCompatActivity {
                     alertNetworkNotAvailable();
                 }
             }
-
-        } else if (mCountSetUp == mPlayerNumber*2){
-            disableContinue();
-            mMessageView.setText("Game Phase I: Parking Search");
-            mMessageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mCountPhase++;
-                    mCountSetUp=0;
-                    enableContinue();
-                }
-            });
         }
     }
 
@@ -3183,15 +3173,6 @@ public class MainActivity extends AppCompatActivity {
                     mMessageView.setVisibility(View.INVISIBLE);
                     mMessageView.setVisibility(View.VISIBLE);
                     mMessageView.setText("Game Phase II: Security Chief selected");
-                    mMessageView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            enableContinue();
-                            mCountPhase++;
-                            mCountSetUp=0;
-                            mSecondCount=0;
-                        }
-                    });
 
                 }
             });
@@ -3735,21 +3716,6 @@ public class MainActivity extends AppCompatActivity {
             if (mCountSetUp == mCurrentTeam.size()*4 + gameBroad.getPlayers().size() * 3) {
                 disableContinue();
                 mMessageView.setText("Game Phase III: Chief Viewing and Moving");
-                mMessageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        enableContinue();
-                        mCountPhase++;
-                        mCountSetUp=0;
-                        mSecondCount=0;
-                        mThirdCount=0;
-                        votes.clear();
-                        mCurrentTeam.clear();
-                        mCurrentItemOptions.clear();
-                        mCurrentYesNoMain = false;
-                        mCurrentYesNo = false;
-                    }
-                });
             }
         }
     }
@@ -3965,28 +3931,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-        if (mCountSetUp==mCurrentPlayerNumber*4){
-            System.out.println("Display message again");
-            disableContinue();
-            mMessageView.setText("Game Phase IV: Zombies Revealed and Attacked");
-            mMessageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    enableContinue();
-                    mCountPhase++;
-                    mCountSetUp=0;
-                    mSecondCount=0;
-                    mThirdCount=0;
-                    votes.clear();
-                    mCurrentTeam.clear();
-                    mCurrentItemOptions.clear();
-                    playersIndex.clear();
-                    roomspicked.clear();
-                    mCurrentYesNo=false;
-                    mCurrentYesNoMain = false;
-                }
-            });
-        }
+
     }
 
     private void showZombie() {
