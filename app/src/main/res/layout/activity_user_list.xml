@@ -17,16 +17,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:background="@drawable/player_room_bg"
+        android:background="@drawable/zombie_background"
         tools:context="com.myhexaville.tictactoe.wifi.UserListActivity">
 
         <LinearLayout
-            android:layout_width="300dp"
+            android:layout_width="250dp"
             android:layout_height="match_parent"
+            android:layout_marginRight="200dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:orientation="vertical">
 
             <RelativeLayout
-                android:background="@android:color/holo_red_light"
+                android:background="@drawable/border_layout"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -34,40 +38,42 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/user_1"
-                    android:layout_alignParentLeft="true"
+                    android:id="@+id/user1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="25dp"
+                    android:layout_marginLeft="20dp"
                     android:layout_marginStart="@dimen/activity_horizontal_margin"
                     android:text=""
                     android:textColor="@android:color/white"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-                    tools:text="" />
+                    tools:text=""
+                    android:layout_toRightOf="@+id/red_icon"
+                    android:textAlignment="center"/>
 
-                <TextView
-                    android:id="@+id/pl_red"
-                    android:textColor="@android:color/black"
-                    android:layout_marginRight="10dp"
-                    android:layout_alignParentRight="true"
-                    android:textAlignment="gravity"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Player Red" />
+                <!--<TextView-->
+                    <!--android:id="@+id/pl_red"-->
+                    <!--android:textColor="@android:color/black"-->
+                    <!--android:layout_marginRight="10dp"-->
+                    <!--android:layout_alignParentRight="true"-->
+                    <!--android:textAlignment="gravity"-->
+                    <!--android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content" />-->
 
                 <ImageView
+                    android:id="@+id/red_icon"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_alignParentRight="true"
-                    android:src="@drawable/redtoughguybttn"
-                    android:layout_below="@+id/pl_red"/>
+                    android:layout_margin="20dp"
+                    android:layout_alignParentLeft="true"
+                    android:visibility="invisible"
+                    android:src="@drawable/redtoughguybttn"/>
 
             </RelativeLayout>
 
             <RelativeLayout
-                android:background="@android:color/holo_orange_light"
+                android:background="@drawable/border_layout"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -75,40 +81,42 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/user_2"
+                    android:id="@+id/user2"
                     android:textColor="@android:color/white"
-                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="20dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/activity_horizontal_margin"
                     android:text=""
                     android:layout_marginTop="25dp"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-                    tools:text="" />
+                    tools:text=""
+                    android:layout_toRightOf="@+id/yellow_icon"
+                    android:textAlignment="center"/>
 
-                <TextView
-                    android:id="@+id/pl_yellow"
-                    android:textColor="@android:color/black"
-                    android:layout_marginRight="10dp"
-                    android:layout_alignParentRight="true"
-                    android:textAlignment="gravity"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:text="Player Yellow" />
+                <!--<TextView-->
+                    <!--android:id="@+id/pl_yellow"-->
+                    <!--android:textColor="@android:color/black"-->
+                    <!--android:layout_marginRight="10dp"-->
+                    <!--android:layout_alignParentRight="true"-->
+                    <!--android:textAlignment="gravity"-->
+                    <!--android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_gravity="center_vertical" />-->
                 <ImageView
+                    android:id="@+id/yellow_icon"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_alignParentRight="true"
-                    android:src="@drawable/yellowtoughguybttn"
-                    android:layout_below="@+id/pl_yellow"/>
+                    android:layout_margin="20dp"
+                    android:layout_alignParentLeft="true"
+                    android:visibility="invisible"
+                    android:src="@drawable/yellowtoughguybttn"/>
 
             </RelativeLayout>
 
             <RelativeLayout
-                android:background="@android:color/holo_blue_light"
+                android:background="@drawable/border_layout"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -116,42 +124,45 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/user_3"
+                    android:id="@+id/user3"
                     android:textColor="@android:color/white"
-                    android:layout_alignParentLeft="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/activity_horizontal_margin"
+                    android:layout_marginLeft="20dp"
                     android:text=""
                     android:layout_marginTop="25dp"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-                    tools:text="" />
+                    tools:text=""
+                    android:layout_toRightOf="@+id/blue_icon"
+                    android:textAlignment="center"/>
 
-                <TextView
-                    android:id="@+id/pl_blue"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginRight="10dp"
-                    android:text="Player Blue"
-                    android:textAlignment="gravity"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-                    android:textColor="@android:color/black" />
+                <!--<TextView-->
+                    <!--android:id="@+id/pl_blue"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_alignParentRight="true"-->
+                    <!--android:layout_gravity="center_vertical"-->
+                    <!--android:layout_marginRight="10dp"-->
+
+                    <!--android:textAlignment="gravity"-->
+                    <!--android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"-->
+                    <!--android:textColor="@android:color/black" />-->
 
                 <ImageView
+                    android:id="@+id/blue_icon"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_alignParentRight="true"
-                    android:src="@drawable/bluetoughguybttn"
-                    android:layout_below="@+id/pl_blue"/>
+                    android:layout_margin="20dp"
+                    android:visibility="invisible"
+                    android:layout_alignParentLeft="true"
+                    android:src="@drawable/bluetoughguybttn"/>
 
 
             </RelativeLayout>
 
             <RelativeLayout
-                android:background="@android:color/holo_green_light"
+                android:background="@drawable/border_layout"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -159,50 +170,47 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/user_4"
+                    android:id="@+id/user4"
                     android:textColor="@android:color/white"
-                    android:layout_alignParentLeft="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/activity_horizontal_margin"
                     android:text=""
                     android:layout_marginTop="25dp"
+                    android:layout_marginLeft="20dp"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-                    tools:text="" />
+                    tools:text=""
+                    android:layout_toRightOf="@+id/green_icon"/>
 
-                <TextView
-                    android:id="@+id/pl_green"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginRight="10dp"
-                    android:text="Player Green"
-                    android:textAlignment="gravity"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-                    android:textColor="@android:color/black" />
+                <!--<TextView-->
+                    <!--android:id="@+id/pl_green"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_alignParentRight="true"-->
+                    <!--android:layout_gravity="center_vertical"-->
+                    <!--android:layout_marginRight="10dp"-->
+                    <!--android:textAlignment="gravity"-->
+                    <!--android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"-->
+                    <!--android:textColor="@android:color/black" />-->
 
                 <ImageView
+                    android:id="@+id/green_icon"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_alignParentRight="true"
-                    android:src="@drawable/greentoughguybttn"
-                    android:layout_below="@+id/pl_green"/>
+                    android:layout_margin="20dp"
+                    android:layout_alignParentLeft="true"
+                    android:visibility="invisible"
+                    android:src="@drawable/greentoughguybttn"/>
 
             </RelativeLayout>
         </LinearLayout>
-        <Button
-            android:id="@+id/open_list"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="test"/>
-
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/list"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"/>
 
     </LinearLayout>
 

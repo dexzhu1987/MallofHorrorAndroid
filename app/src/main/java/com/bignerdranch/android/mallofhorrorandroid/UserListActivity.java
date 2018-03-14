@@ -12,10 +12,12 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.Game;
@@ -47,7 +49,6 @@ public class UserListActivity extends AppCompatActivity {
     private Game gameMain;
     private String type;
     private boolean isStarted;
-    private Button open_list;
 
     public static Intent newIntent(Context context, String type, String roomID, String username) {
         Intent intent = new Intent(context, UserListActivity.class);
@@ -60,7 +61,7 @@ public class UserListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        open_list = findViewById(R.id.open_list);
+
         ActivityUserListBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_user_list);
 
         FirebaseMessaging.getInstance().subscribeToTopic("all");
@@ -90,21 +91,18 @@ public class UserListActivity extends AppCompatActivity {
 
     }
 
-    private void openUserDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = getLayoutInflater();
-        View userLayout = inflater.inflate(R.layout.activity_user_list, null);
-
-        builder.show();
-
-    }
-
     private void updateRoom(ActivityUserListBinding binding, String roomId) {
         ArrayList<TextView> usersNames = new ArrayList<>();
         usersNames.add(binding.user1);
         usersNames.add(binding.user2);
         usersNames.add(binding.user3);
         usersNames.add(binding.user4);
+
+        ArrayList<ImageView> usersIcon = new ArrayList<>();
+        usersIcon.add(binding.redIcon);
+        usersIcon.add(binding.yellowIcon);
+        usersIcon.add(binding.blueIcon);
+        usersIcon.add(binding.greenIcon);
         for (int i=1; i<=4; i++){
             String player = "player"+i;
             final int j = i;
@@ -113,9 +111,16 @@ public class UserListActivity extends AppCompatActivity {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.getValue()==username){
                         usersNames.get(j-1).setText(dataSnapshot.getValue() + " (Me)");
+                        usersIcon.get(j-1).setVisibility(View.VISIBLE);
                         return;
                     } else {
                         usersNames.get(j-1).setText((String) dataSnapshot.getValue());
+                        usersIcon.get(j-1).setVisibility(View.VISIBLE);
+                    }
+                    for (int i = 0; i < usersIcon.size(); i++){
+                        if (usersNames.get(i).getText().toString().equals("")){
+                            usersIcon.get(i).setVisibility(View.INVISIBLE);
+                        }
                     }
 
                     for (int i=0; i<usersNames.size(); i++){
@@ -315,4 +320,6 @@ public class UserListActivity extends AppCompatActivity {
         super.onDestroy();
         _idleHandler.removeCallbacks(_idleRunnable);
     }
+
+
 }
