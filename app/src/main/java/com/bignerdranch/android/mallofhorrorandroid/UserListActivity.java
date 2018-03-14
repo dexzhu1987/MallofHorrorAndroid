@@ -13,6 +13,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.Game;
@@ -44,6 +47,7 @@ public class UserListActivity extends AppCompatActivity {
     private Game gameMain;
     private String type;
     private boolean isStarted;
+    private Button open_list;
 
     public static Intent newIntent(Context context, String type, String roomID, String username) {
         Intent intent = new Intent(context, UserListActivity.class);
@@ -56,6 +60,7 @@ public class UserListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        open_list = findViewById(R.id.open_list);
         ActivityUserListBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_user_list);
 
         FirebaseMessaging.getInstance().subscribeToTopic("all");
@@ -82,6 +87,15 @@ public class UserListActivity extends AppCompatActivity {
 
         updateRoom(binding, roomId);
 
+
+    }
+
+    private void openUserDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View userLayout = inflater.inflate(R.layout.activity_user_list, null);
+
+        builder.show();
 
     }
 
