@@ -4522,14 +4522,13 @@ public class MainActivity extends AppCompatActivity {
 
     FirebaseListAdapter<ChatMessage> adapter;
 
-    public void open_chat(View view) {
 
-        LayoutInflater inflater = getLayoutInflater();
-        View chatLayout = inflater.inflate(R.layout.chat_layout, null);
+    public void open_chat(View view) {
         AlertDialog.Builder chatbox = new AlertDialog.Builder(this);
         chat_btn.clearAnimation();
 
-
+        LayoutInflater inflater = getLayoutInflater();
+        View chatLayout = inflater.inflate(R.layout.chat_layout, null);
         FloatingActionButton fab = chatLayout.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -4592,7 +4591,6 @@ public class MainActivity extends AppCompatActivity {
 
                     ChatMessage newMessage = dataSnapshot.getValue(ChatMessage.class);
                     if(newMessage.getMessageUser()!=mUserName){
-                        Toast.makeText(MainActivity.this, "You have new Message", Toast.LENGTH_SHORT).show();
                         Animation animTranslate = AnimationUtils.loadAnimation(MainActivity.this, R.anim.anim_bounce);
                         chat_btn.startAnimation(animTranslate);
                         Toast.makeText(MainActivity.this, "You have a new Message", Toast.LENGTH_SHORT).show();
