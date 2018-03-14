@@ -2260,7 +2260,11 @@ public class MainActivity extends AppCompatActivity {
                 disableContinue();
                 mMessageView.setVisibility(View.VISIBLE);
                 mMessageView.setEnabled(false);
-                mMessageView.setText("Items has been used, Some Items will triggered after affect");
+                if (mSecondCount==0){
+                    mMessageView.setText("Items have been used, Some Items will triggered after affect");
+                } else {
+                    mMessageView.setText("Loading Information");
+                }
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
