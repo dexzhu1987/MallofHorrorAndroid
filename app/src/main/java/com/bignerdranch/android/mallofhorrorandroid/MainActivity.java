@@ -88,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_ITEM = 12;
 
 
+
     private int mPlayerNumber;
 
     private final String PLAYERINFORM = "PlayerInform";
@@ -106,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
     private final String ROOMSINGAME = "RoomsInGame";
     private final String CAMECHARACTERS = "gamecharacters";
     private final String ZOMBIESNUMBER = "zombiesnumber";
-
+    private static final String WINNERCOLOR = "WinnerColor";
 
     private final int DELAYEDSECONDSFORMESSAGEVIE = 3;
     private final int DELAYEDSECONDSFOROPTIONSCHOSEN = 10;
@@ -576,10 +577,19 @@ public class MainActivity extends AppCompatActivity {
                 }
                 Log.i(TAG, "firstsearch for parking: " + firstSearch);
                 if (mMyPlayerID==firstSearch){
-                    mThirdCount++;
-                    GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                    mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                    mDatabaseReference.child(TURN).setValue(firstSearch);
+                    if (mCurrentTeam.size()==1){
+                        mThirdCount++;
+                        mCountSetUp = mCurrentTeam.size()*4;
+                        mSecondCount = 3;
+                        GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                        mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                        mDatabaseReference.child(WINNERCOLOR).setValue(mCurrentTeam.get(0).getColor());
+                    } else {
+                        mThirdCount++;
+                        GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                        mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                        mDatabaseReference.child(TURN).setValue(firstSearch);
+                    }
                 }
             }
         },DELAYEDSECONDSFORMESSAGEVIE * 1000);
@@ -811,9 +821,23 @@ public class MainActivity extends AppCompatActivity {
                 }
             },DELAYEDSECONDSFORMESSAGEVIE*1000);
         } else {
+            mDatabaseReference.child(WINNERCOLOR).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.getValue()!=null){
+                        gameBroad.matchRoom(roomNumber).setWinnerColor(dataSnapshot.getValue().toString());
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
             System.out.println("Winner determined");
             disableContinue();
             String winnercolor = gameBroad.matchRoom(roomNumber).winner();
+            Log.i(TAG, "Winner color: " + winnercolor);
             mMessageView.setText("Winner is " + gameBroad.matchPlayer(winnercolor) +
                     "\nAnd would search items");
             gameBroad.getItemDeck().shuffle();
@@ -836,10 +860,15 @@ public class MainActivity extends AppCompatActivity {
                             break;
                         }
                     }
-                    mSecondCount=4;
-                    GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                    mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                    mDatabaseReference.child(TURN).setValue(turnValue);
+                    if (mMyPlayerID==getControlId()){
+                        do{
+                            mSecondCount=4;
+                            GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                            mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                            mDatabaseReference.child(TURN).setValue(turnValue);
+                            mDatabaseReference.child(WINNERCOLOR).setValue(null);
+                        }while (!isNetworkAvailable());
+                    }
                 }
             },DELAYEDSECONDSFORMESSAGEVIE*1000);
         }
@@ -1878,13 +1907,13 @@ public class MainActivity extends AppCompatActivity {
                                     mPlayersUsedItem.add(prevPlayer);
                                 }
                                 if (mCurrentSelectedItem.getItemNum()==6){
-                                    mMessageView.setText(prevPlayer + " used Hidden, his/her" + mCurrentSelectedItem.getAffectedGameCharacter() + " is hiding in the room");
+                                    mMessageView.setText(prevPlayer + " used Hidden, his/her " + mCurrentSelectedItem.getAffectedGameCharacter() + " is hiding in the room");
                                     theCurrentRoom.leave(gameBroad.matchGameCharacter(prevPlayer,mCurrentSelectedItem.getAffectedGameCharacter().getName()));
                                     mUsedItem.add(mCurrentSelectedItem);
                                     mPlayersUsedItem.add(prevPlayer);
                                 }
                                 if (mCurrentSelectedItem.getItemNum()==7){
-                                    mMessageView.setText(prevPlayer + " used Sprint, his/her" + mCurrentSelectedItem.getAffectedGameCharacter() + " has left the room");
+                                    mMessageView.setText(prevPlayer + " used Sprint, his/her " + mCurrentSelectedItem.getAffectedGameCharacter() + " has left the room");
                                     theCurrentRoom.leave(gameBroad.matchGameCharacter(prevPlayer,mCurrentSelectedItem.getAffectedGameCharacter().getName()));
                                     mUsedItem.add(mCurrentSelectedItem);
                                     mPlayersUsedItem.add(prevPlayer);
