@@ -2226,6 +2226,7 @@ public class MainActivity extends AppCompatActivity {
                 mCurrentVictim.removeCharacter(deathCharacter);
                 theCurrentRoom.leave(deathCharacter);
                 theCurrentRoom.setCurrentZombienumber(0);
+                writeRoomIntoFireBase(theCurrentRoom);
                 disableContinue();
                 updateRoom(MainActivity.this);
                 mMainActivityLayout.invalidate();
@@ -4480,15 +4481,17 @@ public class MainActivity extends AppCompatActivity {
                     if (dataSnapshot.getValue()!=null){
                         int zombieNumber = dataSnapshot.child(ZOMBIESNUMBER).getValue(Integer.TYPE);
                         List<GameCharacter> gameCharacters = new ArrayList<>();
-                        for (DataSnapshot snapshot: dataSnapshot.child(CAMECHARACTERS).getChildren()){
-                            FireBaseGameCharacter fireBaseGameCharacter = snapshot.getValue(FireBaseGameCharacter.class);
-                            String ownerColor = fireBaseGameCharacter.getOwnerColor();
-                            String characterName = fireBaseGameCharacter.getCharacterName();
-                            Playable owner = gameBroad.matchPlayer(ownerColor);
-                            GameCharacter character = gameBroad.matchGameCharacter(owner,characterName);
-                            gameCharacters.add(character);
+                        if (dataSnapshot.child(CAMECHARACTERS).getChildren()!=null){
+                            for (DataSnapshot snapshot: dataSnapshot.child(CAMECHARACTERS).getChildren()){
+                                FireBaseGameCharacter fireBaseGameCharacter = snapshot.getValue(FireBaseGameCharacter.class);
+                                String ownerColor = fireBaseGameCharacter.getOwnerColor();
+                                String characterName = fireBaseGameCharacter.getCharacterName();
+                                Playable owner = gameBroad.matchPlayer(ownerColor);
+                                GameCharacter character = gameBroad.matchGameCharacter(owner,characterName);
+                                gameCharacters.add(character);
+                            }
+                            room.setRoomCharaters(gameCharacters);
                         }
-                        room.setRoomCharaters(gameCharacters);
                         room.setCurrentZombienumber(zombieNumber);
                     }
                 }
