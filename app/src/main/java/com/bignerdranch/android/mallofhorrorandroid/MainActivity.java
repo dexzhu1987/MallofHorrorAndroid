@@ -565,7 +565,6 @@ public class MainActivity extends AppCompatActivity {
                         return o1.getColor().compareTo(o2.getColor());
                     }
                 });
-
                 Log.i(TAG, "mCurrentTeam: " + mCurrentTeam + " searchTeam List: " + searchTeam + " searchTeam Set: " + searchteam);
                 Log.i(TAG, "colors: " + colors);
                 int firstSearch = 0;
@@ -827,6 +826,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.getValue()!=null){
                         gameBroad.matchRoom(roomNumber).setWinnerColor(dataSnapshot.getValue().toString());
+
                     }
                 }
 
@@ -839,8 +839,19 @@ public class MainActivity extends AppCompatActivity {
             disableContinue();
             String winnercolor = gameBroad.matchRoom(roomNumber).winner();
             Log.i(TAG, "Winner color: " + winnercolor);
-            mMessageView.setText("Winner is " + gameBroad.matchPlayer(winnercolor) +
-                    "\nAnd would search items");
+            HashSet<Playable> searchteam = gameBroad.WhoCan(gameBroad.matchRoom(roomNumber).existCharacterColor());
+            List<Playable> searchTeam = new ArrayList<>();
+            for (Playable player : searchteam) {
+                searchTeam.add(player);
+            }
+            mCurrentTeam = (ArrayList<Playable>) searchTeam;
+            if (mCurrentTeam.size()==1){
+                mMessageView.setText("Due to only " + gameBroad.matchPlayer(winnercolor) + " in this room, " +
+                        "\nhe/she would search items");
+            } else {
+                mMessageView.setText("Winner is " + gameBroad.matchPlayer(winnercolor) +
+                        "\nAnd would search items");
+            }
             gameBroad.getItemDeck().shuffle();
             Item item1 = gameBroad.getItemDeck().deal();
             Item item2 = gameBroad.getItemDeck().deal();
