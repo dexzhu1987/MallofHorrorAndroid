@@ -4366,10 +4366,12 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             if (mMyPlayerID==getControlId()){
-                mSecondCount = ShowVoteResultActivity.getCountedSetUp(data);
-                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                mDatabaseReference.child(TURN).setValue(-10);
+                do {
+                    mSecondCount = ShowVoteResultActivity.getCountedSetUp(data);
+                    GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                    mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                    mDatabaseReference.child(TURN).setValue(-10);
+                } while (!isNetworkAvailable());
             }
         }
         if (requestCode == REQUEST_CODE_YESNO){
@@ -4385,10 +4387,12 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             if (mMyPlayerID==getControlId()){
-                mSecondCount = ShowSimpleVoteResultActivity.getCountedSetUp(data);
-                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                mDatabaseReference.child(TURN).setValue(-10);
+                do{
+                    mSecondCount = ShowSimpleVoteResultActivity.getCountedSetUp(data);
+                    GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                    mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                    mDatabaseReference.child(TURN).setValue(-10);
+                }while (!isNetworkAvailable());
             }
         }
         if (requestCode == REQUEST_CODE_CHOOSINGITEM){
@@ -4416,10 +4420,12 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             if (mMyPlayerID==getControlId()){
-                mFourthCount = ShowingZombieActivity.getCountedSetUp(data);
-                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                mDatabaseReference.child(TURN).setValue(-10);
+                do{
+                    mFourthCount = ShowingZombieActivity.getCountedSetUp(data);
+                    GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                    mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                    mDatabaseReference.child(TURN).setValue(-10);
+                }while (!isNetworkAvailable());
             }
         }
         if (requestCode == REQUEST_CODE_VIEWZOMBIEALLMORE){
@@ -4427,10 +4433,12 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             if (mMyPlayerID==getControlId()){
-                mFourthCount = ShowMoreZombiesActivity.getCountedSetUp(data);
-                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                mDatabaseReference.child(TURN).setValue(-15);
+                do {
+                    mFourthCount = ShowMoreZombiesActivity.getCountedSetUp(data);
+                    GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                    mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                    mDatabaseReference.child(TURN).setValue(-15);
+                } while (!isNetworkAvailable());
             }
         }
         if (requestCode == REQUEST_CODE_ITEM){
