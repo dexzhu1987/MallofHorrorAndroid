@@ -2279,6 +2279,7 @@ public class MainActivity extends AppCompatActivity {
                             gameBroad.matchRoom(mUsedItem.get(mSecondCount).getAfteraffectedRoomNumber())
                                     .enter(gameBroad.matchGameCharacter(mPlayersUsedItem.get(mSecondCount), mUsedItem.get(mSecondCount).getAffectedGameCharacter().getName()));
                         }
+                        writeRoomIntoFireBase(fallenRoom);
                         updateRoom(MainActivity.this);
                         mMainActivityLayout.invalidate();
                         Handler handler1 = new Handler();
@@ -4467,7 +4468,7 @@ public class MainActivity extends AppCompatActivity {
             String ownerColor = character.getOwnercolor();
             String characterName = character.getName();
             FireBaseGameCharacter fireBaseGameCharacter = new FireBaseGameCharacter(ownerColor, characterName);
-            mDatabaseReference.child(ROOMSINGAME).child(name).child(CAMECHARACTERS).push().setValue(fireBaseGameCharacter);
+            mDatabaseReference.child(ROOMSINGAME).child(name).child(CAMECHARACTERS).child(ownerColor+characterName).setValue(fireBaseGameCharacter);
         }
     }
 
