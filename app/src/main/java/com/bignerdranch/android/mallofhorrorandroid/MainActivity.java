@@ -1632,7 +1632,11 @@ public class MainActivity extends AppCompatActivity {
                 mSixCount++;
                 messageViewInformItemCanbeUsed(theCurrentRoom);
                 originalTeamSize = playersInTheRoomList.size();
-                mCurrentTeam = (ArrayList<Playable>) playersInTheRoomList;
+                HashSet<Playable> playersInTheRoom = gameBroad.WhoCan(theCurrentRoom.existCharacterColor());
+                List<Playable> playersInTheRoomList1 = new ArrayList<>();
+                playersInTheRoomList1.addAll(playersInTheRoom);
+                mCurrentTeam = (ArrayList<Playable>) playersInTheRoomList1;
+                Log.i(TAG, "CurrentTeam for fallen original team: " + mCurrentTeam);
                 if (mMyPlayerID==getControlId()){
                     for (Playable teammember:  mCurrentTeam){
                         mDatabaseReference.child(CURRENTTEAM).push().setValue(teammember.getColor());
