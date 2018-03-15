@@ -500,8 +500,8 @@ public class MainActivity extends AppCompatActivity {
                             do{
                                 GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                                 mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                                mDatabaseReference.child(TURN).setValue(-2);
                                 mDatabaseReference.child(PREVTURN).setValue(-1);
+                                mDatabaseReference.child(TURN).setValue(-2);
                             } while (!isNetworkAvailable());
                         }
                     }
@@ -908,8 +908,8 @@ public class MainActivity extends AppCompatActivity {
                                     do {
                                         GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                                         mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                                        mDatabaseReference.child(TURN).setValue(-2);
                                         mDatabaseReference.child(PREVTURN).setValue(-1);
+                                        mDatabaseReference.child(TURN).setValue(-2);
                                     } while (!isNetworkAvailable());
                                 }
 
@@ -1536,8 +1536,8 @@ public class MainActivity extends AppCompatActivity {
                         mDatabaseReference.child(ROOMS).setValue(null);
                         mDatabaseReference.child(INDEXS).setValue(null);
                         mDatabaseReference.child(ISCHIEFELECTED).setValue(null);
-                        mDatabaseReference.child(TURN).setValue(-2);
                         mDatabaseReference.child(PREVTURN).setValue(-1);
+                        mDatabaseReference.child(TURN).setValue(-2);
                     }while (!isNetworkAvailable());
                 }
 
@@ -1756,8 +1756,8 @@ public class MainActivity extends AppCompatActivity {
                             do {
                                 GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                                 mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                                mDatabaseReference.child(TURN).setValue(-1);
                                 mDatabaseReference.child(CURRENTTEAM).setValue(null);
+                                mDatabaseReference.child(TURN).setValue(-1);
                             } while (!isNetworkAvailable());
                         }
                     }
@@ -1982,8 +1982,8 @@ public class MainActivity extends AppCompatActivity {
                                 do {
                                     GameData gameData = new GameData(mCountPhase, mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                                     mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                                    mDatabaseReference.child(TURN).setValue(nextMove);
                                     mDatabaseReference.child(PREVTURN).setValue(-1);
+                                    mDatabaseReference.child(TURN).setValue(nextMove);
                                 } while (!isNetworkAvailable());
                             }
                         }
@@ -2202,8 +2202,8 @@ public class MainActivity extends AppCompatActivity {
                     do {
                         GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                         mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                        mDatabaseReference.child(TURN).setValue(-5);
                         mDatabaseReference.child(VICTIMCOLOR).setValue(mCurrentVictim.getColor());
+                        mDatabaseReference.child(TURN).setValue(-5);
                     } while (!isNetworkAvailable());
                 }
             }
@@ -2597,8 +2597,8 @@ public class MainActivity extends AppCompatActivity {
             do {
                 GameData gameData1 = new GameData(mCountPhase, mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                 mDatabaseReference.child(GAMEDATA).setValue(gameData1);
-                mDatabaseReference.child(TURN).setValue(-50);
                 mDatabaseReference.child(PREVTURN).setValue(-1);
+                mDatabaseReference.child(TURN).setValue(-50);
             } while (!isNetworkAvailable());
         }
     }
@@ -2655,8 +2655,8 @@ public class MainActivity extends AppCompatActivity {
                            do {
                                GameData gameData = new GameData(mCountPhase, mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                                mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                               mDatabaseReference.child(TURN).setValue(-30);
                                mDatabaseReference.child(PREVTURN).setValue(-1);
+                               mDatabaseReference.child(TURN).setValue(-30);
                            } while (!isNetworkAvailable());
                        }
                     }
@@ -3503,8 +3503,8 @@ public class MainActivity extends AppCompatActivity {
                     do {
                         GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount,mCurrentSelectedItem.getItemNum());
                         mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                        mDatabaseReference.child(TURN).setValue(turnValue);
                         mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
+                        mDatabaseReference.child(TURN).setValue(turnValue);
                     }while (!isNetworkAvailable());
                     mIsDataPushed = true;
 
@@ -3548,8 +3548,8 @@ public class MainActivity extends AppCompatActivity {
                     do {
                         GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                         mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                        mDatabaseReference.child(TURN).setValue(-1);
                         mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
+                        mDatabaseReference.child(TURN).setValue(-1);
                         mIsDataPushed = true;
                     }while (!isNetworkAvailable());
                 }
@@ -3891,8 +3891,8 @@ public class MainActivity extends AppCompatActivity {
                     mDatabaseReference.child(INDEXS).push().setValue(mCurrentStartPlayerIndex);
                     mDatabaseReference.child(GAMEDATA).setValue(gameData);
                     mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
-                    mDatabaseReference.child(TURN).setValue(-5);
                     mDatabaseReference.child(ROOMS).push().setValue(mCurrentRoomPickedNumber);
+                    mDatabaseReference.child(TURN).setValue(-5);
                 } while (!isNetworkAvailable());
             }
         }
@@ -3983,6 +3983,9 @@ public class MainActivity extends AppCompatActivity {
                 }
                 ++mCountSetUp;
                 do {
+                    GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount, playersIndex.get(q),roomspicked.get(q), mCurrentGameCharacterSelected);
+                    mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                    mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
                     if (mCountSetUp==mCurrentPlayerNumber*4){
                         mDatabaseReference.child(TURN).setValue(-1);
                     } else {
@@ -3996,9 +3999,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                         mDatabaseReference.child(TURN).setValue(nextMove);
                     }
-                    GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount, playersIndex.get(q),roomspicked.get(q), mCurrentGameCharacterSelected);
-                    mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                    mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
                 } while (!isNetworkAvailable());
             }
         }
