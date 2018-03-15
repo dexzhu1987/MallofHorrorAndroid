@@ -529,6 +529,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void messageViewInformExistedMembers(int roomNumber) {
+        mDatabaseReference.child(WINNERCOLOR).setValue(null);
         HashSet<Playable> searchteam = gameBroad.WhoCan(gameBroad.matchRoom(roomNumber).existCharacterColor());
         List<Playable> searchTeam = new ArrayList<>();
         for (Playable player : searchteam) {
@@ -878,7 +879,6 @@ public class MainActivity extends AppCompatActivity {
                             GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                             mDatabaseReference.child(GAMEDATA).setValue(gameData);
                             mDatabaseReference.child(TURN).setValue(turnValue);
-                            mDatabaseReference.child(WINNERCOLOR).setValue(null);
                         }while (!isNetworkAvailable());
                     }
                 }
