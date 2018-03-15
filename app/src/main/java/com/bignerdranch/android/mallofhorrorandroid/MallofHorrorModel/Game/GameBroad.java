@@ -8,23 +8,17 @@ import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.*;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Playable.*;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Room.*;
 
-
-import java.io.Serializable;
 import java.util.*;
 
 
 
-public class GameBroad implements Parcelable,Serializable{
+public class GameBroad{
   private List<Room> rooms;
   private List<Playable> players;
   private ItemDeck itemDeck;
   private Playable[] totalPlayerslist;
   private Room extraZombiesPlace;
   public static int playersNumber ;
-
-    public static Creator<GameBroad> getCREATOR() {
-        return CREATOR;
-    }
 
     public GameBroad(int numplayer) {
         rooms = new ArrayList<>();
@@ -59,54 +53,10 @@ public class GameBroad implements Parcelable,Serializable{
         }
         itemDeck = new ItemDeck();
 
-          playersNumber = 0;
-    }
-
-    @Override
-    public int describeContents() {
-        return hashCode();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(itemDeck,flags);
-        dest.writeParcelable(extraZombiesPlace,flags);
-        dest.writeList(rooms);
-        dest.writeSerializable(totalPlayerslist);
-        dest.writeList(players);
-        dest.writeInt(playersNumber);
+        playersNumber = 0;
     }
 
 
-    protected GameBroad (final Parcel in){
-        rooms = in.readArrayList(Room.class.getClassLoader());
-        players = in.readArrayList(Playable.class.getClassLoader());
-        itemDeck = (ItemDeck) in.readSerializable();
-        extraZombiesPlace = (Room) in.readSerializable();
-        totalPlayerslist = (Playable[]) in.readSerializable();
-        playersNumber = in.readInt();
-    }
-
-
-    public static final Parcelable.Creator<GameBroad> CREATOR = new Parcelable.Creator<GameBroad>() {
-        @Override
-        public GameBroad createFromParcel(Parcel source) {
-            return new GameBroad(source);
-        }
-
-        @Override
-        public GameBroad[] newArray(int size) {
-            return new GameBroad[size];
-        }
-    };
-
-    public static GameBroad createFromParcel(Parcel source) {
-        return CREATOR.createFromParcel(source);
-    }
-
-    public static GameBroad[] newArray(int size) {
-        return CREATOR.newArray(size);
-    }
 
     public int getPlayersNumber() {
         return playersNumber;

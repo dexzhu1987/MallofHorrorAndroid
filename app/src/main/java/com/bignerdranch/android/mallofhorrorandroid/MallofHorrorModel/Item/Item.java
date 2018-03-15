@@ -12,7 +12,7 @@ import java.io.Serializable;
 
 
 
-public abstract class Item implements Parcelable,Serializable {
+public abstract class Item implements Parcelable, Serializable {
     protected int itemNum;
     protected String name;
     protected int currentaffectedRoomNumber;

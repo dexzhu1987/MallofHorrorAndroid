@@ -34,18 +34,22 @@ import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.FireBaseGameCh
 import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.Game;
 import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.GameData;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Character.GameCharacter;
+import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Character.GunMan;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Dice.PairofDice;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Dice.TwoPairofDice;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.Axe;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.Hardware;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.Hidden;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.Item;
+import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.ItemDeck;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.SecurityCamera;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.ShotGun;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.Sprint;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.Threat;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Playable.Playable;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Room.Room;
+import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Room.SecurityHQ;
+import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Room.ZombiesWonderingPlace;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.firebase.ui.database.FirebaseListOptions;
 import com.google.firebase.database.ChildEventListener;
@@ -223,27 +227,10 @@ public class MainActivity extends AppCompatActivity {
         FirebaseDatabase.getInstance().getReference().child("chats").setValue(null);
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelable(GAMEBOARDSAVED, (Parcelable) gameBroad);
-        Log.i(TAG, "saving the gamebroad");
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        gameBroad = (GameBroad)  savedInstanceState.getParcelable(GAMEBOARDSAVED);
-        Log.i(TAG, "loading the gamebroad");
-    }
 
     private void gettingReady(Bundle savedInstanceState) {
         mPlayerNumber = getIntent().getIntExtra(PLAYER_NUMBER,0);
-        if (savedInstanceState==null){
-            gameBroad.setPlayersNumber(mPlayerNumber);
-        } else {
-            gameBroad = (GameBroad) savedInstanceState.getSerializable(GAMEBOARDSAVED);
-        }
+        gameBroad.setPlayersNumber(mPlayerNumber);
         mDatabaseGame = getIntent().getParcelableExtra(DATABASEGAME);
         mUserName = getIntent().getStringExtra(USERNAME);
         mType = getIntent().getStringExtra(TYPE);
