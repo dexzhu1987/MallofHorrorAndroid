@@ -183,9 +183,6 @@ public class PlayerActivity extends AppCompatActivity {
 
         System.out.println("PlayerActivity called");
             gettingReady();
-
-
-
     }
 
     private void gettingReady() {
