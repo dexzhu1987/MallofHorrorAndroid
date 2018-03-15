@@ -117,12 +117,12 @@ public class UserListActivity extends AppCompatActivity {
                         usersNames.get(j-1).setText((String) dataSnapshot.getValue());
                         usersIcon.get(j-1).setVisibility(View.VISIBLE);
                     }
-                    for (int i = 0; i < usersIcon.size(); i++){
+
+                    for (int i = 0; i < usersNames.size(); i++){
                         if (usersNames.get(i).getText().toString().equals("")){
                             usersIcon.get(i).setVisibility(View.INVISIBLE);
                         }
                     }
-
 
                     for (int i=0; i<usersNames.size(); i++){
                         if (usersNames.get(i).getText().toString().equals("")){
