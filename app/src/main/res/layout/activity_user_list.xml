@@ -64,7 +64,8 @@
                     android:id="@+id/red_icon"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_margin="20dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="10dp"
                     android:layout_alignParentLeft="true"
                     android:visibility="invisible"
                     android:src="@drawable/redtoughguybttn"/>
@@ -106,7 +107,8 @@
                     android:id="@+id/yellow_icon"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_margin="20dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="10dp"
                     android:layout_alignParentLeft="true"
                     android:visibility="invisible"
                     android:src="@drawable/yellowtoughguybttn"/>
@@ -150,7 +152,8 @@
                     android:id="@+id/blue_icon"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_margin="20dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="10dp"
                     android:visibility="invisible"
                     android:layout_alignParentLeft="true"
                     android:src="@drawable/bluetoughguybttn"/>
@@ -194,7 +197,8 @@
                     android:id="@+id/green_icon"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_margin="20dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="10dp"
                     android:layout_alignParentLeft="true"
                     android:visibility="invisible"
                     android:src="@drawable/greentoughguybttn"/>
