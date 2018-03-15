@@ -102,6 +102,10 @@ public class Room implements Parcelable {
         this.currentVoteResult = currentVoteResult;
     }
 
+    public void clearCurrentVoteResult(){
+        currentVoteResult.clear();
+    }
+
     public boolean isFull(){
         if (roomCharaters.size()>=capability){
             return true;

@@ -574,6 +574,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     }
                 }
+                gameBroad.matchRoom(roomNumber).clearCurrentVoteResult();
                 Log.i(TAG, "firstsearch for parking: " + firstSearch);
                 if (mMyPlayerID==firstSearch){
                     do {
@@ -622,7 +623,6 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 mDatabaseReference.child(PLAYERBOOLEANANSWERS).setValue(null);
                 Log.i(TAG, "vote results: " + votes);
-                mMessageView.setVisibility(View.INVISIBLE);
                 gameBroad.matchRoom(roomNumber).resetVoteResult();
                 gameBroad.matchRoom(roomNumber).voteResultAfterVote(votes);
                 ArrayList votes1 = (ArrayList<String>) votes;
@@ -2101,6 +2101,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 Log.i(TAG, "firstvote for fallling: " + firstSearch);
+                gameBroad.matchRoom(theCurrrentRoom.getRoomNum()).clearCurrentVoteResult();
                 if (mMyPlayerID==firstSearch){
                     do {
                         if (mCurrentTeam.size()==1){
