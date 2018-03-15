@@ -2125,32 +2125,42 @@ public class MainActivity extends AppCompatActivity {
         },DELAYEDSECONDSFORLONGMESSAGE * 1000);
     }
 
-    private void messageViewInformTieorLoserForFallenRoom( int roomNumber) {
+    private void messageViewInformTieorLoserForFallenRoom(int roomNumber) {
         disableContinue();
         mMessageView.setVisibility(View.VISIBLE);
         mMessageView.setEnabled(false);
-        HashSet<Playable> searchteam = gameBroad.WhoCan(gameBroad.matchRoom(roomNumber).existCharacterColor());
-        List<Playable> searchTeam = new ArrayList<>();
-        for (Playable player : searchteam) {
-            searchTeam.add(player);
-        }
-        mCurrentTeam = (ArrayList<Playable>) searchTeam;
         if (gameBroad.matchRoom(roomNumber).winner().equals("TIE")){
             System.out.println("Result is Tie");
+            HashSet<Playable> searchteam = gameBroad.WhoCan(gameBroad.matchRoom(roomNumber).existCharacterColor());
+            List<Playable> searchTeam = new ArrayList<>();
+            searchTeam.addAll(searchteam);
+            mCurrentTeam = (ArrayList<Playable>) searchTeam;
             Collections.sort(mCurrentTeam, new Comparator<Playable>() {
                 @Override
                 public int compare(Playable o1, Playable o2) {
                     return o1.getColor().compareTo(o2.getColor());
                 }
             });
+            Log.i(TAG, "mCurentTeam: " + mCurrentTeam);
             Random generator = new Random();
             int num = generator.nextInt(mCurrentTeam.size());
             mCurrentVictim = mCurrentTeam.get(num);
             mMessageView.setText("Result is TIE. " + "The system will ramdomly select a victim in the team");
         } else {
+            HashSet<Playable> searchteam = gameBroad.WhoCan(gameBroad.matchRoom(roomNumber).existCharacterColor());
+            List<Playable> searchTeam = new ArrayList<>();
+            searchTeam.addAll(searchteam);
+            mCurrentTeam = (ArrayList<Playable>) searchTeam;
+            Collections.sort(mCurrentTeam, new Comparator<Playable>() {
+                @Override
+                public int compare(Playable o1, Playable o2) {
+                    return o1.getColor().compareTo(o2.getColor());
+                }
+            });
             if (mCurrentTeam.size()==1){
                 gameBroad.matchRoom(roomNumber).setWinnerColor(mCurrentTeam.get(0).getColor());
             }
+            Log.i(TAG, "mCurentTeam: " + mCurrentTeam);
             System.out.println("Loser determined");
             String losercolor = gameBroad.matchRoom(roomNumber).winner();
             mCurrentVictim = gameBroad.matchPlayer(losercolor);
@@ -4219,7 +4229,7 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                     mCountSetUp++;
                                     GameData gameData = new GameData(mCountPhase,mCountSetUp, mSecondCount, mThirdCount, mFourthCount, mFifthCount,
-                                            mSixCount,mCurrentYesNo,4);
+                                            mSixCount,mCurrentYesNo,fallenRoom.getRoomNum());
                                     mDatabaseReference.child(GAMEDATA).setValue(gameData);
                                     mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
                                     if (mCountSetUp==4*mCurrentTeam.size()) {
