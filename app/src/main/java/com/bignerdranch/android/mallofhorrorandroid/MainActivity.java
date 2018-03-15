@@ -529,7 +529,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void messageViewInformExistedMembers(int roomNumber) {
-        mDatabaseReference.child(WINNERCOLOR).setValue(null);
         HashSet<Playable> searchteam = gameBroad.WhoCan(gameBroad.matchRoom(roomNumber).existCharacterColor());
         List<Playable> searchTeam = new ArrayList<>();
         for (Playable player : searchteam) {
@@ -583,7 +582,6 @@ public class MainActivity extends AppCompatActivity {
                         mSecondCount = 3;
                         GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                         mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                        mDatabaseReference.child(WINNERCOLOR).setValue(mCurrentTeam.get(0).getColor());
                         mDatabaseReference.child(TURN).setValue(-30);
                     } else {
                         mThirdCount++;
@@ -822,30 +820,19 @@ public class MainActivity extends AppCompatActivity {
                 }
             },DELAYEDSECONDSFORMESSAGEVIE*1000);
         } else {
-            mDatabaseReference.child(WINNERCOLOR).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.getValue()!=null){
-                        gameBroad.matchRoom(roomNumber).setWinnerColor(dataSnapshot.getValue().toString());
-
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-            System.out.println("Winner determined");
             disableContinue();
-            String winnercolor = gameBroad.matchRoom(roomNumber).winner();
-            Log.i(TAG, "Winner color: " + winnercolor);
             HashSet<Playable> searchteam = gameBroad.WhoCan(gameBroad.matchRoom(roomNumber).existCharacterColor());
             List<Playable> searchTeam = new ArrayList<>();
             for (Playable player : searchteam) {
                 searchTeam.add(player);
             }
             mCurrentTeam = (ArrayList<Playable>) searchTeam;
+            System.out.println("Winner determined");
+            if (mCurrentTeam.size()==1){
+                gameBroad.matchRoom(roomNumber).setWinnerColor(mCurrentTeam.get(0).getColor());
+            }
+            String winnercolor = gameBroad.matchRoom(roomNumber).winner();
+            Log.i(TAG, "Winner color: " + winnercolor);
             if (mCurrentTeam.size()==1){
                 mMessageView.setText("Due to only " + gameBroad.matchPlayer(winnercolor) + " in this room, " +
                         "\nhe/she would search items");
@@ -1034,10 +1021,25 @@ public class MainActivity extends AppCompatActivity {
             mMessageView.setText("No chief is elected." + " A ramdom player will start first");
             mIsChiefSelected=false;
         } else {
+            HashSet<Playable> searchteam = gameBroad.WhoCan(gameBroad.matchRoom(5).existCharacterColor());
+            List<Playable> searchTeam = new ArrayList<>();
+            for (Playable player : searchteam) {
+                searchTeam.add(player);
+            }
+            mCurrentTeam = (ArrayList<Playable>) searchTeam;
+            System.out.println("Winner determined");
+            if (mCurrentTeam.size()==1){
+                gameBroad.matchRoom(5).setWinnerColor(mCurrentTeam.get(0).getColor());
+            }
             String winnercolor = gameBroad.matchRoom(5).winner();
             mCurrentStartPlayerIndex = gameBroad.getPlayers().indexOf(gameBroad.matchPlayer(winnercolor));
-            mMessageView.setText("Winner is " + gameBroad.matchPlayer(winnercolor) +
-                    "\nAnd would see the approaching zombies");
+            if (mCurrentTeam.size()==1){
+                mMessageView.setText("Due to only " + gameBroad.matchPlayer(winnercolor) + " in the room." +
+                        "\nHe/She would see the approaching zombies");
+            }else {
+                mMessageView.setText("Winner is " + gameBroad.matchPlayer(winnercolor) +
+                        "\nAnd would see the approaching zombies");
+            }
             mIsChiefSelected = true;
         }
         mCurrentYesNo=false;
