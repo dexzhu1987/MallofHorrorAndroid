@@ -583,7 +583,7 @@ public class MainActivity extends AppCompatActivity {
                             mSecondCount = 3;
                             GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                             mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                            mDatabaseReference.child(TURN).setValue(-30);
+                            mDatabaseReference.child(TURN).setValue(-35);
                         } else {
                             mThirdCount++;
                             GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
@@ -837,7 +837,7 @@ public class MainActivity extends AppCompatActivity {
             Log.i(TAG, "Winner color: " + winnercolor);
             if (mCurrentTeam.size()==1){
                 mMessageView.setText("Due to only " + gameBroad.matchPlayer(winnercolor) + " in this room, " +
-                        "\nNo Voting will perform. He/she would search items");
+                        "\nNo Voting will be performed. He/she would search items");
             } else {
                 mMessageView.setText("Winner is " + gameBroad.matchPlayer(winnercolor) +
                         "\nAnd would search items");
@@ -1036,7 +1036,7 @@ public class MainActivity extends AppCompatActivity {
             String winnercolor = gameBroad.matchRoom(5).winner();
             if (mCurrentTeam.size()==1){
                 mMessageView.setText("Due to only " + gameBroad.matchPlayer(winnercolor) + " in the room." +
-                        "\nHe/She would see the approaching zombies");
+                        "\nHe/She will be chief and would see the approaching zombies");
             }else {
                 mMessageView.setText("Winner is " + gameBroad.matchPlayer(winnercolor) +
                         "\nAnd would see the approaching zombies");
@@ -2083,9 +2083,7 @@ public class MainActivity extends AppCompatActivity {
                 otherCommonSetUp();
                 HashSet<Playable> searchteam = gameBroad.WhoCan(gameBroad.matchRoom(theCurrrentRoom.getRoomNum()).existCharacterColor());
                 List<Playable> searchTeam = new ArrayList<>();
-                for (Playable player : searchteam) {
-                    searchTeam.add(player);
-                }
+                searchTeam.addAll(searchteam);
                 mCurrentTeam = (ArrayList<Playable>) searchTeam;
                 Collections.sort(mCurrentTeam, new Comparator<Playable>() {
                     @Override
@@ -2155,7 +2153,7 @@ public class MainActivity extends AppCompatActivity {
             mCurrentVictim = gameBroad.matchPlayer(losercolor);
             if (mCurrentTeam.size()==1){
                 mMessageView.setText("Due to only " + gameBroad.matchPlayer(losercolor) + " in the room, " +
-                "he/she automatically selected as victim. ");
+                "he/she is automatically selected as victim. ");
             } else {
                 mMessageView.setText("Loser is " + gameBroad.matchPlayer(losercolor));
             }
@@ -2408,7 +2406,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 },DELAYEDSECONDSFORMESSAGEVIE*1000);
             } else if (mSecondCount==mUsedItem.size()){
-                mMessageView.setText("Items after effect calculation finished");
+                mMessageView.setText("Loading Information");
                 Handler handler1 = new Handler();
                 handler1.postDelayed(new Runnable() {
                     @Override
@@ -2490,7 +2488,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 },DELAYEDSECONDSFORMESSAGEVIE*1000);
             } else if (mSecondCount==mCurrentTeam.size()){
-                mMessageView.setText("Player Remove calculation finished");
+                mMessageView.setText("Loading Information");
                 Handler handler1 = new Handler();
                 handler1.postDelayed(new Runnable() {
                     @Override
