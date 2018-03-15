@@ -2092,7 +2092,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
                 Log.i(TAG, "mCurrentTeam: " + mCurrentTeam + " fallenTeam List: " + searchTeam + " fallenTeam Set: " + searchteam);
-                Log.i(TAG, "colors: " + colors);;
+                Log.i(TAG, "colors: " + colors);
                 int firstSearch = 0;
                 for (int i=0; i<colors.size(); i++){
                     if (mCurrentTeam.get(0).getColor().equalsIgnoreCase(colors.get(i))){
