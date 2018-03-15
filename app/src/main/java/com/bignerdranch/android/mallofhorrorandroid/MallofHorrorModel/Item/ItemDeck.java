@@ -1,8 +1,12 @@
 package com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
 import java.util.*;
 
-public class ItemDeck  {
+public class ItemDeck implements Parcelable, Serializable {
     private List<Item> itemsDeck;
 
 
@@ -30,14 +34,50 @@ public class ItemDeck  {
             itemsDeck.add(new Hidden());
         }
 
+    }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeList(itemsDeck);
+    }
+
+    protected ItemDeck (final Parcel in){
+        itemsDeck =  in.readArrayList(Item.class.getClassLoader());
+    }
+
+    public static final Creator<ItemDeck> CREATOR = new Creator<ItemDeck>() {
+        @Override
+        public ItemDeck createFromParcel(Parcel source) {
+            return new ItemDeck(source);
+        }
+
+        @Override
+        public ItemDeck[] newArray(int size) {
+            return new ItemDeck[size];
+        }
+    };
+
+    public static ItemDeck createFromParcel(Parcel source) {
+        return CREATOR.createFromParcel(source);
+    }
+
+    public static ItemDeck[] newArray(int size) {
+        return CREATOR.newArray(size);
+    }
+
+    public void setItemsDeck(List<Item> itemsDeck) {
+        this.itemsDeck = itemsDeck;
     }
 
     public List<Item> getItemsDeck() {
         return itemsDeck;
     }
-
 
     protected void printItemDeck(){
         for (Item item: itemsDeck){

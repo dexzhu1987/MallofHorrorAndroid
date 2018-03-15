@@ -56,6 +56,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -73,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String USERNAME = "username";
     private static final String TYPE = "type";
 
+    private static final String GAMEBOARDSAVED = "gamebroadsaved";
+
     private static final int REQUEST_CODE_ROOM = 0;
     private static final int REQUEST_CODE_CHARACTER = 1;
     private static final int REQUEST_CODE_MESSAGE = 2;
@@ -86,8 +89,6 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_VIEWZOMBIEAll = 10;
     private static final int REQUEST_CODE_VIEWZOMBIEALLMORE = 11;
     private static final int REQUEST_CODE_ITEM = 12;
-
-
 
     private int mPlayerNumber;
 
@@ -121,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
     private String mType;
     private boolean mIsDataPushed;
 
-    private final static GameBroad gameBroad = new GameBroad(0);
+    private static GameBroad gameBroad = new GameBroad(0);
     private static int mCurrentRoomPickedNumber = 0;
     private static int mCountSetUp;
     private static int mSecondCount;
@@ -192,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         chat_btn = findViewById(R.id.chat_btn);
-        gettingReady();
+        gettingReady(savedInstanceState);
         updateRoom(MainActivity.this);
         displayMessage();
         messageHasUpdate();
@@ -201,7 +202,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        System.out.println("Resuming ");
         updateRoom(MainActivity.this);
     }
 
@@ -223,9 +223,25 @@ public class MainActivity extends AppCompatActivity {
         FirebaseDatabase.getInstance().getReference().child("chats").setValue(null);
     }
 
-    private void gettingReady() {
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(GAMEBOARDSAVED, (Serializable)gameBroad);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        gameBroad = (GameBroad)  savedInstanceState.getSerializable(GAMEBOARDSAVED);
+    }
+
+    private void gettingReady(Bundle savedInstanceState) {
         mPlayerNumber = getIntent().getIntExtra(PLAYER_NUMBER,0);
-        gameBroad.setPlayersNumber(mPlayerNumber);
+        if (savedInstanceState==null){
+            gameBroad.setPlayersNumber(mPlayerNumber);
+        } else {
+            gameBroad = (GameBroad) savedInstanceState.getSerializable(GAMEBOARDSAVED);
+        }
         mDatabaseGame = getIntent().getParcelableExtra(DATABASEGAME);
         mUserName = getIntent().getStringExtra(USERNAME);
         mType = getIntent().getStringExtra(TYPE);
@@ -239,7 +255,6 @@ public class MainActivity extends AppCompatActivity {
         mMessageView = findViewById(R.id.messageView_main);
 
         setUpListenerOnFirebase();
-
 
     }
 

@@ -1,16 +1,20 @@
 package com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Game;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Character.*;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.*;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Playable.*;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Room.*;
 
 
+import java.io.Serializable;
 import java.util.*;
 
 
 
-public class GameBroad{
+public class GameBroad implements Parcelable,Serializable{
   private List<Room> rooms;
   private List<Playable> players;
   private ItemDeck itemDeck;
@@ -19,46 +23,89 @@ public class GameBroad{
   public static int playersNumber ;
 
 
-  public GameBroad(int numplayer) {
-    rooms = new ArrayList<>();
-    rooms.add(new RestRoom());
-    rooms.add(new Cachou());
-    rooms.add(new Megatoys());
-    rooms.add(new Parking());
-    rooms.add(new SecurityHQ());
-    rooms.add(new Supermarket());
+    public GameBroad(int numplayer) {
+        rooms = new ArrayList<>();
+        rooms.add(new RestRoom());
+        rooms.add(new Cachou());
+        rooms.add(new Megatoys());
+        rooms.add(new Parking());
+        rooms.add(new SecurityHQ());
+        rooms.add(new Supermarket());
 
-    extraZombiesPlace = new ZombiesWonderingPlace();
+        extraZombiesPlace = new ZombiesWonderingPlace();
 
-    totalPlayerslist = new Playable[6];
-    for (int i = 0; i < totalPlayerslist.length; i++){
-        totalPlayerslist[i] = new Player();
-      }
-    totalPlayerslist[0].setColor("RED");
-    totalPlayerslist[1].setColor("YELLOW");
-    totalPlayerslist[2].setColor("BLUE");
-    totalPlayerslist[3].setColor("GREEN");
-    totalPlayerslist[4].setColor("BROWN");
-    totalPlayerslist[5].setColor("BLACK");
+        totalPlayerslist = new Playable[6];
+        for (int i = 0; i < totalPlayerslist.length; i++){
+            totalPlayerslist[i] = new Player();
+          }
+        totalPlayerslist[0].setColor("RED");
+        totalPlayerslist[1].setColor("YELLOW");
+        totalPlayerslist[2].setColor("BLUE");
+        totalPlayerslist[3].setColor("GREEN");
+        totalPlayerslist[4].setColor("BROWN");
+        totalPlayerslist[5].setColor("BLACK");
 
-    players = new ArrayList<>();
+        players = new ArrayList<>();
 
-    for (int i = 0; i < numplayer; i++){
-        players.add(totalPlayerslist[i]);
-        for (int q = 0; q < players.get(i).getGameCharacters().size(); q++){
-            players.get(i).getGameCharacters().get(q).setOwnercolor(players.get(i).getColor());
-            players.get(i).getCharactersselect().get(q).setOwnercolor(players.get(i).getColor());
+        for (int i = 0; i < numplayer; i++){
+            players.add(totalPlayerslist[i]);
+            for (int q = 0; q < players.get(i).getGameCharacters().size(); q++){
+                players.get(i).getGameCharacters().get(q).setOwnercolor(players.get(i).getColor());
+                players.get(i).getCharactersselect().get(q).setOwnercolor(players.get(i).getColor());
+            }
         }
-    }
-    itemDeck = new ItemDeck();
+        itemDeck = new ItemDeck();
 
-      playersNumber = 0;
-  }
+          playersNumber = 0;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeSerializable((Serializable) itemDeck);
+        dest.writeSerializable((Serializable) extraZombiesPlace);
+        dest.writeList(rooms);
+        dest.writeArray(totalPlayerslist);
+        dest.writeList(players);
+        dest.writeInt(playersNumber);
+    }
+
+    protected GameBroad (final Parcel in){
+        rooms = in.readArrayList(Room.class.getClassLoader());
+        players = in.readArrayList(Playable.class.getClassLoader());
+        itemDeck = (ItemDeck) in.readSerializable();
+        extraZombiesPlace = (Room) in.readSerializable();
+        totalPlayerslist = (Playable[]) in.readArray(Playable.class.getClassLoader());
+        playersNumber = in.readInt();
+    }
+
+    public static final Parcelable.Creator<GameBroad> CREATOR = new Parcelable.Creator<GameBroad>() {
+        @Override
+        public GameBroad createFromParcel(Parcel source) {
+            return new GameBroad(source);
+        }
+
+        @Override
+        public GameBroad[] newArray(int size) {
+            return new GameBroad[size];
+        }
+    };
+
+    public static GameBroad createFromParcel(Parcel source) {
+        return CREATOR.createFromParcel(source);
+    }
+
+    public static GameBroad[] newArray(int size) {
+        return CREATOR.newArray(size);
+    }
 
     public int getPlayersNumber() {
         return playersNumber;
     }
-
 
     public void setPlayersNumber(int playersNumber) {
         for (int i = 0; i < playersNumber; i++) {
@@ -68,6 +115,26 @@ public class GameBroad{
                 players.get(i).getCharactersselect().get(q).setOwnercolor(players.get(i).getColor());
             }
         }
+    }
+
+    public void setRooms(List<Room> rooms) {
+        this.rooms = rooms;
+    }
+
+    public void setPlayers(List<Playable> players) {
+        this.players = players;
+    }
+
+    public void setItemDeck(ItemDeck itemDeck) {
+        this.itemDeck = itemDeck;
+    }
+
+    public Room getExtraZombiesPlace() {
+        return extraZombiesPlace;
+    }
+
+    public void setExtraZombiesPlace(Room extraZombiesPlace) {
+        this.extraZombiesPlace = extraZombiesPlace;
     }
 
     public List<Room> getRooms() {
