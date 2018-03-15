@@ -48,8 +48,7 @@
                     android:textColor="@android:color/white"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
                     tools:text=""
-                    android:layout_toRightOf="@+id/red_icon"
-                    android:textAlignment="center"/>
+                    android:layout_toRightOf="@+id/red_icon" />
 
                 <!--<TextView-->
                     <!--android:id="@+id/pl_red"-->
@@ -91,8 +90,7 @@
                     android:layout_marginTop="25dp"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
                     tools:text=""
-                    android:layout_toRightOf="@+id/yellow_icon"
-                    android:textAlignment="center"/>
+                    android:layout_toRightOf="@+id/yellow_icon" />
 
                 <!--<TextView-->
                     <!--android:id="@+id/pl_yellow"-->
@@ -134,8 +132,7 @@
                     android:layout_marginTop="25dp"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
                     tools:text=""
-                    android:layout_toRightOf="@+id/blue_icon"
-                    android:textAlignment="center"/>
+                    android:layout_toRightOf="@+id/blue_icon" />
 
                 <!--<TextView-->
                     <!--android:id="@+id/pl_blue"-->
