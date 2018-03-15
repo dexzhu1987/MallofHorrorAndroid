@@ -1961,18 +1961,18 @@ public class MainActivity extends AppCompatActivity {
                         public void run() {
                             Log.i(TAG,"item used: " + mUsedItem + " player used " + mPlayersUsedItem);
                             otherCommonSetUp();
-                            mCountSetUp++;
-                            int nextMove = 0;
-                            if (mCountSetUp==originalTeamSize*2){
-                                nextMove = -2;
-                            } else {
-                                for (int i=0; i<colors.size(); i++){
-                                    if (mCurrentTeam.get(gameData.getmPrevICount()+1).getColor().equalsIgnoreCase(colors.get(i))) {
-                                        nextMove = i;
+                            if (mMyPlayerID==getControlId()){
+                                mCountSetUp++;
+                                int nextMove = 0;
+                                if (mCountSetUp==originalTeamSize*2){
+                                    nextMove = -2;
+                                } else {
+                                    for (int i=0; i<colors.size(); i++){
+                                        if (mCurrentTeam.get(gameData.getmPrevICount()+1).getColor().equalsIgnoreCase(colors.get(i))) {
+                                            nextMove = i;
+                                        }
                                     }
                                 }
-                            }
-                            if (mMyPlayerID==getControlId()){
                                 do {
                                     GameData gameData = new GameData(mCountPhase, mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                                     mDatabaseReference.child(GAMEDATA).setValue(gameData);
