@@ -230,14 +230,12 @@ public class MainActivity extends AppCompatActivity {
         mUserName = getIntent().getStringExtra(USERNAME);
         mType = getIntent().getStringExtra(TYPE);
         mIsDataPushed = true;
-
         fireBaseInitialSetup();
         continueButtonMethod();
         otherCommonSetUp();
         registerMyPlayerId();
-
-        Log.i(TAG, "PlayerNumber: " + mPlayerNumber + " gameDataBase " +  mDatabaseGame.toString() + " username: " + mUserName + " type: " + mType + " myPlayerID:" + mMyPlayerID );
-
+        Log.i(TAG, "PlayerNumber: " + mPlayerNumber + " gameDataBase " +
+                mDatabaseGame.toString() + " username: " + mUserName + " type: " + mType + " myPlayerID:" + mMyPlayerID );
         mMessageView = findViewById(R.id.messageView_main);
 
         setUpListenerOnFirebase();
@@ -2471,7 +2469,8 @@ public class MainActivity extends AppCompatActivity {
                 disableContinue();
                 mMessageView.setVisibility(View.VISIBLE);
                 mMessageView.setEnabled(false);
-                mMessageView.setText(mCurrentTeam.get(mSecondCount) +  " lost all his/her characters and has been removed from the game board");
+                mMessageView.setText(mCurrentTeam.get(mSecondCount) +  " lost all his/her characters and " +
+                        "has been removed from the game board");
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
