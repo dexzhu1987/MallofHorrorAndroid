@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import java.io.Serializable;
 import java.util.*;
 
-public class ItemDeck implements Parcelable, Serializable {
+public class ItemDeck implements Parcelable, Serializable{
     private List<Item> itemsDeck;
 
 
@@ -44,11 +44,11 @@ public class ItemDeck implements Parcelable, Serializable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeList(itemsDeck);
+        dest.writeSerializable((Serializable) itemsDeck);
     }
 
-    protected ItemDeck (final Parcel in){
-        itemsDeck =  in.readArrayList(Item.class.getClassLoader());
+    protected ItemDeck (Parcel in){
+       itemsDeck = (List<Item>) in.readSerializable();
     }
 
     public static final Creator<ItemDeck> CREATOR = new Creator<ItemDeck>() {

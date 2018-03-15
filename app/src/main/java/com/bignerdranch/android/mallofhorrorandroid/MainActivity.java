@@ -226,13 +226,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putSerializable(GAMEBOARDSAVED, (Serializable)gameBroad);
+        outState.putParcelable(GAMEBOARDSAVED, (Parcelable) gameBroad);
+        Log.i(TAG, "saving the gamebroad");
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        gameBroad = (GameBroad)  savedInstanceState.getSerializable(GAMEBOARDSAVED);
+        gameBroad = (GameBroad)  savedInstanceState.getParcelable(GAMEBOARDSAVED);
+        Log.i(TAG, "loading the gamebroad");
     }
 
     private void gettingReady(Bundle savedInstanceState) {

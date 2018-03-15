@@ -22,6 +22,9 @@ public class GameBroad implements Parcelable,Serializable{
   private Room extraZombiesPlace;
   public static int playersNumber ;
 
+    public static Creator<GameBroad> getCREATOR() {
+        return CREATOR;
+    }
 
     public GameBroad(int numplayer) {
         rooms = new ArrayList<>();
@@ -61,27 +64,29 @@ public class GameBroad implements Parcelable,Serializable{
 
     @Override
     public int describeContents() {
-        return 0;
+        return hashCode();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeSerializable((Serializable) itemDeck);
-        dest.writeSerializable((Serializable) extraZombiesPlace);
+        dest.writeParcelable(itemDeck,flags);
+        dest.writeParcelable(extraZombiesPlace,flags);
         dest.writeList(rooms);
-        dest.writeArray(totalPlayerslist);
+        dest.writeSerializable(totalPlayerslist);
         dest.writeList(players);
         dest.writeInt(playersNumber);
     }
+
 
     protected GameBroad (final Parcel in){
         rooms = in.readArrayList(Room.class.getClassLoader());
         players = in.readArrayList(Playable.class.getClassLoader());
         itemDeck = (ItemDeck) in.readSerializable();
         extraZombiesPlace = (Room) in.readSerializable();
-        totalPlayerslist = (Playable[]) in.readArray(Playable.class.getClassLoader());
+        totalPlayerslist = (Playable[]) in.readSerializable();
         playersNumber = in.readInt();
     }
+
 
     public static final Parcelable.Creator<GameBroad> CREATOR = new Parcelable.Creator<GameBroad>() {
         @Override
@@ -310,6 +315,34 @@ public class GameBroad implements Parcelable,Serializable{
             return rooms.get(q);
         }
 
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        GameBroad gameBroad = (GameBroad) o;
+
+        if (rooms != null ? !rooms.equals(gameBroad.rooms) : gameBroad.rooms != null) return false;
+        if (players != null ? !players.equals(gameBroad.players) : gameBroad.players != null)
+            return false;
+        if (itemDeck != null ? !itemDeck.equals(gameBroad.itemDeck) : gameBroad.itemDeck != null)
+            return false;
+        // Probably incorrect - comparing Object[] arrays with Arrays.equals
+        if (!Arrays.equals(totalPlayerslist, gameBroad.totalPlayerslist)) return false;
+        return extraZombiesPlace != null ? extraZombiesPlace.equals(gameBroad.extraZombiesPlace) : gameBroad.extraZombiesPlace == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = rooms != null ? rooms.hashCode() : 0;
+        result = 31 * result + (players != null ? players.hashCode() : 0);
+        result = 31 * result + (itemDeck != null ? itemDeck.hashCode() : 0);
+        result = 31 * result + Arrays.hashCode(totalPlayerslist);
+        result = 31 * result + (extraZombiesPlace != null ? extraZombiesPlace.hashCode() : 0);
+        return result;
     }
 
 
