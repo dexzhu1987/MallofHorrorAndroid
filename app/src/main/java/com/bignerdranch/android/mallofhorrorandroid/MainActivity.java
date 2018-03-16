@@ -177,6 +177,7 @@ public class MainActivity extends AppCompatActivity {
 
     final Animation mFlash = new AlphaAnimation(1, 0);
 
+
     public static Intent mainIntent(Context packageContext, int playerNumber){
         Intent intent = new Intent(packageContext, MainActivity.class);
         intent.putExtra(PLAYER_NUMBER, playerNumber);
@@ -227,9 +228,25 @@ public class MainActivity extends AppCompatActivity {
         FirebaseDatabase.getInstance().getReference().child("chats").setValue(null);
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(GAMEBOARDSAVED, gameBroad);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        gameBroad = savedInstanceState.getParcelable(GAMEBOARDSAVED);
+    }
+
     private void gettingReady(Bundle savedInstanceState) {
         mPlayerNumber = getIntent().getIntExtra(PLAYER_NUMBER,0);
-        gameBroad.setPlayersNumber(mPlayerNumber);
+        if (savedInstanceState==null){
+            gameBroad.setPlayersNumber(mPlayerNumber);
+        } else {
+            gameBroad = savedInstanceState.getParcelable(GAMEBOARDSAVED);
+        }
         mDatabaseGame = getIntent().getParcelableExtra(DATABASEGAME);
         mUserName = getIntent().getStringExtra(USERNAME);
         mType = getIntent().getStringExtra(TYPE);
@@ -241,7 +258,7 @@ public class MainActivity extends AppCompatActivity {
         Log.i(TAG, "PlayerNumber: " + mPlayerNumber + " gameDataBase " +
                 mDatabaseGame.toString() + " username: " + mUserName + " type: " + mType + " myPlayerID:" + mMyPlayerID );
         mMessageView = findViewById(R.id.messageView_main);
-
+        mFlash.setDuration(1000);
         setUpListenerOnFirebase();
 
     }
@@ -427,7 +444,6 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mMessageView.setVisibility(View.INVISIBLE);
                 if (mMyPlayerID==0){
                     mCountPhase++;
                     mCountSetUp=0;
@@ -449,7 +465,6 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mMessageView.setVisibility(View.INVISIBLE);
                 if (mMyPlayerID==0){
                     mCountPhase++;
                     mCountSetUp=0;
@@ -927,7 +942,6 @@ public class MainActivity extends AppCompatActivity {
                                 handler.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
-                                        mMessageView.setVisibility(View.INVISIBLE);
                                         mCountPhase=4;
                                         mCountSetUp=0;
                                         mSecondCount=0;
@@ -1090,6 +1104,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 mCurrentStartPlayerIndex = turnValue;
+                Log.i(TAG, "Winner Color: " + winnercolor + " StartPlayerIndex: " + mCurrentStartPlayerIndex
+                        + " winner : "+ gameBroad.matchPlayer(winnercolor));
                 if (mMyPlayerID==getControlId()){
                     do {
                         GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
@@ -1263,7 +1279,6 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mMessageView.setVisibility(View.INVISIBLE);
                 mCountPhase=5;
                 mCountSetUp=0;
                 mSecondCount=0;
@@ -1569,8 +1584,6 @@ public class MainActivity extends AppCompatActivity {
         mMessageView.setEnabled(false);
         mMessageView.setVisibility(View.VISIBLE);
         mMessageView.setText("Now zombies approacing room numbers reveal");
-        MediaPlayer ring =  MediaPlayer.create(MainActivity.this, R.raw.demented_man_walkin);
-        ring.start();
         mDatabaseReference.child(ZOMBIEROOMS).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -1607,6 +1620,8 @@ public class MainActivity extends AppCompatActivity {
         mMessageView.setEnabled(false);
         mMessageView.setVisibility(View.VISIBLE);
         mMessageView.setText("There are more zombies coming");
+        MediaPlayer ring =  MediaPlayer.create(MainActivity.this, R.raw.demented_man_walkin);
+        ring.start();
         mDatabaseReference.child(ZOMBIEROOMS).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
