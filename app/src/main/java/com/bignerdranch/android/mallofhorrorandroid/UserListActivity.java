@@ -78,12 +78,16 @@ public class UserListActivity extends AppCompatActivity {
         binding.list.setAdapter(adapter);
         binding.list.setLayoutManager(new LinearLayoutManager(this));
 
+
         fetchUsers();
 
         if (type.equals("Host")){
             createRoom(roomId);
+            binding.list.setVisibility(View.VISIBLE);
         } else {
             registerNameInRoom(roomId);
+            binding.list.setVisibility(View.INVISIBLE);
+
         }
 
         updateRoom(binding, roomId);
