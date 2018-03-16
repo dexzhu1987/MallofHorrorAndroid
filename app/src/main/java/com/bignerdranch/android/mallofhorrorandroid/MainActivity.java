@@ -1625,21 +1625,27 @@ public class MainActivity extends AppCompatActivity {
                 if (mCurrentMoreZombies.size() == 0) {
                     for (int roomNumber: mCurrentZombiesRooms){
                         gameBroad.matchRoom(roomNumber).zombieApproached();
-                        writeRoomIntoFireBase(gameBroad.matchRoom(roomNumber));
+                        if (mMyPlayerID==getControlId()){
+                            writeRoomIntoFireBase(gameBroad.matchRoom(roomNumber));
+                        }
                     }
                     System.out.println("Showing More Zombie");
                     if (gameBroad.mostPeople().getRoomNum()==7){
                         mCurrentMoreZombies.add(0);
                     } else {
                         gameBroad.mostPeople().zombieApproached();
-                        writeRoomIntoFireBase(gameBroad.mostPeople());
+                        if (mMyPlayerID==getControlId()){
+                            writeRoomIntoFireBase(gameBroad.mostPeople());
+                        }
                         mCurrentMoreZombies.add(gameBroad.mostPeople().getRoomNum());
                     }
                     if (gameBroad.mostModel().getRoomNum()==7){
                         mCurrentMoreZombies.add(0);
                     } else {
                         gameBroad.mostModel().zombieApproached();
-                        writeRoomIntoFireBase(gameBroad.mostModel());
+                        if (mMyPlayerID==getControlId()){
+                            writeRoomIntoFireBase(gameBroad.mostModel());
+                        }
                         mCurrentMoreZombies.add(gameBroad.mostModel().getRoomNum());
                     }
                 }
@@ -1954,7 +1960,9 @@ public class MainActivity extends AppCompatActivity {
                                     mUsedItem.add(mCurrentSelectedItem);
                                     mPlayersUsedItem.add(prevPlayer);
                                 }
-                                writeRoomIntoFireBase(theCurrentRoom);
+                                if (mMyPlayerID==getControlId()){
+                                    writeRoomIntoFireBase(theCurrentRoom);
+                                }
                                 updateRoom(MainActivity.this);
                                 mMainActivityLayout.invalidate();
                             } else {
@@ -2356,7 +2364,9 @@ public class MainActivity extends AppCompatActivity {
                 mCurrentVictim.removeCharacter(deathCharacter);
                 theCurrentRoom.leave(deathCharacter);
                 theCurrentRoom.setCurrentZombienumber(0);
-                writeRoomIntoFireBase(theCurrentRoom);
+                if (mMyPlayerID==getControlId()){
+                    writeRoomIntoFireBase(theCurrentRoom);
+                }
                 disableContinue();
                 updateRoom(MainActivity.this);
                 mMainActivityLayout.invalidate();
@@ -2416,9 +2426,13 @@ public class MainActivity extends AppCompatActivity {
                                 mMessageView.setText("The affect of sprint has trigger, the left character has moved to the destination");
                                 gameBroad.matchRoom(mUsedItem.get(mSecondCount).getAfteraffectedRoomNumber())
                                         .enter(gameBroad.matchGameCharacter(mPlayersUsedItem.get(mSecondCount), mUsedItem.get(mSecondCount).getAffectedGameCharacter().getName()));
-                                writeRoomIntoFireBase(gameBroad.matchRoom(mUsedItem.get(mSecondCount).getAfteraffectedRoomNumber()));
+                                if (mMyPlayerID==getControlId()){
+                                    writeRoomIntoFireBase(gameBroad.matchRoom(mUsedItem.get(mSecondCount).getAfteraffectedRoomNumber()));
+                                }
                             }
-                            writeRoomIntoFireBase(fallenRoom);
+                            if (mMyPlayerID==getControlId()){
+                                writeRoomIntoFireBase(fallenRoom);
+                            }
                             updateRoom(MainActivity.this);
                             mMainActivityLayout.invalidate();
                             Handler handler1 = new Handler();
@@ -4533,6 +4547,7 @@ public class MainActivity extends AppCompatActivity {
         for (GameCharacter character: room.getRoomCharaters()){
             String ownerColor = character.getOwnercolor();
             String characterName = character.getName();
+            Log.i(TAG, "Writing room in Firebase, room name: " + name + " zombies: number: " + zombieNumber + " character name " + ownerColor + characterName );
             FireBaseGameCharacter fireBaseGameCharacter = new FireBaseGameCharacter(ownerColor, characterName);
             mDatabaseReference.child(ROOMSINGAME).child(name).child(CAMECHARACTERS).child(ownerColor+characterName).setValue(fireBaseGameCharacter);
         }

@@ -57,7 +57,6 @@ public class GameBroad{
     }
 
 
-
     public int getPlayersNumber() {
         return playersNumber;
     }
