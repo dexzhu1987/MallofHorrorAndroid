@@ -231,12 +231,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        Log.i(TAG, "saving the game broad");
         outState.putParcelable(GAMEBOARDSAVED, gameBroad);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+        Log.i(TAG, "loading the game broad");
         gameBroad = savedInstanceState.getParcelable(GAMEBOARDSAVED);
     }
 
