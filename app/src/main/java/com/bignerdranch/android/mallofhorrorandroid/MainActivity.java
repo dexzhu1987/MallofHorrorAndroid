@@ -577,6 +577,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 gameBroad.matchRoom(roomNumber).clearCurrentVoteResult();
+                gameBroad.matchRoom(roomNumber).setWinnerColor("");
                 Log.i(TAG, "firstsearch for parking: " + firstSearch);
                 if (mMyPlayerID==firstSearch){
                     if (mCurrentTeam.size()==1){
@@ -2110,6 +2111,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 Log.i(TAG, "firstvote for fallling: " + firstSearch);
                 gameBroad.matchRoom(theCurrrentRoom.getRoomNum()).clearCurrentVoteResult();
+                gameBroad.matchRoom(theCurrrentRoom.getRoomNum()).setWinnerColor("");
                 if (mMyPlayerID==firstSearch){
                         if (mCurrentTeam.size()==1){
                             mThirdCount++;
@@ -3960,6 +3962,7 @@ public class MainActivity extends AppCompatActivity {
                 String message = actualPlayer + " please select one of these characters into " + (destination.isFull()? "Parking":destination.getName());
                 ArrayList rooms = (ArrayList<Room>)gameBroad.getRooms();
                 ArrayList<Item> items = (ArrayList<Item>) gameBroad.getPlayers().get(q).getCurrentItem();
+                Log.i(TAG, "items for selecting character " + items);
                 Intent intent = PlayerActivity.newChoosingCharacterIntent(MainActivity.this,rooms,playerColor,items, characters,message,mCountSetUp,2);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivityForResult(intent,REQUEST_CODE_CHARACTER);
