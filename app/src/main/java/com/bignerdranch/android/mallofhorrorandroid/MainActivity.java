@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Handler;
@@ -176,7 +177,6 @@ public class MainActivity extends AppCompatActivity {
 
     final Animation mFlash = new AlphaAnimation(1, 0);
 
-
     public static Intent mainIntent(Context packageContext, int playerNumber){
         Intent intent = new Intent(packageContext, MainActivity.class);
         intent.putExtra(PLAYER_NUMBER, playerNumber);
@@ -226,7 +226,6 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         FirebaseDatabase.getInstance().getReference().child("chats").setValue(null);
     }
-
 
     private void gettingReady(Bundle savedInstanceState) {
         mPlayerNumber = getIntent().getIntExtra(PLAYER_NUMBER,0);
@@ -387,6 +386,8 @@ public class MainActivity extends AppCompatActivity {
                     messageViewInformRelatedtoMoveAndView(gameData);
                 } else if (mCountPhase==6) {
                     messageViewRelatedtoRevealandAttack(gameData);
+                } else if (mCountPhase==7) {
+                    messageViewInformWinner();
                 }
             }
 
@@ -669,8 +670,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 }, DELAYEDSECONDSFOROPTIONSCHOSEN * 1000);
-
-                mMessageView.setVisibility(View.INVISIBLE);
                 enableYesNo();
                 mYesButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -1076,8 +1075,13 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                String winnercolor = gameBroad.matchRoom(5).winner();
                 mSecondCount=4;
+                String winnercolor = "";
+                if (gameBroad.matchRoom(5).winner().equals("TIE") || gameBroad.matchRoom(5).isEmpty()){
+                    winnercolor = gameBroad.getPlayers().get(mCurrentStartPlayerIndex).getColor();
+                } else {
+                    winnercolor = gameBroad.matchRoom(5).winner();
+                }
                 int turnValue = 0 ;
                 for (int i=0; i<colors.size(); i++){
                     if (winnercolor.equalsIgnoreCase(colors.get(i))){
@@ -1086,14 +1090,17 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 mCurrentStartPlayerIndex = turnValue;
-                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                mDatabaseReference.child(TURN).setValue(-5);
-                mDatabaseReference.child(PLAYERBOOLEANANSWERS).setValue(null);
-                mDatabaseReference.child(ZOMBIEROOMS).setValue(mCurrentZombiesRooms);
-                mDatabaseReference.child(FIRSTPLAYERINDEX).setValue(mCurrentStartPlayerIndex);
-                mDatabaseReference.child(ISCHIEFELECTED).setValue(mIsChiefSelected);
-
+                if (mMyPlayerID==getControlId()){
+                    do {
+                        GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                        mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                        mDatabaseReference.child(PLAYERBOOLEANANSWERS).setValue(null);
+                        mDatabaseReference.child(ZOMBIEROOMS).setValue(mCurrentZombiesRooms);
+                        mDatabaseReference.child(FIRSTPLAYERINDEX).setValue(mCurrentStartPlayerIndex);
+                        mDatabaseReference.child(ISCHIEFELECTED).setValue(mIsChiefSelected);
+                        mDatabaseReference.child(TURN).setValue(-5);
+                    } while (!isNetworkAvailable());
+                }
             }
         },DELAYEDSECONDSFORMESSAGEVIE*1000);
     }
@@ -1155,7 +1162,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }, DELAYEDSECONDSFOROPTIONSCHOSEN * 1000);
 
-                mMessageView.setVisibility(View.INVISIBLE);
                 enableYesNo();
                 mYesButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -1293,7 +1299,6 @@ public class MainActivity extends AppCompatActivity {
     private void messageViewReinformIsChiefElectedAndDetermineNextMove() {
         disableContinue();
         mMessageView.setVisibility(View.VISIBLE);
-        Handler handler = new Handler();
         mDatabaseReference.child(ISCHIEFELECTED).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -1312,6 +1317,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -1563,6 +1569,8 @@ public class MainActivity extends AppCompatActivity {
         mMessageView.setEnabled(false);
         mMessageView.setVisibility(View.VISIBLE);
         mMessageView.setText("Now zombies approacing room numbers reveal");
+        MediaPlayer ring =  MediaPlayer.create(MainActivity.this, R.raw.demented_man_walkin);
+        ring.start();
         mDatabaseReference.child(ZOMBIEROOMS).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -1770,7 +1778,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }, DELAYEDSECONDSFOROPTIONSCHOSEN * 1000);
                 enableYesNo();
-                mMessageView.setVisibility(View.INVISIBLE);
+
                 mYesButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -1911,6 +1919,7 @@ public class MainActivity extends AppCompatActivity {
                     final boolean isItemUsed  = gameData.getmIsUsedItem();
                     mMessageView.setVisibility(View.VISIBLE);
                     mMessageView.setText("Loading Information");
+                    mMessageView.startAnimation(mFlash);
                     mMessageView.setEnabled(false);
                     if (isItemUsed) {
                         int itemNumber = gameData.getItemNumber();
@@ -1931,31 +1940,42 @@ public class MainActivity extends AppCompatActivity {
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
+                            disableMessageViewAnimation();
                             if (isItemUsed){
                                 if (mCurrentSelectedItem.getItemNum()==3){
                                     disableContinue();
                                     mMessageView.setText(prevPlayer + " used Axe, one zombie has been killed");
+                                    MediaPlayer axeSound = MediaPlayer.create(MainActivity.this, R.raw.axe_effect);
+                                    axeSound.start();
                                     theCurrentRoom.zombieKilled();
                                 }
                                 if (mCurrentSelectedItem.getItemNum()==4){
                                     mMessageView.setText(prevPlayer + " used Shotgun, two zombie has been killed");
+                                    MediaPlayer shotgunSound = MediaPlayer.create(MainActivity.this, R.raw.shotgun);
+                                    shotgunSound.start();
                                     theCurrentRoom.zombieKilled();
                                     theCurrentRoom.zombieKilled();
                                 }
                                 if (mCurrentSelectedItem.getItemNum()==5){
                                     mMessageView.setText(prevPlayer + " used Hareware, one zombie has been temporary block");
+                                    MediaPlayer hardwareSound =  MediaPlayer.create(MainActivity.this, R.raw.hammer);
+                                    hardwareSound.start();
                                     theCurrentRoom.zombieKilled();
                                     mUsedItem.add(mCurrentSelectedItem);
                                     mPlayersUsedItem.add(prevPlayer);
                                 }
                                 if (mCurrentSelectedItem.getItemNum()==6){
                                     mMessageView.setText(prevPlayer + " used Hidden, his/her " + mCurrentSelectedItem.getAffectedGameCharacter() + " is hiding in the room");
+                                    MediaPlayer hiddenSound =  MediaPlayer.create(MainActivity.this, R.raw.hidden);
+                                    hiddenSound.start();
                                     theCurrentRoom.leave(gameBroad.matchGameCharacter(prevPlayer,mCurrentSelectedItem.getAffectedGameCharacter().getName()));
                                     mUsedItem.add(mCurrentSelectedItem);
                                     mPlayersUsedItem.add(prevPlayer);
                                 }
                                 if (mCurrentSelectedItem.getItemNum()==7){
                                     mMessageView.setText(prevPlayer + " used Sprint, his/her " + mCurrentSelectedItem.getAffectedGameCharacter() + " has left the room");
+                                    MediaPlayer sprintSound = MediaPlayer.create(MainActivity.this, R.raw.horses_walking);
+                                    sprintSound.start();
                                     theCurrentRoom.leave(gameBroad.matchGameCharacter(prevPlayer,mCurrentSelectedItem.getAffectedGameCharacter().getName()));
                                     mUsedItem.add(mCurrentSelectedItem);
                                     mPlayersUsedItem.add(prevPlayer);
@@ -2225,6 +2245,7 @@ public class MainActivity extends AppCompatActivity {
         mMessageView.setVisibility(View.VISIBLE);
         mMessageView.setEnabled(false);
         mMessageView.setText("Loading Information");
+        mMessageView.startAnimation(mFlash);
         HashSet<Playable> searchteam = gameBroad.WhoCan(gameBroad.matchRoom(roomNumber).existCharacterColor());
         List<Playable> searchTeam = new ArrayList<>();
         for (Playable player : searchteam) {
@@ -2254,7 +2275,7 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-
+                disableMessageViewAnimation();
                 mMessageView.setText("Victim is " + mCurrentVictim);
                 Handler handler1 = new Handler();
                 handler1.postDelayed(new Runnable() {
@@ -2287,6 +2308,7 @@ public class MainActivity extends AppCompatActivity {
         mMessageView.setVisibility(View.VISIBLE);
         mMessageView.setEnabled(false);
         mMessageView.setText("Loading Information");
+        mMessageView.startAnimation(mFlash);
         mDatabaseReference.child(VICTIMCOLOR).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -2326,6 +2348,7 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                disableMessageViewAnimation();
                 mDatabaseReference.child(VICTIMCOLOR).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -2372,6 +2395,8 @@ public class MainActivity extends AppCompatActivity {
                 mMainActivityLayout.invalidate();
                 mMessageView.setText(mCurrentVictim + " has lost his/her " + deathCharacter.getName() +
                         "\nZombies have their feast, and returned back to somewhere else to find their next target! ");
+                MediaPlayer deadSound = MediaPlayer.create(MainActivity.this, R.raw.church_bell);
+                deadSound.start();
                 Handler handler1 = new Handler();
                 handler1.postDelayed(new Runnable() {
                     @Override
@@ -2410,11 +2435,13 @@ public class MainActivity extends AppCompatActivity {
                     mMessageView.setText("Items have been used, Some Items will triggered after affect");
                 } else {
                     mMessageView.setText("Loading Information");
+                    mMessageView.startAnimation(mFlash);
                 }
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        disableMessageViewAnimation();
                         if (mSecondCount<mUsedItem.size()){
                             if (mUsedItem.get(mSecondCount).getItemNum()==5){
                                 mMessageView.setText("The affect of hareware has expired, the blocked zombie has returned");
@@ -2456,10 +2483,12 @@ public class MainActivity extends AppCompatActivity {
                 },DELAYEDSECONDSFORMESSAGEVIE*1000);
             } else if (mSecondCount==mUsedItem.size()){
                 mMessageView.setText("Loading Information");
+                mMessageView.startAnimation(mFlash);
                 Handler handler1 = new Handler();
                 handler1.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        disableMessageViewAnimation();
                         updateRoom(MainActivity.this);
                         mMainActivityLayout.invalidate();
                         mFourthCount=5;
@@ -2539,10 +2568,12 @@ public class MainActivity extends AppCompatActivity {
                 },DELAYEDSECONDSFORMESSAGEVIE*1000);
             } else if (mSecondCount==mCurrentTeam.size()){
                 mMessageView.setText("Loading Information");
+                mMessageView.startAnimation(mFlash);
                 Handler handler1 = new Handler();
                 handler1.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        disableMessageViewAnimation();
                         for (Playable player: removedPlayers){
                             gameBroad.getPlayers().remove(player);
                         }
@@ -2564,10 +2595,12 @@ public class MainActivity extends AppCompatActivity {
             }
         } else {
             mMessageView.setText("Loading Information");
+            mMessageView.startAnimation(mFlash);
             Handler handler1 = new Handler();
             handler1.postDelayed(new Runnable() {
                 @Override
                 public void run() {
+                    disableMessageViewAnimation();
                     updateRoom(MainActivity.this);
                     mMainActivityLayout.invalidate();
                     mFourthCount=6;
@@ -2679,6 +2712,39 @@ public class MainActivity extends AppCompatActivity {
                 }, DELAYEDSECONDSFORLONGMESSAGE * 1000);
 
 
+            }
+        },DELAYEDSECONDSFORMESSAGEVIE*1000);
+    }
+
+    private void messageViewInformWinner() {
+        disableContinue();
+        mMessageView.setVisibility(View.VISIBLE);
+        mMessageView.setEnabled(false);
+        mMessageView.setText("Looks Like we have less than 4 characters in the mall now. We we will reveal the results shortly");
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                int mostPoints = gameBroad.getPlayers().get(0).totalVictoryPoints();
+                int q = 0;
+                int count =0;
+                for (int i=0; i<gameBroad.getPlayers().size();i++){
+                    if (mostPoints<gameBroad.getPlayers().get(i).totalVictoryPoints()){
+                        mostPoints = gameBroad.getPlayers().get(i).totalVictoryPoints();
+                        q = i;
+                    }
+                }
+                for (Playable player: gameBroad.getPlayers()){
+                    if(player.totalVictoryPoints() == mostPoints){
+                        count++;
+                    }
+                }
+                if (count>1){
+                    mMessageView.setText("Result is TIE");
+                } else {
+                    Playable winner  = gameBroad.getPlayers().get(q);
+                    mMessageView.setText("Congratulations! Winner is " + winner + " with a victory points: " + mostPoints);
+                }
             }
         },DELAYEDSECONDSFORMESSAGEVIE*1000);
     }
@@ -2868,7 +2934,7 @@ public class MainActivity extends AppCompatActivity {
                     showZombie();
                 }
                 if (mCountPhase==7){
-                    showWinner();
+
                 }
             }
         });
@@ -2999,6 +3065,12 @@ public class MainActivity extends AppCompatActivity {
         mYesShadow.startAnimation(mFlash);
         mNoShadow.setVisibility(View.VISIBLE);
         mNoShadow.startAnimation(mFlash);
+    }
+
+    private void disableMessageViewAnimation(){
+        mMessageView.animate().cancel();
+        mMessageView.clearAnimation();
+        mMessageView.setAnimation(null);
     }
 
     private void updateRoom(Context context) {
@@ -4344,39 +4416,6 @@ public class MainActivity extends AppCompatActivity {
             });
 
         }
-    }
-
-    private void showWinner() {
-        int mostPoints = gameBroad.getPlayers().get(0).totalVictoryPoints();
-        int q = 0;
-        int count =0;
-        for (int i=0; i<gameBroad.getPlayers().size();i++){
-            if (mostPoints<gameBroad.getPlayers().get(i).totalVictoryPoints()){
-                mostPoints = gameBroad.getPlayers().get(i).totalVictoryPoints();
-                q = i;
-            }
-        }
-        for (Playable player: gameBroad.getPlayers()){
-            if(player.totalVictoryPoints() == mostPoints){
-                count++;
-            }
-        }
-        String message = "";
-        if (count>1){
-            message = "Result is TIE, ";
-        } else {
-            Playable winner  = gameBroad.getPlayers().get(q);
-            message = "Congratulations! Winner is " + winner + " with a victory points: " + mostPoints;
-        }
-        disableContinue();
-        mMessageView.setText("We have less than four player in the mall now. We will reveal who is the winner");
-        final String finalMessage = message;
-        mMessageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mMessageView.setText(finalMessage);
-            }
-        });
     }
 
     public static List<GameCharacter> characterNotInTheRoom(Room room, Playable player) {
