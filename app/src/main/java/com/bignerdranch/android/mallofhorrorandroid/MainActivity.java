@@ -28,6 +28,7 @@ import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -2415,9 +2416,7 @@ public class MainActivity extends AppCompatActivity {
                         "\nZombies have their feast, and returned back to somewhere else to find their next target! ");
                 MediaPlayer deadSound = MediaPlayer.create(MainActivity.this, R.raw.church_bell);
                 deadSound.start();
-
                 bloodAnnimation();
-
 
                 Handler handler1 = new Handler();
                 handler1.postDelayed(new Runnable() {
@@ -2441,32 +2440,8 @@ public class MainActivity extends AppCompatActivity {
                             } while (!isNetworkAvailable());
                         }
                     }
+
                 },DELAYEDSECONDSFORLONGMESSAGE * 1000);
-            }
-
-            private void bloodAnnimation() {
-                ImageView blood1 = findViewById(R.id.blood_effect1);
-                ImageView blood2 = findViewById(R.id.blood_effect2);
-                ImageView blood3 = findViewById(R.id.blood_effect3);
-
-                blood1.setVisibility(View.VISIBLE);
-                blood2.setVisibility(View.VISIBLE);
-                blood3.setVisibility(View.VISIBLE);
-
-                AlphaAnimation alphaAnimation1 = new AlphaAnimation(1,0);
-                alphaAnimation1.setDuration(1000);
-                alphaAnimation1.setRepeatCount(1);
-                blood1.startAnimation(alphaAnimation1);
-
-                AlphaAnimation alphaAnimation2 = new AlphaAnimation(1,0);
-                alphaAnimation2.setDuration(1000);
-                alphaAnimation2.setStartOffset(500);
-                blood2.startAnimation(alphaAnimation2);
-
-                AlphaAnimation alphaAnimation3 = new AlphaAnimation(1,0);
-                alphaAnimation3.setDuration(1000);
-                alphaAnimation3.setStartOffset(1000);
-                blood3.startAnimation(alphaAnimation3);
             }
         },DELAYEDSECONDSFORLONGMESSAGE*1000);
     }
@@ -4780,6 +4755,36 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void bloodAnnimation() {
+        RelativeLayout blood_layout = findViewById(R.id.blood_layout);
+        ImageView blood1 = findViewById(R.id.blood_effect1);
+        ImageView blood2 = findViewById(R.id.blood_effect2);
+        ImageView blood3 = findViewById(R.id.blood_effect3);
+
+        blood_layout.setVisibility(View.VISIBLE);
+        blood1.setVisibility(View.VISIBLE);
+        blood2.setVisibility(View.VISIBLE);
+        blood3.setVisibility(View.VISIBLE);
+
+        AlphaAnimation alphaAnimation = new AlphaAnimation(0,1);
+        alphaAnimation.setDuration(1000);
+
+        blood1.startAnimation(alphaAnimation);
+        blood2.startAnimation(alphaAnimation);
+        blood3.startAnimation(alphaAnimation);
+
+        Handler handler1 = new Handler();
+        handler1.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                blood1.setVisibility(View.INVISIBLE);
+                blood2.setVisibility(View.INVISIBLE);
+                blood3.setVisibility(View.INVISIBLE);
+                blood_layout.setVisibility(View.INVISIBLE);
+            }
+        },2000);
     }
 
 }

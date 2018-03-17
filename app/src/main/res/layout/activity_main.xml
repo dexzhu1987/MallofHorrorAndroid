@@ -420,8 +420,10 @@
         app:srcCompat="@drawable/loading" />
 
     <RelativeLayout
+        android:id="@+id/blood_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/blood_effect1"
