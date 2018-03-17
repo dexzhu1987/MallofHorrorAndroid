@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
@@ -33,6 +34,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import okhttp3.internal.Util;
 
@@ -49,6 +51,8 @@ public class UserListActivity extends AppCompatActivity {
     private Game gameMain;
     private String type;
     private boolean isStarted;
+    private MediaPlayer waitingRoomBgm;
+    private final static int MAX_VOLUME = 100;
 
     public static Intent newIntent(Context context, String type, String roomID, String username) {
         Intent intent = new Intent(context, UserListActivity.class);
@@ -72,12 +76,22 @@ public class UserListActivity extends AppCompatActivity {
         userActivity = UserListActivity.this;
         isStarted = false;
 
+        List<Integer> bgmSources = new ArrayList<>();
+        bgmSources.add(R.raw.waitingroom_bgm1);
+        bgmSources.add(R.raw.waitingroom_bgm2);
+        bgmSources.add(R.raw.waitingroom_bgm3);
+        Random random = new Random();
+        waitingRoomBgm = MediaPlayer.create(UserListActivity.this, bgmSources.get(random.nextInt(bgmSources.size())));
+        waitingRoomBgm.start();
+        waitingRoomBgm.setLooping(true);
+        final float volume = (float) (1 - (Math.log(MAX_VOLUME - 70) / Math.log(MAX_VOLUME)));
+        waitingRoomBgm.setVolume(volume,volume);
+
         Log.i(LOG_TAG, "type: " + type  + " roomID: "+ roomId + " username: " + username);
 
         adapter = new Adapter(this, users);
         binding.list.setAdapter(adapter);
         binding.list.setLayoutManager(new LinearLayoutManager(this));
-
 
         fetchUsers();
 
@@ -324,6 +338,13 @@ public class UserListActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         _idleHandler.removeCallbacks(_idleRunnable);
+    }
+
+
+    public void onStop(){
+        super.onStop();
+        waitingRoomBgm.stop();
+        waitingRoomBgm.release();
     }
 
 

@@ -62,6 +62,8 @@ public class FirstActivity extends AppCompatActivity {
     private AudioManager audioManager;
     TextView textView;
     private final static int MAX_VOLUME = 100;
+    private MediaPlayer backgroundMusic;
+    private MediaPlayer firstZombieSound;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,11 +81,11 @@ public class FirstActivity extends AppCompatActivity {
 
 //        overridePendingTransition(android.support.v7.appcompat.R.anim.abc_grow_fade_in_from_bottom,android.support.v7.appcompat.R.anim.abc_shrink_fade_out_from_bottom );
 
-        MediaPlayer ring= MediaPlayer.create(FirstActivity.this,R.raw.the_walking_dead);
+        backgroundMusic = MediaPlayer.create(FirstActivity.this,R.raw.the_walking_dead);
 //        ring.setLooping(true);
         final float volume = (float) (1 - (Math.log(MAX_VOLUME - 60) / Math.log(MAX_VOLUME)));
-        ring.setVolume(volume, volume);
-        ring.start();
+        backgroundMusic.setVolume(volume, volume);
+        backgroundMusic.start();
         firstActivity = FirstActivity.this;
         blinkText();
 
@@ -103,9 +105,8 @@ public class FirstActivity extends AppCompatActivity {
 
 
     public void startMultilayer(View view){
-        MediaPlayer ring = MediaPlayer.create(FirstActivity.this, R.raw.firstactivity_zombie);
-        ring.setVolume(100,100);
-        ring.start();
+        firstZombieSound = MediaPlayer.create(FirstActivity.this, R.raw.firstactivity_zombie);
+        firstZombieSound.start();
         if (!arePlayServicesOk()) {
             return;
         }
@@ -320,4 +321,18 @@ public class FirstActivity extends AppCompatActivity {
         textView.startAnimation(fade_in_animation);
         textView.startAnimation(fade_out_animation);
     }
+
+    public void onStop(){
+        super.onStop();
+        backgroundMusic.stop();
+        backgroundMusic.release();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        firstZombieSound.stop();
+        firstZombieSound.release();
+    }
+
 }
