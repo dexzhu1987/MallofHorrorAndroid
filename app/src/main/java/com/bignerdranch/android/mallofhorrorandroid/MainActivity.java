@@ -2397,6 +2397,10 @@ public class MainActivity extends AppCompatActivity {
                         "\nZombies have their feast, and returned back to somewhere else to find their next target! ");
                 MediaPlayer deadSound = MediaPlayer.create(MainActivity.this, R.raw.church_bell);
                 deadSound.start();
+
+                bloodAnnimation();
+
+
                 Handler handler1 = new Handler();
                 handler1.postDelayed(new Runnable() {
                     @Override
@@ -2420,6 +2424,31 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 },DELAYEDSECONDSFORLONGMESSAGE * 1000);
+            }
+
+            private void bloodAnnimation() {
+                ImageView blood1 = findViewById(R.id.blood_effect1);
+                ImageView blood2 = findViewById(R.id.blood_effect2);
+                ImageView blood3 = findViewById(R.id.blood_effect3);
+
+                blood1.setVisibility(View.VISIBLE);
+                blood2.setVisibility(View.VISIBLE);
+                blood3.setVisibility(View.VISIBLE);
+
+                AlphaAnimation alphaAnimation1 = new AlphaAnimation(1,0);
+                alphaAnimation1.setDuration(1000);
+                alphaAnimation1.setRepeatCount(1);
+                blood1.startAnimation(alphaAnimation1);
+
+                AlphaAnimation alphaAnimation2 = new AlphaAnimation(1,0);
+                alphaAnimation2.setDuration(1000);
+                alphaAnimation2.setStartOffset(500);
+                blood2.startAnimation(alphaAnimation2);
+
+                AlphaAnimation alphaAnimation3 = new AlphaAnimation(1,0);
+                alphaAnimation3.setDuration(1000);
+                alphaAnimation3.setStartOffset(1000);
+                blood3.startAnimation(alphaAnimation3);
             }
         },DELAYEDSECONDSFORLONGMESSAGE*1000);
     }

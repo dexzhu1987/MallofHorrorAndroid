@@ -419,5 +419,45 @@
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/loading" />
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/blood_effect1"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="11dp"
+            android:layout_marginTop="29dp"
+            app:srcCompat="@drawable/blood"
+            android:visibility="invisible"/>
+
+        <ImageView
+            android:id="@+id/blood_effect2"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_below="@+id/blood_effect1"
+            android:layout_centerHorizontal="true"
+            app:srcCompat="@drawable/blood"
+            android:visibility="invisible"/>
+
+        <ImageView
+            android:id="@+id/blood_effect3"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="93dp"
+            android:layout_toEndOf="@+id/blood_effect2"
+            app:srcCompat="@drawable/blood"
+            android:visibility="invisible"/>
+
+
+    </RelativeLayout>
+
+
+
 
 </android.support.constraint.ConstraintLayout>
