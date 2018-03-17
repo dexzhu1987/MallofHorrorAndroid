@@ -61,6 +61,7 @@ public class FirstActivity extends AppCompatActivity {
     private Context firstActivity ;
     private AudioManager audioManager;
     TextView textView;
+    private final static int MAX_VOLUME = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,8 +81,9 @@ public class FirstActivity extends AppCompatActivity {
 
         MediaPlayer ring= MediaPlayer.create(FirstActivity.this,R.raw.the_walking_dead);
 //        ring.setLooping(true);
+        final float volume = (float) (1 - (Math.log(MAX_VOLUME - 60) / Math.log(MAX_VOLUME)));
+        ring.setVolume(volume, volume);
         ring.start();
-
         firstActivity = FirstActivity.this;
         blinkText();
 
@@ -97,33 +99,18 @@ public class FirstActivity extends AppCompatActivity {
 //            }
 //        });
 
-//        mHowToPlayButton = findViewById(R.id.how_to_play_button);
-//        mHowToPlayButton.startAnimation(animTranslate);
-//        mHowToPlayButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//            }
-//        });
-
     }
 
 
     public void startMultilayer(View view){
-
+        MediaPlayer ring = MediaPlayer.create(FirstActivity.this, R.raw.firstactivity_zombie);
+        ring.setVolume(100,100);
+        ring.start();
         if (!arePlayServicesOk()) {
             return;
         }
         if (isAnonymous()) {
             if (Build.BRAND.equalsIgnoreCase("xiaomi")) {
-//                final TextView nameInput = new EditText(FirstActivity.this);
-//                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-//                        LinearLayout.LayoutParams.MATCH_PARENT,
-//                        LinearLayout.LayoutParams.WRAP_CONTENT
-//                );
-//                nameInput.setLayoutParams(params);
-//                nameInput.setText("For Xiaomi User, please got to Setting--Permission--Enable auto start to ensure the app will be running properly. Thanks");
-
                 AlertDialog.Builder builder = new AlertDialog.Builder(FirstActivity.this);
                 builder.setTitle("Important notice");
                 builder.setMessage("For Xiaomi User, please got to Setting--Permission--Enable auto start to ensure the app will be running properly. Thanks");
@@ -142,8 +129,6 @@ public class FirstActivity extends AppCompatActivity {
             binding.login.setVisibility(VISIBLE);
             binding.inputPassword.setVisibility(VISIBLE);
         } else {
-//            Animation animTranslate = AnimationUtils.loadAnimation(this, R.anim.anim_bounce);
-//            mPlayButton.startAnimation(animTranslate);
             startUserListActivity();
         }
     }

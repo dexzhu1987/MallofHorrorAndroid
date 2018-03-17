@@ -202,6 +202,7 @@ public class MainActivity extends AppCompatActivity {
         updateRoom(MainActivity.this);
         displayMessage();
         messageHasUpdate();
+
     }
 
     @Override
