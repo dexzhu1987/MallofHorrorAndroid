@@ -1,33 +1,25 @@
 package com.bignerdranch.android.mallofhorrorandroid;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.media.MediaPlayer;
-import android.os.Build;
 import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.Game;
 import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.User;
 import com.bignerdranch.android.mallofhorrorandroid.databinding.ActivityUserListBinding;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -35,8 +27,6 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
-import okhttp3.internal.Util;
 
 public class UserListActivity extends AppCompatActivity {
     private static final String LOG_TAG = "UserListActivity";
@@ -77,11 +67,16 @@ public class UserListActivity extends AppCompatActivity {
         isStarted = false;
 
         List<Integer> bgmSources = new ArrayList<>();
-        bgmSources.add(R.raw.waitingroom_bgm1);
-        bgmSources.add(R.raw.waitingroom_bgm2);
-        bgmSources.add(R.raw.waitingroom_bgm3);
+        bgmSources.add(R.raw.waitingroom_bgm_umeneko);
+        bgmSources.add(R.raw.waitingroom_bgm_hellgirl);
+        bgmSources.add(R.raw.waitingroom_bgm_silenthill);
+        bgmSources.add(R.raw.waitingroom_bgm_fatalframe);
         Random random = new Random();
-        waitingRoomBgm = MediaPlayer.create(UserListActivity.this, bgmSources.get(random.nextInt(bgmSources.size())));
+        int themeSet = random.nextInt(bgmSources.size());
+        waitingRoomBgm = MediaPlayer.create(UserListActivity.this, bgmSources.get(themeSet));
+        do {
+            themeSet = random.nextInt(bgmSources.size());
+        } while (themeSet==0);
         waitingRoomBgm.start();
         waitingRoomBgm.setLooping(true);
         final float volume = (float) (1 - (Math.log(MAX_VOLUME - 70) / Math.log(MAX_VOLUME)));
@@ -188,7 +183,6 @@ public class UserListActivity extends AppCompatActivity {
         FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child("player1").setValue(username);
     }
 
-
     private void registerNameInRoom(String roomId) {
         FirebaseDatabase.getInstance().getReference().child("game").child(roomId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -253,7 +247,6 @@ public class UserListActivity extends AppCompatActivity {
 
     }
 
-
     private void fetchUsers() {
         FirebaseDatabase.getInstance().getReference().child("users")
                 .addValueEventListener(new ValueEventListener() {
@@ -291,8 +284,6 @@ public class UserListActivity extends AppCompatActivity {
         super.onPause();
         FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("on").setValue(false);
     }
-
-
 
     @Override
     public void onBackPressed() {
@@ -339,7 +330,6 @@ public class UserListActivity extends AppCompatActivity {
         super.onDestroy();
         _idleHandler.removeCallbacks(_idleRunnable);
     }
-
 
     public void onStop(){
         super.onStop();

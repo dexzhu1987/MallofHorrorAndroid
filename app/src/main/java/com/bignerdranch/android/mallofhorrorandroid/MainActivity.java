@@ -4605,7 +4605,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(startMain);
     }
 
-
     @Override
     public void onUserInteraction() {
         super.onUserInteraction();
@@ -4623,7 +4622,6 @@ public class MainActivity extends AppCompatActivity {
             //handle your IDLE state
         }
     };
-
 
     private void writeRoomIntoFireBase(Room room){
         int zombieNumber = room.getCurrentZombienumber();
@@ -4671,8 +4669,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
-
     private void delayedIdle(int delayMinutes) {
         _idleHandler.removeCallbacks(_idleRunnable);
         _idleHandler.postDelayed(_idleRunnable, (delayMinutes * 1000 * 60));
@@ -4685,12 +4681,7 @@ public class MainActivity extends AppCompatActivity {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-    private void alertNetworkNotAvailable(){
-        Toast.makeText(MainActivity.this, "Oops! Looks like you have disconnected from the internet, once you are connected, please press CONTINUE again", Toast.LENGTH_SHORT).show();
-    }
-
     FirebaseListAdapter<ChatMessage> adapter;
-
 
     public void open_chat(View view) {
         AlertDialog.Builder chatbox = new AlertDialog.Builder(this);
