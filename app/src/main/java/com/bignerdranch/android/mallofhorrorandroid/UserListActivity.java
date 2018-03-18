@@ -72,18 +72,13 @@ public class UserListActivity extends AppCompatActivity {
         bgmSources.add(R.raw.waitingroom_bgm_silenthill);
         bgmSources.add(R.raw.waitingroom_bgm_fatalframe);
         Random random = new Random();
-        int themeSet = random.nextInt(bgmSources.size());
-        waitingRoomBgm = MediaPlayer.create(UserListActivity.this, bgmSources.get(themeSet));
-        do {
-            themeSet = random.nextInt(bgmSources.size());
-        } while (themeSet==0);
+        int bgmThemeSet = random.nextInt(bgmSources.size());
+        waitingRoomBgm = MediaPlayer.create(UserListActivity.this, bgmSources.get(bgmThemeSet));
         waitingRoomBgm.start();
         waitingRoomBgm.setLooping(true);
         final float volume = (float) (1 - (Math.log(MAX_VOLUME - 70) / Math.log(MAX_VOLUME)));
         waitingRoomBgm.setVolume(volume,volume);
-
         Log.i(LOG_TAG, "type: " + type  + " roomID: "+ roomId + " username: " + username);
-
         adapter = new Adapter(this, users);
         binding.list.setAdapter(adapter);
         binding.list.setLayoutManager(new LinearLayoutManager(this));

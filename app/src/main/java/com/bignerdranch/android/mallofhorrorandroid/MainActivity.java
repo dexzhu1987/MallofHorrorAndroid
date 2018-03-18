@@ -80,6 +80,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String TYPE = "type";
 
     private static final String GAMEBOARDSAVED = "gamebroadsaved";
+    private static final String TRACKSETNUMBER = "TrackSetNumber";
+    private static final String CURRENTTRACK = "currentTrack";
 
     private static final int REQUEST_CODE_ROOM = 0;
     private static final int REQUEST_CODE_CHARACTER = 1;
@@ -94,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_VIEWZOMBIEAll = 10;
     private static final int REQUEST_CODE_VIEWZOMBIEALLMORE = 11;
     private static final int REQUEST_CODE_ITEM = 12;
+
 
     private int mPlayerNumber;
 
@@ -143,7 +146,6 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Playable> mCurrentTeam = new ArrayList<>();
     private int originalTeamSize ;
 
-
     private ConstraintLayout mMainActivityLayout;
     private ImageButton mRedButton, mYellowButton, mBlueButton, mGreenButton, mBrownButton, mBlackButton;
     private ImageButton mContinueButton;
@@ -177,6 +179,18 @@ public class MainActivity extends AppCompatActivity {
 
     final Animation mFlash = new AlphaAnimation(1, 0);
 
+    private MediaPlayer mBgmPlayer;
+    private ArrayList<Integer> mPreGameBgmSet = new ArrayList<>();
+    private ArrayList<Integer> mParkingSearchBgmSet =  new ArrayList<>();
+    private ArrayList<Integer> mSecurityBgmSet = new ArrayList<>();
+    private ArrayList<Integer> mViewAndMoveBgmSet = new ArrayList<>();
+    private ArrayList<Integer> mShowZombieBgmSet = new ArrayList<>();
+    private ArrayList<Integer> mRoomFallenBgmSet = new ArrayList<>();
+    private ArrayList<Integer> mItemUsingBgmSet = new ArrayList<>();
+    private ArrayList<Integer> mWinnerBgmSet = new ArrayList<>();
+    private int mBgmSetNumber;
+    private int mBgmTrack;
+    private final static int MAX_VOLUME = 100;
 
     public static Intent mainIntent(Context packageContext, int playerNumber){
         Intent intent = new Intent(packageContext, MainActivity.class);
@@ -202,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
         updateRoom(MainActivity.this);
         displayMessage();
         messageHasUpdate();
-
+        bgmSetUp(savedInstanceState);
     }
 
     @Override
@@ -215,12 +229,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         adapter.startListening();
+        startPlayingTrack();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         adapter.stopListening();
+        mBgmPlayer.stop();
+        mBgmPlayer.release();
     }
 
     @Override
@@ -234,6 +251,8 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         Log.i(TAG, "saving the game broad");
         outState.putParcelable(GAMEBOARDSAVED, gameBroad);
+        outState.putInt(TRACKSETNUMBER, mBgmSetNumber);
+        outState.putInt(CURRENTTRACK, mBgmTrack);
     }
 
     @Override
@@ -241,6 +260,8 @@ public class MainActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
         Log.i(TAG, "loading the game broad");
         gameBroad = savedInstanceState.getParcelable(GAMEBOARDSAVED);
+        mBgmSetNumber = savedInstanceState.getInt(TRACKSETNUMBER);
+        mBgmTrack = savedInstanceState.getInt(CURRENTTRACK);
     }
 
     private void gettingReady(Bundle savedInstanceState) {
@@ -264,6 +285,112 @@ public class MainActivity extends AppCompatActivity {
         mFlash.setDuration(1000);
         setUpListenerOnFirebase();
 
+    }
+
+    private void bgmSetUp(Bundle savedInstanceState) {
+        Random random = new Random();
+        if (savedInstanceState==null){
+            mBgmSetNumber = random.nextInt(4)+1;
+        } else {
+            savedInstanceState.getInt(TRACKSETNUMBER);
+        }
+
+        mPreGameBgmSet.clear();
+        mPreGameBgmSet.add(R.raw.bgm_umineko_pregame);
+        mPreGameBgmSet.add(R.raw.bgm_umineko_pregame2);
+        mPreGameBgmSet.add(R.raw.bgm_hellgirl_pregame);
+        mPreGameBgmSet.add(R.raw.bgm_hellgirl_pregame2);
+        mPreGameBgmSet.add(R.raw.bgm_silenthill_pregame);
+        mPreGameBgmSet.add(R.raw.bgm_silenthill_pregame2);
+        mPreGameBgmSet.add(R.raw.bgm_fatalframe_pregame);
+        mPreGameBgmSet.add(R.raw.bgm_fatalframe_pregame2);
+
+        mParkingSearchBgmSet.clear();
+        mParkingSearchBgmSet.add(R.raw.bgm_umineko_parkingsearch);
+        mParkingSearchBgmSet.add(R.raw.bgm_umineko_parkingsearch2);
+        mParkingSearchBgmSet.add(R.raw.bgm_hellgirl_parkingsearch);
+        mParkingSearchBgmSet.add(R.raw.bgm_hellgirl_parkingsearch2);
+        mParkingSearchBgmSet.add(R.raw.bgm_silenthill_parkingsearch);
+        mParkingSearchBgmSet.add(R.raw.bgm_silenthill_parkingsearch2);
+        mParkingSearchBgmSet.add(R.raw.bgm_fatalframe_parkingsearch);
+        mParkingSearchBgmSet.add(R.raw.bgm_fatalframe_parkingsearch2);
+
+        mSecurityBgmSet.clear();
+        mSecurityBgmSet.add(R.raw.bgm_umineko_securityroom);
+        mSecurityBgmSet.add(R.raw.bgm_umineko_securityroom2);
+        mSecurityBgmSet.add(R.raw.bgm_hellgirl_securityroom);
+        mSecurityBgmSet.add(R.raw.bgm_hellgirl_securityroom2);
+        mSecurityBgmSet.add(R.raw.bgm_silenthill_securityroom);
+        mSecurityBgmSet.add(R.raw.bgm_silenthill_securityroom2);
+        mSecurityBgmSet.add(R.raw.bgm_fatalframe_securityroom);
+        mSecurityBgmSet.add(R.raw.bgm_fatalframe_securityroom2);
+
+        mViewAndMoveBgmSet.clear();
+        mViewAndMoveBgmSet.add(R.raw.bgm_umineko_viewandmove);
+        mViewAndMoveBgmSet.add(R.raw.bgm_umineko_viewandmove2);
+        mViewAndMoveBgmSet.add(R.raw.bgm_hellgirl_viewandmove);
+        mViewAndMoveBgmSet.add(R.raw.bgm_hellgirl_viewandmove2);
+        mViewAndMoveBgmSet.add(R.raw.bgm_silenthill_viewandmove);
+        mViewAndMoveBgmSet.add(R.raw.bgm_silenthill_viewandmove2);
+        mViewAndMoveBgmSet.add(R.raw.bgm_fatalframe_viewandmove);
+        mViewAndMoveBgmSet.add(R.raw.bgm_fatalframe_viewandmove2);
+
+        mShowZombieBgmSet.clear();
+        mShowZombieBgmSet.add(R.raw.bgm_umineko_showzombie);
+        mShowZombieBgmSet.add(R.raw.bgm_umineko_showzombie2);
+        mShowZombieBgmSet.add(R.raw.bgm_hellgirl_showzombie);
+        mShowZombieBgmSet.add(R.raw.bgm_hellgirl_showzombie2);
+        mShowZombieBgmSet.add(R.raw.bgm_silenthill_showzombie);
+        mShowZombieBgmSet.add(R.raw.bgm_silenthill_showzombie2);
+        mShowZombieBgmSet.add(R.raw.bgm_fatalframe_showzombie);
+        mShowZombieBgmSet.add(R.raw.bgm_fatalframe_showzombie2);
+
+        mRoomFallenBgmSet.clear();
+        mRoomFallenBgmSet.add(R.raw.bgm_umineko_roomfallen);
+        mRoomFallenBgmSet.add(R.raw.bgm_umineko_roomfallen2);
+        mRoomFallenBgmSet.add(R.raw.bgm_hellgirl_roomfallen);
+        mRoomFallenBgmSet.add(R.raw.bgm_hellgirl_roomfallen2);
+        mRoomFallenBgmSet.add(R.raw.bgm_silenthill_roomfallen);
+        mRoomFallenBgmSet.add(R.raw.bgm_silenthill_roomfallen2);
+        mRoomFallenBgmSet.add(R.raw.bgm_fatalframe_roomfallen);
+        mRoomFallenBgmSet.add(R.raw.bgm_fatalframe_roomfallen2);
+
+        mItemUsingBgmSet.clear();
+        mItemUsingBgmSet.add(R.raw.bgm_umineko_itemusing);
+        mItemUsingBgmSet.add(R.raw.bgm_umineko_itemusing2);
+        mItemUsingBgmSet.add(R.raw.bgm_hellgirl_itemusing);
+        mItemUsingBgmSet.add(R.raw.bgm_hellgirl_itemusing2);
+        mItemUsingBgmSet.add(R.raw.bgm_silenthill_itemusing);
+        mItemUsingBgmSet.add(R.raw.bgm_silenthill_itemusing2);
+        mItemUsingBgmSet.add(R.raw.bgm_fatalframe_itemusing);
+        mItemUsingBgmSet.add(R.raw.bgm_fatalframe_itemusing2);
+
+        mWinnerBgmSet.clear();
+        mWinnerBgmSet.add(R.raw.bgm_umineko_winner);
+        mWinnerBgmSet.add(R.raw.bgm_hellgirl_winner);
+        mWinnerBgmSet.add(R.raw.bgm_silenthill_winner);
+        mWinnerBgmSet.add(R.raw.bgm_fatalframe_winner);
+
+        bgmChangeTrack(mPreGameBgmSet);
+    }
+
+    private void bgmChangeTrack(ArrayList<Integer> trackSources) {
+        Random random1 = new Random();
+        int setpicked = mBgmSetNumber * 2 - random1.nextInt(2) ;
+        ArrayList<Integer> nextTrack = trackSources;
+        mBgmTrack = nextTrack.get(setpicked);
+        startPlayingTrack();
+    }
+
+    private void startPlayingTrack() {
+        if (mBgmPlayer.isPlaying()) {
+            mBgmPlayer.stop();
+            mBgmPlayer.release();
+        }
+            mBgmPlayer = MediaPlayer.create(MainActivity.this, mBgmTrack);
+            mBgmPlayer.setLooping(true);
+            final float volume = (float) (1 - (Math.log(MAX_VOLUME - 70) / Math.log(MAX_VOLUME)));
+            mBgmPlayer.setVolume(volume,volume);
     }
 
     private void fireBaseInitialSetup() {
@@ -464,6 +591,7 @@ public class MainActivity extends AppCompatActivity {
         updateRoom(MainActivity.this);
         mMainActivityLayout.invalidate();
         mMessageView.setText("Game Phase I: Parking Search");
+        bgmChangeTrack(mParkingSearchBgmSet);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -499,6 +627,7 @@ public class MainActivity extends AppCompatActivity {
             },DELAYEDSECONDSFORMESSAGEVIE * 1000);
         } else {
             mMessageView.setText("Game Phase II: Security Chief selected");
+            bgmChangeTrack(mSecurityBgmSet);
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
@@ -908,6 +1037,7 @@ public class MainActivity extends AppCompatActivity {
                     String receivedColor = colors.get(prevTurn);
                     if (gameBroad.matchRoom(4).winner().equals("TIE")){
                         mMessageView.setText("Game Phase II: Security Chief selected");
+                        bgmChangeTrack(mParkingSearchBgmSet);
                         Handler handler = new Handler();
                         handler.postDelayed(new Runnable() {
                             @Override
@@ -1278,6 +1408,7 @@ public class MainActivity extends AppCompatActivity {
     private void messageViewInformMovetoViewAndMove() {
         disableContinue();
         mMessageView.setText("Game Phase III: Chief Viewing and Moving");
+        bgmChangeTrack(mViewAndMoveBgmSet);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -1536,6 +1667,7 @@ public class MainActivity extends AppCompatActivity {
         mMainActivityLayout.invalidate();
         mMessageView.setVisibility(View.VISIBLE);
         mMessageView.setText("Game Phase IV: Zombies Revealed and Attacked");
+        bgmChangeTrack(mShowZombieBgmSet);
         mMessageView.setEnabled(false);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -1724,6 +1856,7 @@ public class MainActivity extends AppCompatActivity {
             disableContinue();
             mMessageView.setVisibility(View.VISIBLE);
             mMessageView.setEnabled(false);
+            bgmChangeTrack(mRoomFallenBgmSet);
             mMessageView.setText("Parking has fallen, but items can not be triggered here");
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
@@ -1768,6 +1901,7 @@ public class MainActivity extends AppCompatActivity {
     private void messageViewInformItemCanbeUsed(Room theCurrentRoom) {
         disableContinue();
         mMessageView.setText(theCurrentRoom.getName() +  " has fallen and can use item to revised by items, please confirm if you want to use item");
+        bgmChangeTrack(mRoomFallenBgmSet);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -1937,6 +2071,7 @@ public class MainActivity extends AppCompatActivity {
                     final boolean isItemUsed  = gameData.getmIsUsedItem();
                     mMessageView.setVisibility(View.VISIBLE);
                     mMessageView.setText("Loading Information");
+                    bgmChangeTrack(mItemUsingBgmSet);
                     mMessageView.startAnimation(mFlash);
                     mMessageView.setEnabled(false);
                     if (isItemUsed) {
@@ -2050,6 +2185,7 @@ public class MainActivity extends AppCompatActivity {
         mMessageView.setEnabled(false);
         mMessageView.setVisibility(View.VISIBLE);
         if (theCurrentRoom.isFallen()){
+            bgmChangeTrack(mRoomFallenBgmSet);
             Log.i(TAG, "still fallen after item used");
             mMessageView.setText(theCurrentRoom.getName() +  " is still fallen after item used");
             Handler handler = new Handler();
@@ -2714,7 +2850,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 mMessageView.setText("A round is finished, game will move back to parking search, " +
                         "\nOnce there are four character in game, the player with most victory points won.");
-
+                bgmChangeTrack(mParkingSearchBgmSet);
                 Handler handler1 = new Handler();
                 handler1.postDelayed(new Runnable() {
                     @Override
@@ -2768,6 +2904,7 @@ public class MainActivity extends AppCompatActivity {
         mMessageView.setVisibility(View.VISIBLE);
         mMessageView.setEnabled(false);
         mMessageView.setText("Looks Like we have less than 4 characters in the mall now. We we will reveal the results shortly");
+        bgmChangeTrack(mWinnerBgmSet);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
