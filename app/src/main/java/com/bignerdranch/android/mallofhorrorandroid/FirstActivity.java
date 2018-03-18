@@ -17,12 +17,14 @@ import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.databinding.DataBindingUtil;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -89,7 +91,6 @@ public class FirstActivity extends AppCompatActivity {
         firstActivity = FirstActivity.this;
         blinkText();
 
-
 //        mPlayButton = findViewById(R.id.play_button);
 //        mPlayButton.startAnimation(animTranslate);
 //        mPlayButton.setOnClickListener(new View.OnClickListener() {
@@ -124,7 +125,7 @@ public class FirstActivity extends AppCompatActivity {
                 mAlertDialog.show();
             }
             textView.clearAnimation();
-            textView.setVisibility(View.INVISIBLE);
+            textView.setVisibility(View.GONE);
             binding.inputEmail.setVisibility(VISIBLE);
             binding.inputName.setVisibility(VISIBLE);
             binding.login.setVisibility(VISIBLE);
