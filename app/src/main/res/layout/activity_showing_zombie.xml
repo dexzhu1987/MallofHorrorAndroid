@@ -16,7 +16,7 @@
         android:layout_marginStart="50dp"
         android:layout_marginTop="16dp"
         android:background="#010101"
-        android:fontFamily="@font/digital"
+        android:fontFamily="@font/roboto_regular"
         android:paddingBottom="10dp"
         android:paddingTop="10dp"
         android:text="Four zombies have appeared and are approaching..."

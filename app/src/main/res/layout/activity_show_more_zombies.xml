@@ -15,16 +15,15 @@
         android:layout_marginStart="50dp"
         android:layout_marginTop="32dp"
         android:background="#9F010101"
-        android:fontFamily="@font/digital"
+        android:fontFamily="@font/roboto_regular"
         android:paddingBottom="10dp"
         android:paddingTop="10dp"
-        android:lineSpacingMultiplier="1.2"
         android:text="Zero to two more zombies have approached below rooms...because
-    \nOne room has most people, (zombie can smell fresh)
-    \nOne room has most models, (they smell better)"
+    One room has most people, (zombie can smell fresh)
+    One room has most models, (they smell better)"
         android:textAlignment="center"
         android:textColor="#00FE00"
-        android:textSize="24sp"
+        android:textSize="22sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"

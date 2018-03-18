@@ -71,6 +71,7 @@
             android:textColor="#00FE00"
             android:textAlignment="center"
             android:visibility="visible"
+            android:fontFamily="@font/roboto_regular"
             android:text="PLEASE TOUCH SCREEN TO START..."/>
     </LinearLayout>
 
