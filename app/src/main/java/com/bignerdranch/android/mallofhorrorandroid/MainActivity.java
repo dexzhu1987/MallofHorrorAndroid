@@ -1,5 +1,6 @@
 package com.bignerdranch.android.mallofhorrorandroid;
 
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -4960,28 +4961,78 @@ public class MainActivity extends AppCompatActivity {
         ImageView blood2 = findViewById(R.id.blood_effect2);
         ImageView blood3 = findViewById(R.id.blood_effect3);
 
+//        blood_layout.setVisibility(View.VISIBLE);
+//        blood1.setVisibility(View.VISIBLE);
+//        blood2.setVisibility(View.VISIBLE);
+//        blood3.setVisibility(View.VISIBLE);
+
+        AlphaAnimation alphaAnimation = new AlphaAnimation(1,0);
+        alphaAnimation.setDuration(5000);
+        alphaAnimation.setRepeatMode(ValueAnimator.RESTART);
+
         blood_layout.setVisibility(View.VISIBLE);
         blood1.setVisibility(View.VISIBLE);
-        blood2.setVisibility(View.VISIBLE);
-        blood3.setVisibility(View.VISIBLE);
-
-        AlphaAnimation alphaAnimation = new AlphaAnimation(0,1);
-        alphaAnimation.setDuration(1000);
-
-        blood1.startAnimation(alphaAnimation);
-        blood2.startAnimation(alphaAnimation);
-        blood3.startAnimation(alphaAnimation);
-
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                blood2.setVisibility(View.VISIBLE);
+            }
+        },1000);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                blood3.setVisibility(View.VISIBLE);
+            }
+        },2000);
         Handler handler1 = new Handler();
         handler1.postDelayed(new Runnable() {
             @Override
             public void run() {
+                blood1.startAnimation(alphaAnimation);
+            }
+        },2000);
+        handler1.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                blood2.startAnimation(alphaAnimation);
+            }
+        },3000);
+        handler1.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                blood3.startAnimation(alphaAnimation);
+            }
+        },4000);
+        handler1.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                blood1.animate().cancel();
+                blood1.clearAnimation();
+                blood1.setAnimation(null);
                 blood1.setVisibility(View.INVISIBLE);
+            }
+        },8000);
+        handler1.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                blood2.animate().cancel();
+                blood2.clearAnimation();
+                blood2.setAnimation(null);
                 blood2.setVisibility(View.INVISIBLE);
+            }
+        },9000);
+        handler1.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                blood3.animate().cancel();
+                blood3.clearAnimation();
+                blood3.setAnimation(null);
                 blood3.setVisibility(View.INVISIBLE);
                 blood_layout.setVisibility(View.INVISIBLE);
             }
-        },2000);
+        },10000);
+
     }
 
 }
