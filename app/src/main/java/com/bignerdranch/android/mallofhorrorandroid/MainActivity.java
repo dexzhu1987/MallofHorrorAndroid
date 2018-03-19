@@ -4966,16 +4966,10 @@ public class MainActivity extends AppCompatActivity {
 //        blood2.setVisibility(View.VISIBLE);
 //        blood3.setVisibility(View.VISIBLE);
 
-<<<<<<< HEAD
-        blood1.startAnimation(alphaAnimation);
-        blood2.startAnimation(alphaAnimation);
-
-        blood3.startAnimation(alphaAnimation);
-=======
         AlphaAnimation alphaAnimation = new AlphaAnimation(1,0);
         alphaAnimation.setDuration(5000);
         alphaAnimation.setRepeatMode(ValueAnimator.RESTART);
->>>>>>> 185a2271b69ca67f4676404780e7b4ad7ec5edb4
+
 
         blood_layout.setVisibility(View.VISIBLE);
         blood1.setVisibility(View.VISIBLE);
