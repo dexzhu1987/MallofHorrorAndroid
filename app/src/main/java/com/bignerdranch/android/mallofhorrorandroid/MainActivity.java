@@ -1665,7 +1665,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.i(TAG,"message: " +  message);
                 String message1 = "";
                 for (int i=0; i<roomspicked.size(); i++){
-                    message1 += "\n" + gameBroad.getPlayers().get(playersIndex.get(i)).getColor() + " to " + roomspicked.get(i) ;
+                    message1 += gameBroad.getPlayers().get(playersIndex.get(i)).getColor() + " to " + roomspicked.get(i) + "\n" ;
                 }
                 mMessageView.setText("Players' Choises are: " + message1);
                 mStickyNoteText.setText(message1);
@@ -2123,7 +2123,9 @@ public class MainActivity extends AppCompatActivity {
                     final boolean isItemUsed  = gameData.getmIsUsedItem();
                     mMessageView.setVisibility(View.VISIBLE);
                     mMessageView.setText("Loading Information");
-                    bgmChangeTrack(mItemUsingBgmSet);
+                    if (mCountSetUp==1){
+                        bgmChangeTrack(mItemUsingBgmSet);
+                    }
                     mMessageView.startAnimation(mFlash);
                     mMessageView.setEnabled(false);
                     if (isItemUsed) {

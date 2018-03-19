@@ -472,10 +472,10 @@
 
     <TextView
         android:id="@+id/stickynotetext"
-        android:layout_width="75dp"
-        android:layout_height="56dp"
+        android:layout_width="85dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="148dp"
+        android:layout_marginTop="132dp"
         android:fontFamily="@font/exquisite_corpse"
         android:textColor="@android:color/holo_red_light"
         android:textSize="14sp"
