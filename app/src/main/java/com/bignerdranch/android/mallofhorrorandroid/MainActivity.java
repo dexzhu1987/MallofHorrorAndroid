@@ -4984,6 +4984,7 @@ public class MainActivity extends AppCompatActivity {
         alphaAnimation.setDuration(6000);
         alphaAnimation.setRepeatMode(ValueAnimator.RESTART);
 
+
         blood_layout.setVisibility(View.VISIBLE);
         blood1.setVisibility(View.VISIBLE);
         Handler handler = new Handler();
