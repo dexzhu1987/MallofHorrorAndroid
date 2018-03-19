@@ -36,7 +36,6 @@ public class ItemDeck implements Parcelable, Serializable{
 
     }
 
-
     @Override
     public int describeContents() {
         return 0;
@@ -44,11 +43,11 @@ public class ItemDeck implements Parcelable, Serializable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeSerializable((Serializable) itemsDeck);
+        dest.writeList(itemsDeck);
     }
 
     protected ItemDeck (Parcel in){
-       itemsDeck = (List<Item>) in.readSerializable();
+       itemsDeck = (List<Item>) in.readArrayList(Item.class.getClassLoader());
     }
 
     public static final Creator<ItemDeck> CREATOR = new Creator<ItemDeck>() {

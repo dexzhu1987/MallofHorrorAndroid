@@ -66,24 +66,7 @@ public class UserListActivity extends AppCompatActivity {
         userActivity = UserListActivity.this;
         isStarted = false;
 
-        List<Integer> bgmSources = new ArrayList<>();
-        bgmSources.add(R.raw.waitingroom_bgm_umeneko);
-        bgmSources.add(R.raw.waitingroom_bgm_hellgirl);
-        bgmSources.add(R.raw.waitingroom_bgm_silenthill);
-        bgmSources.add(R.raw.waitingroom_bgm_fatalframe);
-        Random random = new Random();
-        int themeSet = random.nextInt(bgmSources.size());
-        waitingRoomBgm = MediaPlayer.create(UserListActivity.this, bgmSources.get(themeSet));
-        do {
-            themeSet = random.nextInt(bgmSources.size());
-        } while (themeSet==0);
-        waitingRoomBgm.start();
-        waitingRoomBgm.setLooping(true);
-        final float volume = (float) (1 - (Math.log(MAX_VOLUME - 70) / Math.log(MAX_VOLUME)));
-        waitingRoomBgm.setVolume(volume,volume);
-
         Log.i(LOG_TAG, "type: " + type  + " roomID: "+ roomId + " username: " + username);
-
         adapter = new Adapter(this, users);
         binding.list.setAdapter(adapter);
         binding.list.setLayoutManager(new LinearLayoutManager(this));
@@ -102,6 +85,21 @@ public class UserListActivity extends AppCompatActivity {
         updateRoom(binding, roomId);
 
 
+    }
+
+    private void playMusic() {
+        List<Integer> bgmSources = new ArrayList<>();
+        bgmSources.add(R.raw.waitingroom_bgm_umeneko);
+        bgmSources.add(R.raw.waitingroom_bgm_hellgirl);
+        bgmSources.add(R.raw.waitingroom_bgm_silenthill);
+        bgmSources.add(R.raw.waitingroom_bgm_fatalframe);
+        Random random = new Random();
+        int bgmThemeSet = random.nextInt(bgmSources.size());
+        waitingRoomBgm = MediaPlayer.create(UserListActivity.this, bgmSources.get(bgmThemeSet));
+        waitingRoomBgm.start();
+        waitingRoomBgm.setLooping(true);
+        final float volume = (float) (1 - (Math.log(MAX_VOLUME - 70) / Math.log(MAX_VOLUME)));
+        waitingRoomBgm.setVolume(volume,volume);
     }
 
     private void updateRoom(ActivityUserListBinding binding, String roomId) {
@@ -280,9 +278,19 @@ public class UserListActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        playMusic();
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
         FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("on").setValue(false);
+        if (waitingRoomBgm.isPlaying()){
+            waitingRoomBgm.stop();
+            waitingRoomBgm.release();
+        }
     }
 
     @Override
@@ -333,8 +341,6 @@ public class UserListActivity extends AppCompatActivity {
 
     public void onStop(){
         super.onStop();
-        waitingRoomBgm.stop();
-        waitingRoomBgm.release();
     }
 
 

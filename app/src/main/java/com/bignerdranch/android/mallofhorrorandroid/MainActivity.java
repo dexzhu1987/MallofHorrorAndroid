@@ -1,5 +1,6 @@
 package com.bignerdranch.android.mallofhorrorandroid;
 
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -11,6 +12,7 @@ import android.os.Handler;
 import android.os.Parcelable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.media.MediaBrowserCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
@@ -81,6 +83,9 @@ public class MainActivity extends AppCompatActivity {
     private static final String TYPE = "type";
 
     private static final String GAMEBOARDSAVED = "gamebroadsaved";
+    private static final String TRACKSETNUMBER = "TrackSetNumber";
+    private static final String CURRENTTRACK = "currentTrack";
+    private static final String ISRELEASE = "IsReasle";
 
     private static final int REQUEST_CODE_ROOM = 0;
     private static final int REQUEST_CODE_CHARACTER = 1;
@@ -144,7 +149,6 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Playable> mCurrentTeam = new ArrayList<>();
     private int originalTeamSize ;
 
-
     private ConstraintLayout mMainActivityLayout;
     private ImageButton mRedButton, mYellowButton, mBlueButton, mGreenButton, mBrownButton, mBlackButton;
     private ImageButton mContinueButton;
@@ -178,6 +182,20 @@ public class MainActivity extends AppCompatActivity {
 
     final Animation mFlash = new AlphaAnimation(1, 0);
 
+    public static MediaPlayer mBgmPlayer;
+    private ArrayList<Integer> mPreGameBgmSet = new ArrayList<>();
+    private ArrayList<Integer> mParkingSearchBgmSet =  new ArrayList<>();
+    private ArrayList<Integer> mSecurityBgmSet = new ArrayList<>();
+    private ArrayList<Integer> mViewAndMoveBgmSet = new ArrayList<>();
+    private ArrayList<Integer> mShowZombieBgmSet = new ArrayList<>();
+    private ArrayList<Integer> mRoomFallenBgmSet = new ArrayList<>();
+    private ArrayList<Integer> mItemUsingBgmSet = new ArrayList<>();
+    private ArrayList<Integer> mWinnerBgmSet = new ArrayList<>();
+    private int mBgmSetNumber;
+    private int mBgmTrack;
+    private final static int MAX_VOLUME = 100;
+    private boolean mShouldPlay;
+    public static boolean mIsRelease;
 
     public static Intent mainIntent(Context packageContext, int playerNumber){
         Intent intent = new Intent(packageContext, MainActivity.class);
@@ -203,25 +221,41 @@ public class MainActivity extends AppCompatActivity {
         updateRoom(MainActivity.this);
         displayMessage();
         messageHasUpdate();
-
+        bgmSetUp(savedInstanceState);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         updateRoom(MainActivity.this);
+        if (mBgmTrack!=0 && mBgmPlayer!=null && mIsRelease){
+                startPlayingTrack();
+        }
+        mShouldPlay = false;
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         adapter.startListening();
+
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         adapter.stopListening();
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (!mShouldPlay && mBgmPlayer.isPlaying()){
+            mBgmPlayer.stop();
+            mBgmPlayer.release();
+            mIsRelease = true;
+        }
     }
 
     @Override
@@ -235,6 +269,9 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         Log.i(TAG, "saving the game broad");
         outState.putParcelable(GAMEBOARDSAVED, gameBroad);
+        outState.putInt(TRACKSETNUMBER, mBgmSetNumber);
+        outState.putInt(CURRENTTRACK, mBgmTrack);
+        outState.putBoolean(ISRELEASE,mIsRelease);
     }
 
     @Override
@@ -242,6 +279,9 @@ public class MainActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
         Log.i(TAG, "loading the game broad");
         gameBroad = savedInstanceState.getParcelable(GAMEBOARDSAVED);
+        mBgmSetNumber = savedInstanceState.getInt(TRACKSETNUMBER);
+        mBgmTrack = savedInstanceState.getInt(CURRENTTRACK);
+        mIsRelease = savedInstanceState.getBoolean(ISRELEASE);
     }
 
     private void gettingReady(Bundle savedInstanceState) {
@@ -264,6 +304,125 @@ public class MainActivity extends AppCompatActivity {
         mMessageView = findViewById(R.id.messageView_main);
         mFlash.setDuration(1000);
         setUpListenerOnFirebase();
+
+    }
+
+    private void bgmSetUp(Bundle savedInstanceState) {
+        Random random = new Random();
+        if (savedInstanceState==null){
+            mBgmSetNumber = random.nextInt(4)+1;
+            mBgmTrack = 0;
+            mShouldPlay = false;
+            mIsRelease = false;
+        } else {
+            mBgmSetNumber = savedInstanceState.getInt(TRACKSETNUMBER);
+            mBgmTrack = savedInstanceState.getInt(CURRENTTRACK);
+            mIsRelease = savedInstanceState.getBoolean(ISRELEASE);
+        }
+
+        mPreGameBgmSet.clear();
+        mPreGameBgmSet.add(R.raw.bgm_umineko_pregame);
+        mPreGameBgmSet.add(R.raw.bgm_umineko_pregame2);
+        mPreGameBgmSet.add(R.raw.bgm_hellgirl_pregame);
+        mPreGameBgmSet.add(R.raw.bgm_hellgirl_pregame2);
+        mPreGameBgmSet.add(R.raw.bgm_silenthill_pregame);
+        mPreGameBgmSet.add(R.raw.bgm_silenthill_pregame2);
+        mPreGameBgmSet.add(R.raw.bgm_fatalframe_pregame);
+        mPreGameBgmSet.add(R.raw.bgm_fatalframe_pregame2);
+
+        mParkingSearchBgmSet.clear();
+        mParkingSearchBgmSet.add(R.raw.bgm_umineko_parkingsearch);
+        mParkingSearchBgmSet.add(R.raw.bgm_umineko_parkingsearch2);
+        mParkingSearchBgmSet.add(R.raw.bgm_hellgirl_parkingsearch);
+        mParkingSearchBgmSet.add(R.raw.bgm_hellgirl_parkingsearch2);
+        mParkingSearchBgmSet.add(R.raw.bgm_silenthill_parkingsearch);
+        mParkingSearchBgmSet.add(R.raw.bgm_silenthill_parkingsearch2);
+        mParkingSearchBgmSet.add(R.raw.bgm_fatalframe_parkingsearch);
+        mParkingSearchBgmSet.add(R.raw.bgm_fatalframe_parkingsearch2);
+
+        mSecurityBgmSet.clear();
+        mSecurityBgmSet.add(R.raw.bgm_umineko_securityroom);
+        mSecurityBgmSet.add(R.raw.bgm_umineko_securityroom2);
+        mSecurityBgmSet.add(R.raw.bgm_hellgirl_securityroom);
+        mSecurityBgmSet.add(R.raw.bgm_hellgirl_securityroom2);
+        mSecurityBgmSet.add(R.raw.bgm_silenthill_securityroom);
+        mSecurityBgmSet.add(R.raw.bgm_silenthill_securityroom2);
+        mSecurityBgmSet.add(R.raw.bgm_fatalframe_securityroom);
+        mSecurityBgmSet.add(R.raw.bgm_fatalframe_securityroom2);
+
+        mViewAndMoveBgmSet.clear();
+        mViewAndMoveBgmSet.add(R.raw.bgm_umineko_viewandmove);
+        mViewAndMoveBgmSet.add(R.raw.bgm_umineko_viewandmove2);
+        mViewAndMoveBgmSet.add(R.raw.bgm_hellgirl_viewandmove);
+        mViewAndMoveBgmSet.add(R.raw.bgm_hellgirl_viewandmove2);
+        mViewAndMoveBgmSet.add(R.raw.bgm_silenthill_viewandmove);
+        mViewAndMoveBgmSet.add(R.raw.bgm_silenthill_viewandmove2);
+        mViewAndMoveBgmSet.add(R.raw.bgm_fatalframe_viewandmove);
+        mViewAndMoveBgmSet.add(R.raw.bgm_fatalframe_viewandmove2);
+
+        mShowZombieBgmSet.clear();
+        mShowZombieBgmSet.add(R.raw.bgm_umineko_showzombie);
+        mShowZombieBgmSet.add(R.raw.bgm_umineko_showzombie2);
+        mShowZombieBgmSet.add(R.raw.bgm_hellgirl_showzombie);
+        mShowZombieBgmSet.add(R.raw.bgm_hellgirl_showzombie2);
+        mShowZombieBgmSet.add(R.raw.bgm_silenthill_showzombie);
+        mShowZombieBgmSet.add(R.raw.bgm_silenthill_showzombie2);
+        mShowZombieBgmSet.add(R.raw.bgm_fatalframe_showzombie);
+        mShowZombieBgmSet.add(R.raw.bgm_fatalframe_showzombie2);
+
+        mRoomFallenBgmSet.clear();
+        mRoomFallenBgmSet.add(R.raw.bgm_umineko_roomfallen);
+        mRoomFallenBgmSet.add(R.raw.bgm_umineko_roomfallen2);
+        mRoomFallenBgmSet.add(R.raw.bgm_hellgirl_roomfallen);
+        mRoomFallenBgmSet.add(R.raw.bgm_hellgirl_roomfallen2);
+        mRoomFallenBgmSet.add(R.raw.bgm_silenthill_roomfallen);
+        mRoomFallenBgmSet.add(R.raw.bgm_silenthill_roomfallen2);
+        mRoomFallenBgmSet.add(R.raw.bgm_fatalframe_roomfallen);
+        mRoomFallenBgmSet.add(R.raw.bgm_fatalframe_roomfallen2);
+
+        mItemUsingBgmSet.clear();
+        mItemUsingBgmSet.add(R.raw.bgm_umineko_itemusing);
+        mItemUsingBgmSet.add(R.raw.bgm_umineko_itemusing2);
+        mItemUsingBgmSet.add(R.raw.bgm_hellgirl_itemusing);
+        mItemUsingBgmSet.add(R.raw.bgm_hellgirl_itemusing2);
+        mItemUsingBgmSet.add(R.raw.bgm_silenthill_itemusing);
+        mItemUsingBgmSet.add(R.raw.bgm_silenthill_itemusing2);
+        mItemUsingBgmSet.add(R.raw.bgm_fatalframe_itemusing);
+        mItemUsingBgmSet.add(R.raw.bgm_fatalframe_itemusing2);
+
+        mWinnerBgmSet.clear();
+        mWinnerBgmSet.add(R.raw.bgm_umineko_winner);
+        mWinnerBgmSet.add(R.raw.bgm_hellgirl_winner);
+        mWinnerBgmSet.add(R.raw.bgm_silenthill_winner);
+        mWinnerBgmSet.add(R.raw.bgm_fatalframe_winner);
+    }
+
+    private void bgmChangeTrack(ArrayList<Integer> trackSources) {
+        Random random1 = new Random();
+        int setpicked = mBgmSetNumber * 2 - 1 - random1.nextInt(2);
+        ArrayList<Integer> nextTrack = trackSources;
+        mBgmTrack = nextTrack.get(setpicked);
+        Log.i(TAG, "Track Change: Bgm Set Number: " + mBgmSetNumber + " mBgmSetPick: " + setpicked  + " mBgmTrack: " + mBgmTrack);
+        startPlayingTrack();
+    }
+
+    private void startPlayingTrack() {
+        if (mBgmPlayer==null){
+            mBgmPlayer = new MediaPlayer();
+        }
+        if (!mIsRelease){
+            if (mBgmPlayer.isPlaying()) {
+                mBgmPlayer.stop();
+                mBgmPlayer.release();
+            }
+        }
+        mBgmPlayer = MediaPlayer.create(MainActivity.this, mBgmTrack);
+        Log.i(TAG, "start music");
+        mBgmPlayer.start();
+        mBgmPlayer.setLooping(true);
+        final float volume = (float) (1 - (Math.log(MAX_VOLUME - 70) / Math.log(MAX_VOLUME)));
+        mBgmPlayer.setVolume(volume,volume);
+        mBgmPlayer.start();
 
     }
 
@@ -421,6 +580,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void messageViewInformPregameChooseRoom() {
         mMessageView.setText("PRE-GAME SETTING PHASE ONE : CHOOSE ROOM");
+        bgmChangeTrack(mPreGameBgmSet);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -465,6 +625,7 @@ public class MainActivity extends AppCompatActivity {
         updateRoom(MainActivity.this);
         mMainActivityLayout.invalidate();
         mMessageView.setText("Game Phase I: Parking Search");
+        bgmChangeTrack(mParkingSearchBgmSet);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -500,6 +661,7 @@ public class MainActivity extends AppCompatActivity {
             },DELAYEDSECONDSFORMESSAGEVIE * 1000);
         } else {
             mMessageView.setText("Game Phase II: Security Chief selected");
+            bgmChangeTrack(mSecurityBgmSet);
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
@@ -653,6 +815,7 @@ public class MainActivity extends AppCompatActivity {
                 ArrayList votes1 = (ArrayList<String>) votes;
                 System.out.println("Step III: show vote result");
                 System.out.println(votes1);
+                mShouldPlay = true;
                 Intent intent = ShowVoteResultActivity.newVoteResultIntent(MainActivity.this, votes1,gameBroad.matchRoom(roomNumber).getCurrentVoteResult(),mSecondCount);
                 startActivityForResult(intent, REQUEST_CODE_VIEWRESULT);
                 overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
@@ -822,6 +985,7 @@ public class MainActivity extends AppCompatActivity {
                 mMessageView.setVisibility(View.INVISIBLE);
                 System.out.println("Show summary");
                 HashMap<String, Integer> results = gameBroad.matchRoom(roomNumber).getCurrentVoteResult();
+                mShouldPlay = true;
                 Intent intent = ShowSimpleVoteResultActivity.newVoteResultIntent(MainActivity.this,results,mSecondCount);
                 startActivityForResult(intent,REQUEST_CODE_VIEWSIMPLERESULT);
                 overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
@@ -909,6 +1073,7 @@ public class MainActivity extends AppCompatActivity {
                     String receivedColor = colors.get(prevTurn);
                     if (gameBroad.matchRoom(4).winner().equals("TIE")){
                         mMessageView.setText("Game Phase II: Security Chief selected");
+                        bgmChangeTrack(mParkingSearchBgmSet);
                         Handler handler = new Handler();
                         handler.postDelayed(new Runnable() {
                             @Override
@@ -1279,6 +1444,7 @@ public class MainActivity extends AppCompatActivity {
     private void messageViewInformMovetoViewAndMove() {
         disableContinue();
         mMessageView.setText("Game Phase III: Chief Viewing and Moving");
+        bgmChangeTrack(mViewAndMoveBgmSet);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -1537,6 +1703,7 @@ public class MainActivity extends AppCompatActivity {
         mMainActivityLayout.invalidate();
         mMessageView.setVisibility(View.VISIBLE);
         mMessageView.setText("Game Phase IV: Zombies Revealed and Attacked");
+        bgmChangeTrack(mShowZombieBgmSet);
         mMessageView.setEnabled(false);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -1611,6 +1778,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 mMessageView.setVisibility(View.INVISIBLE);
                 System.out.println("Showing Chief the zombies");
+                mShouldPlay = true;
                 Intent intent = ShowingZombieActivity.newShowZombiesIntent(MainActivity.this, mCurrentZombiesRooms,mFourthCount);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivityForResult(intent, REQUEST_CODE_VIEWZOMBIEAll);
@@ -1677,6 +1845,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 Log.i(TAG, "More zombies: " + mCurrentMoreZombies);
+                mShouldPlay = true;
                 Intent intent = ShowMoreZombiesActivity.newShowZombiesIntent(MainActivity.this, mCurrentMoreZombies,mFourthCount);
                 startActivityForResult(intent, REQUEST_CODE_VIEWZOMBIEALLMORE);
                 overridePendingTransition(android.support.v7.appcompat.R.anim.abc_popup_enter,android.support.v7.appcompat.R.anim.abc_popup_exit );
@@ -1725,6 +1894,7 @@ public class MainActivity extends AppCompatActivity {
             disableContinue();
             mMessageView.setVisibility(View.VISIBLE);
             mMessageView.setEnabled(false);
+            bgmChangeTrack(mRoomFallenBgmSet);
             mMessageView.setText("Parking has fallen, but items can not be triggered here");
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
@@ -1769,6 +1939,7 @@ public class MainActivity extends AppCompatActivity {
     private void messageViewInformItemCanbeUsed(Room theCurrentRoom) {
         disableContinue();
         mMessageView.setText(theCurrentRoom.getName() +  " has fallen and can use item to revised by items, please confirm if you want to use item");
+        bgmChangeTrack(mRoomFallenBgmSet);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -1938,6 +2109,7 @@ public class MainActivity extends AppCompatActivity {
                     final boolean isItemUsed  = gameData.getmIsUsedItem();
                     mMessageView.setVisibility(View.VISIBLE);
                     mMessageView.setText("Loading Information");
+                    bgmChangeTrack(mItemUsingBgmSet);
                     mMessageView.startAnimation(mFlash);
                     mMessageView.setEnabled(false);
                     if (isItemUsed) {
@@ -2051,6 +2223,7 @@ public class MainActivity extends AppCompatActivity {
         mMessageView.setEnabled(false);
         mMessageView.setVisibility(View.VISIBLE);
         if (theCurrentRoom.isFallen()){
+            bgmChangeTrack(mRoomFallenBgmSet);
             Log.i(TAG, "still fallen after item used");
             mMessageView.setText(theCurrentRoom.getName() +  " is still fallen after item used");
             Handler handler = new Handler();
@@ -2689,7 +2862,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 mMessageView.setText("A round is finished, game will move back to parking search, " +
                         "\nOnce there are four character in game, the player with most victory points won.");
-
+                bgmChangeTrack(mParkingSearchBgmSet);
                 Handler handler1 = new Handler();
                 handler1.postDelayed(new Runnable() {
                     @Override
@@ -2743,6 +2916,7 @@ public class MainActivity extends AppCompatActivity {
         mMessageView.setVisibility(View.VISIBLE);
         mMessageView.setEnabled(false);
         mMessageView.setText("Looks Like we have less than 4 characters in the mall now. We we will reveal the results shortly");
+        bgmChangeTrack(mWinnerBgmSet);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -3286,8 +3460,10 @@ public class MainActivity extends AppCompatActivity {
             ArrayList rooms = (ArrayList<Room>)gameBroad.getRooms();
             ArrayList<Item> items = (ArrayList<Item>) gameBroad.getPlayers().get(q).getCurrentItem();
             ArrayList options = (ArrayList<Integer>)dices;
+            mShouldPlay = true;
             Intent intent = PlayerActivity.newChoosingRoomIntent(MainActivity.this,rooms,playerColor,items, options,message,mCountSetUp,1);
             intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            mShouldPlay = true;
             startActivityForResult(intent,REQUEST_CODE_ROOM);
             overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
         }
@@ -3303,6 +3479,7 @@ public class MainActivity extends AppCompatActivity {
             String message = gameBroad.getPlayers().get(q) + "please select one of these characters into " + ((gameBroad.matchRoom(selectedRoom).isFull())? "Parking":gameBroad.matchRoom(selectedRoom).getName());
             ArrayList rooms = (ArrayList<Room>)gameBroad.getRooms();
             ArrayList<Item> items = (ArrayList<Item>) gameBroad.getPlayers().get(q).getCurrentItem();
+            mShouldPlay = true;
             Intent intent = PlayerActivity.newChoosingCharacterIntent(MainActivity.this,rooms,playerColor,items, characters,message,mCountSetUp,2);
             intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivityForResult(intent,REQUEST_CODE_CHARACTER);
@@ -3346,6 +3523,7 @@ public class MainActivity extends AppCompatActivity {
                 String message = gameBroad.getPlayers().get(i) +  " get " + starterItem.getName();
                 gameBroad.getPlayers().get(i).getItem(starterItem);
                 ArrayList<Item> items = (ArrayList<Item>) gameBroad.getPlayers().get(i).getCurrentItem();
+                mShouldPlay = true;
                 Intent intent = PlayerActivity.newMessageIntent(MainActivity.this,rooms,playercolor,items,message,mCountSetUp,3);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivityForResult(intent,REQUEST_CODE_MESSAGE);
@@ -3414,6 +3592,7 @@ public class MainActivity extends AppCompatActivity {
                     ArrayList<Item> items = (ArrayList<Item>) mCurrentTeam.get(i).getCurrentItem();
                     System.out.println("Step I: calling vote" + " mCount: " + mCountSetUp + " i: " + i);
                     System.out.println(mCurrentTeam);
+                    mShouldPlay = true;
                     Intent intent = PlayerActivity.newVotingIntent(MainActivity.this,rooms,playercolor,items, voteOptions ,message,mCountSetUp,4);
                     intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivityForResult(intent,REQUEST_CODE_VOTE);
@@ -3476,6 +3655,7 @@ public class MainActivity extends AppCompatActivity {
                             if (teammember.hasThreat()) {
                                 yesAndNo = true;
                             }
+                            mShouldPlay = true;
                             Intent intent = PlayerActivity.newYesNoIntent(MainActivity.this, rooms, color, items, yesAndNo, message, mCountSetUp, 5);
                             intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                             startActivityForResult(intent, REQUEST_CODE_YESNO);
@@ -3559,6 +3739,7 @@ public class MainActivity extends AppCompatActivity {
                 if (mCountSetUp == mCurrentTeam.size()*4 && mSecondCount==4) {
                     System.out.println("Keep items");
                     String message = "Please select one item to keep";
+                    mShouldPlay = true;
                     Intent intent = ChoosingItemActivity.newChoosingItemIntent(MainActivity.this,mCurrentItemOptions, message, mSecondCount);
                     intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivityForResult(intent,REQUEST_CODE_CHOOSINGITEM);
@@ -3573,6 +3754,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     System.out.println(mCurrentItemOptions);
                     String message = "Please select one item to give";
+                    mShouldPlay = true;
                     Intent intent = ChoosingItemActivity.newChoosingItemIntent(MainActivity.this, mCurrentItemOptions, message, mSecondCount);
                     intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivityForResult(intent,REQUEST_CODE_CHOOSINGITEM);
@@ -3595,6 +3777,7 @@ public class MainActivity extends AppCompatActivity {
                     String message = teammember +  "  please select who you want to give";
                     ArrayList voteOptions = (ArrayList<Playable>) othersList;
                     ArrayList<Item> items = (ArrayList<Item>) teammember.getCurrentItem();
+                    mShouldPlay = true;
                     Intent intent = PlayerActivity.newVotingIntent(MainActivity.this, rooms,playercolor,items,voteOptions,message,mCountSetUp,4);
                     intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivityForResult(intent,REQUEST_CODE_VOTE);
@@ -3648,6 +3831,7 @@ public class MainActivity extends AppCompatActivity {
                         message = "You should have received " + itemgiveselect.getName() + ". Howver, due to your bag is full. You cannot carry more items.";
                     }
                     ArrayList<Item> items = (ArrayList<Item>) teammember.getCurrentItem();
+                    mShouldPlay = true;
                     Intent intent = PlayerActivity.newMessageIntent(MainActivity.this,rooms,playercolor,items,message,mCountSetUp,3);
                     intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivityForResult(intent,REQUEST_CODE_MESSAGE);
@@ -3711,6 +3895,7 @@ public class MainActivity extends AppCompatActivity {
                         ArrayList<Item> items = (ArrayList<Item>) mCurrentTeam.get(i).getCurrentItem();
                         System.out.println("Step I: calling vote" + " mCount: " + mCountSetUp + " i: " + i);
                         System.out.println(mCurrentTeam);
+                        mShouldPlay = true;
                         Intent intent = PlayerActivity.newVotingIntent(MainActivity.this, rooms, playercolor, items, voteOptions, message, mCountSetUp, 4);
                         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                         startActivityForResult(intent, REQUEST_CODE_VOTE);
@@ -3773,6 +3958,7 @@ public class MainActivity extends AppCompatActivity {
                                 if (teammember.hasThreat()) {
                                     yesAndNo = true;
                                 }
+                                mShouldPlay = true;
                                 Intent intent = PlayerActivity.newYesNoIntent(MainActivity.this, rooms, color, items, yesAndNo, message, mCountSetUp, 5);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                                 startActivityForResult(intent, REQUEST_CODE_YESNO);
@@ -3833,6 +4019,7 @@ public class MainActivity extends AppCompatActivity {
                     if (teammember.hasSecurityCamera()) {
                         yesAndNo = true;
                     }
+                    mShouldPlay = true;
                     Intent intent = PlayerActivity.newYesNoIntent(MainActivity.this, rooms, color, items, yesAndNo, message, mCountSetUp, 5);
                     intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivityForResult(intent, REQUEST_CODE_YESNO);
@@ -3849,6 +4036,7 @@ public class MainActivity extends AppCompatActivity {
                                     for (DataSnapshot snapshot: dataSnapshot.getChildren()){
                                         mCurrentZombiesRooms.add(snapshot.getValue(Integer.TYPE));
                                     }
+                                    mShouldPlay = true;
                                     Intent intent = ShowingZombieActivity.newShowZombiesIntent(MainActivity.this, mCurrentZombiesRooms,mCountSetUp);
                                     startActivityForResult(intent, REQUEST_CODE_VIEWZOMBIE);
                                     overridePendingTransition(android.support.v7.appcompat.R.anim.abc_popup_enter,android.support.v7.appcompat.R.anim.abc_popup_exit );
@@ -3922,6 +4110,7 @@ public class MainActivity extends AppCompatActivity {
                 ArrayList rooms = (ArrayList<Room>)gameBroad.getRooms();
                 ArrayList<Item> items = (ArrayList<Item>) mCurrentStartPlayer.getCurrentItem();
                 ArrayList options = (ArrayList) gameBroad.roomsOptions(mCurrentStartPlayer);
+                mShouldPlay = true;
                 Intent intent = PlayerActivity.newChoosingRoomIntent(MainActivity.this,rooms,playerColor,items, options,message,mCountSetUp,1);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivityForResult(intent,REQUEST_CODE_ROOM);
@@ -3969,6 +4158,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                         System.out.println("Showing Chief the zombies");
+                        mShouldPlay = true;
                         Intent intent = ShowingZombieActivity.newShowZombiesIntent(MainActivity.this, mCurrentZombiesRooms,mSecondCount);
                         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                         startActivityForResult(intent, REQUEST_CODE_VIEWZOMBIECHIEF);
@@ -3989,6 +4179,7 @@ public class MainActivity extends AppCompatActivity {
                 ArrayList rooms = (ArrayList<Room>)gameBroad.getRooms();
                 ArrayList<Item> items = (ArrayList<Item>) mCurrentStartPlayer.getCurrentItem();
                 ArrayList options = (ArrayList) gameBroad.roomsOptions(mCurrentStartPlayer);
+                mShouldPlay = true;
                 Intent intent = PlayerActivity.newChoosingRoomIntent(MainActivity.this,rooms,playerColor,items, options,message,mCountSetUp,1);
                 startActivityForResult(intent,REQUEST_CODE_ROOM);
                 overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
@@ -4025,6 +4216,7 @@ public class MainActivity extends AppCompatActivity {
                 ArrayList rooms = (ArrayList<Room>) gameBroad.getRooms();
                 ArrayList<Item> items = (ArrayList<Item>) gameBroad.getPlayers().get(i).getCurrentItem();
                 List<Integer> options = gameBroad.roomsOptions(gameBroad.getPlayers().get(i));
+                mShouldPlay = true;
                 Intent intent = PlayerActivity.newChoosingRoomIntent(MainActivity.this, rooms, playerColor, items, (ArrayList<Integer>) options, message, mCountSetUp, 1);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivityForResult(intent, REQUEST_CODE_ROOM);
@@ -4071,6 +4263,7 @@ public class MainActivity extends AppCompatActivity {
                 ArrayList rooms = (ArrayList<Room>)gameBroad.getRooms();
                 ArrayList<Item> items = (ArrayList<Item>) gameBroad.getPlayers().get(q).getCurrentItem();
                 Log.i(TAG, "items for selecting character " + items);
+                mShouldPlay = true;
                 Intent intent = PlayerActivity.newChoosingCharacterIntent(MainActivity.this,rooms,playerColor,items, characters,message,mCountSetUp,2);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivityForResult(intent,REQUEST_CODE_CHARACTER);
@@ -4152,6 +4345,7 @@ public class MainActivity extends AppCompatActivity {
                                     for (GameCharacter character: existedCharacters){
                                         existedCharactersList.add(character);
                                     }
+                                    mShouldPlay = true;
                                     Intent intent = PlayerActivity.newChoosingItemIntent(MainActivity.this,rooms,playerColor,items,fallenRoom.getRoomNum(),
                                             (ArrayList<GameCharacter>) existedCharactersList,  message,mCountSetUp,6);
                                     startActivityForResult(intent,REQUEST_CODE_ITEM);
@@ -4239,6 +4433,7 @@ public class MainActivity extends AppCompatActivity {
                     ArrayList<Item> items = (ArrayList<Item>) mCurrentTeam.get(i).getCurrentItem();
                     System.out.println("Step I: calling vote" + " mCount: " + mCountSetUp + " i: " + i);
                     System.out.println(mCurrentTeam);
+                    mShouldPlay = true;
                     Intent intent = PlayerActivity.newVotingIntent(MainActivity.this, rooms, playercolor, items, voteOptions, message, mCountSetUp, 4);
                     intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivityForResult(intent, REQUEST_CODE_VOTE);
@@ -4301,6 +4496,7 @@ public class MainActivity extends AppCompatActivity {
                                 if (teammember.hasThreat()) {
                                     yesAndNo = true;
                                 }
+                                mShouldPlay = true;
                                 Intent intent = PlayerActivity.newYesNoIntent(MainActivity.this, rooms, color, items, yesAndNo, message, mCountSetUp, 5);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                                 startActivityForResult(intent, REQUEST_CODE_YESNO);
@@ -4355,6 +4551,7 @@ public class MainActivity extends AppCompatActivity {
                     String message = mCurrentVictim + " please select the victim ";
                     ArrayList rooms = (ArrayList<Room>)gameBroad.getRooms();
                     ArrayList<Item> items = (ArrayList<Item>) mCurrentVictim.getCurrentItem();
+                    mShouldPlay = true;
                     Intent intent = PlayerActivity.newChoosingCharacterIntent(MainActivity.this,rooms,playerColor,items, characters,message,mCountSetUp,2);
                     intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivityForResult(intent,REQUEST_CODE_CHARACTER);
@@ -4570,6 +4767,7 @@ public class MainActivity extends AppCompatActivity {
             mCountSetUp = PlayerActivity.getCountedSetUp(data);
             mCurrentYesNo = PlayerActivity.choosedBoolean(data);
         }
+
     }
 
     @Override
@@ -4763,29 +4961,85 @@ public class MainActivity extends AppCompatActivity {
         ImageView blood2 = findViewById(R.id.blood_effect2);
         ImageView blood3 = findViewById(R.id.blood_effect3);
 
-        blood_layout.setVisibility(View.VISIBLE);
-        blood1.setVisibility(View.VISIBLE);
-        blood2.setVisibility(View.VISIBLE);
-        blood3.setVisibility(View.VISIBLE);
+//        blood_layout.setVisibility(View.VISIBLE);
+//        blood1.setVisibility(View.VISIBLE);
+//        blood2.setVisibility(View.VISIBLE);
+//        blood3.setVisibility(View.VISIBLE);
 
-        AlphaAnimation alphaAnimation = new AlphaAnimation(0,1);
-        alphaAnimation.setDuration(1000);
-
+<<<<<<< HEAD
         blood1.startAnimation(alphaAnimation);
         blood2.startAnimation(alphaAnimation);
 
         blood3.startAnimation(alphaAnimation);
+=======
+        AlphaAnimation alphaAnimation = new AlphaAnimation(1,0);
+        alphaAnimation.setDuration(5000);
+        alphaAnimation.setRepeatMode(ValueAnimator.RESTART);
+>>>>>>> 185a2271b69ca67f4676404780e7b4ad7ec5edb4
 
+        blood_layout.setVisibility(View.VISIBLE);
+        blood1.setVisibility(View.VISIBLE);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                blood2.setVisibility(View.VISIBLE);
+            }
+        },1000);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                blood3.setVisibility(View.VISIBLE);
+            }
+        },2000);
         Handler handler1 = new Handler();
         handler1.postDelayed(new Runnable() {
             @Override
             public void run() {
+                blood1.startAnimation(alphaAnimation);
+            }
+        },2000);
+        handler1.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                blood2.startAnimation(alphaAnimation);
+            }
+        },3000);
+        handler1.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                blood3.startAnimation(alphaAnimation);
+            }
+        },4000);
+        handler1.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                blood1.animate().cancel();
+                blood1.clearAnimation();
+                blood1.setAnimation(null);
                 blood1.setVisibility(View.INVISIBLE);
+            }
+        },8000);
+        handler1.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                blood2.animate().cancel();
+                blood2.clearAnimation();
+                blood2.setAnimation(null);
                 blood2.setVisibility(View.INVISIBLE);
+            }
+        },9000);
+        handler1.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                blood3.animate().cancel();
+                blood3.clearAnimation();
+                blood3.setAnimation(null);
                 blood3.setVisibility(View.INVISIBLE);
                 blood_layout.setVisibility(View.INVISIBLE);
             }
-        },2000);
+        },10000);
+
     }
 
 }
