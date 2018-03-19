@@ -161,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView mMessageView;
     private ImageView mLoading;
     private Button chat_btn;
+    private TextView mStickyNoteText;
 
     private static List<String> votes = new ArrayList<>();
     private static int mThirdCount;
@@ -302,6 +303,7 @@ public class MainActivity extends AppCompatActivity {
         Log.i(TAG, "PlayerNumber: " + mPlayerNumber + " gameDataBase " +
                 mDatabaseGame.toString() + " username: " + mUserName + " type: " + mType + " myPlayerID:" + mMyPlayerID );
         mMessageView = findViewById(R.id.messageView_main);
+        mStickyNoteText = findViewById(R.id.stickynotetext);
         mFlash.setDuration(1000);
         setUpListenerOnFirebase();
 
@@ -392,8 +394,12 @@ public class MainActivity extends AppCompatActivity {
 
         mWinnerBgmSet.clear();
         mWinnerBgmSet.add(R.raw.bgm_umineko_winner);
+        mWinnerBgmSet.add(R.raw.bgm_umineko_winner);
+        mWinnerBgmSet.add(R.raw.bgm_hellgirl_winner);
         mWinnerBgmSet.add(R.raw.bgm_hellgirl_winner);
         mWinnerBgmSet.add(R.raw.bgm_silenthill_winner);
+        mWinnerBgmSet.add(R.raw.bgm_silenthill_winner);
+        mWinnerBgmSet.add(R.raw.bgm_fatalframe_winner);
         mWinnerBgmSet.add(R.raw.bgm_fatalframe_winner);
     }
 
@@ -1107,6 +1113,7 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 mMessageView.setText("Game Phase II: Security election");
+                                bgmChangeTrack(mSecurityBgmSet);
                                 Handler handler = new Handler();
                                 handler.postDelayed(new Runnable() {
                                     @Override
@@ -1539,6 +1546,7 @@ public class MainActivity extends AppCompatActivity {
                     int chiefElection = roomspicked.get(0);
                     Room roomName = gameBroad.matchRoom(chiefElection);
                     mMessageView.setText("After reviewing the security cameara, chief will move to Room " + roomName.getRoomNum() + ": " + roomName.getName());
+                    mStickyNoteText.setText("Chief to " + roomName.getRoomNum());
                     Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         @Override
@@ -1655,7 +1663,12 @@ public class MainActivity extends AppCompatActivity {
                     message += "\nPlayer " + gameBroad.getPlayers().get(playersIndex.get(i)).getColor() + " to Room " + roomspicked.get(i) ;
                 }
                 Log.i(TAG,"message: " +  message);
-                mMessageView.setText("Players' Choises are: " + message);
+                String message1 = "";
+                for (int i=0; i<roomspicked.size(); i++){
+                    message1 += "\n" + gameBroad.getPlayers().get(playersIndex.get(i)).getColor() + " to " + roomspicked.get(i) ;
+                }
+                mMessageView.setText("Players' Choises are: " + message1);
+                mStickyNoteText.setText(message1);
                 Handler handler1 = new Handler();
                 handler1.postDelayed(new Runnable() {
                     @Override
@@ -1755,6 +1768,7 @@ public class MainActivity extends AppCompatActivity {
         mMessageView.setEnabled(false);
         mMessageView.setVisibility(View.VISIBLE);
         mMessageView.setText("Now zombies approacing room numbers reveal");
+        mStickyNoteText.setText("");
         mDatabaseReference.child(ZOMBIEROOMS).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -4967,7 +4981,7 @@ public class MainActivity extends AppCompatActivity {
 //        blood3.setVisibility(View.VISIBLE);
 
         AlphaAnimation alphaAnimation = new AlphaAnimation(1,0);
-        alphaAnimation.setDuration(5000);
+        alphaAnimation.setDuration(6000);
         alphaAnimation.setRepeatMode(ValueAnimator.RESTART);
 
         blood_layout.setVisibility(View.VISIBLE);
@@ -4997,13 +5011,13 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 blood2.startAnimation(alphaAnimation);
             }
-        },3000);
+        },4000);
         handler1.postDelayed(new Runnable() {
             @Override
             public void run() {
                 blood3.startAnimation(alphaAnimation);
             }
-        },4000);
+        },8000);
         handler1.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -5012,7 +5026,7 @@ public class MainActivity extends AppCompatActivity {
                 blood1.setAnimation(null);
                 blood1.setVisibility(View.INVISIBLE);
             }
-        },8000);
+        },10000);
         handler1.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -5021,7 +5035,7 @@ public class MainActivity extends AppCompatActivity {
                 blood2.setAnimation(null);
                 blood2.setVisibility(View.INVISIBLE);
             }
-        },9000);
+        },14000);
         handler1.postDelayed(new Runnable() {
             @Override
             public void run() {
