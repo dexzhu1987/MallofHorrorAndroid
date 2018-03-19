@@ -4773,6 +4773,7 @@ public class MainActivity extends AppCompatActivity {
 
         blood1.startAnimation(alphaAnimation);
         blood2.startAnimation(alphaAnimation);
+
         blood3.startAnimation(alphaAnimation);
 
         Handler handler1 = new Handler();
