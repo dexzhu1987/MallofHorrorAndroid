@@ -460,27 +460,29 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="91dp"
-        android:layout_height="93dp"
+        android:layout_width="101dp"
+        android:layout_height="148dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="124dp"
+        android:layout_marginTop="96dp"
+        android:scaleType="fitXY"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.965"
+        app:layout_constraintHorizontal_bias="0.995"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/stickynote" />
 
     <TextView
         android:id="@+id/stickynotetext"
-        android:layout_width="85dp"
+        android:layout_width="86dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="132dp"
+        android:layout_marginTop="120dp"
         android:fontFamily="@font/exquisite_corpse"
         android:textColor="@android:color/holo_red_light"
-        android:textSize="14sp"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.958"
+        app:layout_constraintHorizontal_bias="0.965"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="@string/app_name" />

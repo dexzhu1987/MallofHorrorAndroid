@@ -1,6 +1,5 @@
 package com.bignerdranch.android.mallofhorrorandroid;
 
-import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -12,7 +11,6 @@ import android.os.Handler;
 import android.os.Parcelable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.media.MediaBrowserCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
@@ -20,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -38,22 +37,18 @@ import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.FireBaseGameCh
 import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.Game;
 import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.GameData;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Character.GameCharacter;
-import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Character.GunMan;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Dice.PairofDice;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Dice.TwoPairofDice;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.Axe;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.Hardware;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.Hidden;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.Item;
-import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.ItemDeck;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.SecurityCamera;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.ShotGun;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.Sprint;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.Threat;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Playable.Playable;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Room.Room;
-import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Room.SecurityHQ;
-import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Room.ZombiesWonderingPlace;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.firebase.ui.database.FirebaseListOptions;
 import com.google.firebase.database.ChildEventListener;
@@ -64,7 +59,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -1659,33 +1653,28 @@ public class MainActivity extends AppCompatActivity {
                 String message = "";
                 Log.i(TAG, "Player Index: " + playersIndex);
                 Log.i(TAG, "Room: " + roomspicked);
+
                 for (int i=0; i<roomspicked.size(); i++){
-                    message += "\nPlayer " + gameBroad.getPlayers().get(playersIndex.get(i)).getColor() + " to Room " + roomspicked.get(i) ;
+                    message += "\nPlayer " + colors.get(playersIndex.get(i)) + " to Room " + roomspicked.get(i) ;
                 }
                 Log.i(TAG,"message: " +  message);
                 String message1 = "";
                 for (int i=0; i<roomspicked.size(); i++){
-                    message1 += gameBroad.getPlayers().get(playersIndex.get(i)).getColor() + " to " + roomspicked.get(i) + "\n" ;
+                    message1 += colors.get(playersIndex.get(i)) + " to " + roomspicked.get(i) + "\n" ;
                 }
-                mMessageView.setText("Players' Choises are: " + message1);
+                mMessageView.setText("Players' Choises are: " + message);
                 mStickyNoteText.setText(message1);
                 Handler handler1 = new Handler();
                 handler1.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         if (mMyPlayerID==getControlId()){
-                            int nextMove = 0;
-                            for (int i=0; i<colors.size(); i++){
-                                if (mCurrentStartPlayer.getColor().equalsIgnoreCase(colors.get(i))){
-                                    nextMove = i;
-                                }
-                            }
                             mFourthCount=1;
                             mCountSetUp = 2*gameBroad.getPlayers().size();
                             do {
                                 GameData gameData = new GameData(mCountPhase, mCountSetUp, mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                                 mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                                mDatabaseReference.child(TURN).setValue(nextMove);
+                                mDatabaseReference.child(TURN).setValue(playersIndex.get(0));
                             } while (!isNetworkAvailable());
                         }
                     }
@@ -4214,7 +4203,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         String mycolor = colors.get(mMyPlayerID);
-        String firstPlayerColor = gameBroad.getPlayers().get(mCurrentStartPlayerIndex).getColor();
+        String firstPlayerColor = colors.get(mCurrentStartPlayerIndex);
         boolean isFirstPlayer = mycolor.equalsIgnoreCase(firstPlayerColor);
         if (mCountSetUp>=2 && mCountSetUp<mCurrentPlayerNumber*2 && !isFirstPlayer) {
             int q = mCurrentStartPlayerIndex + mCountSetUp / 2;
@@ -4226,7 +4215,6 @@ public class MainActivity extends AppCompatActivity {
             }
             if (mCountSetUp % 2 == 0  && mCountSetUp<mCurrentPlayerNumber*2 ) {
                 System.out.println("Selecting Room");
-//                        playersIndex.add(i);
                 String playerColor = gameBroad.getPlayers().get(i).getColor();
                 String message = gameBroad.getPlayers().get(i) + " please select your room to move to";
                 ArrayList rooms = (ArrayList<Room>) gameBroad.getRooms();
@@ -4254,7 +4242,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 do {
                     GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                    mDatabaseReference.child(INDEXS).push().setValue(i);
+                    mDatabaseReference.child(INDEXS).push().setValue(mMyPlayerID);
                     mDatabaseReference.child(GAMEDATA).setValue(gameData);
                     mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
                     mDatabaseReference.child(ROOMS).push().setValue(mCurrentRoomPickedNumber);
@@ -4271,7 +4259,14 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println("Selecting Character");
                 int q = ((mCountSetUp -mCurrentPlayerNumber*2)/2 == 0)? 0 : (mCountSetUp -mCurrentPlayerNumber*2)/2;
                 Room destination = gameBroad.matchRoom(roomspicked.get(q));
-                Playable actualPlayer = gameBroad.getPlayers().get(playersIndex.get(q));
+                String playerColorFromIndex = colors.get(playersIndex.get(q));
+                int m=0;
+                for (int i=0; i<gameBroad.getPlayers().size(); i++){
+                    if (playerColorFromIndex.equalsIgnoreCase(gameBroad.getPlayers().get(i).getColor())){
+                        m = i;
+                    }
+                }
+                Playable actualPlayer = gameBroad.getPlayers().get(m);
                 List<GameCharacter> characterOpitons = characterNotInTheRoom(destination, actualPlayer);
                 String playerColor = actualPlayer.getColor();
                 ArrayList characters = (ArrayList<GameCharacter>) characterOpitons;
@@ -4991,11 +4986,6 @@ public class MainActivity extends AppCompatActivity {
         blood3.clearAnimation();
         blood3.setAnimation(null);
 
-        AlphaAnimation alphaAnimation = new AlphaAnimation(1,0);
-        alphaAnimation.setDuration(6000);
-        alphaAnimation.setRepeatMode(ValueAnimator.RESTART);
-
-
         blood_layout.setVisibility(View.VISIBLE);
         blood1.setVisibility(View.VISIBLE);
         Handler handler = new Handler();
@@ -5015,23 +5005,40 @@ public class MainActivity extends AppCompatActivity {
         handler1.postDelayed(new Runnable() {
             @Override
             public void run() {
-                blood1.startAnimation(alphaAnimation);
+                blood1.startAnimation(dryOutAnimations(blood1));
             }
         },2000);
         handler1.postDelayed(new Runnable() {
             @Override
             public void run() {
-                blood2.startAnimation(alphaAnimation);
+                blood2.startAnimation(dryOutAnimations(blood2));
             }
         },4000);
         handler1.postDelayed(new Runnable() {
             @Override
             public void run() {
-                blood3.startAnimation(alphaAnimation);
+                blood3.startAnimation(dryOutAnimations(blood3));
             }
         },8000);
 
 
     }
+
+    private AlphaAnimation dryOutAnimations(ImageView imageView) {
+        AlphaAnimation fadeOut = new AlphaAnimation(1,0);
+        fadeOut.setDuration(6000);
+        fadeOut.setInterpolator(new AccelerateInterpolator());
+        fadeOut.setAnimationListener(new Animation.AnimationListener()
+        {
+            public void onAnimationEnd(Animation animation)
+            {
+                imageView.setVisibility(View.GONE);
+            }
+            public void onAnimationRepeat(Animation animation) {}
+            public void onAnimationStart(Animation animation) {}
+        });
+        return fadeOut;
+    }
+
 
 }

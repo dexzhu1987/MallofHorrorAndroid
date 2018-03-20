@@ -332,6 +332,7 @@ public class FirstActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        firstZombieSound = MediaPlayer.create(FirstActivity.this, R.raw.firstactivity_zombie);
         firstZombieSound.stop();
         firstZombieSound.release();
     }
