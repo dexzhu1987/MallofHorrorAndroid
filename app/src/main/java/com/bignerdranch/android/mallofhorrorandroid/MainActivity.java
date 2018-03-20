@@ -4981,6 +4981,15 @@ public class MainActivity extends AppCompatActivity {
 //        blood1.setVisibility(View.VISIBLE);
 //        blood2.setVisibility(View.VISIBLE);
 //        blood3.setVisibility(View.VISIBLE);
+        blood1.animate().cancel();
+        blood1.clearAnimation();
+        blood1.setAnimation(null);
+        blood2.animate().cancel();
+        blood2.clearAnimation();
+        blood2.setAnimation(null);
+        blood3.animate().cancel();
+        blood3.clearAnimation();
+        blood3.setAnimation(null);
 
         AlphaAnimation alphaAnimation = new AlphaAnimation(1,0);
         alphaAnimation.setDuration(6000);
@@ -5021,34 +5030,7 @@ public class MainActivity extends AppCompatActivity {
                 blood3.startAnimation(alphaAnimation);
             }
         },8000);
-        handler1.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                blood1.animate().cancel();
-                blood1.clearAnimation();
-                blood1.setAnimation(null);
-                blood1.setVisibility(View.INVISIBLE);
-            }
-        },10000);
-        handler1.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                blood2.animate().cancel();
-                blood2.clearAnimation();
-                blood2.setAnimation(null);
-                blood2.setVisibility(View.INVISIBLE);
-            }
-        },14000);
-        handler1.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                blood3.animate().cancel();
-                blood3.clearAnimation();
-                blood3.setAnimation(null);
-                blood3.setVisibility(View.INVISIBLE);
-                blood_layout.setVisibility(View.INVISIBLE);
-            }
-        },10000);
+
 
     }
 
