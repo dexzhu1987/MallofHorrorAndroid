@@ -4306,13 +4306,7 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         Log.i(TAG, "q: " + q);
                         int next_index =  playersIndex.get(q+1);
-                        int nextMove = 0;
-                        for (int k=0; k<colors.size(); k++){
-                            if (gameBroad.getPlayers().get(next_index).getColor().equalsIgnoreCase(colors.get(k))){
-                                nextMove = k;
-                            }
-                        }
-                        mDatabaseReference.child(TURN).setValue(nextMove);
+                        mDatabaseReference.child(TURN).setValue(next_index);
                     }
                 } while (!isNetworkAvailable());
             }
