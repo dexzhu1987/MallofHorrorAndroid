@@ -321,8 +321,8 @@ public class MainActivity extends AppCompatActivity {
         mPreGameBgmSet.add(R.raw.bgm_umineko_pregame2);
         mPreGameBgmSet.add(R.raw.bgm_hellgirl_pregame);
         mPreGameBgmSet.add(R.raw.bgm_hellgirl_pregame2);
-        mPreGameBgmSet.add(R.raw.bgm_silenthill_pregame);
-        mPreGameBgmSet.add(R.raw.bgm_silenthill_pregame2);
+        mPreGameBgmSet.add(R.raw.bgm_xxxholic_pregame);
+        mPreGameBgmSet.add(R.raw.bgm_xxxholic_pregame2);
         mPreGameBgmSet.add(R.raw.bgm_fatalframe_pregame);
         mPreGameBgmSet.add(R.raw.bgm_fatalframe_pregame2);
 
@@ -331,8 +331,8 @@ public class MainActivity extends AppCompatActivity {
         mParkingSearchBgmSet.add(R.raw.bgm_umineko_parkingsearch2);
         mParkingSearchBgmSet.add(R.raw.bgm_hellgirl_parkingsearch);
         mParkingSearchBgmSet.add(R.raw.bgm_hellgirl_parkingsearch2);
-        mParkingSearchBgmSet.add(R.raw.bgm_silenthill_parkingsearch);
-        mParkingSearchBgmSet.add(R.raw.bgm_silenthill_parkingsearch2);
+        mParkingSearchBgmSet.add(R.raw.bgm_xxxholic_parkingsearch);
+        mParkingSearchBgmSet.add(R.raw.bgm_xxxholic_parkingsearch2);
         mParkingSearchBgmSet.add(R.raw.bgm_fatalframe_parkingsearch);
         mParkingSearchBgmSet.add(R.raw.bgm_fatalframe_parkingsearch2);
 
@@ -341,8 +341,8 @@ public class MainActivity extends AppCompatActivity {
         mSecurityBgmSet.add(R.raw.bgm_umineko_securityroom2);
         mSecurityBgmSet.add(R.raw.bgm_hellgirl_securityroom);
         mSecurityBgmSet.add(R.raw.bgm_hellgirl_securityroom2);
-        mSecurityBgmSet.add(R.raw.bgm_silenthill_securityroom);
-        mSecurityBgmSet.add(R.raw.bgm_silenthill_securityroom2);
+        mSecurityBgmSet.add(R.raw.bgm_xxxholic_securityroom);
+        mSecurityBgmSet.add(R.raw.bgm_xxxholic_securityroom2);
         mSecurityBgmSet.add(R.raw.bgm_fatalframe_securityroom);
         mSecurityBgmSet.add(R.raw.bgm_fatalframe_securityroom2);
 
@@ -351,8 +351,8 @@ public class MainActivity extends AppCompatActivity {
         mViewAndMoveBgmSet.add(R.raw.bgm_umineko_viewandmove2);
         mViewAndMoveBgmSet.add(R.raw.bgm_hellgirl_viewandmove);
         mViewAndMoveBgmSet.add(R.raw.bgm_hellgirl_viewandmove2);
-        mViewAndMoveBgmSet.add(R.raw.bgm_silenthill_viewandmove);
-        mViewAndMoveBgmSet.add(R.raw.bgm_silenthill_viewandmove2);
+        mViewAndMoveBgmSet.add(R.raw.bgm_xxxholic_viewandmove);
+        mViewAndMoveBgmSet.add(R.raw.bgm_xxxholic_viewandmove2);
         mViewAndMoveBgmSet.add(R.raw.bgm_fatalframe_viewandmove);
         mViewAndMoveBgmSet.add(R.raw.bgm_fatalframe_viewandmove2);
 
@@ -361,8 +361,8 @@ public class MainActivity extends AppCompatActivity {
         mShowZombieBgmSet.add(R.raw.bgm_umineko_showzombie2);
         mShowZombieBgmSet.add(R.raw.bgm_hellgirl_showzombie);
         mShowZombieBgmSet.add(R.raw.bgm_hellgirl_showzombie2);
-        mShowZombieBgmSet.add(R.raw.bgm_silenthill_showzombie);
-        mShowZombieBgmSet.add(R.raw.bgm_silenthill_showzombie2);
+        mShowZombieBgmSet.add(R.raw.bgm_xxxholic_showzombie);
+        mShowZombieBgmSet.add(R.raw.bgm_xxxholic_showzombie2);
         mShowZombieBgmSet.add(R.raw.bgm_fatalframe_showzombie);
         mShowZombieBgmSet.add(R.raw.bgm_fatalframe_showzombie2);
 
@@ -371,8 +371,8 @@ public class MainActivity extends AppCompatActivity {
         mRoomFallenBgmSet.add(R.raw.bgm_umineko_roomfallen2);
         mRoomFallenBgmSet.add(R.raw.bgm_hellgirl_roomfallen);
         mRoomFallenBgmSet.add(R.raw.bgm_hellgirl_roomfallen2);
-        mRoomFallenBgmSet.add(R.raw.bgm_silenthill_roomfallen);
-        mRoomFallenBgmSet.add(R.raw.bgm_silenthill_roomfallen2);
+        mRoomFallenBgmSet.add(R.raw.bgm_xxxholic_roomfallen);
+        mRoomFallenBgmSet.add(R.raw.bgm_xxxholic_roomfallen2);
         mRoomFallenBgmSet.add(R.raw.bgm_fatalframe_roomfallen);
         mRoomFallenBgmSet.add(R.raw.bgm_fatalframe_roomfallen2);
 
@@ -381,8 +381,8 @@ public class MainActivity extends AppCompatActivity {
         mItemUsingBgmSet.add(R.raw.bgm_umineko_itemusing2);
         mItemUsingBgmSet.add(R.raw.bgm_hellgirl_itemusing);
         mItemUsingBgmSet.add(R.raw.bgm_hellgirl_itemusing2);
-        mItemUsingBgmSet.add(R.raw.bgm_silenthill_itemusing);
-        mItemUsingBgmSet.add(R.raw.bgm_silenthill_itemusing2);
+        mItemUsingBgmSet.add(R.raw.bgm_xxxholic_itemusing);
+        mItemUsingBgmSet.add(R.raw.bgm_xxxholic_itemusing2);
         mItemUsingBgmSet.add(R.raw.bgm_fatalframe_itemusing);
         mItemUsingBgmSet.add(R.raw.bgm_fatalframe_itemusing2);
 
@@ -391,8 +391,8 @@ public class MainActivity extends AppCompatActivity {
         mWinnerBgmSet.add(R.raw.bgm_umineko_winner);
         mWinnerBgmSet.add(R.raw.bgm_hellgirl_winner);
         mWinnerBgmSet.add(R.raw.bgm_hellgirl_winner);
-        mWinnerBgmSet.add(R.raw.bgm_silenthill_winner);
-        mWinnerBgmSet.add(R.raw.bgm_silenthill_winner);
+        mWinnerBgmSet.add(R.raw.bgm_xxxholic_winner);
+        mWinnerBgmSet.add(R.raw.bgm_xxxholic_winner);
         mWinnerBgmSet.add(R.raw.bgm_fatalframe_winner);
         mWinnerBgmSet.add(R.raw.bgm_fatalframe_winner);
     }
