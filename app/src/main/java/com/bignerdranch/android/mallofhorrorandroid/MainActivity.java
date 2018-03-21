@@ -1545,7 +1545,6 @@ public class MainActivity extends AppCompatActivity {
                     int chiefElection = roomspicked.get(0);
                     Room roomName = gameBroad.matchRoom(chiefElection);
                     mMessageView.setText("After reviewing the security cameara, chief will move to Room " + roomName.getRoomNum() + ": " + roomName.getName());
-                    mStickyNoteText.setText("Chief to " + roomName.getRoomNum());
                     Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         @Override
@@ -1554,26 +1553,38 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     if (dataSnapshot!=null){
-                                        mThirdCount++;
-                                        mCountSetUp=2;
-                                        mCurrentStartPlayerIndex = dataSnapshot.getValue(Integer.TYPE);
-                                        int q = mCurrentStartPlayerIndex + 1;
-                                        int i = 0;
-                                        if (q < gameBroad.getPlayers().size()) {
-                                            i = q;
-                                        } else {
-                                            i = q - gameBroad.getPlayers().size();
-                                        }
-                                        int nextMove = 0;
-                                        for (int k=0; k<colors.size(); k++){
-                                            if (gameBroad.getPlayers().get(i).getColor().equalsIgnoreCase(colors.get(k))){
-                                                nextMove = k;
+                                        if (mMyPlayerID==getControlId()){
+                                            mThirdCount++;
+                                            mCountSetUp=2;
+                                            mCurrentStartPlayerIndex = dataSnapshot.getValue(Integer.TYPE);
+                                            String playerColor = colors.get(mCurrentStartPlayerIndex);
+                                            mStickyNoteText.setText("Chief (" + playerColor + ") to " + roomName.getRoomNum());
+                                            int currentGameBroadIndex = 0;
+                                            for (int i=0; i<gameBroad.getPlayers().size(); i++){
+                                                if (playerColor.equalsIgnoreCase(gameBroad.getPlayers().get(i).getColor())){
+                                                    currentGameBroadIndex = i;
+                                                }
                                             }
+                                            int q = currentGameBroadIndex + 1;
+                                            int p = 0;
+                                            if (q < gameBroad.getPlayers().size()) {
+                                                p = q;
+                                            } else {
+                                                p = q - gameBroad.getPlayers().size();
+                                            }
+                                            int nextMove = 0;
+                                            for (int k=0; k<colors.size(); k++){
+                                                if (gameBroad.getPlayers().get(p).getColor().equalsIgnoreCase(colors.get(k))){
+                                                    nextMove = k;
+                                                }
+                                            }
+                                            do {
+                                                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                                                mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                                                mDatabaseReference.child(PREVTURN).setValue(-1);
+                                                mDatabaseReference.child(TURN).setValue(nextMove);
+                                            }while (!isNetworkAvailable());
                                         }
-                                        GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                                        mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                                        mDatabaseReference.child(PREVTURN).setValue(-1);
-                                        mDatabaseReference.child(TURN).setValue(nextMove);
                                     }
                                 }
 
@@ -4131,16 +4142,23 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println("Colleting first player room");
                 roomspicked.add(mCurrentRoomPickedNumber);
                 ++mCountSetUp;
-                int q = mCurrentStartPlayerIndex + 1;
-                int i = 0;
-                if (q < mCurrentPlayerNumber) {
-                    i = q;
+                String playerColor = colors.get(mCurrentStartPlayerIndex);
+                int currentGameBroadIndex = 0;
+                for (int i=0; i<gameBroad.getPlayers().size(); i++){
+                    if (playerColor.equalsIgnoreCase(gameBroad.getPlayers().get(i).getColor())){
+                        currentGameBroadIndex = i;
+                    }
+                }
+                int q = currentGameBroadIndex + 1;
+                int p = 0;
+                if (q < gameBroad.getPlayers().size()) {
+                    p = q;
                 } else {
-                    i = q - mCurrentPlayerNumber;
+                    p = q - gameBroad.getPlayers().size();
                 }
                 int nextMove = 0;
                 for (int k=0; k<colors.size(); k++){
-                    if (gameBroad.getPlayers().get(i).getColor().equalsIgnoreCase(colors.get(k))){
+                    if (gameBroad.getPlayers().get(p).getColor().equalsIgnoreCase(colors.get(k))){
                         nextMove = k;
                     }
                 }
@@ -4211,7 +4229,13 @@ public class MainActivity extends AppCompatActivity {
         String firstPlayerColor = colors.get(mCurrentStartPlayerIndex);
         boolean isFirstPlayer = mycolor.equalsIgnoreCase(firstPlayerColor);
         if (mCountSetUp>=2 && mCountSetUp<mCurrentPlayerNumber*2 && !isFirstPlayer) {
-            int q = mCurrentStartPlayerIndex + mCountSetUp / 2;
+            int fitstPlayerGameBroadIndex = 0;
+            for (int i=0; i<gameBroad.getPlayers().size(); i++){
+                if (firstPlayerColor.equalsIgnoreCase(gameBroad.getPlayers().get(i).getColor())){
+                    fitstPlayerGameBroadIndex = i;
+                }
+            }
+            int q = fitstPlayerGameBroadIndex + mCountSetUp / 2;
             int i = 0;
             if (q < mCurrentPlayerNumber) {
                 i = q;
