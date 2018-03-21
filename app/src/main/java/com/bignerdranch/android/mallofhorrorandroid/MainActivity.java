@@ -586,7 +586,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 mMessageView.setVisibility(View.INVISIBLE);
-                if (mMyPlayerID==0){
+                if (mMyPlayerID==getControlId()){
                     mCountPhase++;
                     GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                     mDatabaseReference.child(GAMEDATA).setValue(gameData);
@@ -608,7 +608,7 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (mMyPlayerID==0){
+                if (mMyPlayerID==getControlId()){
                     mCountPhase++;
                     mCountSetUp=0;
                     enableContinue();
@@ -630,7 +630,7 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (mMyPlayerID==0){
+                if (mMyPlayerID==getControlId()){
                     mCountPhase++;
                     mCountSetUp=0;
                     GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
@@ -652,7 +652,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     mMessageView.setVisibility(View.INVISIBLE);
-                    if (mMyPlayerID==0){
+                    if (mMyPlayerID==getControlId()){
                         GameData gameData = new GameData(mCountPhase,mCountSetUp,2,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                         mDatabaseReference.child(GAMEDATA).setValue(gameData);
                         mDatabaseReference.child(TURN).setValue(-1);
@@ -667,7 +667,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     mMessageView.setVisibility(View.INVISIBLE);
-                    if (mMyPlayerID==0){
+                    if (mMyPlayerID==getControlId()){
                         votes.clear();
                         mCurrentTeam.clear();
                         mCurrentItemOptions.clear();
@@ -4892,7 +4892,9 @@ public class MainActivity extends AppCompatActivity {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        boolean connected = activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        Log.i(TAG, "Network Connected:" + connected);
+        return connected;
     }
 
     FirebaseListAdapter<ChatMessage> adapter;
