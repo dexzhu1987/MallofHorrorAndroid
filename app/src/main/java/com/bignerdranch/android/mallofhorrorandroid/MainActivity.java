@@ -1315,7 +1315,12 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue()!=null){
                     mCurrentStartPlayerIndex = dataSnapshot.getValue(Integer.TYPE);
-                    mCurrentStartPlayer = gameBroad.getPlayers().get(mCurrentStartPlayerIndex);
+                    String startPlayerColor = colors.get(mCurrentStartPlayerIndex);
+                    for (int i=0; i<gameBroad.getPlayers().size();i++){
+                        if (startPlayerColor.equalsIgnoreCase(gameBroad.getPlayers().get(i).getColor())){
+                            mCurrentStartPlayer = gameBroad.getPlayers().get(i);
+                        }
+                    }
                 }
             }
 
