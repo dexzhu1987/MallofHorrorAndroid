@@ -1553,12 +1553,12 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     if (dataSnapshot!=null){
+                                        String playerColor = colors.get(mCurrentStartPlayerIndex);
+                                        mStickyNoteText.setText("Chief (" + playerColor + ") to " + roomName.getRoomNum());
                                         if (mMyPlayerID==getControlId()){
                                             mThirdCount++;
                                             mCountSetUp=2;
                                             mCurrentStartPlayerIndex = dataSnapshot.getValue(Integer.TYPE);
-                                            String playerColor = colors.get(mCurrentStartPlayerIndex);
-                                            mStickyNoteText.setText("Chief (" + playerColor + ") to " + roomName.getRoomNum());
                                             int currentGameBroadIndex = 0;
                                             for (int i=0; i<gameBroad.getPlayers().size(); i++){
                                                 if (playerColor.equalsIgnoreCase(gameBroad.getPlayers().get(i).getColor())){
@@ -4313,7 +4313,14 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println("Moving Actual Character into the room");
                 int q = ((mCountSetUp -mCurrentPlayerNumber*2)/2 == 0)? 0 : (mCountSetUp -mCurrentPlayerNumber*2)/2;
                 Room destination = gameBroad.matchRoom(roomspicked.get(q));
-                Playable actualPlayer = gameBroad.getPlayers().get(playersIndex.get(q));
+                String playerColorFromIndex = colors.get(playersIndex.get(q));
+                int m=0;
+                for (int i=0; i<gameBroad.getPlayers().size(); i++){
+                    if (playerColorFromIndex.equalsIgnoreCase(gameBroad.getPlayers().get(i).getColor())){
+                        m = i;
+                    }
+                }
+                Playable actualPlayer = gameBroad.getPlayers().get(m);
                 GameCharacter selectedCharacter2 = gameBroad.matchGameCharacter(actualPlayer,mCurrentGameCharacterSelected);
                 Room leavingRoom2 = gameBroad.inWhichRoom(selectedCharacter2);
                 leavingRoom2.leave(selectedCharacter2);
@@ -4327,7 +4334,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 ++mCountSetUp;
                 do {
-                    GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount, playersIndex.get(q),roomspicked.get(q), mCurrentGameCharacterSelected);
+                    GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount, m,roomspicked.get(q), mCurrentGameCharacterSelected);
                     mDatabaseReference.child(GAMEDATA).setValue(gameData);
                     mDatabaseReference.child(PREVTURN).setValue(mMyPlayerID);
                     if (mCountSetUp==mCurrentPlayerNumber*4){
