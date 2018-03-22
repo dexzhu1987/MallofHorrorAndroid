@@ -1835,7 +1835,6 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mMessageView.setVisibility(View.INVISIBLE);
                 if (mCurrentMoreZombies.size() == 0) {
                     for (int roomNumber: mCurrentZombiesRooms){
                         gameBroad.matchRoom(roomNumber).zombieApproached();
