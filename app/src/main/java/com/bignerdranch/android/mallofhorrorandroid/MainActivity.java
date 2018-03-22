@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -36,6 +37,7 @@ import android.widget.Toast;
 import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.FireBaseGameCharacter;
 import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.Game;
 import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.GameData;
+import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.User;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Character.GameCharacter;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Dice.PairofDice;
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Dice.TwoPairofDice;
@@ -4947,7 +4949,6 @@ public class MainActivity extends AppCompatActivity {
                 TextView messageText = (TextView)v.findViewById(R.id.message_text);
                 TextView messageUser = (TextView)v.findViewById(R.id.message_user);
                 TextView messageTime = (TextView)v.findViewById(R.id.message_time);
-
                 // Set their text
                 messageText.setText(model.getMessageText());
                 messageUser.setText(model.getMessageUser());
