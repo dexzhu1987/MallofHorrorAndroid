@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TRACKSETNUMBER = "TrackSetNumber";
     private static final String CURRENTTRACK = "currentTrack";
     private static final String ISRELEASE = "IsReasle";
+    private static final String MYPLAYERID = "myplayerid";
 
     private static final int REQUEST_CODE_ROOM = 0;
     private static final int REQUEST_CODE_CHARACTER = 1;
@@ -269,6 +270,7 @@ public class MainActivity extends AppCompatActivity {
         outState.putInt(TRACKSETNUMBER, mBgmSetNumber);
         outState.putInt(CURRENTTRACK, mBgmTrack);
         outState.putBoolean(ISRELEASE,mIsRelease);
+        outState.putInt(MYPLAYERID, mMyPlayerID);
     }
 
     @Override
@@ -279,6 +281,7 @@ public class MainActivity extends AppCompatActivity {
         mBgmSetNumber = savedInstanceState.getInt(TRACKSETNUMBER);
         mBgmTrack = savedInstanceState.getInt(CURRENTTRACK);
         mIsRelease = savedInstanceState.getBoolean(ISRELEASE);
+        mMyPlayerID = savedInstanceState.getInt(MYPLAYERID);
     }
 
     private void gettingReady(Bundle savedInstanceState) {
@@ -295,7 +298,12 @@ public class MainActivity extends AppCompatActivity {
         fireBaseInitialSetup();
         continueButtonMethod();
         otherCommonSetUp();
-        registerMyPlayerId();
+        if (savedInstanceState==null){
+            registerMyPlayerId();
+        } else {
+            mMyPlayerID = savedInstanceState.getInt(MYPLAYERID);
+        }
+
         Log.i(TAG, "PlayerNumber: " + mPlayerNumber + " gameDataBase " +
                 mDatabaseGame.toString() + " username: " + mUserName + " type: " + mType + " myPlayerID:" + mMyPlayerID );
         mMessageView = findViewById(R.id.messageView_main);
@@ -701,7 +709,7 @@ public class MainActivity extends AppCompatActivity {
             messageViewInformVoteResult(gameData,4);
         } else if (mCountSetUp >= mCurrentTeam.size()*2 && mSecondCount > 0 && mCountSetUp < mCurrentTeam.size()*4) {
             if (mSecondCount==1){
-                messageViewInformThreatUsingCanChangedVoteResult();
+                messageViewInformThreatUsingCanChangedVoteResult(4);
             } else if (mSecondCount==2){
                 messageViewInformIsThreatUsed(gameData);
             }
@@ -825,7 +833,7 @@ public class MainActivity extends AppCompatActivity {
         },DELAYEDSECONDSFORMESSAGEVIE * 1000);
     }
 
-    private void messageViewInformThreatUsingCanChangedVoteResult() {
+    private void messageViewInformThreatUsingCanChangedVoteResult(int roomNumber) {
         mMessageView.setText("Voting result can be changed by item THREAT, anyone want to change the result?");
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -854,29 +862,61 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 }, DELAYEDSECONDSFOROPTIONSCHOSEN * 1000);
-                enableYesNo();
-                mYesButton.setOnClickListener(new View.OnClickListener() {
+                HashSet<Playable> searchteam = gameBroad.WhoCan(gameBroad.matchRoom(roomNumber).existCharacterColor());
+                List<Playable> searchTeam = new ArrayList<>();
+                for (Playable player : searchteam) {
+                    searchTeam.add(player);
+                }
+                mCurrentTeam = (ArrayList<Playable>) searchTeam;
+                Collections.sort(mCurrentTeam, new Comparator<Playable>() {
                     @Override
-                    public void onClick(View v) {
-                        handler1.removeCallbacksAndMessages(null);
-                        mMessageView.setVisibility(View.VISIBLE);
-                        mMessageView.setText("Thank you, Please wait for other players");
-                        disableYesNo();
-                        mDatabaseReference.child(PLAYERBOOLEANANSWERS).push().setValue(true);
-
+                    public int compare(Playable o1, Playable o2) {
+                        return o1.getColor().compareTo(o2.getColor());
                     }
                 });
-                mNoButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        disableYesNo();
-                        mMessageView.setVisibility(View.VISIBLE);
-                        mMessageView.setText("Thank you, Please wait for other players");
-                    }
-                });
+                if  (isIdCorrect(mCurrentTeam)){
+                    enableYesNo();
+                    mYesButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            handler1.removeCallbacksAndMessages(null);
+                            mMessageView.setVisibility(View.VISIBLE);
+                            mMessageView.setText("Thank you, Please wait for other players");
+                            disableYesNo();
+                            mDatabaseReference.child(PLAYERBOOLEANANSWERS).push().setValue(true);
 
+                        }
+                    });
+                    mNoButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            disableYesNo();
+                            mMessageView.setVisibility(View.VISIBLE);
+                            mMessageView.setText("Thank you, Please wait for other players");
+                        }
+                    });
+                } else {
+                    mMessageView.setText("Only the related team members can select this, please wait for their responses");
+                }
             }
         },DELAYEDSECONDSFORMESSAGEVIE * 1000);
+    }
+
+    private boolean isIdCorrect(List<Playable> theCorrectMembers) {
+        List<Integer> theCorrectIds = new ArrayList<>();
+        for (int i=0; i<theCorrectMembers.size(); i++){
+            for (int q=0; q<colors.size(); q++){
+               if (theCorrectMembers.get(i).getColor().equalsIgnoreCase(colors.get(q))){
+                   theCorrectIds.add(q);
+               }
+            }
+        }
+        for (int i=0; i<theCorrectIds.size(); i++){
+            if (mMyPlayerID==theCorrectIds.get(i)){
+                return true;
+            }
+        }
+        return false;
     }
 
     private void messageViewInformIsThreatUsed(GameData gameData) {
@@ -1188,7 +1228,7 @@ public class MainActivity extends AppCompatActivity {
             messageViewInformVoteResult(gameData,5);
         } else if (mCountSetUp >= mCurrentTeam.size()*2 && mSecondCount > 0 && mSecondCount<=2 && mCountSetUp < mCurrentTeam.size()*4) {
             if (mSecondCount==1){
-                messageViewInformThreatUsingCanChangedVoteResult();
+                messageViewInformThreatUsingCanChangedVoteResult(5);
             } else if (mSecondCount==2){
                 messageViewInformIsThreatUsed(gameData);
             }
@@ -1355,26 +1395,31 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }, DELAYEDSECONDSFOROPTIONSCHOSEN * 1000);
 
-                enableYesNo();
-                mYesButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        handler1.removeCallbacksAndMessages(null);
-                        mMessageView.setVisibility(View.VISIBLE);
-                        mMessageView.setText("Thank you, Please wait for other players");
-                        disableYesNo();
-                        mDatabaseReference.child(PLAYERBOOLEANANSWERS).push().setValue(true);
+                if (isIdCorrect(gameBroad.getPlayers())){
+                    enableYesNo();
+                    mYesButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            handler1.removeCallbacksAndMessages(null);
+                            mMessageView.setVisibility(View.VISIBLE);
+                            mMessageView.setText("Thank you, Please wait for other players");
+                            disableYesNo();
+                            mDatabaseReference.child(PLAYERBOOLEANANSWERS).push().setValue(true);
 
-                    }
-                });
-                mNoButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        disableYesNo();
-                        mMessageView.setVisibility(View.VISIBLE);
-                        mMessageView.setText("Thank you, Please wait for other players");
-                    }
-                });
+                        }
+                    });
+                    mNoButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            disableYesNo();
+                            mMessageView.setVisibility(View.VISIBLE);
+                            mMessageView.setText("Thank you, Please wait for other players");
+                        }
+                    });
+                } else {
+                    mMessageView.setText("You have been removed from the game, sorry");
+                }
+
 
             }
         },DELAYEDSECONDSFORMESSAGEVIE * 1000);
@@ -1987,27 +2032,44 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 }, DELAYEDSECONDSFOROPTIONSCHOSEN * 1000);
-                enableYesNo();
 
-                mYesButton.setOnClickListener(new View.OnClickListener() {
+                HashSet<Playable> searchteam = gameBroad.WhoCan(gameBroad.matchRoom(theCurrentRoom.getRoomNum()).existCharacterColor());
+                List<Playable> searchTeam = new ArrayList<>();
+                for (Playable player : searchteam) {
+                    searchTeam.add(player);
+                }
+                mCurrentTeam = (ArrayList<Playable>) searchTeam;
+                Collections.sort(mCurrentTeam, new Comparator<Playable>() {
                     @Override
-                    public void onClick(View v) {
-                        handler1.removeCallbacksAndMessages(null);
-                        mMessageView.setVisibility(View.VISIBLE);
-                        mMessageView.setText("Thank you, Please wait for other players");
-                        disableYesNo();
-                        mDatabaseReference.child(PLAYERBOOLEANANSWERS).push().setValue(true);
-
+                    public int compare(Playable o1, Playable o2) {
+                        return o1.getColor().compareTo(o2.getColor());
                     }
                 });
-                mNoButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        disableYesNo();
-                        mMessageView.setVisibility(View.VISIBLE);
-                        mMessageView.setText("Thank you, Please wait for other players");
-                    }
-                });
+                if (isIdCorrect(mCurrentTeam)){
+                    enableYesNo();
+                    mYesButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            handler1.removeCallbacksAndMessages(null);
+                            mMessageView.setVisibility(View.VISIBLE);
+                            mMessageView.setText("Thank you, Please wait for other players");
+                            disableYesNo();
+                            mDatabaseReference.child(PLAYERBOOLEANANSWERS).push().setValue(true);
+
+                        }
+                    });
+                    mNoButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            disableYesNo();
+                            mMessageView.setVisibility(View.VISIBLE);
+                            mMessageView.setText("Thank you, Please wait for other players");
+                        }
+                    });
+                } else {
+                    mMessageView.setText("Only the related team members can response to this, please wait");
+                }
+
 
             }
         },DELAYEDSECONDSFORMESSAGEVIE * 1000);
@@ -2296,7 +2358,7 @@ public class MainActivity extends AppCompatActivity {
             messageViewInformVoteResult(gameData,theCurrentRoom.getRoomNum());
         } else if (mCountSetUp >= mCurrentTeam.size()*2 && mSecondCount > 0 && mCountSetUp < mCurrentTeam.size()*4) {
             if (mSecondCount==1){
-                messageViewInformThreatUsingCanChangedVoteResult();
+                messageViewInformThreatUsingCanChangedVoteResult(theCurrentRoom.getRoomNum());
             } else if (mSecondCount==2){
                 messageViewInformIsThreatUsed(gameData);
             }
