@@ -3,8 +3,8 @@ package com.bignerdranch.android.mallofhorrorandroid;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String CURRENTTRACK = "currentTrack";
     private static final String ISRELEASE = "IsReasle";
     private static final String MYPLAYERID = "myplayerid";
+    private static final String ROOMID = "roomId";
 
     private static final int REQUEST_CODE_ROOM = 0;
     private static final int REQUEST_CODE_CHARACTER = 1;
@@ -116,19 +117,25 @@ public class MainActivity extends AppCompatActivity {
     private final String ROOMSINGAME = "RoomsInGame";
     private final String CAMECHARACTERS = "gamecharacters";
     private final String ZOMBIESNUMBER = "zombiesnumber";
-    private static final String WINNERCOLOR = "WinnerColor";
 
     private final int DELAYEDSECONDSFORMESSAGEVIE = 3;
     private final int DELAYEDSECONDSFOROPTIONSCHOSEN = 10;
     private final int DELAYEDSECONDSFORLONGMESSAGE = 5;
 
-
-    private DatabaseReference mDatabaseReference;
-    private Game mDatabaseGame;
-    private String mUserName;
-    private int mMyPlayerID;
-    private String mType;
-    private boolean mIsDataPushed;
+    private ConstraintLayout mMainActivityLayout;
+    private ImageButton mRedButton, mYellowButton, mBlueButton, mGreenButton, mBrownButton, mBlackButton;
+    private ImageButton mContinueButton;
+    private ImageButton mYesButton, mNoButton;
+    private GridLayout mRestRoomArea, mCachouArea, mMegatoyArea, mParkingArea, mSecurityArea, mSupermarketArea;
+    private TextView mRestRoomZombie, mCachouZombie, mMegatoyZombie, mParkingZombie, mSecurityZombie, mSupermarketZombie;
+    private List<ImageButton> mPlayerButtons = new ArrayList<>();
+    private ImageView mYesShadow, mNoShadow, mOKShadow;
+    private List<ImageButton> mActualPlayerButtons = new ArrayList<>();
+    private TextView mMessageView;
+    private ImageView mLoading;
+    private Button chat_btn;
+    private TextView mStickyNoteText;
+    private Intent serviceintent;
 
     private static GameBroad gameBroad = new GameBroad(0);
     private static int mCurrentRoomPickedNumber = 0;
@@ -145,21 +152,6 @@ public class MainActivity extends AppCompatActivity {
     final static List<Item> items = new ArrayList<>();
     private ArrayList<Playable> mCurrentTeam = new ArrayList<>();
     private int originalTeamSize ;
-
-    private ConstraintLayout mMainActivityLayout;
-    private ImageButton mRedButton, mYellowButton, mBlueButton, mGreenButton, mBrownButton, mBlackButton;
-    private ImageButton mContinueButton;
-    private ImageButton mYesButton, mNoButton;
-    private GridLayout mRestRoomArea, mCachouArea, mMegatoyArea, mParkingArea, mSecurityArea, mSupermarketArea;
-    private TextView mRestRoomZombie, mCachouZombie, mMegatoyZombie, mParkingZombie, mSecurityZombie, mSupermarketZombie;
-    private List<ImageButton> mPlayerButtons = new ArrayList<>();
-    private ImageView mYesShadow, mNoShadow, mOKShadow;
-    private List<ImageButton> mActualPlayerButtons = new ArrayList<>();
-    private TextView mMessageView;
-    private ImageView mLoading;
-    private Button chat_btn;
-    private TextView mStickyNoteText;
-
     private static List<String> votes = new ArrayList<>();
     private static int mThirdCount;
     private static List<Item> mCurrentItemOptions = new ArrayList<>();
@@ -177,6 +169,14 @@ public class MainActivity extends AppCompatActivity {
     private static int mFourthCount;
     private static int mFifthCount;
     private static int mSixCount;
+
+    private DatabaseReference mDatabaseReference;
+    private Game mDatabaseGame;
+    private String mUserName;
+    private int mMyPlayerID;
+    private String mType;
+    private boolean mIsDataPushed;
+    private String mRoomID;
 
     final Animation mFlash = new AlphaAnimation(1, 0);
 
@@ -271,6 +271,7 @@ public class MainActivity extends AppCompatActivity {
         outState.putInt(CURRENTTRACK, mBgmTrack);
         outState.putBoolean(ISRELEASE,mIsRelease);
         outState.putInt(MYPLAYERID, mMyPlayerID);
+        outState.putString(ROOMID, mRoomID);
     }
 
     @Override
@@ -282,6 +283,7 @@ public class MainActivity extends AppCompatActivity {
         mBgmTrack = savedInstanceState.getInt(CURRENTTRACK);
         mIsRelease = savedInstanceState.getBoolean(ISRELEASE);
         mMyPlayerID = savedInstanceState.getInt(MYPLAYERID);
+        mRoomID = savedInstanceState.getString(ROOMID);
     }
 
     private void gettingReady(Bundle savedInstanceState) {
@@ -300,8 +302,10 @@ public class MainActivity extends AppCompatActivity {
         otherCommonSetUp();
         if (savedInstanceState==null){
             registerMyPlayerId();
+            mRoomID = mDatabaseGame.getRoomId();
         } else {
             mMyPlayerID = savedInstanceState.getInt(MYPLAYERID);
+            mRoomID = savedInstanceState.getString(ROOMID);
         }
 
         Log.i(TAG, "PlayerNumber: " + mPlayerNumber + " gameDataBase " +
@@ -518,16 +522,18 @@ public class MainActivity extends AppCompatActivity {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     Log.i(TAG, "Turn value :  " + dataSnapshot.getValue());
                     if (dataSnapshot.getValue()!=null){
-                    disableContinue();
-                    int turn = dataSnapshot.getValue(Integer.TYPE);
-                    if(turn<0){
-                        for (ImageButton imageButton: mPlayerButtons){
-                            imageButton.setVisibility(View.INVISIBLE);
+                        disableContinue();
+                        int turn = dataSnapshot.getValue(Integer.TYPE);
+                        if(turn<0){
+                            for (ImageButton imageButton: mPlayerButtons){
+                                imageButton.setVisibility(View.INVISIBLE);
+                            }
+                            gamePhaseChangingAccoringtoFirebase();
+                        } else if (turn>=0){
+                            rotateTurnAccoridngtoFirebase(turn);
                         }
-                        gamePhaseChangingAccoringtoFirebase();
-                    } else if (turn>=0){
-                        rotateTurnAccoridngtoFirebase(turn);
-                    }
+                    }else {
+                        informSomeoneHasLeftTheGameAndRestart();
                     }
                 }
             @Override
@@ -536,6 +542,46 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private void informSomeoneHasLeftTheGameAndRestart() {
+        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(MainActivity.this);
+        builder.setTitle("Game has been discontinued");
+        builder.setMessage("Looks like one of the player has left the game, please restart");
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("name").
+                        addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                final String name = (String) dataSnapshot.getValue();
+                                FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).
+                                        child("pushId").addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        String roomID = (String) dataSnapshot.getValue();
+                                        String type = "Host";
+                                        Intent intent = UserListActivity.newIntent(MainActivity.this, type, roomID,name);
+                                        startActivity(intent);
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+            }
+        });
+        android.support.v7.app.AlertDialog mAlertDialog = builder.create();
+        mAlertDialog.show();
     }
 
     private void gamePhaseChangingAccoringtoFirebase() {
@@ -634,6 +680,8 @@ public class MainActivity extends AppCompatActivity {
         disableContinue();
         updateRoom(MainActivity.this);
         mMainActivityLayout.invalidate();
+        serviceintent = OnClearFromRecentService.newServiceIntent(MainActivity.this, mRoomID);
+        startService(serviceintent);
         mMessageView.setText("Game Phase I: Parking Search");
         bgmChangeTrack(mParkingSearchBgmSet);
         Handler handler = new Handler();
@@ -941,7 +989,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         if (gameData!=null){
                             if (isThereTrue){
-                                mMessageView.setText("One of the players will used threat");
+                                mMessageView.setText("Threat will be used");
                                 Handler handler = new Handler();
                                 handler.postDelayed(new Runnable() {
                                     @Override
@@ -1417,7 +1465,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
                 } else {
-                    mMessageView.setText("You have been removed from the game, sorry");
+                    mMessageView.setText("Sorry, you have already been removed from the game");
                 }
 
 
@@ -1447,7 +1495,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         if (gameData!=null){
                             if (isThereTrue){
-                                mMessageView.setText("One of the players will used Security Camera");
+                                mMessageView.setText("Security camera will be used");
                                 Handler handler = new Handler();
                                 handler.postDelayed(new Runnable() {
                                     @Override
@@ -2109,7 +2157,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                         if (isThereTrue){
-                            mMessageView.setText("One of the players will used item");
+                            mMessageView.setText("Item will be used");
                             Handler handler = new Handler();
                             handler.postDelayed(new Runnable() {
                                 @Override
@@ -2829,6 +2877,16 @@ public class MainActivity extends AppCompatActivity {
                 mMessageView.setEnabled(false);
                 mMessageView.setText(mCurrentTeam.get(mSecondCount) +  " lost all his/her characters and " +
                         "has been removed from the game board");
+                int removeId = 0;
+                for (int i=0; i<colors.size(); i++){
+                    if (mCurrentTeam.get(mSecondCount).getColor().equalsIgnoreCase(colors.get(i))){
+                        removeId = i;
+                    }
+                }
+                if (mMyPlayerID==removeId){
+                    stopService(serviceintent);
+                }
+                Log.i(TAG, "Removed Id: "  + removeId);
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override

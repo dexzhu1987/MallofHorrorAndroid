@@ -148,8 +148,8 @@ public class UserListActivity extends AppCompatActivity {
                                         Intent intent = MainActivity.mainIntent(UserListActivity.this,4, gameMain, username, type);
                                         Log.i(LOG_TAG, "start main activity when reached 4 players");
                                         _idleHandler.removeCallbacksAndMessages(null);
-                                        Intent serviceintent = OnClearFromRecentService.newServiceIntent(UserListActivity.this, roomId+"started");
-                                        startService(serviceintent);
+//                                        Intent serviceintent = OnClearFromRecentService.newServiceIntent(UserListActivity.this, roomId+"started");
+//                                        startService(serviceintent);
                                         startActivity(intent);
                                     }
 
@@ -219,8 +219,8 @@ public class UserListActivity extends AppCompatActivity {
                                             Intent intent = MainActivity.mainIntent(UserListActivity.this,4, gameMain, username, type);
                                             _idleHandler.removeCallbacksAndMessages(null);
                                             Log.i(LOG_TAG, "start main activity when reached 4 players");
-                                            Intent serviceintent = OnClearFromRecentService.newServiceIntent(UserListActivity.this, roomId+"started");
-                                            startService(serviceintent);
+//                                            Intent serviceintent = OnClearFromRecentService.newServiceIntent(UserListActivity.this, roomId+"started");
+//                                            startService(serviceintent);
                                             startActivity(intent);
                                         }
 
