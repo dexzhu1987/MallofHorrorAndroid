@@ -533,7 +533,7 @@ public class MainActivity extends AppCompatActivity {
                             rotateTurnAccoridngtoFirebase(turn);
                         }
                     }else {
-                        informSomeoneHasLeftTheGameAndRestart();
+                        informSomeoneHasLeftTheGameOrGameEndAndRestart();
                     }
                 }
             @Override
@@ -544,10 +544,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void informSomeoneHasLeftTheGameAndRestart() {
+    private void informSomeoneHasLeftTheGameOrGameEndAndRestart() {
         android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(MainActivity.this);
         builder.setTitle("Game has been discontinued");
-        builder.setMessage("Looks like one of the player has left the game, please restart");
+        builder.setMessage("Looks like one of the player has left the game (or game has ended), please restart");
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -3057,7 +3057,7 @@ public class MainActivity extends AppCompatActivity {
         disableContinue();
         mMessageView.setVisibility(View.VISIBLE);
         mMessageView.setEnabled(false);
-        mMessageView.setText("Looks Like we have less than 4 characters in the mall now. We we will reveal the results shortly");
+        mMessageView.setText("Looks Like we have no more than 4 characters in the mall now. We we will reveal the results shortly");
         bgmChangeTrack(mWinnerBgmSet);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -3083,6 +3083,17 @@ public class MainActivity extends AppCompatActivity {
                     Playable winner  = gameBroad.getPlayers().get(q);
                     mMessageView.setText("Congratulations! Winner is " + winner + " with a victory points: " + mostPoints);
                 }
+                if (isIdCorrect(gameBroad.getPlayers())){
+                    stopService(serviceintent);
+                }
+
+                Handler handler1 = new Handler();
+                handler1.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                       mDatabaseReference.setValue(null);
+                    }
+                },DELAYEDSECONDSFORMESSAGEVIE * 1000);
             }
         },DELAYEDSECONDSFORMESSAGEVIE*1000);
     }
