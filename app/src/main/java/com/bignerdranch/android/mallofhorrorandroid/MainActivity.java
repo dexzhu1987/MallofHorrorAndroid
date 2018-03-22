@@ -5064,7 +5064,7 @@ public class MainActivity extends AppCompatActivity {
         {
             public void onAnimationEnd(Animation animation)
             {
-                imageView.setVisibility(View.GONE);
+                imageView.setVisibility(View.INVISIBLE);
             }
             public void onAnimationRepeat(Animation animation) {}
             public void onAnimationStart(Animation animation) {}
