@@ -1028,7 +1028,7 @@ public class MainActivity extends AppCompatActivity {
                                                 GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                                                 mDatabaseReference.child(GAMEDATA).setValue(gameData);
                                                 mDatabaseReference.child(TURN).setValue(firstSearch);
-                                            } while (isNetworkAvailable());
+                                            } while (!isNetworkAvailable());
                                         }
                                     }
                                 },DELAYEDSECONDSFORMESSAGEVIE * 1000);
