@@ -306,7 +306,17 @@ public class MainActivity extends AppCompatActivity {
         otherCommonSetUp();
         if (savedInstanceState==null){
             registerMyPlayerId();
-            mRoomID = mDatabaseGame.getRoomId();
+            List<String> userNames = new ArrayList<>();
+            userNames.clear();
+            userNames.add(mDatabaseGame.getPlayer1());
+            userNames.add(mDatabaseGame.getPlayer2());
+            userNames.add(mDatabaseGame.getPlayer3());
+            userNames.add(mDatabaseGame.getPlayer4());
+            String userNamesAll = "";
+            for (int i=0; i<userNames.size(); i++){
+                userNamesAll += userNames.get(i);
+            }
+            mRoomID = mDatabaseGame.getRoomId() + userNamesAll;
             isServiceStarted = false;
         } else {
             mMyPlayerID = savedInstanceState.getInt(MYPLAYERID);
@@ -459,8 +469,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void fireBaseInitialSetup() {
         if (mDatabaseGame!=null){
-            mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("game").child(mDatabaseGame.getRoomId()+"started");
-            FirebaseDatabase.getInstance().getReference().child("game").child(mDatabaseGame.getRoomId()+"started").addListenerForSingleValueEvent(new ValueEventListener() {
+            mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("game").child(mRoomID);
+            FirebaseDatabase.getInstance().getReference().child("game").child(mRoomID).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.getValue()==null && mCountPhase==0 && mType.equals("Host")){
@@ -3139,7 +3149,7 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                        mDatabaseReference.setValue(null);
                     }
-                },DELAYEDSECONDSFORMESSAGEVIE * 1000);
+                },15 * 1000);
             }
         },DELAYEDSECONDSFORMESSAGEVIE*1000);
     }
