@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String MYPLAYERID = "myplayerid";
     private static final String ROOMID = "roomId";
     private static final String ISSERVICESTARTED = "isservicestarted";
+    private static final String ISGAMESTARTED = "isgamestarted";
 
     private static final int REQUEST_CODE_ROOM = 0;
     private static final int REQUEST_CODE_CHARACTER = 1;
@@ -179,6 +180,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean mIsDataPushed;
     private String mRoomID;
     private boolean isServiceStarted;
+    private boolean isGameStarted;
 
     final Animation mFlash = new AlphaAnimation(1, 0);
 
@@ -275,6 +277,7 @@ public class MainActivity extends AppCompatActivity {
         outState.putInt(MYPLAYERID, mMyPlayerID);
         outState.putString(ROOMID, mRoomID);
         outState.putBoolean(ISSERVICESTARTED, isServiceStarted);
+        outState.putBoolean(ISGAMESTARTED, isGameStarted);
     }
 
     @Override
@@ -288,6 +291,7 @@ public class MainActivity extends AppCompatActivity {
         mMyPlayerID = savedInstanceState.getInt(MYPLAYERID);
         mRoomID = savedInstanceState.getString(ROOMID);
         isServiceStarted = savedInstanceState.getBoolean(ISSERVICESTARTED);
+        isGameStarted = savedInstanceState.getBoolean(ISGAMESTARTED);
     }
 
     private void gettingReady(Bundle savedInstanceState) {
@@ -318,10 +322,12 @@ public class MainActivity extends AppCompatActivity {
             }
             mRoomID = mDatabaseGame.getRoomId() + userNamesAll;
             isServiceStarted = false;
+            isGameStarted = false;
         } else {
             mMyPlayerID = savedInstanceState.getInt(MYPLAYERID);
             mRoomID = savedInstanceState.getString(ROOMID);
             isServiceStarted = savedInstanceState.getBoolean(ISSERVICESTARTED);
+            isGameStarted = savedInstanceState.getBoolean(ISGAMESTARTED);
         }
 
         Log.i(TAG, "PlayerNumber: " + mPlayerNumber + " gameDataBase " +
@@ -473,7 +479,7 @@ public class MainActivity extends AppCompatActivity {
             FirebaseDatabase.getInstance().getReference().child("game").child(mRoomID).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.getValue()==null && mCountPhase==0 && mType.equals("Host")){
+                    if (!isGameStarted && mType.equals("Host")){
                         createRoomOnFireBase();
 
                     } else if (dataSnapshot.getValue()==null && mCountPhase==0 ) {
@@ -498,6 +504,7 @@ public class MainActivity extends AppCompatActivity {
         mFourthCount=0;
         mFifthCount=0;
         mSixCount=0;
+        isGameStarted = true;
         mDatabaseReference.child(PLAYERINFORM).setValue(mDatabaseGame);
         GameData gameData = new GameData(0,0,0,0,0,0,0);
         mDatabaseReference.child(TURN).setValue(-1);
