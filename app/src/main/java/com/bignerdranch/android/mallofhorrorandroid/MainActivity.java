@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String ISRELEASE = "IsReasle";
     private static final String MYPLAYERID = "myplayerid";
     private static final String ROOMID = "roomId";
+    private static final String ISSERVICESTARTED = "isservicestarted";
 
     private static final int REQUEST_CODE_ROOM = 0;
     private static final int REQUEST_CODE_CHARACTER = 1;
@@ -177,6 +178,7 @@ public class MainActivity extends AppCompatActivity {
     private String mType;
     private boolean mIsDataPushed;
     private String mRoomID;
+    private boolean isServiceStarted;
 
     final Animation mFlash = new AlphaAnimation(1, 0);
 
@@ -272,6 +274,7 @@ public class MainActivity extends AppCompatActivity {
         outState.putBoolean(ISRELEASE,mIsRelease);
         outState.putInt(MYPLAYERID, mMyPlayerID);
         outState.putString(ROOMID, mRoomID);
+        outState.putBoolean(ISSERVICESTARTED, isServiceStarted);
     }
 
     @Override
@@ -284,6 +287,7 @@ public class MainActivity extends AppCompatActivity {
         mIsRelease = savedInstanceState.getBoolean(ISRELEASE);
         mMyPlayerID = savedInstanceState.getInt(MYPLAYERID);
         mRoomID = savedInstanceState.getString(ROOMID);
+        isServiceStarted = savedInstanceState.getBoolean(ISSERVICESTARTED);
     }
 
     private void gettingReady(Bundle savedInstanceState) {
@@ -303,9 +307,11 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState==null){
             registerMyPlayerId();
             mRoomID = mDatabaseGame.getRoomId();
+            isServiceStarted = false;
         } else {
             mMyPlayerID = savedInstanceState.getInt(MYPLAYERID);
             mRoomID = savedInstanceState.getString(ROOMID);
+            isServiceStarted = savedInstanceState.getBoolean(ISSERVICESTARTED);
         }
 
         Log.i(TAG, "PlayerNumber: " + mPlayerNumber + " gameDataBase " +
@@ -314,6 +320,17 @@ public class MainActivity extends AppCompatActivity {
         mStickyNoteText = findViewById(R.id.stickynotetext);
         mFlash.setDuration(1000);
         setUpListenerOnFirebase();
+
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                serviceintent = OnClearFromRecentService.newServiceIntent(MainActivity.this, mRoomID);
+                startService(serviceintent);
+                isServiceStarted = true;
+            }
+        },30*1000);
 
     }
 
@@ -533,16 +550,9 @@ public class MainActivity extends AppCompatActivity {
                             rotateTurnAccoridngtoFirebase(turn);
                         }
                     }else {
-                        Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                informSomeoneHasLeftTheGameOrGameEndAndRestart();
-                                serviceintent = OnClearFromRecentService.newServiceIntent(MainActivity.this, mRoomID);
-                                startService(serviceintent);
-                            }
-                        },30*1000);
-
+                        if (isServiceStarted){
+                            informSomeoneHasLeftTheGameOrGameEndAndRestart();
+                        }
                     }
                 }
             @Override
