@@ -281,9 +281,9 @@ public class FirstActivity extends AppCompatActivity {
                     audioManager.setStreamMute(AudioManager.STREAM_MUSIC, false);
                     mute = false;
                     view.setBackgroundResource(R.drawable.btn_setting_sound);
-                    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, beforeMute,AudioManager.FLAG_SHOW_UI);
-                    mSoundBar.setProgress(audioManager
-                            .getStreamVolume(AudioManager.STREAM_MUSIC));
+                    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, beforeMute,0);
+                    mSoundBar.setProgress(beforeMute);
+
                 }
 
             }
@@ -297,7 +297,7 @@ public class FirstActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,
-                        i, AudioManager.FLAG_SHOW_UI);
+                        i, 0);
             }
 
             @Override
