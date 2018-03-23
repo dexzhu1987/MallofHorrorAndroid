@@ -836,9 +836,9 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     }
                 }
+                Log.i(TAG, "firstsearch for parking: " + firstSearch);
                 gameBroad.matchRoom(roomNumber).clearCurrentVoteResult();
                 gameBroad.matchRoom(roomNumber).setWinnerColor("");
-                Log.i(TAG, "firstsearch for parking: " + firstSearch);
                 if (mMyPlayerID==getControlId()){
                     if (mCurrentTeam.size()==1){
                         mThirdCount++;
@@ -1014,16 +1014,15 @@ public class MainActivity extends AppCompatActivity {
                                 handler.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
-
-                                        int firstSearch = 0;
-                                        for (int i=0; i<colors.size(); i++){
-                                            if (mCurrentTeam.get(0).getColor().equalsIgnoreCase(colors.get(i))){
-                                                firstSearch = i;
-                                            }
-                                        }
-                                        Log.i(TAG, "firstsearch for parking: " + mCurrentTeam);
-                                        Log.i(TAG, "firstsearch for parking: " + firstSearch);
                                         if (mMyPlayerID==getControlId()){
+                                            int firstSearch = 0;
+                                            for (int i=0; i<colors.size(); i++){
+                                                if (mCurrentTeam.get(0).getColor().equalsIgnoreCase(colors.get(i))){
+                                                    firstSearch = i;
+                                                }
+                                            }
+                                            Log.i(TAG, "firstsearch for parking: " + mCurrentTeam);
+                                            Log.i(TAG, "firstsearch for parking: " + firstSearch);
                                             do {
                                                 GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                                                 mDatabaseReference.child(GAMEDATA).setValue(gameData);
@@ -1038,16 +1037,16 @@ public class MainActivity extends AppCompatActivity {
                                 handler.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
-                                        int firstSearch = 0;
-                                        for (int i=0; i<colors.size(); i++){
-                                            if (mCurrentTeam.get(0).getColor().equalsIgnoreCase(colors.get(i))){
-                                                firstSearch = i;
-                                                break;
-                                            }
-                                        }
-                                        Log.i(TAG, "firstsearch for parking: " + mCurrentTeam);
-                                        Log.i(TAG, "firstsearch for parking: " + firstSearch);
                                         if (mMyPlayerID!=getControlId()){
+                                            int firstSearch = 0;
+                                            for (int i=0; i<colors.size(); i++){
+                                                if (mCurrentTeam.get(0).getColor().equalsIgnoreCase(colors.get(i))){
+                                                    firstSearch = i;
+                                                    break;
+                                                }
+                                            }
+                                            Log.i(TAG, "firstsearch for parking: " + mCurrentTeam);
+                                            Log.i(TAG, "firstsearch for parking: " + firstSearch);
                                             mSecondCount=2;
                                             mCountSetUp = mCurrentTeam.size() * 4;
                                             do{
@@ -1154,14 +1153,14 @@ public class MainActivity extends AppCompatActivity {
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    int turnValue = 0 ;
-                    for (int i=0; i<colors.size(); i++){
-                        if (winnercolor.equalsIgnoreCase(colors.get(i))){
-                            turnValue=i;
-                            break;
-                        }
-                    }
                     if (mMyPlayerID==getControlId()){
+                        int turnValue = 0 ;
+                        for (int i=0; i<colors.size(); i++){
+                            if (winnercolor.equalsIgnoreCase(colors.get(i))){
+                                turnValue=i;
+                                break;
+                            }
+                        }
                         mSecondCount=4;
                         do{
                             GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
@@ -1224,21 +1223,24 @@ public class MainActivity extends AppCompatActivity {
                                 handler.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
-                                        mCountPhase=4;
-                                        mCountSetUp=0;
-                                        mSecondCount=0;
-                                        mThirdCount=0;
                                         votes.clear();
                                         mCurrentTeam.clear();
                                         mCurrentItemOptions.clear();
                                         mCurrentZombiesRooms.clear();
                                         mCurrentYesNo=false;
                                         mCurrentYesNoMain = false;
-                                        GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                                        mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                                        mDatabaseReference.child(TURN).setValue(-2);
-                                        mDatabaseReference.child(PREVTURN).setValue(-1);
-
+                                        if (mMyPlayerID==getControlId()){
+                                            mCountPhase=4;
+                                            mCountSetUp=0;
+                                            mSecondCount=0;
+                                            mThirdCount=0;
+                                            do {
+                                                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                                                mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                                                mDatabaseReference.child(TURN).setValue(-2);
+                                                mDatabaseReference.child(PREVTURN).setValue(-1);
+                                            } while (!isNetworkAvailable());
+                                        }
                                     }
                                 },DELAYEDSECONDSFORMESSAGEVIE * 1000);
                             }
@@ -1372,23 +1374,23 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                String winnercolor = "";
-                if (gameBroad.matchRoom(5).winner().equals("TIE") || gameBroad.matchRoom(5).isEmpty()){
-                    winnercolor = gameBroad.getPlayers().get(mCurrentStartPlayerIndex).getColor();
-                } else {
-                    winnercolor = gameBroad.matchRoom(5).winner();
-                }
-                int turnValue = 0 ;
-                for (int i=0; i<colors.size(); i++){
-                    if (winnercolor.equalsIgnoreCase(colors.get(i))){
-                        turnValue=i;
-                        break;
-                    }
-                }
-                mCurrentStartPlayerIndex = turnValue;
-                Log.i(TAG, "Winner Color: " + winnercolor + " StartPlayerIndex: " + mCurrentStartPlayerIndex
-                        + " winner : "+ gameBroad.matchPlayer(winnercolor));
                 if (mMyPlayerID==getControlId()){
+                    String winnercolor = "";
+                    if (gameBroad.matchRoom(5).winner().equals("TIE") || gameBroad.matchRoom(5).isEmpty()){
+                        winnercolor = gameBroad.getPlayers().get(mCurrentStartPlayerIndex).getColor();
+                    } else {
+                        winnercolor = gameBroad.matchRoom(5).winner();
+                    }
+                    int turnValue = 0 ;
+                    for (int i=0; i<colors.size(); i++){
+                        if (winnercolor.equalsIgnoreCase(colors.get(i))){
+                            turnValue=i;
+                            break;
+                        }
+                    }
+                    mCurrentStartPlayerIndex = turnValue;
+                    Log.i(TAG, "Winner Color: " + winnercolor + " StartPlayerIndex: " + mCurrentStartPlayerIndex
+                            + " winner : "+ gameBroad.matchPlayer(winnercolor));
                     mSecondCount=4;
                     do {
                         GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
@@ -1523,13 +1525,13 @@ public class MainActivity extends AppCompatActivity {
                                 handler.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
-                                        int firstMove = 0;
-                                        for (int i=0; i<colors.size(); i++){
-                                            if (gameBroad.getPlayers().get(0).getColor().equalsIgnoreCase(colors.get(i))){
-                                                firstMove = i;
-                                            }
-                                        }
                                         if (mMyPlayerID==getControlId()){
+                                            int firstMove = 0;
+                                            for (int i=0; i<colors.size(); i++){
+                                                if (gameBroad.getPlayers().get(0).getColor().equalsIgnoreCase(colors.get(i))){
+                                                    firstMove = i;
+                                                }
+                                            }
                                             mSecondCount=6;
                                             do {
                                                 GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
@@ -2195,15 +2197,15 @@ public class MainActivity extends AppCompatActivity {
                             handler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    int firstSearch = 0;
-                                    for (int i=0; i<colors.size(); i++){
-                                        if (mCurrentTeam.get(0).getColor().equalsIgnoreCase(colors.get(i))){
-                                            firstSearch = i;
-                                        }
-                                    }
-                                    Log.i(TAG, "fallen team for item using: " + mCurrentTeam);
-                                    Log.i(TAG, "firstitemuse for item using: " + firstSearch);
                                     if (mMyPlayerID==getControlId()){
+                                        int firstSearch = 0;
+                                        for (int i=0; i<colors.size(); i++){
+                                            if (mCurrentTeam.get(0).getColor().equalsIgnoreCase(colors.get(i))){
+                                                firstSearch = i;
+                                            }
+                                        }
+                                        Log.i(TAG, "fallen team for item using: " + mCurrentTeam);
+                                        Log.i(TAG, "firstitemuse for item using: " + firstSearch);
                                         do {
                                             for (Playable teammember:  mCurrentTeam){
                                                 mDatabaseReference.child(CURRENTTEAM).push().setValue(teammember.getColor());
@@ -2502,23 +2504,23 @@ public class MainActivity extends AppCompatActivity {
                 gameBroad.matchRoom(theCurrrentRoom.getRoomNum()).clearCurrentVoteResult();
                 gameBroad.matchRoom(theCurrrentRoom.getRoomNum()).setWinnerColor("");
                 if (mMyPlayerID==getControlId()){
-                        if (mCurrentTeam.size()==1){
-                            mThirdCount++;
-                            mCountSetUp = mCurrentTeam.size()*4;
-                            mSecondCount = 3;
-                            do {
-                                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                                mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                                mDatabaseReference.child(TURN).setValue(-30);
-                            } while (!isNetworkAvailable());
-                        } else {
-                            mThirdCount++;
-                            do {
-                                GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
-                                mDatabaseReference.child(GAMEDATA).setValue(gameData);
-                                mDatabaseReference.child(TURN).setValue(firstSearch);
-                            } while (!isNetworkAvailable());
-                        }
+                    if (mCurrentTeam.size()==1){
+                        mThirdCount++;
+                        mCountSetUp = mCurrentTeam.size()*4;
+                        mSecondCount = 3;
+                        do {
+                            GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                            mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                            mDatabaseReference.child(TURN).setValue(-30);
+                        } while (!isNetworkAvailable());
+                    } else {
+                        mThirdCount++;
+                        do {
+                            GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
+                            mDatabaseReference.child(GAMEDATA).setValue(gameData);
+                            mDatabaseReference.child(TURN).setValue(firstSearch);
+                        } while (!isNetworkAvailable());
+                    }
                 }
             }
         },DELAYEDSECONDSFORLONGMESSAGE * 1000);
@@ -2642,13 +2644,13 @@ public class MainActivity extends AppCompatActivity {
                 handler1.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        int nextMove = 0;
-                        for (int i=0; i<colors.size(); i++){
-                            if (mCurrentVictim.getColor().equalsIgnoreCase(colors.get(i))){
-                                nextMove = i;
-                            }
-                        }
                         if (mMyPlayerID==getControlId()){
+                            int nextMove = 0;
+                            for (int i=0; i<colors.size(); i++){
+                                if (mCurrentVictim.getColor().equalsIgnoreCase(colors.get(i))){
+                                    nextMove = i;
+                                }
+                            }
                             mSecondCount=5;
                             do {
                                 GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
@@ -3004,11 +3006,6 @@ public class MainActivity extends AppCompatActivity {
     private void messageViewInformMovingToNextRoom() {
         Log.i(TAG, " Moving to next room");
         mStickyNoteText.setText("");
-        mDatabaseReference.child(FIRSTPLAYERINDEX).setValue(null);
-        mDatabaseReference.child(ISCHIEFELECTED).setValue(null);
-        mDatabaseReference.child(INDEXS).setValue(null);
-        mDatabaseReference.child(ROOMS).setValue(null);
-        mDatabaseReference.child(PLAYERBOOLEANANSWERS).setValue(null);
         mPlayersUsedItem.clear();
         mUsedItem.clear();
         mCurrentTeam.clear();
@@ -3025,6 +3022,11 @@ public class MainActivity extends AppCompatActivity {
             mSecondCount=0;
             mThirdCount=0;
             do {
+                mDatabaseReference.child(FIRSTPLAYERINDEX).setValue(null);
+                mDatabaseReference.child(ISCHIEFELECTED).setValue(null);
+                mDatabaseReference.child(INDEXS).setValue(null);
+                mDatabaseReference.child(ROOMS).setValue(null);
+                mDatabaseReference.child(PLAYERBOOLEANANSWERS).setValue(null);
                 GameData gameData1 = new GameData(mCountPhase, mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                 mDatabaseReference.child(GAMEDATA).setValue(gameData1);
                 mDatabaseReference.child(PREVTURN).setValue(-1);
