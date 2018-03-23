@@ -533,7 +533,16 @@ public class MainActivity extends AppCompatActivity {
                             rotateTurnAccoridngtoFirebase(turn);
                         }
                     }else {
-                        informSomeoneHasLeftTheGameOrGameEndAndRestart();
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                informSomeoneHasLeftTheGameOrGameEndAndRestart();
+                                serviceintent = OnClearFromRecentService.newServiceIntent(MainActivity.this, mRoomID);
+                                startService(serviceintent);
+                            }
+                        },30*1000);
+
                     }
                 }
             @Override
@@ -680,8 +689,6 @@ public class MainActivity extends AppCompatActivity {
         disableContinue();
         updateRoom(MainActivity.this);
         mMainActivityLayout.invalidate();
-        serviceintent = OnClearFromRecentService.newServiceIntent(MainActivity.this, mRoomID);
-        startService(serviceintent);
         mMessageView.setText("Game Phase I: Parking Search");
         bgmChangeTrack(mParkingSearchBgmSet);
         Handler handler = new Handler();
