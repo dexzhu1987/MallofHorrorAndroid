@@ -305,11 +305,9 @@ public class MainActivity extends AppCompatActivity {
         mUserName = getIntent().getStringExtra(USERNAME);
         mType = getIntent().getStringExtra(TYPE);
         mIsDataPushed = true;
-        fireBaseInitialSetup();
         continueButtonMethod();
         otherCommonSetUp();
         if (savedInstanceState==null){
-            registerMyPlayerId();
             List<String> userNames = new ArrayList<>();
             userNames.clear();
             userNames.add(mDatabaseGame.getPlayer1());
@@ -323,6 +321,9 @@ public class MainActivity extends AppCompatActivity {
             mRoomID = mDatabaseGame.getRoomId() + userNamesAll;
             isServiceStarted = false;
             isGameStarted = false;
+            FirebaseDatabase.getInstance().getReference().child("game").child(mRoomID).setValue(null);
+            fireBaseInitialSetup();
+            registerMyPlayerId();
         } else {
             mMyPlayerID = savedInstanceState.getInt(MYPLAYERID);
             mRoomID = savedInstanceState.getString(ROOMID);
@@ -346,7 +347,7 @@ public class MainActivity extends AppCompatActivity {
                 startService(serviceintent);
                 isServiceStarted = true;
             }
-        },30*1000);
+        },15*1000);
 
     }
 
@@ -481,7 +482,6 @@ public class MainActivity extends AppCompatActivity {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (!isGameStarted && mType.equals("Host")){
                         createRoomOnFireBase();
-
                     } else if (dataSnapshot.getValue()==null && mCountPhase==0 ) {
 
                     }
@@ -582,42 +582,44 @@ public class MainActivity extends AppCompatActivity {
 
     private void informSomeoneHasLeftTheGameOrGameEndAndRestart() {
         android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(MainActivity.this);
-        builder.setTitle("Game has been discontinued");
-        builder.setMessage("Looks like one of the player has left the game (or game has ended), please restart");
-        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("name").
-                        addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                final String name = (String) dataSnapshot.getValue();
-                                FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).
-                                        child("pushId").addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        String roomID = (String) dataSnapshot.getValue();
-                                        String type = "Host";
-                                        Intent intent = UserListActivity.newIntent(MainActivity.this, type, roomID,name);
-                                        startActivity(intent);
-                                    }
+        if(!MainActivity.this.isFinishing()){
+            builder.setTitle("Game has been discontinued");
+            builder.setMessage("Looks like one of the player has left the game (or game has ended), please restart");
+            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("name").
+                            addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    final String name = (String) dataSnapshot.getValue();
+                                    FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).
+                                            child("pushId").addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            String roomID = (String) dataSnapshot.getValue();
+                                            String type = "Host";
+                                            Intent intent = UserListActivity.newIntent(MainActivity.this, type, roomID,name);
+                                            startActivity(intent);
+                                        }
 
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
 
-                                    }
-                                });
-                            }
+                                        }
+                                    });
+                                }
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
 
-                            }
-                        });
-            }
-        });
-        android.support.v7.app.AlertDialog mAlertDialog = builder.create();
-        mAlertDialog.show();
+                                }
+                            });
+                }
+            });
+            android.support.v7.app.AlertDialog mAlertDialog = builder.create();
+            mAlertDialog.show();
+        }
     }
 
     private void gamePhaseChangingAccoringtoFirebase() {
