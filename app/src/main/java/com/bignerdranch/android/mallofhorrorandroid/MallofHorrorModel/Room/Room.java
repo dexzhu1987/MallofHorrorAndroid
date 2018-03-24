@@ -219,6 +219,7 @@ public class Room implements Parcelable {
 
     public void  resetVoteResult(){
         HashMap<String, Integer> potentialVoteForEachColor = new HashMap<>();
+        currentVoteResult = new HashMap<>();
         int votesum=0;
         for (int i=0; i<roomCharaters.size(); i++){
                     votesum=roomCharaters.get(i).getVote();
