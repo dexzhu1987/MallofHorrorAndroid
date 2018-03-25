@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView mStickyNoteText;
     private Intent serviceintent;
 
-    private static GameBroad gameBroad = new GameBroad(0);
+    private static GameBroad gameBroad ;
     private static int mCurrentRoomPickedNumber = 0;
     private static int mCountSetUp;
     private static int mSecondCount;
@@ -297,6 +297,7 @@ public class MainActivity extends AppCompatActivity {
     private void gettingReady(Bundle savedInstanceState) {
         mPlayerNumber = getIntent().getIntExtra(PLAYER_NUMBER,0);
         if (savedInstanceState==null){
+            gameBroad = new GameBroad(0);
             gameBroad.setPlayersNumber(mPlayerNumber);
         } else {
             gameBroad = savedInstanceState.getParcelable(GAMEBOARDSAVED);
@@ -347,7 +348,7 @@ public class MainActivity extends AppCompatActivity {
                 startService(serviceintent);
                 isServiceStarted = true;
             }
-        },15*1000);
+        },20*1000);
 
     }
 
@@ -2062,7 +2063,7 @@ public class MainActivity extends AppCompatActivity {
             mMessageView.setEnabled(false);
             bgmChangeTrack(mRoomFallenBgmSet);
             mMessageView.setText("Parking has fallen, but items can not be triggered here");
-            mStickyNoteText.setText("Fallen Room 4: Parking");
+            mStickyNoteText.setText("Fallen Room: 4 Parking");
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
@@ -2105,7 +2106,7 @@ public class MainActivity extends AppCompatActivity {
     private void messageViewInformItemCanbeUsed(Room theCurrentRoom) {
         disableContinue();
         mMessageView.setText(theCurrentRoom.getName() +  " has fallen and can use item to revised by items, please confirm if you want to use item");
-        mStickyNoteText.setText("Fallen Room " + theCurrentRoom.getRoomNum() + ": " + theCurrentRoom.getName() );
+        mStickyNoteText.setText("Fallen Room: " + theCurrentRoom.getRoomNum() + " " + theCurrentRoom.getName() );
         bgmChangeTrack(mRoomFallenBgmSet);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {

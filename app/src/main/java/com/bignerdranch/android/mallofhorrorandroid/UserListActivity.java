@@ -79,7 +79,6 @@ public class UserListActivity extends AppCompatActivity {
         } else {
             registerNameInRoom(roomId);
             binding.list.setVisibility(View.INVISIBLE);
-
         }
 
         updateRoom(binding, roomId);
