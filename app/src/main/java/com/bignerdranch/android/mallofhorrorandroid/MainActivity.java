@@ -2839,12 +2839,22 @@ public class MainActivity extends AppCompatActivity {
                                 fallenRoom.enter(gameBroad.matchGameCharacter(mPlayersUsedItem.get(mSecondCount),mUsedItem.get(mSecondCount).getAffectedGameCharacter().getName()));
                             } else if (mUsedItem.get(mSecondCount).getItemNum()==7){
                                 mMessageView.setText("The affect of sprint has trigger, the left character has moved to the destination");
-                                gameBroad.matchRoom(mUsedItem.get(mSecondCount).getAfteraffectedRoomNumber())
-                                        .enter(gameBroad.matchGameCharacter(mPlayersUsedItem.get(mSecondCount), mUsedItem.get(mSecondCount).getAffectedGameCharacter().getName()));
-                                if (mMyPlayerID==getControlId()){
-                                    do {
-                                        writeRoomIntoFireBase(gameBroad.matchRoom(mUsedItem.get(mSecondCount).getAfteraffectedRoomNumber()));
-                                    } while (!isNetworkAvailable());
+                                if (gameBroad.matchRoom(mUsedItem.get(mSecondCount).getAfteraffectedRoomNumber()).isFull()){
+                                    gameBroad.matchRoom(4)
+                                            .enter(gameBroad.matchGameCharacter(mPlayersUsedItem.get(mSecondCount), mUsedItem.get(mSecondCount).getAffectedGameCharacter().getName()));
+                                    if (mMyPlayerID==getControlId()) {
+                                        do {
+                                            writeRoomIntoFireBase(gameBroad.matchRoom(4));
+                                        } while (!isNetworkAvailable());
+                                    }
+                                }else {
+                                    gameBroad.matchRoom(mUsedItem.get(mSecondCount).getAfteraffectedRoomNumber())
+                                            .enter(gameBroad.matchGameCharacter(mPlayersUsedItem.get(mSecondCount), mUsedItem.get(mSecondCount).getAffectedGameCharacter().getName()));
+                                    if (mMyPlayerID==getControlId()){
+                                        do {
+                                            writeRoomIntoFireBase(gameBroad.matchRoom(mUsedItem.get(mSecondCount).getAfteraffectedRoomNumber()));
+                                        } while (!isNetworkAvailable());
+                                    }
                                 }
                             }
                             if (mMyPlayerID==getControlId()){
