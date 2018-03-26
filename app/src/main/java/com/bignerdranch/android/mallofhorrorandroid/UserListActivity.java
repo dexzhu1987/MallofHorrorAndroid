@@ -12,7 +12,10 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.Game;
@@ -33,6 +36,8 @@ public class UserListActivity extends AppCompatActivity {
     private static final String TYPE = "type";
     private static final String ROOMID = "roomId";
     private static final String USERNAME = "username";
+    private static final String BGMTHEMESET = "bgmthemeset";
+    private static final java.lang.String ISUSERRELEASE = "isUserRelease";
     private List<User> users = new ArrayList<>();
     private Adapter adapter;
     private Context userActivity;
@@ -43,6 +48,10 @@ public class UserListActivity extends AppCompatActivity {
     private boolean isStarted;
     private MediaPlayer waitingRoomBgm;
     private final static int MAX_VOLUME = 100;
+    private Spinner mMusicStyleSpinner;
+    private int mBgmThemeSet;
+    private List<Integer> mBgmSources = new ArrayList<>();
+    private boolean mUserIsRelease;
 
     public static Intent newIntent(Context context, String type, String roomID, String username) {
         Intent intent = new Intent(context, UserListActivity.class);
@@ -66,6 +75,46 @@ public class UserListActivity extends AppCompatActivity {
         userActivity = UserListActivity.this;
         isStarted = false;
 
+        mBgmSources.add(R.raw.waitingroom_bgm_umeneko);
+        mBgmSources.add(R.raw.waitingroom_bgm_hellgirl);
+        mBgmSources.add(R.raw.waitingroom_bgm_xxxholic);
+        mBgmSources.add(R.raw.waitingroom_bgm_fatalframe);
+
+        if (savedInstanceState == null){
+            Random random = new Random();
+            mBgmThemeSet = random.nextInt(mBgmSources.size());
+            mUserIsRelease = false;
+        } else {
+            mBgmThemeSet = savedInstanceState.getInt(BGMTHEMESET);
+            mUserIsRelease = savedInstanceState.getBoolean(ISUSERRELEASE);
+        }
+
+        mMusicStyleSpinner = findViewById(R.id.music_style_spinner);
+        ArrayAdapter<CharSequence> adapterMusic = ArrayAdapter.createFromResource(this,
+                R.array.music_style, android.R.layout.simple_spinner_item);
+        adapterMusic.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mMusicStyleSpinner.setAdapter(adapterMusic);
+        mMusicStyleSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position==0){
+                    Random random = new Random();
+                    mBgmThemeSet = random.nextInt(mBgmSources.size());
+                    playMusic();
+                }else {
+                    mBgmThemeSet = position-1;
+                    playMusic();
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                Random random = new Random();
+                mBgmThemeSet = random.nextInt(mBgmSources.size());
+            }
+        });
+
         Log.i(LOG_TAG, "type: " + type  + " roomID: "+ roomId + " username: " + username);
         adapter = new Adapter(this, users);
         binding.list.setAdapter(adapter);
@@ -86,15 +135,66 @@ public class UserListActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("on").setValue(true);
+        if (type.equals("Host")){
+            createRoom(roomId);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        playMusic();
+        mUserIsRelease = false;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("on").setValue(false);
+        if (waitingRoomBgm.isPlaying()){
+            waitingRoomBgm.stop();
+            waitingRoomBgm.release();
+            waitingRoomBgm = null;
+            mUserIsRelease = true;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        _idleHandler.removeCallbacks(_idleRunnable);
+    }
+
+    public void onStop(){
+        super.onStop();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(BGMTHEMESET, mBgmThemeSet);
+        outState.putBoolean(ISUSERRELEASE, mUserIsRelease);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mBgmThemeSet = savedInstanceState.getInt(BGMTHEMESET);
+        mUserIsRelease = savedInstanceState.getBoolean(ISUSERRELEASE);
+    }
+
     private void playMusic() {
-        List<Integer> bgmSources = new ArrayList<>();
-        bgmSources.add(R.raw.waitingroom_bgm_umeneko);
-        bgmSources.add(R.raw.waitingroom_bgm_hellgirl);
-        bgmSources.add(R.raw.waitingroom_bgm_silenthill);
-        bgmSources.add(R.raw.waitingroom_bgm_fatalframe);
-        Random random = new Random();
-        int bgmThemeSet = random.nextInt(bgmSources.size());
-        waitingRoomBgm = MediaPlayer.create(UserListActivity.this, bgmSources.get(bgmThemeSet));
+        if (!mUserIsRelease && waitingRoomBgm!=null){
+            if (waitingRoomBgm.isPlaying()) {
+                waitingRoomBgm.stop();
+                waitingRoomBgm.release();
+            }
+        }
+        waitingRoomBgm = MediaPlayer.create(UserListActivity.this, mBgmSources.get(mBgmThemeSet));
         waitingRoomBgm.start();
         waitingRoomBgm.setLooping(true);
         final float volume = (float) (1 - (Math.log(MAX_VOLUME - 70) / Math.log(MAX_VOLUME)));
@@ -144,7 +244,7 @@ public class UserListActivity extends AppCompatActivity {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         gameMain = dataSnapshot.getValue(Game.class);
-                                        Intent intent = MainActivity.mainIntent(UserListActivity.this,4, gameMain, username, type);
+                                        Intent intent = MainActivity.mainIntent(UserListActivity.this,4, gameMain, username, type, mBgmThemeSet);
                                         Log.i(LOG_TAG, "start main activity when reached 4 players");
                                         _idleHandler.removeCallbacksAndMessages(null);
 //                                        Intent serviceintent = OnClearFromRecentService.newServiceIntent(UserListActivity.this, roomId+"started");
@@ -214,7 +314,7 @@ public class UserListActivity extends AppCompatActivity {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
                                             gameMain = dataSnapshot.getValue(Game.class);
-                                            Intent intent = MainActivity.mainIntent(UserListActivity.this,4, gameMain, username, type);
+                                            Intent intent = MainActivity.mainIntent(UserListActivity.this,4, gameMain, username, type,mBgmThemeSet);
                                             _idleHandler.removeCallbacksAndMessages(null);
                                             Log.i(LOG_TAG, "start main activity when reached 4 players");
 //                                            Intent serviceintent = OnClearFromRecentService.newServiceIntent(UserListActivity.this, roomId+"started");
@@ -267,31 +367,6 @@ public class UserListActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("on").setValue(true);
-        if (type.equals("Host")){
-            createRoom(roomId);
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        playMusic();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("on").setValue(false);
-        if (waitingRoomBgm.isPlaying()){
-            waitingRoomBgm.stop();
-            waitingRoomBgm.release();
-        }
-    }
-
-    @Override
     public void onBackPressed() {
         Intent startMain = new Intent(Intent.ACTION_MAIN);
         startMain.addCategory(Intent.CATEGORY_HOME);
@@ -330,16 +405,5 @@ public class UserListActivity extends AppCompatActivity {
         _idleHandler.removeCallbacks(_idleRunnable);
         _idleHandler.postDelayed(_idleRunnable,(delayMinutes * 1000 * 60));
     }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        _idleHandler.removeCallbacks(_idleRunnable);
-    }
-
-    public void onStop(){
-        super.onStop();
-    }
-
 
 }

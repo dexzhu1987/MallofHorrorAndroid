@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String DATABASEGAME = "databasegame";
     private static final String USERNAME = "username";
     private static final String TYPE = "type";
+    private static final String BGMSETSTYLE = "bgmsetstyle";
 
     private static final String GAMEBOARDSAVED = "gamebroadsaved";
     private static final String TRACKSETNUMBER = "TrackSetNumber";
@@ -205,12 +206,13 @@ public class MainActivity extends AppCompatActivity {
         return intent;
     }
 
-    public static Intent mainIntent(Context packageContext, int playerNumber, Game game, String mUserName, String type){
+    public static Intent mainIntent(Context packageContext, int playerNumber, Game game, String mUserName, String type, int bgmSetSyle){
         Intent intent = new Intent(packageContext, MainActivity.class);
         intent.putExtra(DATABASEGAME, (Parcelable) game);
         intent.putExtra(PLAYER_NUMBER, playerNumber);
         intent.putExtra(USERNAME, mUserName);
         intent.putExtra(TYPE, type);
+        intent.putExtra(BGMSETSTYLE, bgmSetSyle);
         return intent;
     }
 
@@ -230,17 +232,19 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         updateRoom(MainActivity.this);
-        if (mBgmTrack!=0 && mBgmPlayer!=null && mIsRelease){
+        mMainActivityLayout.invalidate();
+        if (mBgmTrack!=0 && mIsRelease){
                 startPlayingTrack();
+                mIsRelease = false;
         }
         mShouldPlay = false;
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         adapter.startListening();
-
     }
 
     @Override
@@ -257,6 +261,7 @@ public class MainActivity extends AppCompatActivity {
             mBgmPlayer.stop();
             mBgmPlayer.release();
             mIsRelease = true;
+            mBgmPlayer = null;
         }
     }
 
@@ -355,7 +360,7 @@ public class MainActivity extends AppCompatActivity {
     private void bgmSetUp(Bundle savedInstanceState) {
         Random random = new Random();
         if (savedInstanceState==null){
-            mBgmSetNumber = random.nextInt(4)+1;
+            mBgmSetNumber = getIntent().getIntExtra(BGMSETSTYLE,0)+1;
             mBgmTrack = 0;
             mShouldPlay = false;
             mIsRelease = false;
@@ -456,10 +461,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startPlayingTrack() {
-        if (mBgmPlayer==null){
-            mBgmPlayer = new MediaPlayer();
-        }
-        if (!mIsRelease){
+        if (!mIsRelease && mBgmPlayer!=null){
             if (mBgmPlayer.isPlaying()) {
                 mBgmPlayer.stop();
                 mBgmPlayer.release();

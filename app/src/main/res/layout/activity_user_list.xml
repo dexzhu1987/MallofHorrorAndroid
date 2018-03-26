@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
 
@@ -11,7 +11,7 @@
             type="com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.Game" />
     </data>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
@@ -21,9 +21,10 @@
         tools:context="com.myhexaville.tictactoe.wifi.UserListActivity">
 
         <LinearLayout
-            android:layout_width="250dp"
+            android:layout_width="0dp"
+            android:layout_weight="3"
             android:layout_height="match_parent"
-            android:layout_marginRight="200dp"
+            android:layout_marginRight="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
@@ -49,16 +50,6 @@
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
                     tools:text=""
                     android:layout_toRightOf="@+id/red_icon" />
-
-                <!--<TextView-->
-                    <!--android:id="@+id/pl_red"-->
-                    <!--android:textColor="@android:color/black"-->
-                    <!--android:layout_marginRight="10dp"-->
-                    <!--android:layout_alignParentRight="true"-->
-                    <!--android:textAlignment="gravity"-->
-                    <!--android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content" />-->
 
                 <ImageView
                     android:id="@+id/red_icon"
@@ -93,16 +84,6 @@
                     tools:text=""
                     android:layout_toRightOf="@+id/yellow_icon" />
 
-                <!--<TextView-->
-                    <!--android:id="@+id/pl_yellow"-->
-                    <!--android:textColor="@android:color/black"-->
-                    <!--android:layout_marginRight="10dp"-->
-                    <!--android:layout_alignParentRight="true"-->
-                    <!--android:textAlignment="gravity"-->
-                    <!--android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_gravity="center_vertical" />-->
                 <ImageView
                     android:id="@+id/yellow_icon"
                     android:layout_width="50dp"
@@ -136,17 +117,6 @@
                     tools:text=""
                     android:layout_toRightOf="@+id/blue_icon" />
 
-                <!--<TextView-->
-                    <!--android:id="@+id/pl_blue"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_alignParentRight="true"-->
-                    <!--android:layout_gravity="center_vertical"-->
-                    <!--android:layout_marginRight="10dp"-->
-
-                    <!--android:textAlignment="gravity"-->
-                    <!--android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"-->
-                    <!--android:textColor="@android:color/black" />-->
 
                 <ImageView
                     android:id="@+id/blue_icon"
@@ -182,16 +152,6 @@
                     tools:text=""
                     android:layout_toRightOf="@+id/green_icon"/>
 
-                <!--<TextView-->
-                    <!--android:id="@+id/pl_green"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_alignParentRight="true"-->
-                    <!--android:layout_gravity="center_vertical"-->
-                    <!--android:layout_marginRight="10dp"-->
-                    <!--android:textAlignment="gravity"-->
-                    <!--android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"-->
-                    <!--android:textColor="@android:color/black" />-->
 
                 <ImageView
                     android:id="@+id/green_icon"
@@ -207,12 +167,59 @@
             </RelativeLayout>
         </LinearLayout>
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/list"
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:background="@color/fui_buttonShadow"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"/>
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_margin="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Music Style"
+                    android:textColor="@android:color/primary_text_light_nodisable"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Small.Inverse"/>
+
+                <Spinner
+                    android:id="@+id/music_style_spinner"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/white"
+                    android:entries="@array/music_style"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Small.Inverse"
+                    ></Spinner>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:layout_margin="10dp">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"/>
+
+        </LinearLayout>
+
 
     </LinearLayout>
 
