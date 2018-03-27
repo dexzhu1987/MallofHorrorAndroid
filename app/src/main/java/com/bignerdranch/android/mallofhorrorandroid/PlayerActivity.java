@@ -427,12 +427,6 @@ public class PlayerActivity extends AppCompatActivity {
         mModelSqr = findViewById(R.id.redmodelsqr);
 
         if (mType!=6){
-//            mGunManButton.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//
-//                }
-//            });
             mGunManButton.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
@@ -461,21 +455,68 @@ public class PlayerActivity extends AppCompatActivity {
                     }
                     return false;
                 }
-
-
             });
-            mToughGunButton.setOnClickListener(new View.OnClickListener() {
+
+            mToughGunButton.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
-                public void onClick(View v) {
-                    choosingCharacter("Tough Guy");
+                public boolean onLongClick(View v) {
+                    mIsLongPressed = true;
+                    mToughGuySqr.setVisibility(View.VISIBLE);
+                    return true;
                 }
             });
-            mModelButton.setOnClickListener(new View.OnClickListener() {
+            mToughGunButton.setOnTouchListener(new View.OnTouchListener() {
                 @Override
-                public void onClick(View v) {
-                    choosingCharacter("Model");
+                public boolean onTouch(View v, MotionEvent event) {
+                    switch(event.getAction()) {
+                        case MotionEvent.ACTION_DOWN:;
+                            break;
+                        case MotionEvent.ACTION_UP:
+                        case MotionEvent.ACTION_CANCEL:
+                            if (mIsLongPressed){
+                                mIsLongPressed = false;
+                                mToughGunButton.setVisibility(View.GONE);// RELEASED
+                            } else {
+                                choosingCharacter("Tough Guy");
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                    return false;
                 }
             });
+
+            mModelButton.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    mIsLongPressed = true;
+                    mModelSqr.setVisibility(View.VISIBLE);
+                    return true;
+                }
+            });
+            mModelButton.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    switch(event.getAction()) {
+                        case MotionEvent.ACTION_DOWN:;
+                            break;
+                        case MotionEvent.ACTION_UP:
+                        case MotionEvent.ACTION_CANCEL:
+                            if (mIsLongPressed){
+                                mIsLongPressed = false;
+                                mModelSqr.setVisibility(View.GONE);// RELEASED
+                            } else {
+                                choosingCharacter("Model");
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                    return false;
+                }
+            });
+
         }
 
         mGunManShadow = findViewById(R.id.shadow_gunman);
