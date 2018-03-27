@@ -475,7 +475,7 @@ public class PlayerActivity extends AppCompatActivity {
                         case MotionEvent.ACTION_CANCEL:
                             if (mIsLongPressed){
                                 mIsLongPressed = false;
-                                mToughGunButton.setVisibility(View.GONE);// RELEASED
+                                mToughGuySqr.setVisibility(View.GONE);// RELEASED
                             } else {
                                 choosingCharacter("Tough Guy");
                             }
