@@ -561,6 +561,9 @@ public class MainActivity extends AppCompatActivity {
                     Log.i(TAG, "Turn value :  " + dataSnapshot.getValue());
                     if (dataSnapshot.getValue()!=null){
                         disableContinue();
+                        readRoomsFromFirebase();
+                        updateRoom(MainActivity.this);
+                        mMainActivityLayout.invalidate();
                         int turn = dataSnapshot.getValue(Integer.TYPE);
                         if(turn<0){
                             for (ImageButton imageButton: mPlayerButtons){
@@ -630,42 +633,44 @@ public class MainActivity extends AppCompatActivity {
         mDatabaseReference.child(GAMEDATA).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                GameData gameData = dataSnapshot.getValue(GameData.class);
-                Log.i(TAG, gameData.toString());
-                mCountPhase=gameData.getmCountPhase();
-                mCountSetUp=gameData.getmCountSetUp();
-                mSecondCount=gameData.getmSecondCount();
-                mThirdCount=gameData.getmThirdCount();
-                mFourthCount=gameData.getmFourthCount();
-                mFifthCount=gameData.getmFifthCount();
-                mSixCount=gameData.getmSixCount();
-                disableContinue();
-                mMessageView.setVisibility(View.VISIBLE);
-                mMessageView.setEnabled(false);
-                if (mCountPhase==0){
-                    messageViewInformPregameChooseRoom();
-                } else if (mCountPhase==1 && mCountSetUp == 3*mPlayerNumber*3){
-                    messageViewInformMovetoGetItem(gameData);
-                } else if (mCountPhase==2 && mCountSetUp==mPlayerNumber*2) {
-                    messageViewInformMovetoParksearch();
-                } else if (mCountPhase==3) {
-                    if (mCountSetUp==0 && (gameBroad.matchRoom(4).isEmpty() || gameBroad.getItemDeck().getItemsDeck().size() < 3)){
-                        messageViewInformParkingIsEmptyandMovetoNextPhase();
-                    } else {
-                        messageViewRelatedParkingSearchWithSearchTeam(gameData);
+                if (dataSnapshot!=null){
+                    GameData gameData = dataSnapshot.getValue(GameData.class);
+                    Log.i(TAG, gameData.toString());
+                    mCountPhase=gameData.getmCountPhase();
+                    mCountSetUp=gameData.getmCountSetUp();
+                    mSecondCount=gameData.getmSecondCount();
+                    mThirdCount=gameData.getmThirdCount();
+                    mFourthCount=gameData.getmFourthCount();
+                    mFifthCount=gameData.getmFifthCount();
+                    mSixCount=gameData.getmSixCount();
+                    disableContinue();
+                    mMessageView.setVisibility(View.VISIBLE);
+                    mMessageView.setEnabled(false);
+                    if (mCountPhase==0){
+                        messageViewInformPregameChooseRoom();
+                    } else if (mCountPhase==1 && mCountSetUp == 3*mPlayerNumber*3){
+                        messageViewInformMovetoGetItem(gameData);
+                    } else if (mCountPhase==2 && mCountSetUp==mPlayerNumber*2) {
+                        messageViewInformMovetoParksearch();
+                    } else if (mCountPhase==3) {
+                        if (mCountSetUp==0 && (gameBroad.matchRoom(4).isEmpty() || gameBroad.getItemDeck().getItemsDeck().size() < 3)){
+                            messageViewInformParkingIsEmptyandMovetoNextPhase();
+                        } else {
+                            messageViewRelatedParkingSearchWithSearchTeam(gameData);
+                        }
+                    } else if (mCountPhase==4) {
+                        if (mCountSetUp==0 && mSecondCount==0 && gameBroad.matchRoom(5).isEmpty()){
+                            messageViewInformSecurityIsEmptyandMovetoNextPhase();
+                        } else {
+                            messageViewRelatedChiefElectionWithElectionTeam(gameData);
+                        }
+                    } else if (mCountPhase==5) {
+                        messageViewInformRelatedtoMoveAndView(gameData);
+                    } else if (mCountPhase==6) {
+                        messageViewRelatedtoRevealandAttack(gameData);
+                    } else if (mCountPhase==7) {
+                        messageViewInformWinner();
                     }
-                } else if (mCountPhase==4) {
-                    if (mCountSetUp==0 && mSecondCount==0 && gameBroad.matchRoom(5).isEmpty()){
-                        messageViewInformSecurityIsEmptyandMovetoNextPhase();
-                    } else {
-                        messageViewRelatedChiefElectionWithElectionTeam(gameData);
-                    }
-                } else if (mCountPhase==5) {
-                    messageViewInformRelatedtoMoveAndView(gameData);
-                } else if (mCountPhase==6) {
-                    messageViewRelatedtoRevealandAttack(gameData);
-                } else if (mCountPhase==7) {
-                    messageViewInformWinner();
                 }
             }
 

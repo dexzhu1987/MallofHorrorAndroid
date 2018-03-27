@@ -101,6 +101,7 @@ public class PlayerActivity extends AppCompatActivity {
     private String mColor;
     private Boolean mBooleanOptions;
     private int mFallenRoomNumber;
+    private Boolean mIsLongPressed;
 
     public static Intent newChoosingRoomIntent (Context context, List<Room> rooms, String playercolor, List<Item> items,  ArrayList<Integer> roomOptions,
                                                 String message, int countsetup, int type){
@@ -186,16 +187,18 @@ public class PlayerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_player);
 
         System.out.println("PlayerActivity called");
-            gettingReady();
+            gettingReady(savedInstanceState);
     }
 
-    private void gettingReady() {
+    private void gettingReady(Bundle savedInstanceState) {
         mType = getIntent().getIntExtra(TYPE,0);
         mMessage = getIntent().getStringExtra(MESSAGE);
         mRooms = getIntent().getParcelableArrayListExtra(ROOMS);
         mItems = getIntent().getParcelableArrayListExtra(ITEMS);
         mCountSetUp = getIntent().getIntExtra(COUNTSETUP,0);
         mColor = getIntent().getStringExtra(PLAYERCOLOR);
+
+        mIsLongPressed = false;
 
         otherCommonSetUp();
         settingUpColor();
@@ -408,14 +411,12 @@ public class PlayerActivity extends AppCompatActivity {
             });
         }
 
-
         mEnterButtons.add(mEnterRestRoomButton);
         mEnterButtons.add(mEnterCachouButton);
         mEnterButtons.add(mEnterMegatoyButton);
         mEnterButtons.add(mEnterParkingButton);
         mEnterButtons.add(mEnterSecurityButton);
         mEnterButtons.add(mEnterSupermarketButton);
-
 
         mGunManButton = findViewById(R.id.redgunman_button);
         mToughGunButton = findViewById(R.id.redtoughman_button);
@@ -426,33 +427,43 @@ public class PlayerActivity extends AppCompatActivity {
         mModelSqr = findViewById(R.id.redmodelsqr);
 
         if (mType!=6){
-            mGunManButton.setOnClickListener(new View.OnClickListener() {
+//            mGunManButton.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//
+//                }
+//            });
+            mGunManButton.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
-                public void onClick(View v) {
-                    choosingCharacter("Gun Man"); ;
+                public boolean onLongClick(View v) {
+                    mIsLongPressed = true;
+                    mGunManSqr.setVisibility(View.VISIBLE);
+                    return false;
                 }
             });
-//            mGunManButton.setOnLongClickListener(new View.OnLongClickListener() {
-//                @Override
-//                public boolean onLongClick(View v) {
-//                    return false;
-//                }
-//            });
-//            mGunManButton.setOnTouchListener(new View.OnTouchListener() {
-//                @Override
-//                public boolean onTouch(View v, MotionEvent event) {
-//                    switch(event.getAction()) {
-//                        case MotionEvent.ACTION_DOWN:
-//                            // PRESSED
-//                            break;
-//                        case MotionEvent.ACTION_UP:
-//                        case MotionEvent.ACTION_CANCEL:
-//                            // RELEASED
-//                            break;
-//                    }
-//                    return true;
-//                }
-//            });
+            mGunManButton.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    switch(event.getAction()) {
+                        case MotionEvent.ACTION_DOWN:;
+                            break;
+                        case MotionEvent.ACTION_UP:
+                        case MotionEvent.ACTION_CANCEL:
+                            if (mIsLongPressed){
+                                mIsLongPressed = false;
+                                mGunManSqr.setVisibility(View.GONE);// RELEASED
+                            } else {
+                                choosingCharacter("Gun Man"); ;
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                    return true;
+                }
+
+
+            });
             mToughGunButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
