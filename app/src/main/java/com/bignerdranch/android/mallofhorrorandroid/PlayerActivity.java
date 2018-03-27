@@ -438,7 +438,7 @@ public class PlayerActivity extends AppCompatActivity {
                 public boolean onLongClick(View v) {
                     mIsLongPressed = true;
                     mGunManSqr.setVisibility(View.VISIBLE);
-                    return false;
+                    return true;
                 }
             });
             mGunManButton.setOnTouchListener(new View.OnTouchListener() {
@@ -459,7 +459,7 @@ public class PlayerActivity extends AppCompatActivity {
                         default:
                             break;
                     }
-                    return true;
+                    return false;
                 }
 
 

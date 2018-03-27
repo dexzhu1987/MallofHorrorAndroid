@@ -713,7 +713,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if (mMyPlayerID==getControlId()){
-                    mCountPhase++;
+                    mCountPhase=2;
                     mCountSetUp=0;
                     do {
                         GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
@@ -736,7 +736,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if (mMyPlayerID==getControlId()){
-                    mCountPhase++;
+                    mCountPhase=3;
                     mCountSetUp=0;
                     do {
                         GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
@@ -781,7 +781,7 @@ public class MainActivity extends AppCompatActivity {
                     mCurrentYesNo=false;
                     mCurrentYesNoMain = false;
                     if (mMyPlayerID==getControlId()){
-                            mCountPhase++;
+                            mCountPhase=4;
                             mCountSetUp=0;
                             mSecondCount=0;
                             mThirdCount=0;
@@ -1230,7 +1230,7 @@ public class MainActivity extends AppCompatActivity {
                                 mCurrentYesNo=false;
                                 mCurrentYesNoMain = false;
                                 if (mMyPlayerID==getControlId()){
-                                    mCountPhase++;
+                                    mCountPhase=4;
                                     mCountSetUp=0;
                                     mSecondCount=0;
                                     mThirdCount=0;
@@ -1891,7 +1891,7 @@ public class MainActivity extends AppCompatActivity {
                 mCurrentYesNo=false;
                 mCurrentYesNoMain = false;
                 if (mMyPlayerID==getControlId()){
-                    mCountPhase++;
+                    mCountPhase=6;
                     mCountSetUp=0;
                     mSecondCount=0;
                     mThirdCount=0;
