@@ -67,6 +67,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 
@@ -913,6 +914,11 @@ public class MainActivity extends AppCompatActivity {
                 gameBroad.matchRoom(roomNumber).resetVoteResult();
                 gameBroad.matchRoom(roomNumber).voteResultAfterVote(votes);
                 ArrayList votes1 = (ArrayList<String>) votes;
+                String result = "";
+                for (Map.Entry<String,Integer> entry : gameBroad.matchRoom(roomNumber).getCurrentVoteResult().entrySet()) {
+                    result += entry.getKey() + "--" + entry.getValue() + "\n";
+                }
+                mStickyNoteText.setText(result);
                 System.out.println("Step III: show vote result");
                 System.out.println(votes1);
                 mShouldPlay = true;
@@ -1111,6 +1117,7 @@ public class MainActivity extends AppCompatActivity {
         });
         disableContinue();
         mMessageView.setVisibility(View.VISIBLE);
+        mStickyNoteText.setText("");
         mMessageView.setText("Final voting results are set");
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -2551,6 +2558,7 @@ public class MainActivity extends AppCompatActivity {
     private void messageViewInformTieorLoserForFallenRoom(int roomNumber) {
         disableContinue();
         mMessageView.setVisibility(View.VISIBLE);
+        mStickyNoteText.setText("Fallen Room: " + roomNumber + " " + gameBroad.matchRoom(roomNumber));
         mMessageView.setEnabled(false);
         HashSet<Playable> searchteam = gameBroad.WhoCan(gameBroad.matchRoom(roomNumber).existCharacterColor());
         List<Playable> searchTeam = new ArrayList<>();
@@ -3070,6 +3078,7 @@ public class MainActivity extends AppCompatActivity {
     private void messageViewInformMoveBacktoParkingOrWinnerDetermined() {
         disableContinue();
         mMessageView.setVisibility(View.VISIBLE);
+        mStickyNoteText.setText("");
         mMessageView.setEnabled(false);
         if (mSixCount==0){
             mMessageView.setText("No Room has fallen this round, but more zombies are approaching");
