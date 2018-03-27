@@ -142,15 +142,15 @@
         android:id="@+id/play"
         android:layout_width="60dp"
         android:layout_height="60dp"
+        android:layout_marginBottom="20dp"
         android:layout_marginRight="35dp"
         android:layout_marginTop="18dp"
-        android:layout_marginBottom="20dp"
         android:padding="0dp"
         android:scaleType="fitXY"
         android:src="@drawable/redtoughguybttn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-<!--enter romm-->
+    <!--enter romm-->
     <ImageButton
         android:id="@+id/enter_restroom"
         android:layout_width="40dp"
@@ -257,13 +257,14 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
-<!--character icon-->
+    <!--character icon-->
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_marginBottom="24dp"
         android:layout_marginStart="16dp"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -300,11 +301,11 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:gravity="center"
-        android:layout_marginLeft="15dp"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -331,7 +332,6 @@
             android:scaleType="fitXY"
             app:srcCompat="@drawable/showdowdrop" />
     </LinearLayout>
-
 
 
     <ImageButton
@@ -753,6 +753,48 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/loading" />
+
+    <ImageView
+        android:id="@+id/redgunmansqr"
+        android:layout_width="135dp"
+        android:layout_height="135dp"
+        android:layout_marginBottom="96dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.076"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/gunmanbutton"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/redtoughgunsqr"
+        android:layout_width="135dp"
+        android:layout_height="135dp"
+        android:layout_marginBottom="96dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.076"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/toughguybutton"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/redmodelsqr"
+        android:layout_width="135dp"
+        android:layout_height="135dp"
+        android:layout_marginBottom="96dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.076"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/modelbutton"
+        android:visibility="gone"/>
 
 </android.support.constraint.ConstraintLayout>
 

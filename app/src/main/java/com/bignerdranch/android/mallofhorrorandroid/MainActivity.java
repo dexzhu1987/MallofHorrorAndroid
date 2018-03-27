@@ -2558,7 +2558,7 @@ public class MainActivity extends AppCompatActivity {
     private void messageViewInformTieorLoserForFallenRoom(int roomNumber) {
         disableContinue();
         mMessageView.setVisibility(View.VISIBLE);
-        mStickyNoteText.setText("Fallen Room: " + roomNumber + " " + gameBroad.matchRoom(roomNumber));
+        mStickyNoteText.setText("Fallen Room: " + roomNumber + " " + gameBroad.matchRoom(roomNumber).getName());
         mMessageView.setEnabled(false);
         HashSet<Playable> searchteam = gameBroad.WhoCan(gameBroad.matchRoom(roomNumber).existCharacterColor());
         List<Playable> searchTeam = new ArrayList<>();
@@ -3281,16 +3281,16 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateDataFromFireBase(int turn, GameData gameData, int prevTurn) {
         if (gameData.getmPassingType()==1){
-            int q = turn==0? mPlayerNumber-1: turn-1;
-            int selectedRoom = gameData.getmSelectedRoom();
-            String selectedCharacter = gameData.getmSelectedCharacter();
-            if (gameBroad.matchRoom(selectedRoom).isFull()) {
-                gameBroad.matchRoom(4).enter(gameBroad.getPlayers().get(q).selectchoose(selectedCharacter));
-                gameBroad.getPlayers().get(q).selectchooseremove(selectedCharacter);
-            } else {
-                gameBroad.matchRoom(selectedRoom).enter(gameBroad.getPlayers().get(q).selectchoose(selectedCharacter));
-                gameBroad.getPlayers().get(q).selectchooseremove(selectedCharacter);
-            }
+//            int q = turn==0? mPlayerNumber-1: turn-1;
+//            int selectedRoom = gameData.getmSelectedRoom();
+//            String selectedCharacter = gameData.getmSelectedCharacter();
+//            if (gameBroad.matchRoom(selectedRoom).isFull()) {
+//                gameBroad.matchRoom(4).enter(gameBroad.getPlayers().get(q).selectchoose(selectedCharacter));
+//                gameBroad.getPlayers().get(q).selectchooseremove(selectedCharacter);
+//            } else {
+//                gameBroad.matchRoom(selectedRoom).enter(gameBroad.getPlayers().get(q).selectchoose(selectedCharacter));
+//                gameBroad.getPlayers().get(q).selectchooseremove(selectedCharacter);
+//            }
         } else if (gameData.getmPassingType()==2){
             String whoVote = gameData.getWhoVoteColor();
             String voteWhom = gameData.getVoteWhomColor();
@@ -3326,16 +3326,16 @@ public class MainActivity extends AppCompatActivity {
             roomspicked.add(choosedRoomNumber);
             playersIndex.add(playerIndex);
         } else if (gameData.getmPassingType()==6){
-            Room destination = gameBroad.matchRoom(gameData.getSelectedRoomPhaseFive());
-            Playable actualPlayer = gameBroad.getPlayers().get(gameData.getPlayerIndex());
-            GameCharacter selectedCharacter2 = gameBroad.matchGameCharacter(actualPlayer,gameData.getmSelectedCharacter());
-            Room leavingRoom2 = gameBroad.inWhichRoom(selectedCharacter2);
-            leavingRoom2.leave(selectedCharacter2);
-            if (gameBroad.matchRoom(gameData.getSelectedRoomPhaseFive()).isFull()){
-                gameBroad.matchRoom(4).enter(selectedCharacter2);
-            }else {
-                gameBroad.matchRoom(gameData.getSelectedRoomPhaseFive()).enter(selectedCharacter2);
-            }
+//            Room destination = gameBroad.matchRoom(gameData.getSelectedRoomPhaseFive());
+//            Playable actualPlayer = gameBroad.getPlayers().get(gameData.getPlayerIndex());
+//            GameCharacter selectedCharacter2 = gameBroad.matchGameCharacter(actualPlayer,gameData.getmSelectedCharacter());
+//            Room leavingRoom2 = gameBroad.inWhichRoom(selectedCharacter2);
+//            leavingRoom2.leave(selectedCharacter2);
+//            if (gameBroad.matchRoom(gameData.getSelectedRoomPhaseFive()).isFull()){
+//                gameBroad.matchRoom(4).enter(selectedCharacter2);
+//            }else {
+//                gameBroad.matchRoom(gameData.getSelectedRoomPhaseFive()).enter(selectedCharacter2);
+//            }
         }
         readRoomsFromFirebase();
         updateRoom(MainActivity.this);

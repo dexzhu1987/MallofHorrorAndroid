@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
@@ -38,6 +39,7 @@ import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Playable.P
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Room.Room;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,6 +68,7 @@ public class PlayerActivity extends AppCompatActivity {
             mEnterSupermarketButton;
     private ImageButton mGunManButton, mToughGunButton, mModelButton;
     private ImageView mGunManShadow, mToughGuyShadow, mModelShadow;
+    private ImageView mGunManSqr, mToughGuySqr, mModelSqr;
     private ImageButton mVoteRedButton, mVoteYellowButton, mVoteBlueButton, mVoteGreenButton, mVoteBrownButton, mVoteBlackButton;
     private ImageView mShadowVoteRed,mShadowVoteYellow,mShadowVoteBlue,mShadowVoteGreen,mShadowVoteBrown,mShadowVoteBlack;
     private GridLayout mRestRoomArea, mCachouArea, mMegatoyArea, mParkingArea, mSecurityArea, mSupermarketArea;
@@ -89,6 +92,7 @@ public class PlayerActivity extends AppCompatActivity {
     private ArrayList<Integer> mRoomOptions;
     private ArrayList<? extends Room> mRooms;
     private ArrayList<? extends Item> mItems;
+    private ArrayList<String> mColorsList;
     private String mMessage;
     private ArrayList<GameCharacter> mGameCharactersOptions;
     private ArrayList<Playable> mVoteOptions;
@@ -197,6 +201,7 @@ public class PlayerActivity extends AppCompatActivity {
         settingUpColor();
         updateRoom(PlayerActivity.this);
         updateItem();
+
 
         final Animation animAlpha = AnimationUtils.loadAnimation(this, R.anim.anim_alpha);
         final Animation animBounce = AnimationUtils.loadAnimation(this, R.anim.anim_bounce);
@@ -416,6 +421,10 @@ public class PlayerActivity extends AppCompatActivity {
         mToughGunButton = findViewById(R.id.redtoughman_button);
         mModelButton = findViewById(R.id.redmodel_button);
 
+        mGunManSqr = findViewById(R.id.redgunmansqr);
+        mToughGuySqr = findViewById(R.id.redtoughgunsqr);
+        mModelSqr = findViewById(R.id.redmodelsqr);
+
         if (mType!=6){
             mGunManButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -423,6 +432,27 @@ public class PlayerActivity extends AppCompatActivity {
                     choosingCharacter("Gun Man"); ;
                 }
             });
+//            mGunManButton.setOnLongClickListener(new View.OnLongClickListener() {
+//                @Override
+//                public boolean onLongClick(View v) {
+//                    return false;
+//                }
+//            });
+//            mGunManButton.setOnTouchListener(new View.OnTouchListener() {
+//                @Override
+//                public boolean onTouch(View v, MotionEvent event) {
+//                    switch(event.getAction()) {
+//                        case MotionEvent.ACTION_DOWN:
+//                            // PRESSED
+//                            break;
+//                        case MotionEvent.ACTION_UP:
+//                        case MotionEvent.ACTION_CANCEL:
+//                            // RELEASED
+//                            break;
+//                    }
+//                    return true;
+//                }
+//            });
             mToughGunButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -601,6 +631,9 @@ public class PlayerActivity extends AppCompatActivity {
                 mGunManButton.setImageResource(R.drawable.yellowgunmanbttn);
                 mToughGunButton.setImageResource(R.drawable.yellowtoughguybttn);
                 mModelButton.setImageResource(R.drawable.yellowmodelbttn);
+                mGunManSqr.setImageResource(R.drawable.yellowgunmansqrbutton);
+                mToughGuySqr.setImageResource(R.drawable.yellowtoughguysqrbutton);
+                mModelSqr.setImageResource(R.drawable.yellowmodelsqrbutton);
             }
 
             if (mColor.equalsIgnoreCase("Blue")){
@@ -609,6 +642,9 @@ public class PlayerActivity extends AppCompatActivity {
                 mGunManButton.setImageResource(R.drawable.bluegunmanbttn);
                 mToughGunButton.setImageResource(R.drawable.bluetoughguybttn);
                 mModelButton.setImageResource(R.drawable.bluemodelbttn);
+                mGunManSqr.setImageResource(R.drawable.bluegunmansqrbutton);
+                mToughGuySqr.setImageResource(R.drawable.bluetoughguysqrbutton);
+                mModelSqr.setImageResource(R.drawable.bluemodelsqrbutton);
             }
 
             if (mColor.equalsIgnoreCase("Green")){
@@ -617,6 +653,9 @@ public class PlayerActivity extends AppCompatActivity {
                 mGunManButton.setImageResource(R.drawable.greengunmanbttn);
                 mToughGunButton.setImageResource(R.drawable.greentoughguybttn);
                 mModelButton.setImageResource(R.drawable.greenmodelbttn);
+                mGunManSqr.setImageResource(R.drawable.greengunmansqrbutton);
+                mToughGuySqr.setImageResource(R.drawable.greentoughguysqrbutton);
+                mModelSqr.setImageResource(R.drawable.greenmodelsqrbutton);
             }
 
             if (mColor.equalsIgnoreCase("Brown")){
@@ -625,6 +664,9 @@ public class PlayerActivity extends AppCompatActivity {
                 mGunManButton.setImageResource(R.drawable.browngunmanbttn);
                 mToughGunButton.setImageResource(R.drawable.browntoughguybttn);
                 mModelButton.setImageResource(R.drawable.brownmodelbttn);
+                mGunManSqr.setImageResource(R.drawable.browngunmansqrbutton);
+                mToughGuySqr.setImageResource(R.drawable.browntoughguysqrbutton);
+                mModelSqr.setImageResource(R.drawable.brownmodelsqrbutton);
             }
 
             if (mColor.equalsIgnoreCase("Black")){
@@ -633,6 +675,9 @@ public class PlayerActivity extends AppCompatActivity {
                 mGunManButton.setImageResource(R.drawable.blackgunmanbttn);
                 mToughGunButton.setImageResource(R.drawable.blacktoughguybttn);
                 mModelButton.setImageResource(R.drawable.blackmodelbttn);
+                mGunManSqr.setImageResource(R.drawable. blackgunmansqrbutton);
+                mToughGuySqr.setImageResource(R.drawable.blacktoughguysqrbutton);
+                mModelSqr.setImageResource(R.drawable.blackmodelsqrbutton);
             }
         }
 
