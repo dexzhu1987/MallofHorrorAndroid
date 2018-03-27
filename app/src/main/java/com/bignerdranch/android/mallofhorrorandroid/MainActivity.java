@@ -3389,10 +3389,21 @@ public class MainActivity extends AppCompatActivity {
         mMainActivityLayout = findViewById(R.id.main_activity);
 
         mLoading = findViewById(R.id.loading_main);
+        mLoading.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(MainActivity.this);
+                AlertDialog alertDialog = dialogBuilder.create();
+                alertDialog.show();
 
-        final Animation animRotate = AnimationUtils.loadAnimation(this, R.anim.anim_rotate);
+                alertDialog.getWindow().setLayout(1600, 800);
+                LayoutInflater inflater = MainActivity.this.getLayoutInflater();
+                View dialogView = inflater.inflate(R.layout.alert_dialog_help_main, null);
+                alertDialog.getWindow().setContentView(dialogView);
 
-        mLoading.startAnimation(animRotate);
+
+            }
+        });
 
         colors.clear();
         colors.add("Red");
