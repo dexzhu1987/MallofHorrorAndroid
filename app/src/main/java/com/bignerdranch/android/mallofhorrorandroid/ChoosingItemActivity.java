@@ -1,12 +1,15 @@
 package com.bignerdranch.android.mallofhorrorandroid;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bignerdranch.android.mallofhorrorandroid.MallofHorrorModel.Item.Axe;
@@ -34,6 +37,7 @@ public class ChoosingItemActivity extends AppCompatActivity {
 
     private ImageButton mImageSelected1, mImageSelected2, mImageSelected3;
     private TextView mItemChoosingTextView;
+    private ImageView mLoading;
 
     private ArrayList<Item> mItems;
     private List<ImageButton> mAllItemsImageButtons = new ArrayList<>();
@@ -56,6 +60,22 @@ public class ChoosingItemActivity extends AppCompatActivity {
         mItems = getIntent().getParcelableArrayListExtra(ITEMOPTIONS);
         mMessage = getIntent().getStringExtra(MESSAGE);
         mCountSetUp = getIntent().getIntExtra(COUNTSETUP,0);
+
+        mLoading = findViewById(R.id.loading_choosingitem);
+        mLoading.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(ChoosingItemActivity.this);
+                AlertDialog alertDialog = dialogBuilder.create();
+                alertDialog.show();
+
+                alertDialog.getWindow().setLayout(1600, 800);
+                LayoutInflater inflater = ChoosingItemActivity.this.getLayoutInflater();
+                View dialogView = inflater.inflate(R.layout.alert_dialog_help_player, null);
+                alertDialog.getWindow().setContentView(dialogView);
+
+            }
+        });
 
         mImageSelected1 = findViewById(R.id.itemselected_one);
         mImageSelected2 = findViewById(R.id.itemselected_two);

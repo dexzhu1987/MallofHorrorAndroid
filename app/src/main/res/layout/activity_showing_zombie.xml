@@ -22,7 +22,7 @@
         android:text="Four zombies have appeared and are approaching..."
         android:textAlignment="center"
         android:textColor="#00FE00"
-        android:textSize="24sp"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
