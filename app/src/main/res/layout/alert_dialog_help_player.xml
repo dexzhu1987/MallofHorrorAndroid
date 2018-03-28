@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/player_room_bg"
+    android:id="@+id/alert_dialog_help_player">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="25dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp"
+                    android:layout_weight="2"
+                    android:src="@drawable/threat" />
+
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="12dp"
+                    android:layout_weight="7"
+                    android:background="@color/fui_buttonShadow"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="30dp"
+                        android:text="Item 001: Threat
+\nEffect: Gain one additional vote
+\nPlay When:  During voting phase"
+                        android:textColor="@android:color/white"
+                        android:textSize="14dp" />
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp"
+                    android:layout_weight="2"
+                    android:src="@drawable/securitycamera" />
+
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="12dp"
+                    android:layout_weight="7"
+                    android:background="@color/fui_buttonShadow"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="30dp"
+                        android:text="Item 002: Security Camera
+\nEffect: May screctly look at the room numbers of the approaching zombies
+\nPlay When: After chief election"
+                        android:textColor="@android:color/white"
+                        android:textSize="14dp" />
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp"
+                    android:layout_weight="2"
+                    android:src="@drawable/axe" />
+
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="12dp"
+                    android:layout_weight="7"
+                    android:background="@color/fui_buttonShadow"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="30dp"
+                        android:text="Item 003: Axe
+\nEffect: Immediately kill one zombie
+\nPlay When: Room falling phase ,before a vote"
+                        android:textColor="@android:color/white"
+                        android:textSize="14dp" />
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp"
+                    android:layout_weight="2"
+                    android:src="@drawable/shortgun" />
+
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="12dp"
+                    android:layout_weight="7"
+                    android:background="@color/fui_buttonShadow"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="30dp"
+                        android:text="Item 004: Shotgun
+\nEffect: Immediately kill two zombie
+\nPlay When: Room falling, before a vote"
+                        android:textColor="@android:color/white"
+                        android:textSize="14dp" />
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp"
+                    android:layout_weight="2"
+                    android:src="@drawable/hardware" />
+
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="12dp"
+                    android:layout_weight="7"
+                    android:background="@color/fui_buttonShadow"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="30dp"
+                        android:text="Item 005: Hardware
+\nEffect: Temporarily keeps one zombie out
+\nPlay When: Room falling, before a vote"
+                        android:textColor="@android:color/white"
+                        android:textSize="14dp" />
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp"
+                    android:layout_weight="2"
+                    android:src="@drawable/hidden" />
+
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="12dp"
+                    android:layout_weight="7"
+                    android:background="@color/fui_buttonShadow"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="30dp"
+                        android:text="Item 006: Hidden
+\nEffect: A character may not be chosen, nor be eaten
+\nPlay When: Room falling, before a vote"
+                        android:textColor="@android:color/white"
+                        android:textSize="14dp" />
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp"
+                    android:layout_weight="2"
+                    android:src="@drawable/sprint" />
+
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="12dp"
+                    android:layout_weight="7"
+                    android:background="@color/fui_buttonShadow"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="30dp"
+                        android:text="Item 007: Sprint
+\nEffect: A character may escape from the current room
+\nPlay When: Room falling, before a vote"
+                        android:textColor="@android:color/white"
+                        android:textSize="14dp" />
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </ScrollView>
+
+</LinearLayout>

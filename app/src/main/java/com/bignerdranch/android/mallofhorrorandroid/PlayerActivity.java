@@ -1,6 +1,7 @@
 package com.bignerdranch.android.mallofhorrorandroid;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -11,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -361,10 +363,20 @@ public class PlayerActivity extends AppCompatActivity {
         mPlayerActivityLayout = findViewById(R.id.player_activity);
         mPlayerButton = findViewById(R.id.play);
         mLoading = findViewById(R.id.loading_player);
+        mLoading.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(PlayerActivity.this);
+                AlertDialog alertDialog = dialogBuilder.create();
+                alertDialog.show();
 
-        final Animation animRotate = AnimationUtils.loadAnimation(this, R.anim.anim_rotate);
+                alertDialog.getWindow().setLayout(1600, 800);
+                LayoutInflater inflater = PlayerActivity.this.getLayoutInflater();
+                View dialogView = inflater.inflate(R.layout.alert_dialog_help_player, null);
+                alertDialog.getWindow().setContentView(dialogView);
 
-        mLoading.startAnimation(animRotate);
+            }
+        });
 
         mEnterRestRoomButton = findViewById(R.id.enter_restroom);
         mEnterCachouButton = findViewById(R.id.enter_cachou);
