@@ -350,9 +350,26 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                serviceintent = OnClearFromRecentService.newServiceIntent(MainActivity.this, mRoomID);
-                startService(serviceintent);
-                isServiceStarted = true;
+                FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).
+                        child("pushId").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        String roomIdSelf = "";
+                        if (dataSnapshot.getValue()!=null){
+                            roomIdSelf = (String) dataSnapshot.getValue();
+                        }
+                        serviceintent = OnClearFromRecentService.newServiceIntent(MainActivity.this, mRoomID, roomIdSelf);
+                        startService(serviceintent);
+                        isServiceStarted = true;
+                        FirebaseDatabase.getInstance().getReference().child("game").child(mDatabaseGame.getRoomId()).setValue(null);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
             }
         },20*1000);
 
@@ -472,7 +489,7 @@ public class MainActivity extends AppCompatActivity {
         Log.i(TAG, "start music");
         mBgmPlayer.start();
         mBgmPlayer.setLooping(true);
-        final float volume = (float) (1 - (Math.log(MAX_VOLUME - 70) / Math.log(MAX_VOLUME)));
+        float volume = (float) (1 - (Math.log(MAX_VOLUME - 70) / Math.log(MAX_VOLUME)));
         mBgmPlayer.setVolume(volume,volume);
         mBgmPlayer.start();
 

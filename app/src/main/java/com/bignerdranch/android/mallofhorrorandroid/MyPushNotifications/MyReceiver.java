@@ -65,9 +65,8 @@ public class MyReceiver extends BroadcastReceiver {
                             String ownername =  me.getName();
                             String roomID = intent.getStringExtra("to");
                             FirebaseDatabase.getInstance().getReference().child("game").child(me.getPushId()).setValue(null);
-                            Intent serviceintent = OnClearFromRecentService.newServiceIntent(context, roomID);
-                            context.startService(serviceintent);
-                            context.startActivity(UserListActivity.newIntent(context,"Guest",roomID,ownername));
+                            Intent intent1 = UserListActivity.newIntent(context,"Guest",roomID,ownername);
+                            context.startActivity(intent1);
 
                         }
                     }

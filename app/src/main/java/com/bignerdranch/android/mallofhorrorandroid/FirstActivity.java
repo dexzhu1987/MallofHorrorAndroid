@@ -203,7 +203,7 @@ public class FirstActivity extends AppCompatActivity {
                                 roomID = (String) dataSnapshot.getValue();
                                 String type = "Host";
                                 Intent intent = UserListActivity.newIntent(firstActivity, type, roomID,name);
-                                Intent serviceintent = OnClearFromRecentService.newServiceIntent(FirstActivity.this, roomID);
+                                Intent serviceintent = OnClearFromRecentService.newServiceIntent(FirstActivity.this, roomID,roomID);
                                 startService(serviceintent);
                                 startActivity(intent);
                             }
@@ -225,7 +225,6 @@ public class FirstActivity extends AppCompatActivity {
     private void showProgressDialog() {
         binding.progress.setVisibility(VISIBLE);
     }
-
 
     private boolean isAnonymous() {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();

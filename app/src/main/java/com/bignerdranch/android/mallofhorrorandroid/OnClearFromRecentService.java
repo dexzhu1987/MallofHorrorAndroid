@@ -18,11 +18,14 @@ import static android.app.Service.START_NOT_STICKY;
 
 public class OnClearFromRecentService extends Service {
     private static String ROOMID = "roomId";
+    private static String ROOMIDSELF = "roomIdSelf";
     private String roomId;
+    private String roomIdSelf;
 
-    public static Intent newServiceIntent(Context context, String roomID){
+    public static Intent newServiceIntent(Context context, String roomID, String roomIdSelf){
         Intent intent = new Intent(context, OnClearFromRecentService.class);
         intent.putExtra(ROOMID, roomID);
+        intent.putExtra(ROOMIDSELF, roomIdSelf);
         return intent;
     }
 
@@ -35,6 +38,7 @@ public class OnClearFromRecentService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d("ClearFromRecentService", "Service Started");
         roomId = intent.getStringExtra(ROOMID);
+        roomIdSelf = intent.getStringExtra(ROOMIDSELF);
         return START_NOT_STICKY;
     }
 
@@ -48,6 +52,7 @@ public class OnClearFromRecentService extends Service {
     public void onTaskRemoved(Intent rootIntent) {
         Log.e("ClearFromRecentService", "END");
         FirebaseDatabase.getInstance().getReference().child("game").child(roomId).setValue(null);
+        FirebaseDatabase.getInstance().getReference().child("game").child(roomIdSelf).setValue(null);
         FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("on").setValue(false);
         Log.e("ClearFromRecentService", " " + User.getCurrentUserId());
         stopSelf();

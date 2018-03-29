@@ -38,6 +38,9 @@ public class UserListActivity extends AppCompatActivity {
     private static final String USERNAME = "username";
     private static final String BGMTHEMESET = "bgmthemeset";
     private static final java.lang.String ISUSERRELEASE = "isUserRelease";
+    private static final String PLAYERN = "playerN";
+    private static final String ISGAMESTARTED = "isgamestarted";
+    private static final String ISSERVICESTARTED = "isservicestarted";
     private List<User> users = new ArrayList<>();
     private Adapter adapter;
     private Context userActivity;
@@ -52,6 +55,10 @@ public class UserListActivity extends AppCompatActivity {
     private int mBgmThemeSet;
     private List<Integer> mBgmSources = new ArrayList<>();
     private boolean mUserIsRelease;
+    private ArrayList<String> mPlayersNamesList = new ArrayList<>();
+    private boolean isGameStarted;
+    private Intent mRoomService;
+    private boolean isServiceCreate;
 
     public static Intent newIntent(Context context, String type, String roomID, String username) {
         Intent intent = new Intent(context, UserListActivity.class);
@@ -75,6 +82,7 @@ public class UserListActivity extends AppCompatActivity {
         userActivity = UserListActivity.this;
         isStarted = false;
 
+
         mBgmSources.add(R.raw.waitingroom_bgm_umeneko);
         mBgmSources.add(R.raw.waitingroom_bgm_hellgirl);
         mBgmSources.add(R.raw.waitingroom_bgm_xxxholic);
@@ -84,9 +92,13 @@ public class UserListActivity extends AppCompatActivity {
             Random random = new Random();
             mBgmThemeSet = random.nextInt(mBgmSources.size());
             mUserIsRelease = false;
+            isGameStarted = false;
+            isServiceCreate = false;
         } else {
             mBgmThemeSet = savedInstanceState.getInt(BGMTHEMESET);
             mUserIsRelease = savedInstanceState.getBoolean(ISUSERRELEASE);
+            isGameStarted = savedInstanceState.getBoolean(ISGAMESTARTED);
+            isServiceCreate = savedInstanceState.getBoolean(ISGAMESTARTED);
         }
 
         mMusicStyleSpinner = findViewById(R.id.music_style_spinner);
@@ -132,16 +144,15 @@ public class UserListActivity extends AppCompatActivity {
 
         updateRoom(binding, roomId);
 
-
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("on").setValue(true);
-        if (type.equals("Host")){
-            createRoom(roomId);
-        }
+//        if (type.equals("Host")){
+//            createRoom(roomId);
+//        }
     }
 
     @Override
@@ -161,16 +172,24 @@ public class UserListActivity extends AppCompatActivity {
             waitingRoomBgm = null;
             mUserIsRelease = true;
         }
+
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.i(LOG_TAG, "Destroy: roomId; " + roomId);
         _idleHandler.removeCallbacks(_idleRunnable);
+        if (!isGameStarted && isServiceCreate){
+            stopService(mRoomService);
+        }
     }
 
+    @Override
     public void onStop(){
         super.onStop();
+        Log.i(LOG_TAG, "Stop: roomId; " + roomId);
+
     }
 
     @Override
@@ -178,6 +197,8 @@ public class UserListActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         outState.putInt(BGMTHEMESET, mBgmThemeSet);
         outState.putBoolean(ISUSERRELEASE, mUserIsRelease);
+        outState.putBoolean(ISGAMESTARTED,isGameStarted);
+        outState.putBoolean(ISSERVICESTARTED,isServiceCreate);
     }
 
     @Override
@@ -185,6 +206,8 @@ public class UserListActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
         mBgmThemeSet = savedInstanceState.getInt(BGMTHEMESET);
         mUserIsRelease = savedInstanceState.getBoolean(ISUSERRELEASE);
+        isGameStarted = savedInstanceState.getBoolean(ISGAMESTARTED);
+        isServiceCreate = savedInstanceState.getBoolean(ISSERVICESTARTED);
     }
 
     private void playMusic() {
@@ -202,6 +225,11 @@ public class UserListActivity extends AppCompatActivity {
     }
 
     private void updateRoom(ActivityUserListBinding binding, String roomId) {
+        mPlayersNamesList.add("");
+        mPlayersNamesList.add("");
+        mPlayersNamesList.add("");
+        mPlayersNamesList.add("");
+
         ArrayList<TextView> usersNames = new ArrayList<>();
         usersNames.add(binding.user1);
         usersNames.add(binding.user2);
@@ -213,19 +241,23 @@ public class UserListActivity extends AppCompatActivity {
         usersIcon.add(binding.yellowIcon);
         usersIcon.add(binding.blueIcon);
         usersIcon.add(binding.greenIcon);
+
         for (int i=1; i<=4; i++){
             String player = "player"+i;
             final int j = i;
+            final int k = i;
             FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child(player).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.getValue()==username){
                         usersNames.get(j-1).setText(dataSnapshot.getValue() + " (Me)");
                         usersIcon.get(j-1).setVisibility(View.VISIBLE);
+                        mPlayersNamesList.set(j-1,(String) dataSnapshot.getValue());
                         return;
                     } else {
                         usersNames.get(j-1).setText((String) dataSnapshot.getValue());
                         usersIcon.get(j-1).setVisibility(View.VISIBLE);
+                        mPlayersNamesList.set(j-1,(String) dataSnapshot.getValue());
                     }
 
                     for (int i = 0; i < usersNames.size(); i++){
@@ -244,11 +276,10 @@ public class UserListActivity extends AppCompatActivity {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         gameMain = dataSnapshot.getValue(Game.class);
+                                        isGameStarted = true;
                                         Intent intent = MainActivity.mainIntent(UserListActivity.this,4, gameMain, username, type, mBgmThemeSet);
                                         Log.i(LOG_TAG, "start main activity when reached 4 players");
                                         _idleHandler.removeCallbacksAndMessages(null);
-//                                        Intent serviceintent = OnClearFromRecentService.newServiceIntent(UserListActivity.this, roomId+"started");
-//                                        startService(serviceintent);
                                         startActivity(intent);
                                     }
 
@@ -261,6 +292,16 @@ public class UserListActivity extends AppCompatActivity {
                         }
                     }
 
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(!type.equalsIgnoreCase("Host")&& !isGameStarted && intheRoom(mPlayersNamesList)){
+                                mRoomService = RoomService.newRoomServiceIntent(UserListActivity.this, roomId, mPlayersNamesList);
+                                startService(mRoomService);
+                            }
+                        }
+                    },1000);
                 }
 
                 @Override
@@ -270,6 +311,18 @@ public class UserListActivity extends AppCompatActivity {
             });
         }
 
+    }
+
+    private boolean intheRoom(ArrayList<String> names){
+        boolean isInTheRoom = false;
+        if (username!=null){
+            for (int i=0; i<names.size(); i++){
+                if (names.get(i).equalsIgnoreCase(username)){
+                    return true;
+                }
+            }
+        }
+        return isInTheRoom;
     }
 
     private void createRoom(String roomId) {
@@ -314,11 +367,10 @@ public class UserListActivity extends AppCompatActivity {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
                                             gameMain = dataSnapshot.getValue(Game.class);
+                                            isGameStarted = true;
                                             Intent intent = MainActivity.mainIntent(UserListActivity.this,4, gameMain, username, type,mBgmThemeSet);
                                             _idleHandler.removeCallbacksAndMessages(null);
                                             Log.i(LOG_TAG, "start main activity when reached 4 players");
-//                                            Intent serviceintent = OnClearFromRecentService.newServiceIntent(UserListActivity.this, roomId+"started");
-//                                            startService(serviceintent);
                                             startActivity(intent);
                                         }
 
