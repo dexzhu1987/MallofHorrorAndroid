@@ -40,7 +40,6 @@ public class UserListActivity extends AppCompatActivity {
     private static final java.lang.String ISUSERRELEASE = "isUserRelease";
     private static final String PLAYERN = "playerN";
     private static final String ISGAMESTARTED = "isgamestarted";
-    private static final String ISSERVICESTARTED = "isservicestarted";
     private List<User> users = new ArrayList<>();
     private Adapter adapter;
     private Context userActivity;
@@ -58,7 +57,6 @@ public class UserListActivity extends AppCompatActivity {
     private ArrayList<String> mPlayersNamesList = new ArrayList<>();
     private boolean isGameStarted;
     private Intent mRoomService;
-    private boolean isServiceCreate;
 
     public static Intent newIntent(Context context, String type, String roomID, String username) {
         Intent intent = new Intent(context, UserListActivity.class);
@@ -93,13 +91,12 @@ public class UserListActivity extends AppCompatActivity {
             mBgmThemeSet = random.nextInt(mBgmSources.size());
             mUserIsRelease = false;
             isGameStarted = false;
-            isServiceCreate = false;
         } else {
             mBgmThemeSet = savedInstanceState.getInt(BGMTHEMESET);
             mUserIsRelease = savedInstanceState.getBoolean(ISUSERRELEASE);
             isGameStarted = savedInstanceState.getBoolean(ISGAMESTARTED);
-            isServiceCreate = savedInstanceState.getBoolean(ISGAMESTARTED);
         }
+
 
         mMusicStyleSpinner = findViewById(R.id.music_style_spinner);
         ArrayAdapter<CharSequence> adapterMusic = ArrayAdapter.createFromResource(this,
@@ -180,7 +177,7 @@ public class UserListActivity extends AppCompatActivity {
         super.onDestroy();
         Log.i(LOG_TAG, "Destroy: roomId; " + roomId);
         _idleHandler.removeCallbacks(_idleRunnable);
-        if (!isGameStarted && isServiceCreate){
+        if (!isGameStarted && mRoomService!=null){
             stopService(mRoomService);
         }
     }
@@ -198,7 +195,6 @@ public class UserListActivity extends AppCompatActivity {
         outState.putInt(BGMTHEMESET, mBgmThemeSet);
         outState.putBoolean(ISUSERRELEASE, mUserIsRelease);
         outState.putBoolean(ISGAMESTARTED,isGameStarted);
-        outState.putBoolean(ISSERVICESTARTED,isServiceCreate);
     }
 
     @Override
@@ -207,7 +203,6 @@ public class UserListActivity extends AppCompatActivity {
         mBgmThemeSet = savedInstanceState.getInt(BGMTHEMESET);
         mUserIsRelease = savedInstanceState.getBoolean(ISUSERRELEASE);
         isGameStarted = savedInstanceState.getBoolean(ISGAMESTARTED);
-        isServiceCreate = savedInstanceState.getBoolean(ISSERVICESTARTED);
     }
 
     private void playMusic() {
