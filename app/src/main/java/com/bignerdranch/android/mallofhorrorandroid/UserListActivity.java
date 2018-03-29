@@ -40,6 +40,8 @@ public class UserListActivity extends AppCompatActivity {
     private static final java.lang.String ISUSERRELEASE = "isUserRelease";
     private static final String PLAYERN = "playerN";
     private static final String ISGAMESTARTED = "isgamestarted";
+    private static final String PLAYERSNAMES = "playersnames";
+    private static final String USERNAMEFORSAVING = "usingnameforsaving";
     private List<User> users = new ArrayList<>();
     private Adapter adapter;
     private Context userActivity;
@@ -195,6 +197,8 @@ public class UserListActivity extends AppCompatActivity {
         outState.putInt(BGMTHEMESET, mBgmThemeSet);
         outState.putBoolean(ISUSERRELEASE, mUserIsRelease);
         outState.putBoolean(ISGAMESTARTED,isGameStarted);
+        outState.putString(USERNAMEFORSAVING, username);
+        outState.putStringArrayList(PLAYERSNAMES, mPlayersNamesList);
     }
 
     @Override
@@ -203,6 +207,9 @@ public class UserListActivity extends AppCompatActivity {
         mBgmThemeSet = savedInstanceState.getInt(BGMTHEMESET);
         mUserIsRelease = savedInstanceState.getBoolean(ISUSERRELEASE);
         isGameStarted = savedInstanceState.getBoolean(ISGAMESTARTED);
+        username = savedInstanceState.getString(USERNAMEFORSAVING);
+        mPlayersNamesList = savedInstanceState.getStringArrayList(PLAYERSNAMES);
+
     }
 
     private void playMusic() {
@@ -244,59 +251,61 @@ public class UserListActivity extends AppCompatActivity {
             FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child(player).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.getValue()==username){
-                        usersNames.get(j-1).setText(dataSnapshot.getValue() + " (Me)");
-                        usersIcon.get(j-1).setVisibility(View.VISIBLE);
-                        mPlayersNamesList.set(j-1,(String) dataSnapshot.getValue());
-                        return;
-                    } else {
-                        usersNames.get(j-1).setText((String) dataSnapshot.getValue());
-                        usersIcon.get(j-1).setVisibility(View.VISIBLE);
-                        mPlayersNamesList.set(j-1,(String) dataSnapshot.getValue());
-                    }
-
-                    for (int i = 0; i < usersNames.size(); i++){
-                        if (usersNames.get(i).getText().toString().equals("")){
-                            usersIcon.get(i).setVisibility(View.INVISIBLE);
-                        }
-                    }
-
-                    for (int i=0; i<usersNames.size(); i++){
-                        if (usersNames.get(i).getText().toString().equals("")){
-                            break;
+                    if (dataSnapshot.getValue()!=null){
+                        if (dataSnapshot.getValue()==username){
+                            usersNames.get(j-1).setText(dataSnapshot.getValue() + " (Me)");
+                            usersIcon.get(j-1).setVisibility(View.VISIBLE);
+                            mPlayersNamesList.set(j-1,(String) dataSnapshot.getValue());
+                            return;
                         } else {
-                            if (i==3){
-                                FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("on").setValue(false);
-                                FirebaseDatabase.getInstance().getReference().child("game").child(roomId).addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        gameMain = dataSnapshot.getValue(Game.class);
-                                        isGameStarted = true;
-                                        Intent intent = MainActivity.mainIntent(UserListActivity.this,4, gameMain, username, type, mBgmThemeSet);
-                                        Log.i(LOG_TAG, "start main activity when reached 4 players");
-                                        _idleHandler.removeCallbacksAndMessages(null);
-                                        startActivity(intent);
-                                    }
+                            usersNames.get(j-1).setText((String) dataSnapshot.getValue());
+                            usersIcon.get(j-1).setVisibility(View.VISIBLE);
+                            mPlayersNamesList.set(j-1,(String) dataSnapshot.getValue());
+                        }
 
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-
-                                    }
-                                });
+                        for (int i = 0; i < usersNames.size(); i++){
+                            if (usersNames.get(i).getText().toString().equals("")){
+                                usersIcon.get(i).setVisibility(View.INVISIBLE);
                             }
                         }
+
+                        for (int i=0; i<usersNames.size(); i++){
+                            if (usersNames.get(i).getText().toString().equals("")){
+                                break;
+                            } else {
+                                if (i==3){
+                                    FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("on").setValue(false);
+                                    FirebaseDatabase.getInstance().getReference().child("game").child(roomId).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            gameMain = dataSnapshot.getValue(Game.class);
+                                            isGameStarted = true;
+                                            Intent intent = MainActivity.mainIntent(UserListActivity.this,4, gameMain, username, type, mBgmThemeSet);
+                                            Log.i(LOG_TAG, "start main activity when reached 4 players");
+                                            _idleHandler.removeCallbacksAndMessages(null);
+                                            startActivity(intent);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
+                                }
+                            }
+                        }
+
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if(!type.equalsIgnoreCase("Host")&& !isGameStarted && intheRoom(mPlayersNamesList)){
+                                    mRoomService = RoomService.newRoomServiceIntent(UserListActivity.this, roomId, mPlayersNamesList);
+                                    startService(mRoomService);
+                                }
+                            }
+                        },1000);
                     }
-
-                    Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if(!type.equalsIgnoreCase("Host")&& !isGameStarted && intheRoom(mPlayersNamesList)){
-                                mRoomService = RoomService.newRoomServiceIntent(UserListActivity.this, roomId, mPlayersNamesList);
-                                startService(mRoomService);
-                            }
-                        }
-                    },1000);
                 }
 
                 @Override
@@ -310,7 +319,7 @@ public class UserListActivity extends AppCompatActivity {
 
     private boolean intheRoom(ArrayList<String> names){
         boolean isInTheRoom = false;
-        if (username!=null){
+        if (username!=null && names != null){
             for (int i=0; i<names.size(); i++){
                 if (names.get(i).equalsIgnoreCase(username)){
                     return true;
