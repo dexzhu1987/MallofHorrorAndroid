@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".FirstActivity"
+            android:name=".Opening_Activity"
             android:configChanges="orientation"
             android:screenOrientation="landscape">
             <intent-filter>
@@ -23,6 +23,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".SetPlayerNumberActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
@@ -30,8 +31,8 @@
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            android:screenOrientation="landscape"
-            android:parentActivityName=".FirstActivity" />
+            android:parentActivityName=".FirstActivity"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".PlayerActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
@@ -78,14 +79,15 @@
         <service
             android:name=".OnClearFromRecentService"
             android:stopWithTask="false" />
-
         <service
             android:name=".RoomService"
             android:stopWithTask="false" />
 
-        <activity android:name=".TutorialActivity"
+        <activity
+            android:name=".TutorialActivity"
             android:configChanges="orientation"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
+        <activity android:name=".FirstActivity"></activity>
     </application>
 
 </manifest>
