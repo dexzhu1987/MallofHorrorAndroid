@@ -75,9 +75,6 @@ public class FirstActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_first);
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
-//        Animation animTranslate = AnimationUtils.loadAnimation(this, R.anim.anim_translate);
-//        mPlayButton = findViewById(R.id.multiplayer_button);
-//        mPlayButton.startAnimation(animTranslate);
 
         mHowToPlayButton = findViewById(R.id.how_to_play_button);
         mSettingButton = findViewById(R.id.btn_setting);
@@ -105,7 +102,6 @@ public class FirstActivity extends AppCompatActivity {
 //        });
 
     }
-
 
     public void startMultilayer(View view){
         firstZombieSound = MediaPlayer.create(FirstActivity.this, R.raw.firstactivity_zombie);
@@ -202,6 +198,8 @@ public class FirstActivity extends AppCompatActivity {
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 roomID = (String) dataSnapshot.getValue();
                                 String type = "Host";
+                                FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).
+                                        child("currentRoomId").setValue(null);
                                 Intent intent = UserListActivity.newIntent(firstActivity, type, roomID,name);
                                 Intent serviceintent = OnClearFromRecentService.newServiceIntent(FirstActivity.this, roomID,roomID);
                                 startService(serviceintent);
@@ -333,8 +331,10 @@ public class FirstActivity extends AppCompatActivity {
 
     public void onStop(){
         super.onStop();
-        backgroundMusic.stop();
-        backgroundMusic.release();
+        if (backgroundMusic.isPlaying()){
+            backgroundMusic.stop();
+            backgroundMusic.release();
+        }
     }
 
     @Override

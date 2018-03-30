@@ -19,6 +19,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.Game;
+import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.GameData;
 import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.User;
 import com.bignerdranch.android.mallofhorrorandroid.databinding.ActivityUserListBinding;
 import com.google.firebase.database.DataSnapshot;
@@ -139,19 +140,115 @@ public class UserListActivity extends AppCompatActivity {
         } else {
             registerNameInRoom(roomId);
             binding.list.setVisibility(View.INVISIBLE);
+            registerMyCurrentRoomIdAndRemovetheLastRoom();
         }
 
         updateRoom(binding, roomId);
 
+
+
+
+    }
+
+    private void registerMyCurrentRoomIdAndRemovetheLastRoom() {
+        FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).
+                child("currentRoomId").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue()!=null){
+                    String previousRoomId = (String) dataSnapshot.getValue();
+                    if (previousRoomId!=roomId){
+                        FirebaseDatabase.getInstance().getReference().child("game").child(previousRoomId).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                               if (dataSnapshot.getValue()!=null){
+                                   Game game = dataSnapshot.getValue(Game.class);
+                                   ArrayList<String> previousPlayersNames = new ArrayList<>();
+                                   if (game.getPlayer1()==null ||  game.getPlayer1().equalsIgnoreCase("") || game.getPlayer1().equalsIgnoreCase(username)){
+                                       previousPlayersNames.add("");
+                                   }else {
+                                       previousPlayersNames.add(game.getPlayer1());
+                                   }
+
+                                   if (game.getPlayer2()==null||  game.getPlayer2().equalsIgnoreCase("") || game.getPlayer2().equalsIgnoreCase(username)){
+                                       previousPlayersNames.add("");
+                                   }else {
+                                       previousPlayersNames.add(game.getPlayer2());
+                                   }
+
+                                   if (game.getPlayer3()==null||  game.getPlayer3().equalsIgnoreCase("") || game.getPlayer3().equalsIgnoreCase(username)){
+                                       previousPlayersNames.add("");
+                                   }else {
+                                       previousPlayersNames.add(game.getPlayer3());
+                                   }
+
+                                   if (game.getPlayer4()==null||  game.getPlayer4().equalsIgnoreCase("") || game.getPlayer4().equalsIgnoreCase(username)){
+                                       previousPlayersNames.add("");
+                                   }else {
+                                       previousPlayersNames.add(game.getPlayer4());
+                                   }
+
+                                   FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).
+                                           child("name").addListenerForSingleValueEvent(new ValueEventListener() {
+                                       @Override
+                                       public void onDataChange(DataSnapshot dataSnapshot) {
+                                           if (dataSnapshot.getValue()!=null){
+                                               String myName = (String) dataSnapshot.getValue();
+                                               for (int i=0; i<previousPlayersNames.size(); i++){
+                                                   if (previousPlayersNames.get(i).equalsIgnoreCase(myName)){
+                                                       previousPlayersNames.set(i,"");
+                                                   }
+                                               }
+                                           }
+                                       }
+
+                                       @Override
+                                       public void onCancelled(DatabaseError databaseError) {
+
+                                       }
+                                   });
+
+                                   for (int i=0; i<previousPlayersNames.size(); i++){
+                                       if (previousPlayersNames.get(i).equalsIgnoreCase("")){
+                                           for (int k=i; k<previousPlayersNames.size();k++){
+                                               if (!previousPlayersNames.get(k).equalsIgnoreCase("")){
+                                                   String temp = previousPlayersNames.get(k);
+                                                   previousPlayersNames.set(i,temp);
+                                                   previousPlayersNames.set(k, "");
+                                               }
+                                           }
+                                       }
+                                   }
+
+                                   for (int i=0; i<previousPlayersNames.size(); i++){
+                                       FirebaseDatabase.getInstance().getReference().child("game").child(previousRoomId).child("player"+(i+1)).setValue(previousPlayersNames.get(i));
+                                   }
+
+                               }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+                }
+                FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).
+                        child("currentRoomId").setValue(roomId);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("on").setValue(true);
-//        if (type.equals("Host")){
-//            createRoom(roomId);
-//        }
     }
 
     @Override
@@ -179,9 +276,6 @@ public class UserListActivity extends AppCompatActivity {
         super.onDestroy();
         Log.i(LOG_TAG, "Destroy: roomId; " + roomId);
         _idleHandler.removeCallbacks(_idleRunnable);
-        if (!isGameStarted && mRoomService!=null){
-            stopService(mRoomService);
-        }
     }
 
     @Override
@@ -295,16 +389,11 @@ public class UserListActivity extends AppCompatActivity {
                             }
                         }
 
-                        Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                if(!type.equalsIgnoreCase("Host")&& !isGameStarted && intheRoom(mPlayersNamesList)){
-                                    mRoomService = RoomService.newRoomServiceIntent(UserListActivity.this, roomId, mPlayersNamesList);
-                                    startService(mRoomService);
-                                }
-                            }
-                        },1000);
+                        if(!type.equalsIgnoreCase("Host")&& !isGameStarted){
+                            mRoomService = RoomService.newRoomServiceIntent(UserListActivity.this, roomId, mPlayersNamesList);
+                            startService(mRoomService);
+                        }
+
                     }
                 }
 
@@ -315,18 +404,6 @@ public class UserListActivity extends AppCompatActivity {
             });
         }
 
-    }
-
-    private boolean intheRoom(ArrayList<String> names){
-        boolean isInTheRoom = false;
-        if (username!=null && names != null){
-            for (int i=0; i<names.size(); i++){
-                if (names.get(i).equalsIgnoreCase(username)){
-                    return true;
-                }
-            }
-        }
-        return isInTheRoom;
     }
 
     private void createRoom(String roomId) {

@@ -23,7 +23,6 @@ public class RoomService extends Service {
     private static String PLAYERSNAMES = "playersnames";
     private String roomId;
     private ArrayList<String> playersnames;
-    private boolean isRemoved;
 
     public static Intent newRoomServiceIntent(Context context, String roomID, ArrayList<String> playersnames){
         Intent intent = new Intent(context, RoomService.class);
@@ -41,7 +40,6 @@ public class RoomService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         roomId = intent.getStringExtra(ROOMSERVICEROOMID);
         playersnames = intent.getStringArrayListExtra(PLAYERSNAMES);
-        isRemoved = false;
         FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).
                 child("name").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -70,23 +68,6 @@ public class RoomService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        for (int i=0; i<playersnames.size(); i++){
-            if (playersnames.get(i).equalsIgnoreCase("")){
-                for (int k=i; k<playersnames.size();k++){
-                    if (!playersnames.get(k).equalsIgnoreCase("")){
-                        String temp = playersnames.get(k);
-                        playersnames.set(i,temp);
-                        playersnames.set(k, "");
-                        Log.d("RoomService", "setting blank name to move forward");
-                    }
-                }
-            }
-        }
-        if(!isRemoved){
-            for (int i=0; i<playersnames.size(); i++){
-                FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child("player"+(i+1)).setValue(playersnames.get(i));
-            }
-        }
         Log.d("RoomService", "Service Destroyed, roomId: " + roomId + ", playersnames:" + playersnames);
     }
 
@@ -104,10 +85,11 @@ public class RoomService extends Service {
                 }
             }
         }
+        FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).
+                child("currentRoomId").setValue(null);
         for (int i=0; i<playersnames.size(); i++){
             FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child("player"+(i+1)).setValue(playersnames.get(i));
         }
-        isRemoved = true;
         Log.d("RoomService", "Service End, roomId: " + roomId + ", playersnames:" + playersnames);
         stopSelf();
     }
