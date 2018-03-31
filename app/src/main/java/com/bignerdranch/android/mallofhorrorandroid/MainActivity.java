@@ -650,7 +650,7 @@ public class MainActivity extends AppCompatActivity {
         mDatabaseReference.child(GAMEDATA).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot!=null){
+                if (dataSnapshot.getValue()!=null){
                     GameData gameData = dataSnapshot.getValue(GameData.class);
                     Log.i(TAG, gameData.toString());
                     mCountPhase=gameData.getmCountPhase();
