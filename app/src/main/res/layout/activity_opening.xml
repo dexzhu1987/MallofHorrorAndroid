@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.bignerdranch.android.mallofhorrorandroid.Opening_Activity"
-    android:background="@drawable/player_room_bg">
+    tools:context="com.bignerdranch.android.mallofhorrorandroid.Opening_Activity">
 
     <ImageView
         android:id="@+id/imageView"
@@ -24,7 +23,7 @@
         android:layout_marginTop="24dp"
         android:text="Our Studio"
         android:id="@+id/textView"
-        android:textColor="@android:color/white"
+        android:textColor="@android:color/black"
         android:textSize="30sp" />
 
 </RelativeLayout>
