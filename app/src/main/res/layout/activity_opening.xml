@@ -22,9 +22,10 @@
         android:layout_below="@+id/imageView"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="24dp"
-        android:text="Our Studio"
+        android:text="Team Studio"
         android:id="@+id/textView"
         android:textColor="@android:color/white"
+        android:fontFamily="@font/courgette_regular"
         android:textSize="30sp" />
 
 </RelativeLayout>
