@@ -15,11 +15,10 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".Opening_Activity"
-            android:configChanges="orientation"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -85,9 +84,11 @@
 
         <activity
             android:name=".TutorialActivity"
-            android:configChanges="orientation"
-            android:screenOrientation="landscape" />
-        <activity android:name=".FirstActivity"></activity>
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="landscape"  />
+        <activity android:name=".FirstActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="landscape" ></activity>
     </application>
 
 </manifest>
