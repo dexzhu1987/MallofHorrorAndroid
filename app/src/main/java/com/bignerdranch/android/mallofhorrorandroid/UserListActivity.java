@@ -29,6 +29,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
+import java.util.EventListener;
 import java.util.List;
 import java.util.Random;
 
@@ -60,6 +61,7 @@ public class UserListActivity extends AppCompatActivity {
     private ArrayList<String> mPlayersNamesList = new ArrayList<>();
     private boolean isGameStarted;
     private Intent mRoomService;
+    private ArrayList<ValueEventListener> mEventListeners = new ArrayList<>();
 
     public static Intent newIntent(Context context, String type, String roomID, String username) {
         Intent intent = new Intent(context, UserListActivity.class);
@@ -128,11 +130,8 @@ public class UserListActivity extends AppCompatActivity {
         });
 
         Log.i(LOG_TAG, "type: " + type  + " roomID: "+ roomId + " username: " + username);
-        adapter = new Adapter(this, users);
-        binding.list.setAdapter(adapter);
-        binding.list.setLayoutManager(new LinearLayoutManager(this));
 
-        fetchUsers();
+
 
         if (type.equals("Host")){
             createRoom(roomId);
@@ -142,9 +141,6 @@ public class UserListActivity extends AppCompatActivity {
             binding.list.setVisibility(View.INVISIBLE);
             registerMyCurrentRoomIdAndRemovetheLastRoom();
         }
-
-        updateRoom(binding, roomId);
-
 
 
 
@@ -248,12 +244,19 @@ public class UserListActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("on").setValue(true);
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("on").setValue(true);
+        ActivityUserListBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_user_list);
+        fetchUsers();
+        adapter = new Adapter(this, users);
+        binding.list.setAdapter(adapter);
+        binding.list.setLayoutManager(new LinearLayoutManager(this));
+        updateRoom(binding, roomId);
         playMusic();
         mUserIsRelease = false;
     }
@@ -261,6 +264,10 @@ public class UserListActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        for (int i=1; i<=4; i++) {
+            String player = "player" + i;
+            FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child(player).removeEventListener(mEventListeners.get(i-1));
+        }
         FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("on").setValue(false);
         if (waitingRoomBgm.isPlaying()){
             waitingRoomBgm.stop();
@@ -321,6 +328,7 @@ public class UserListActivity extends AppCompatActivity {
     }
 
     private void updateRoom(ActivityUserListBinding binding, String roomId) {
+        mPlayersNamesList.clear();
         mPlayersNamesList.add("");
         mPlayersNamesList.add("");
         mPlayersNamesList.add("");
@@ -342,7 +350,7 @@ public class UserListActivity extends AppCompatActivity {
             String player = "player"+i;
             final int j = i;
             final int k = i;
-            FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child(player).addValueEventListener(new ValueEventListener() {
+            ValueEventListener listener = FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child(player).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.getValue()!=null){
@@ -402,6 +410,7 @@ public class UserListActivity extends AppCompatActivity {
 
                 }
             });
+            mEventListeners.add(listener);
         }
 
     }
