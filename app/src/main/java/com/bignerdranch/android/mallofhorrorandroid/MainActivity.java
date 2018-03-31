@@ -528,8 +528,8 @@ public class MainActivity extends AppCompatActivity {
         isGameStarted = true;
         mDatabaseReference.child(PLAYERINFORM).setValue(mDatabaseGame);
         GameData gameData = new GameData(0,0,0,0,0,0,0);
-        mDatabaseReference.child(TURN).setValue(-1);
         mDatabaseReference.child(GAMEDATA).setValue(gameData);
+        mDatabaseReference.child(TURN).setValue(-1);
         mDatabaseReference.child(PREVTURN).setValue(-1);
 
     }
