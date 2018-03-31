@@ -399,6 +399,8 @@ public class UserListActivity extends AppCompatActivity {
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             gameMain = dataSnapshot.getValue(Game.class);
                             isGameStarted = true;
+                            FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).
+                                    child("currentRoomId").setValue(null);
                             Intent intent = MainActivity.mainIntent(UserListActivity.this,4, gameMain, username, type, mBgmThemeSet);
                             Log.i(LOG_TAG, "start main activity when reached 4 players");
                             _idleHandler.removeCallbacksAndMessages(null);
@@ -492,6 +494,8 @@ public class UserListActivity extends AppCompatActivity {
                                         public void onDataChange(DataSnapshot dataSnapshot) {
                                             gameMain = dataSnapshot.getValue(Game.class);
                                             isGameStarted = true;
+                                            FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).
+                                                    child("currentRoomId").setValue(null);
                                             Intent intent = MainActivity.mainIntent(UserListActivity.this,4, gameMain, username, type,mBgmThemeSet);
                                             _idleHandler.removeCallbacksAndMessages(null);
                                             Log.i(LOG_TAG, "start main activity when reached 4 players");
