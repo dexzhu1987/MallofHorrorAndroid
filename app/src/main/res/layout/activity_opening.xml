@@ -23,12 +23,7 @@
         android:layout_marginTop="24dp"
         android:text="Team Studio"
         android:id="@+id/textView"
-<<<<<<< HEAD
         android:textColor="@android:color/black"
-=======
-        android:textColor="@android:color/white"
         android:fontFamily="@font/courgette_regular"
->>>>>>> 8a2a73921b3a704fcf16f93f466b866d3dc9ed68
         android:textSize="30sp" />
-
 </RelativeLayout>
