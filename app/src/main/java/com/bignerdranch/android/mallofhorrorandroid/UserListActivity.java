@@ -77,6 +77,7 @@ public class UserListActivity extends AppCompatActivity {
     private ArrayList<ValueEventListener> mEventListeners = new ArrayList<>();
     private ValueEventListener mListnerForIsRoomReady;
     private ValueEventListener mListenerForReadyArray;
+    private ValueEventListener mListenerForPlayerN;
     private ImageButton mReadyButton;
     private RelativeLayout mBorder1, mBorder2, mBorder3, mBorder4;
     private ArrayList<RelativeLayout> mBorders = new ArrayList<>();
@@ -190,6 +191,9 @@ public class UserListActivity extends AppCompatActivity {
             FirebaseDatabase.getInstance().getReference().child("game").child(roomId).
                     child(ROOMREADYARRAY).child(Integer.toString(playerN)).setValue(playerN);
         }
+        if (!type.equalsIgnoreCase("Host")){
+            informGuestHasBeenKickOut();
+        }
     }
 
     @Override
@@ -212,6 +216,10 @@ public class UserListActivity extends AppCompatActivity {
         if (mAmIReady){
             FirebaseDatabase.getInstance().getReference().child("game").child(roomId).
                     child(ROOMREADYARRAY).child(Integer.toString(playerN)).setValue(null);
+        }
+        if (!type.equalsIgnoreCase("Host")){
+            String player = "player"+(playerN+1);
+            FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child(ROOMINFORM).child(player).removeEventListener(mListenerForPlayerN);
         }
     }
 
@@ -412,6 +420,68 @@ public class UserListActivity extends AppCompatActivity {
         });
     }
 
+    private void informGuestHasBeenKickOut() {
+        String player = "player"+(playerN+1);
+        mListenerForPlayerN =  FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child(ROOMINFORM).child(player).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot!=null){
+                    String roomName = (String) dataSnapshot.getValue();
+                    FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).
+                            child("name").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.getValue()!=null){
+                                String myName = (String) dataSnapshot.getValue();
+                                if (!roomName.equalsIgnoreCase(myName)){
+                                    confirmHasBeenKickedOutAndShowAlert();
+                                }
+                            }else {
+                                confirmHasBeenKickedOutAndShowAlert();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }else {
+
+                }
+            }
+
+            private void confirmHasBeenKickedOutAndShowAlert() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(UserListActivity.this);
+                if(!UserListActivity.this.isFinishing() && !type.equalsIgnoreCase("Host")){
+                    for (int i=1; i<=4; i++) {
+                        String player = "player" + i;
+                        FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child(ROOMINFORM).child(player).removeEventListener(mEventListeners.get(i-1));
+                    }
+                    binding.user1.setText("");
+                    binding.user2.setText("");
+                    binding.user3.setText("");
+                    binding.user4.setText("");
+                    builder.setTitle("You have been kicked out of the room");
+                    builder.setMessage("Looks like you have been kicked out of the room");
+                    builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            restartGame();
+                        }
+                    });
+                    AlertDialog mAlertDialog = builder.create();
+                    mAlertDialog.show();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     private void RemoveReadyForMain() {
         if (type.equalsIgnoreCase("Host")){
            FirebaseDatabase.getInstance().getReference().child("game").child(roomId).
@@ -463,6 +533,12 @@ public class UserListActivity extends AppCompatActivity {
         usersIcon.add(binding.blueIcon);
         usersIcon.add(binding.greenIcon);
 
+        ArrayList<ImageButton> kickButtons = new ArrayList<>();
+        kickButtons.add(binding.kick1);
+        kickButtons.add(binding.kick2);
+        kickButtons.add(binding.kick3);
+        kickButtons.add(binding.kick4);
+
         for (int i=1; i<=4; i++){
             String player = "player"+i;
             final int j = i;
@@ -471,7 +547,7 @@ public class UserListActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.getValue()!=null){
-                        readNamesFromFirebase(dataSnapshot, usersNames, j, usersIcon, roomId);
+                        readNamesFromFirebase(dataSnapshot, usersNames, j, usersIcon, roomId, kickButtons);
                     }else{
                         ArrayList<TextView> usersNames = new ArrayList<>();
                         usersNames.add(binding.user1);
@@ -495,21 +571,32 @@ public class UserListActivity extends AppCompatActivity {
 
     }
 
-    private void readNamesFromFirebase(DataSnapshot dataSnapshot, ArrayList<TextView> usersNames, int j, ArrayList<ImageView> usersIcon, String roomId) {
+    private void readNamesFromFirebase(DataSnapshot dataSnapshot, ArrayList<TextView> usersNames, int j, ArrayList<ImageView> usersIcon, String roomId, ArrayList<ImageButton> kickButtons) {
         if (dataSnapshot.getValue()==username){
             usersNames.get(j-1).setText(dataSnapshot.getValue() + " (Me)");
             usersIcon.get(j-1).setVisibility(View.VISIBLE);
+            kickButtons.get(j-1).setVisibility(View.VISIBLE);
             mPlayersNamesList.set(j-1,(String) dataSnapshot.getValue());
             return;
         } else {
             usersNames.get(j-1).setText((String) dataSnapshot.getValue());
             usersIcon.get(j-1).setVisibility(View.VISIBLE);
+            kickButtons.get(j-1).setVisibility(View.VISIBLE);
             mPlayersNamesList.set(j-1,(String) dataSnapshot.getValue());
         }
 
         for (int i = 0; i < usersNames.size(); i++){
             if (usersNames.get(i).getText().toString().equals("")){
                 usersIcon.get(i).setVisibility(View.INVISIBLE);
+                kickButtons.get(i).setVisibility(View.GONE);
+            }
+        }
+
+        kickButtons.get(0).setVisibility(View.GONE);
+
+        if (!type.equalsIgnoreCase("Host")){
+            for (ImageButton imageButton: kickButtons){
+                imageButton.setVisibility(View.GONE);
             }
         }
 
@@ -610,6 +697,43 @@ public class UserListActivity extends AppCompatActivity {
 
     }
 
+
+    public void kick_player2(View view) {
+        kickPlayer(2);
+    }
+
+    private void kickPlayer(int i) {
+        if(!UserListActivity.this.isFinishing() && type.equalsIgnoreCase("Host")){
+            AlertDialog.Builder builder = new AlertDialog.Builder(UserListActivity.this);
+            builder.setTitle("Are you sure you want to kick this player? ");
+            builder.setMessage("Player: " + " is being remove from this room");
+            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    String blank = "";
+                    String player = "player" + i;
+                    FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child(ROOMINFORM).child(player).setValue(blank);
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+            AlertDialog mAlertDialog = builder.create();
+            mAlertDialog.show();
+        }
+    }
+
+    public void kick_player3(View view) {
+        kickPlayer(3);
+    }
+
+    public void kick_player4(View view) {
+        kickPlayer(4);
+    }
+
     public void set_ready_to_main(View view) {
         if (!mAmIReady){
             mAmIReady = true;
@@ -628,7 +752,9 @@ public class UserListActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 gameMain = dataSnapshot.getValue(Game.class);
                 isGameStarted = true;
-                stopService(mRoomService);
+                if (!type.equalsIgnoreCase("Host")){
+                    stopService(mRoomService);
+                }
                 FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).
                         child("currentRoomId").setValue(null);
                 Intent intent = MainActivity.mainIntent(UserListActivity.this,4, gameMain, username, type,mBgmThemeSet);

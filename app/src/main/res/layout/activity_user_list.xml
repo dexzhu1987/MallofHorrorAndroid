@@ -39,6 +39,19 @@
                 android:layout_margin="5dp"
                 android:orientation="horizontal">
 
+                <ImageButton
+                    android:id="@+id/kick_1"
+                    android:layout_width="17dp"
+                    android:layout_height="17dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"
+                    android:background="@null"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_action_name"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="5dp"
+                    android:visibility="gone"/>
+
                 <TextView
                     android:id="@+id/user1"
                     android:layout_width="wrap_content"
@@ -73,6 +86,21 @@
                 android:layout_margin="5dp"
                 android:orientation="horizontal">
 
+                <ImageButton
+                    android:id="@+id/kick_2"
+                    android:layout_width="17dp"
+                    android:layout_height="17dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"
+                    android:background="@null"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_action_name"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="5dp"
+                    android:visibility="gone"
+                    android:onClick="kick_player2"/>
+                
+                
                 <TextView
                     android:id="@+id/user2"
                     android:textColor="@android:color/white"
@@ -107,6 +135,21 @@
                 android:layout_margin="5dp"
                 android:orientation="horizontal">
 
+
+                <ImageButton
+                    android:id="@+id/kick_3"
+                    android:layout_width="17dp"
+                    android:layout_height="17dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"
+                    android:background="@null"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_action_name"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="5dp"
+                    android:visibility="gone"
+                    android:onClick="kick_player3"/>
+
                 <TextView
                     android:id="@+id/user3"
                     android:textColor="@android:color/white"
@@ -132,6 +175,7 @@
                     android:src="@drawable/bluetoughguybttn"/>
 
 
+
             </RelativeLayout>
 
             <RelativeLayout
@@ -142,6 +186,20 @@
                 android:layout_weight="1"
                 android:layout_margin="5dp"
                 android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/kick_4"
+                    android:layout_width="17dp"
+                    android:layout_height="17dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"
+                    android:background="@null"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_action_name"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="5dp"
+                    android:visibility="gone"
+                    android:onClick="kick_player4"/>
 
                 <TextView
                     android:id="@+id/user4"

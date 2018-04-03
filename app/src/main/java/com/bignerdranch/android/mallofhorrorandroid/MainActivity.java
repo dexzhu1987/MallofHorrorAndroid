@@ -1210,8 +1210,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue()!=null){
-                    int prevTurn = dataSnapshot.getValue(Integer.TYPE);
-                    String receivedColor = colors.get(prevTurn);
                     if (gameBroad.matchRoom(4).winner().equals("TIE")){
                         mMessageView.setText("Game Phase II: Security Chief selected");
                         bgmChangeTrack(mParkingSearchBgmSet);
@@ -1242,6 +1240,8 @@ public class MainActivity extends AppCompatActivity {
                             }
                         },DELAYEDSECONDSFORMESSAGEVIE * 1000);
                     }else {
+                        int prevTurn = dataSnapshot.getValue(Integer.TYPE);
+                        String receivedColor = colors.get(prevTurn);
                         mMessageView.setText("Player " + receivedColor + " received an item from Player " + winnercolor);
                         Handler handler = new Handler();
                         handler.postDelayed(new Runnable() {
