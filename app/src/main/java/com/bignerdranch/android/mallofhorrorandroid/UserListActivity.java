@@ -631,7 +631,8 @@ public class UserListActivity extends AppCompatActivity {
     private void informGuestHostHasLeftAndRoomNull() {
         AlertDialog.Builder builder = new AlertDialog.Builder(UserListActivity.this);
         if(!UserListActivity.this.isFinishing() && !type.equalsIgnoreCase("Host")){
-            ActivityUserListBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_user_list);
+            String playerMe = "player"+(playerN+1);
+            FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child(ROOMINFORM).child(playerMe).removeEventListener(mListenerForPlayerN);
             for (int i=1; i<=4; i++) {
                 String player = "player" + i;
                 FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child(ROOMINFORM).child(player).removeEventListener(mEventListeners.get(i-1));
