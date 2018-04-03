@@ -354,11 +354,13 @@
         android:id="@+id/voteyellow_button"
         android:layout_width="40dp"
         android:layout_height="40dp"
+        android:layout_marginBottom="50dp"
+        android:layout_marginStart="258dp"
         android:background="@drawable/round_button"
         android:scaleType="fitXY"
-        app:srcCompat="@drawable/yellowbttn"
-        tools:layout_editor_absoluteX="258dp"
-        tools:layout_editor_absoluteY="294dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/yellowbttn" />
 
     <ImageButton
         android:id="@+id/voteblue_button"

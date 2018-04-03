@@ -473,6 +473,14 @@ public class UserListActivity extends AppCompatActivity {
                     if (dataSnapshot.getValue()!=null){
                         readNamesFromFirebase(dataSnapshot, usersNames, j, usersIcon, roomId);
                     }else{
+                        ArrayList<TextView> usersNames = new ArrayList<>();
+                        usersNames.add(binding.user1);
+                        usersNames.add(binding.user2);
+                        usersNames.add(binding.user3);
+                        usersNames.add(binding.user4);
+                        for (int i=0; i<usersNames.size(); i++){
+                            usersNames.get(i).setText("");
+                        }
                         informGuestHostHasLeftAndRoomNull();
                     }
                 }
@@ -529,14 +537,6 @@ public class UserListActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(UserListActivity.this);
         if(!UserListActivity.this.isFinishing() && !type.equalsIgnoreCase("Host")){
             ActivityUserListBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_user_list);
-            ArrayList<TextView> usersNames = new ArrayList<>();
-            usersNames.add(binding.user1);
-            usersNames.add(binding.user2);
-            usersNames.add(binding.user3);
-            usersNames.add(binding.user4);
-            for (int i=0; i<usersNames.size(); i++){
-                usersNames.get(i).setText("");
-            }
             for (int i=1; i<=4; i++) {
                 String player = "player" + i;
                 FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child(ROOMINFORM).child(player).removeEventListener(mEventListeners.get(i-1));
