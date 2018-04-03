@@ -51,6 +51,7 @@ public class UserListActivity extends AppCompatActivity {
     private static final String USERNAMEFORSAVING = "usingnameforsaving";
     private static final String ROOMIDFORSAVING = "roomIdforSaving";
     private static final String AMIREADY = "amIReady";
+    private static final String ISROOMENTER = "isRoomEnter";
 
     private final String ROOMINFORM = "roomInform";
     private final String ISROOMREADY = "isRoomReady";
@@ -81,6 +82,7 @@ public class UserListActivity extends AppCompatActivity {
     private ImageButton mReadyButton;
     private RelativeLayout mBorder1, mBorder2, mBorder3, mBorder4;
     private ArrayList<RelativeLayout> mBorders = new ArrayList<>();
+    private boolean isRoomEnter;
 
     public static Intent newIntent(Context context, String type, String roomID, String username) {
         Intent intent = new Intent(context, UserListActivity.class);
@@ -122,11 +124,13 @@ public class UserListActivity extends AppCompatActivity {
             mUserIsRelease = false;
             isGameStarted = false;
             mAmIReady = false;
+            isRoomEnter = false;
         } else {
             mBgmThemeSet = savedInstanceState.getInt(BGMTHEMESET);
             mUserIsRelease = savedInstanceState.getBoolean(ISUSERRELEASE);
             isGameStarted = savedInstanceState.getBoolean(ISGAMESTARTED);
             mAmIReady = savedInstanceState.getBoolean(AMIREADY);
+            isRoomEnter = savedInstanceState.getBoolean(ISROOMENTER);
         }
 
 
@@ -247,6 +251,7 @@ public class UserListActivity extends AppCompatActivity {
         outState.putStringArrayList(PLAYERSNAMES, mPlayersNamesList);
         outState.putString(ROOMIDFORSAVING,roomId);
         outState.putBoolean(AMIREADY,mAmIReady);
+        outState.putBoolean(ISROOMENTER,isRoomEnter);
     }
 
     @Override
@@ -259,6 +264,7 @@ public class UserListActivity extends AppCompatActivity {
         mPlayersNamesList = savedInstanceState.getStringArrayList(PLAYERSNAMES);
         roomId = savedInstanceState.getString(ROOMIDFORSAVING);
         mAmIReady = savedInstanceState.getBoolean(AMIREADY);
+        isRoomEnter = savedInstanceState.getBoolean(ISROOMENTER);
     }
 
     private void registerMyCurrentRoomIdAndRemovetheLastRoom() {
@@ -425,29 +431,29 @@ public class UserListActivity extends AppCompatActivity {
         mListenerForPlayerN =  FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child(ROOMINFORM).child(player).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot!=null){
-                    String roomName = (String) dataSnapshot.getValue();
-                    FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).
-                            child("name").addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.getValue()!=null){
-                                String myName = (String) dataSnapshot.getValue();
-                                if (!roomName.equalsIgnoreCase(myName)){
-                                    confirmHasBeenKickedOutAndShowAlert();
+                if (isRoomEnter){
+                    if (dataSnapshot!=null){
+                        String roomName = (String) dataSnapshot.getValue();
+                        FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).
+                                child("name").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.getValue()!=null){
+                                    String myName = (String) dataSnapshot.getValue();
+                                    if (!roomName.equalsIgnoreCase(myName)){
+                                        confirmHasBeenKickedOutAndShowAlert();
+                                    }
                                 }
-                            }else {
-                                confirmHasBeenKickedOutAndShowAlert();
                             }
-                        }
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
 
-                        }
-                    });
-                }else {
-
+                            }
+                        });
+                    }else {
+                        confirmHasBeenKickedOutAndShowAlert();
+                    }
                 }
             }
 
@@ -472,6 +478,7 @@ public class UserListActivity extends AppCompatActivity {
                     });
                     AlertDialog mAlertDialog = builder.create();
                     mAlertDialog.show();
+                    stopService(mRoomService);
                 }
             }
 
@@ -574,6 +581,7 @@ public class UserListActivity extends AppCompatActivity {
     private void readNamesFromFirebase(DataSnapshot dataSnapshot, ArrayList<TextView> usersNames, int j, ArrayList<ImageView> usersIcon, String roomId, ArrayList<ImageButton> kickButtons) {
         if (dataSnapshot.getValue()==username){
             usersNames.get(j-1).setText(dataSnapshot.getValue() + " (Me)");
+            isRoomEnter = true;
             usersIcon.get(j-1).setVisibility(View.VISIBLE);
             kickButtons.get(j-1).setVisibility(View.VISIBLE);
             mPlayersNamesList.set(j-1,(String) dataSnapshot.getValue());
@@ -697,32 +705,46 @@ public class UserListActivity extends AppCompatActivity {
 
     }
 
-
     public void kick_player2(View view) {
         kickPlayer(2);
     }
 
     private void kickPlayer(int i) {
         if(!UserListActivity.this.isFinishing() && type.equalsIgnoreCase("Host")){
-            AlertDialog.Builder builder = new AlertDialog.Builder(UserListActivity.this);
-            builder.setTitle("Are you sure you want to kick this player? ");
-            builder.setMessage("Player: " + " is being remove from this room");
-            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            String player = "player" + i;
+            FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child(ROOMINFORM).child(player).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    String blank = "";
-                    String player = "player" + i;
-                    FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child(ROOMINFORM).child(player).setValue(blank);
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    String playerName = "";
+                    if (dataSnapshot.getValue()!=null){
+                        playerName = (String) dataSnapshot.getValue();
+                    }
+                    AlertDialog.Builder builder = new AlertDialog.Builder(UserListActivity.this);
+                    builder.setTitle("Are you sure you want to kick this player? ");
+                    builder.setMessage("Player: " + playerName + " is being remove from this room");
+                    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            String blank = "";
+                            FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child(ROOMINFORM).child(player).setValue(blank);
+                        }
+                    });
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
+                    AlertDialog mAlertDialog = builder.create();
+                    mAlertDialog.show();
                 }
-            });
-            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
                 @Override
-                public void onClick(DialogInterface dialog, int which) {
+                public void onCancelled(DatabaseError databaseError) {
 
                 }
             });
-            AlertDialog mAlertDialog = builder.create();
-            mAlertDialog.show();
+
         }
     }
 

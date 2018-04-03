@@ -82,11 +82,7 @@ public class FirstActivity extends AppCompatActivity {
 
 //        overridePendingTransition(android.support.v7.appcompat.R.anim.abc_grow_fade_in_from_bottom,android.support.v7.appcompat.R.anim.abc_shrink_fade_out_from_bottom );
 
-        backgroundMusic = MediaPlayer.create(FirstActivity.this,R.raw.the_walking_dead);
-        final float volume = (float) (1 - (Math.log(MAX_VOLUME - 60) / Math.log(MAX_VOLUME)));
-        backgroundMusic.setVolume(volume, volume);
-        backgroundMusic.setLooping(true);
-        backgroundMusic.start();
+
         firstActivity = FirstActivity.this;
         blinkText();
 
@@ -330,14 +326,30 @@ public class FirstActivity extends AppCompatActivity {
         textView.startAnimation(fade_out_animation);
     }
 
-    public void onStop(){
-        super.onStop();
+    @Override
+    protected void onResume() {
+        super.onResume();
+        backgroundMusic = MediaPlayer.create(FirstActivity.this,R.raw.the_walking_dead);
+        final float volume = (float) (1 - (Math.log(MAX_VOLUME - 60) / Math.log(MAX_VOLUME)));
+        backgroundMusic.setVolume(volume, volume);
+        backgroundMusic.setLooping(true);
+        backgroundMusic.start();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
         if (backgroundMusic!=null){
             if (backgroundMusic.isPlaying() ){
                 backgroundMusic.stop();
                 backgroundMusic.release();
             }
         }
+    }
+
+    public void onStop(){
+        super.onStop();
+
     }
 
     @Override
