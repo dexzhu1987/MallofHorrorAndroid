@@ -133,13 +133,14 @@ public class MainActivity extends AppCompatActivity {
     private GridLayout mRestRoomArea, mCachouArea, mMegatoyArea, mParkingArea, mSecurityArea, mSupermarketArea;
     private TextView mRestRoomZombie, mCachouZombie, mMegatoyZombie, mParkingZombie, mSecurityZombie, mSupermarketZombie;
     private List<ImageButton> mPlayerButtons = new ArrayList<>();
-    private ImageView mYesShadow, mNoShadow, mOKShadow;
+    private ImageView mYesShadow, mNoShadow, mOKShadow, mRestartShadow;
     private List<ImageButton> mActualPlayerButtons = new ArrayList<>();
     private TextView mMessageView;
     private ImageView mLoading;
     private Button chat_btn;
     private TextView mStickyNoteText;
     private Intent serviceintent;
+    private ImageButton mRestartButton;
 
     private static GameBroad gameBroad ;
     private static int mCurrentRoomPickedNumber = 0;
@@ -612,39 +613,14 @@ public class MainActivity extends AppCompatActivity {
             builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("name").
-                            addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    final String name = (String) dataSnapshot.getValue();
-                                    FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).
-                                            child("pushId").addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                            String roomID = (String) dataSnapshot.getValue();
-                                            String type = "Host";
-                                            Intent intent = UserListActivity.newIntent(MainActivity.this, type, roomID,name);
-                                            startActivity(intent);
-                                        }
-
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
-
-                                        }
-                                    });
-                                }
-
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-
-                                }
-                            });
+                    restartGame();
                 }
             });
             android.support.v7.app.AlertDialog mAlertDialog = builder.create();
             mAlertDialog.show();
         }
     }
+
 
     private void gamePhaseChangingAccoringtoFirebase() {
         mDatabaseReference.child(GAMEDATA).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -3200,7 +3176,11 @@ public class MainActivity extends AppCompatActivity {
                 handler1.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                       mDatabaseReference.setValue(null);
+                        mDatabaseReference.setValue(null);
+                        mRestartButton.setEnabled(true);
+                        mRestartButton.setVisibility(View.VISIBLE);
+                        mYesShadow.setVisibility(View.VISIBLE);
+                        mYesShadow.startAnimation(mFlash);
                     }
                 },15 * 1000);
             }
@@ -3476,27 +3456,13 @@ public class MainActivity extends AppCompatActivity {
         mNoShadow = findViewById(R.id.shadow_nomain);
         mOKShadow = findViewById(R.id.shadow_okmain);
         mOKShadow.startAnimation(mFlash);
+        mRestartShadow = findViewById(R.id.shadow_restart)
+
+        mRestartButton = findViewById(R.id.restart_main);
+        mRestartButton.setEnabled(false);
 
         mYesButton = findViewById(R.id.yesbutton_main);
-//        mYesButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mCurrentYesNoMain = true;
-//                mSecondCount++;
-//                disableYesNo();
-//                enableContinue();
-//            }
-//        });
         mNoButton = findViewById(R.id.nobutton_main);
-//        mNoButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mCurrentYesNoMain = false;
-//                mSecondCount++;
-//                disableYesNo();
-//                enableContinue();
-//            }
-//        });
         disableYesNo();
 
         for (ImageButton button: mPlayerButtons){
@@ -5322,5 +5288,37 @@ public class MainActivity extends AppCompatActivity {
         return fadeOut;
     }
 
+    public void restartGameOnClick(View view) {
+        restartGame();
+    }
 
+    private void restartGame() {
+        FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("name").
+                addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        final String name = (String) dataSnapshot.getValue();
+                        FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).
+                                child("pushId").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                String roomID = (String) dataSnapshot.getValue();
+                                String type = "Host";
+                                Intent intent = UserListActivity.newIntent(MainActivity.this, type, roomID,name);
+                                startActivity(intent);
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
 }

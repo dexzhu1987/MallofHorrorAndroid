@@ -14,10 +14,11 @@
         android:id="@+id/chat_btn"
         android:layout_width="35dp"
         android:layout_height="35dp"
-        android:layout_margin="15dp"
+        android:layout_margin="5dp"
         android:background="@drawable/chat"
         android:onClick="open_chat"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/chat_text"
@@ -301,12 +302,11 @@
 
     <ImageButton
         android:id="@+id/continue_button1"
-        android:layout_width="105dp"
-        android:layout_height="47dp"
+        android:layout_width="115dp"
+        android:layout_height="65dp"
         android:layout_marginEnd="15dp"
-        android:layout_marginStart="390dp"
         android:layout_marginTop="190dp"
-        android:background="@drawable/ok_button"
+        android:background="@drawable/continue_new"
         android:padding="0dp"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -316,11 +316,10 @@
 
     <ImageButton
         android:id="@+id/yesbutton_main"
-        android:layout_width="89dp"
-        android:layout_height="43dp"
+        android:layout_width="109dp"
+        android:layout_height="53dp"
         android:layout_marginBottom="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginEnd="24dp"
         android:layout_marginTop="8dp"
         android:padding="0dp"
         android:scaleType="fitXY"
@@ -330,12 +329,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.944"
-        app:srcCompat="@drawable/yesbttn" />
+        app:srcCompat="@drawable/yes_new" />
 
     <ImageButton
         android:id="@+id/nobutton_main"
-        android:layout_width="89dp"
-        android:layout_height="43dp"
+        android:layout_width="109dp"
+        android:layout_height="53dp"
         android:layout_marginBottom="16dp"
         android:layout_marginStart="136dp"
         android:layout_marginTop="8dp"
@@ -345,7 +344,39 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.946"
-        app:srcCompat="@drawable/nobttn" />
+        app:srcCompat="@drawable/no_new" />
+
+    <ImageButton
+        android:id="@+id/restart_main"
+        android:layout_width="95dp"
+        android:layout_height="63dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="340dp"
+        android:layout_marginTop="8dp"
+        android:padding="0dp"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.946"
+        app:srcCompat="@drawable/restart_new"
+        android:onClick="restartGameOnClick"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/shadow_restart"
+        android:layout_width="111dp"
+        android:layout_height="66dp"
+        android:layout_marginBottom="2dp"
+        android:layout_marginStart="328dp"
+        android:layout_marginTop="8dp"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.996"
+        app:srcCompat="@drawable/showdowdrop"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/messageView_main"
@@ -370,9 +401,9 @@
     <ImageView
         android:id="@+id/shadow_yesmain"
         android:layout_width="111dp"
-        android:layout_height="65dp"
+        android:layout_height="69dp"
         android:layout_marginBottom="2dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -386,7 +417,7 @@
         android:layout_width="111dp"
         android:layout_height="65dp"
         android:layout_marginBottom="2dp"
-        android:layout_marginStart="124dp"
+        android:layout_marginStart="144dp"
         android:layout_marginTop="24dp"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -398,9 +429,9 @@
     <ImageView
         android:id="@+id/shadow_okmain"
         android:layout_width="111dp"
-        android:layout_height="68dp"
+        android:layout_height="66dp"
         android:layout_marginBottom="2dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginEnd="16dp"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

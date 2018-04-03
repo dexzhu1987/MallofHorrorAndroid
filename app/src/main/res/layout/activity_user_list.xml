@@ -230,8 +230,8 @@
             android:scaleType="fitXY"
             android:src="@drawable/okbttnhover"
             android:layout_marginBottom="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
             android:background="@null"
             android:onClick="set_ready_to_main"/>
 
