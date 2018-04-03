@@ -195,7 +195,7 @@ public class UserListActivity extends AppCompatActivity {
             FirebaseDatabase.getInstance().getReference().child("game").child(roomId).
                     child(ROOMREADYARRAY).child(Integer.toString(playerN)).setValue(playerN);
         }
-        if (!type.equalsIgnoreCase("Host")){
+        if (!type.equalsIgnoreCase("Host") && playerN!=0){
             informGuestHasBeenKickOut();
         }
     }
@@ -221,7 +221,7 @@ public class UserListActivity extends AppCompatActivity {
             FirebaseDatabase.getInstance().getReference().child("game").child(roomId).
                     child(ROOMREADYARRAY).child(Integer.toString(playerN)).setValue(null);
         }
-        if (!type.equalsIgnoreCase("Host")){
+        if (!type.equalsIgnoreCase("Host") && playerN!=0){
             String player = "player"+(playerN+1);
             FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child(ROOMINFORM).child(player).removeEventListener(mListenerForPlayerN);
         }
@@ -431,7 +431,7 @@ public class UserListActivity extends AppCompatActivity {
         mListenerForPlayerN =  FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child(ROOMINFORM).child(player).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (isRoomEnter){
+                if (isRoomEnter && !isGameStarted){
                     if (dataSnapshot!=null){
                         String roomName = (String) dataSnapshot.getValue();
                         FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).
@@ -687,6 +687,9 @@ public class UserListActivity extends AppCompatActivity {
                             if (players.get(i).equals("")){
                                 FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child(ROOMINFORM).child("player"+q).setValue(username);
                                 playerN = q-1;
+                                if (!type.equalsIgnoreCase("Host") && playerN!=0){
+                                    informGuestHasBeenKickOut();
+                                }
 //                                if (q==4){
 //                                    startMainActivity();
 //                                }
