@@ -3456,7 +3456,7 @@ public class MainActivity extends AppCompatActivity {
         mNoShadow = findViewById(R.id.shadow_nomain);
         mOKShadow = findViewById(R.id.shadow_okmain);
         mOKShadow.startAnimation(mFlash);
-        mRestartShadow = findViewById(R.id.shadow_restart)
+        mRestartShadow = findViewById(R.id.shadow_restart);
 
         mRestartButton = findViewById(R.id.restart_main);
         mRestartButton.setEnabled(false);
