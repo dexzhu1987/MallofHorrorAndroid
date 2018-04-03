@@ -302,11 +302,11 @@
 
     <ImageButton
         android:id="@+id/continue_button1"
-        android:layout_width="115dp"
-        android:layout_height="65dp"
+        android:layout_width="130dp"
+        android:layout_height="75dp"
         android:layout_marginEnd="15dp"
         android:layout_marginTop="190dp"
-        android:background="@drawable/continue_new"
+        android:background="@drawable/continue_new_witheffect"
         android:padding="0dp"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -316,8 +316,8 @@
 
     <ImageButton
         android:id="@+id/yesbutton_main"
-        android:layout_width="109dp"
-        android:layout_height="53dp"
+        android:layout_width="80dp"
+        android:layout_height="60dp"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="24dp"
         android:layout_marginTop="8dp"
@@ -333,10 +333,10 @@
 
     <ImageButton
         android:id="@+id/nobutton_main"
-        android:layout_width="109dp"
-        android:layout_height="53dp"
+        android:layout_width="78dp"
+        android:layout_height="60dp"
         android:layout_marginBottom="16dp"
-        android:layout_marginStart="136dp"
+        android:layout_marginStart="110dp"
         android:layout_marginTop="8dp"
         android:padding="0dp"
         android:scaleType="fitXY"
@@ -400,10 +400,10 @@
 
     <ImageView
         android:id="@+id/shadow_yesmain"
-        android:layout_width="111dp"
-        android:layout_height="69dp"
+        android:layout_width="90dp"
+        android:layout_height="72dp"
         android:layout_marginBottom="2dp"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="24dp"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -414,10 +414,10 @@
 
     <ImageView
         android:id="@+id/shadow_nomain"
-        android:layout_width="111dp"
+        android:layout_width="90dp"
         android:layout_height="65dp"
         android:layout_marginBottom="2dp"
-        android:layout_marginStart="144dp"
+        android:layout_marginStart="110dp"
         android:layout_marginTop="24dp"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -428,10 +428,10 @@
 
     <ImageView
         android:id="@+id/shadow_okmain"
-        android:layout_width="111dp"
+        android:layout_width="130dp"
         android:layout_height="66dp"
         android:layout_marginBottom="2dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="15dp"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

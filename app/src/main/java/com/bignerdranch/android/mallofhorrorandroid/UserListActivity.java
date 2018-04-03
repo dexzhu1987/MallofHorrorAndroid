@@ -715,6 +715,8 @@ public class UserListActivity extends AppCompatActivity {
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 String roomID = (String) dataSnapshot.getValue();
                                 String type = "Host";
+                                Intent serviceintent = OnClearFromRecentService.newServiceIntent(UserListActivity.this, roomID,roomID);
+                                startService(serviceintent);
                                 Intent intent = UserListActivity.newIntent(UserListActivity.this, type, roomID,name);
                                 startActivity(intent);
                             }

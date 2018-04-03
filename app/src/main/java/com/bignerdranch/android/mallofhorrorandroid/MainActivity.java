@@ -608,6 +608,10 @@ public class MainActivity extends AppCompatActivity {
     private void informSomeoneHasLeftTheGameOrGameEndAndRestart() {
         android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(MainActivity.this);
         if(!MainActivity.this.isFinishing()){
+            mRestartButton.setEnabled(true);
+            mRestartButton.setVisibility(View.VISIBLE);
+            mRestartShadow.setVisibility(View.VISIBLE);
+            mRestartShadow.startAnimation(mFlash);
             builder.setTitle("Game has been discontinued");
             builder.setMessage("Looks like one of the player has left the game (or game has ended), please restart");
             builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -620,7 +624,6 @@ public class MainActivity extends AppCompatActivity {
             mAlertDialog.show();
         }
     }
-
 
     private void gamePhaseChangingAccoringtoFirebase() {
         mDatabaseReference.child(GAMEDATA).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -3179,8 +3182,8 @@ public class MainActivity extends AppCompatActivity {
                         mDatabaseReference.setValue(null);
                         mRestartButton.setEnabled(true);
                         mRestartButton.setVisibility(View.VISIBLE);
-                        mYesShadow.setVisibility(View.VISIBLE);
-                        mYesShadow.startAnimation(mFlash);
+                        mRestartShadow.setVisibility(View.VISIBLE);
+                        mRestartShadow.startAnimation(mFlash);
                     }
                 },15 * 1000);
             }
@@ -5304,8 +5307,11 @@ public class MainActivity extends AppCompatActivity {
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 String roomID = (String) dataSnapshot.getValue();
                                 String type = "Host";
+                                Intent serviceintent = OnClearFromRecentService.newServiceIntent(MainActivity.this, roomID,roomID);
+                                startService(serviceintent);
                                 Intent intent = UserListActivity.newIntent(MainActivity.this, type, roomID,name);
                                 startActivity(intent);
+                                finish();
                             }
 
                             @Override

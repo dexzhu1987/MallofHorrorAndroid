@@ -332,9 +332,11 @@ public class FirstActivity extends AppCompatActivity {
 
     public void onStop(){
         super.onStop();
-        if (backgroundMusic.isPlaying()){
-            backgroundMusic.stop();
-            backgroundMusic.release();
+        if (backgroundMusic!=null){
+            if (backgroundMusic.isPlaying() ){
+                backgroundMusic.stop();
+                backgroundMusic.release();
+            }
         }
     }
 
