@@ -88,7 +88,7 @@ public class RoomService extends Service {
         FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).
                 child("currentRoomId").setValue(null);
         for (int i=0; i<playersnames.size(); i++){
-            FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child("player"+(i+1)).setValue(playersnames.get(i));
+            FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child("roomInform").child("player"+(i+1)).setValue(playersnames.get(i));
         }
         Log.d("RoomService", "Service End, roomId: " + roomId + ", playersnames:" + playersnames);
         stopSelf();

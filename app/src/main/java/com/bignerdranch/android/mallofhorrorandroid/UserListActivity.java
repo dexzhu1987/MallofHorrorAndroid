@@ -6,20 +6,24 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.media.MediaPlayer;
 import android.os.Handler;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.Game;
-import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.GameData;
 import com.bignerdranch.android.mallofhorrorandroid.FireBaseModel.User;
 import com.bignerdranch.android.mallofhorrorandroid.databinding.ActivityUserListBinding;
 import com.google.firebase.database.DataSnapshot;
@@ -29,9 +33,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
-import java.util.EventListener;
 import java.util.List;
 import java.util.Random;
+
+import it.sephiroth.android.library.tooltip.Tooltip;
 
 public class UserListActivity extends AppCompatActivity {
     private static final String LOG_TAG = "UserListActivity";
@@ -44,14 +49,20 @@ public class UserListActivity extends AppCompatActivity {
     private static final String ISGAMESTARTED = "isgamestarted";
     private static final String PLAYERSNAMES = "playersnames";
     private static final String USERNAMEFORSAVING = "usingnameforsaving";
+    private static final String ROOMIDFORSAVING = "roomIdforSaving";
+    private static final String AMIREADY = "amIReady";
+
+    private final String ROOMINFORM = "roomInform";
+    private final String ISROOMREADY = "isRoomReady";
+    private final String ROOMREADYARRAY = "roomReadyArray";
+
+    private ActivityUserListBinding binding;
     private List<User> users = new ArrayList<>();
     private Adapter adapter;
-    private Context userActivity;
     private static String roomId;
     private String username;
     private Game gameMain;
     private String type;
-    private boolean isStarted;
     private MediaPlayer waitingRoomBgm;
     private final static int MAX_VOLUME = 100;
     private Spinner mMusicStyleSpinner;
@@ -60,8 +71,15 @@ public class UserListActivity extends AppCompatActivity {
     private boolean mUserIsRelease;
     private ArrayList<String> mPlayersNamesList = new ArrayList<>();
     private boolean isGameStarted;
+    private int playerN;
+    private boolean mAmIReady;
     private Intent mRoomService;
     private ArrayList<ValueEventListener> mEventListeners = new ArrayList<>();
+    private ValueEventListener mListnerForIsRoomReady;
+    private ValueEventListener mListenerForReadyArray;
+    private ImageButton mReadyButton;
+    private RelativeLayout mBorder1, mBorder2, mBorder3, mBorder4;
+    private ArrayList<RelativeLayout> mBorders = new ArrayList<>();
 
     public static Intent newIntent(Context context, String type, String roomID, String username) {
         Intent intent = new Intent(context, UserListActivity.class);
@@ -75,16 +93,22 @@ public class UserListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ActivityUserListBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_user_list);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_user_list);
 
         FirebaseMessaging.getInstance().subscribeToTopic("all");
-        FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("on").setValue(true);
         type = getIntent().getStringExtra(TYPE);
         roomId = getIntent().getStringExtra(ROOMID);
         username = getIntent().getStringExtra(USERNAME);
-        userActivity = UserListActivity.this;
-        isStarted = false;
-
+        mReadyButton = binding.readyButton;
+        mReadyButton.setEnabled(false);
+        mBorder1 = findViewById(R.id.border_1);
+        mBorder2 = findViewById(R.id.border_2);
+        mBorder3 = findViewById(R.id.border_3);
+        mBorder4 = findViewById(R.id.border_4);
+        mBorders.add(mBorder1);
+        mBorders.add(mBorder2);
+        mBorders.add(mBorder3);
+        mBorders.add(mBorder4);
 
         mBgmSources.add(R.raw.waitingroom_bgm_umeneko);
         mBgmSources.add(R.raw.waitingroom_bgm_hellgirl);
@@ -96,14 +120,16 @@ public class UserListActivity extends AppCompatActivity {
             mBgmThemeSet = random.nextInt(mBgmSources.size());
             mUserIsRelease = false;
             isGameStarted = false;
+            mAmIReady = false;
         } else {
             mBgmThemeSet = savedInstanceState.getInt(BGMTHEMESET);
             mUserIsRelease = savedInstanceState.getBoolean(ISUSERRELEASE);
             isGameStarted = savedInstanceState.getBoolean(ISGAMESTARTED);
+            mAmIReady = savedInstanceState.getBoolean(AMIREADY);
         }
 
 
-        mMusicStyleSpinner = findViewById(R.id.music_style_spinner);
+        mMusicStyleSpinner = binding.musicStyleSpinner;
         ArrayAdapter<CharSequence> adapterMusic = ArrayAdapter.createFromResource(this,
                 R.array.music_style, android.R.layout.simple_spinner_item);
         adapterMusic.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -124,16 +150,14 @@ public class UserListActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                Random random = new Random();
-                mBgmThemeSet = random.nextInt(mBgmSources.size());
+
             }
         });
 
         Log.i(LOG_TAG, "type: " + type  + " roomID: "+ roomId + " username: " + username);
 
-
-
         if (type.equals("Host")){
+            playerN = 0;
             createRoom(roomId);
             binding.list.setVisibility(View.VISIBLE);
         } else {
@@ -141,8 +165,6 @@ public class UserListActivity extends AppCompatActivity {
             binding.list.setVisibility(View.INVISIBLE);
             registerMyCurrentRoomIdAndRemovetheLastRoom();
         }
-
-
 
     }
 
@@ -156,14 +178,18 @@ public class UserListActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("on").setValue(true);
-        ActivityUserListBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_user_list);
         fetchUsers();
         adapter = new Adapter(this, users);
         binding.list.setAdapter(adapter);
         binding.list.setLayoutManager(new LinearLayoutManager(this));
         updateRoom(binding, roomId);
+        setUpListenningForIsRoomReady();
         playMusic();
         mUserIsRelease = false;
+        if (mAmIReady){
+            FirebaseDatabase.getInstance().getReference().child("game").child(roomId).
+                    child(ROOMREADYARRAY).child(Integer.toString(playerN)).setValue(playerN);
+        }
     }
 
     @Override
@@ -171,8 +197,11 @@ public class UserListActivity extends AppCompatActivity {
         super.onPause();
         for (int i=1; i<=4; i++) {
             String player = "player" + i;
-            FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child(player).removeEventListener(mEventListeners.get(i-1));
+            FirebaseDatabase.getInstance().getReference().child("game").child(roomId).
+                    child(ROOMINFORM).child(player).removeEventListener(mEventListeners.get(i-1));
         }
+        FirebaseDatabase.getInstance().getReference().child("game").child(roomId).
+                child(ISROOMREADY).removeEventListener(mListnerForIsRoomReady);
         FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("on").setValue(false);
         if (waitingRoomBgm.isPlaying()){
             waitingRoomBgm.stop();
@@ -180,6 +209,16 @@ public class UserListActivity extends AppCompatActivity {
             waitingRoomBgm = null;
             mUserIsRelease = true;
         }
+        if (mAmIReady){
+            FirebaseDatabase.getInstance().getReference().child("game").child(roomId).
+                    child(ROOMREADYARRAY).child(Integer.toString(playerN)).setValue(null);
+        }
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        Log.i(LOG_TAG, "Stop: roomId; " + roomId);
 
     }
 
@@ -191,13 +230,6 @@ public class UserListActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onStop(){
-        super.onStop();
-        Log.i(LOG_TAG, "Stop: roomId; " + roomId);
-
-    }
-
-    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(BGMTHEMESET, mBgmThemeSet);
@@ -205,6 +237,8 @@ public class UserListActivity extends AppCompatActivity {
         outState.putBoolean(ISGAMESTARTED,isGameStarted);
         outState.putString(USERNAMEFORSAVING, username);
         outState.putStringArrayList(PLAYERSNAMES, mPlayersNamesList);
+        outState.putString(ROOMIDFORSAVING,roomId);
+        outState.putBoolean(AMIREADY,mAmIReady);
     }
 
     @Override
@@ -215,7 +249,8 @@ public class UserListActivity extends AppCompatActivity {
         isGameStarted = savedInstanceState.getBoolean(ISGAMESTARTED);
         username = savedInstanceState.getString(USERNAMEFORSAVING);
         mPlayersNamesList = savedInstanceState.getStringArrayList(PLAYERSNAMES);
-
+        roomId = savedInstanceState.getString(ROOMIDFORSAVING);
+        mAmIReady = savedInstanceState.getBoolean(AMIREADY);
     }
 
     private void registerMyCurrentRoomIdAndRemovetheLastRoom() {
@@ -225,8 +260,8 @@ public class UserListActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue()!=null){
                     String previousRoomId = (String) dataSnapshot.getValue();
-                    if (previousRoomId!=roomId){
-                        FirebaseDatabase.getInstance().getReference().child("game").child(previousRoomId).addListenerForSingleValueEvent(new ValueEventListener() {
+                    if (!previousRoomId.equalsIgnoreCase(roomId)){
+                        FirebaseDatabase.getInstance().getReference().child("game").child(previousRoomId).child(ROOMINFORM).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 if (dataSnapshot.getValue()!=null){
@@ -289,7 +324,7 @@ public class UserListActivity extends AppCompatActivity {
                                     }
 
                                     for (int i=0; i<previousPlayersNames.size(); i++){
-                                        FirebaseDatabase.getInstance().getReference().child("game").child(previousRoomId).child("player"+(i+1)).setValue(previousPlayersNames.get(i));
+                                        FirebaseDatabase.getInstance().getReference().child("game").child(previousRoomId).child(ROOMINFORM).child("player"+(i+1)).setValue(previousPlayersNames.get(i));
                                     }
 
                                 }
@@ -311,6 +346,88 @@ public class UserListActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void setUpListenningForIsRoomReady() {
+        mListnerForIsRoomReady = FirebaseDatabase.getInstance().getReference().child("game").child(roomId).
+                child(ISROOMREADY).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue()!=null){
+                    boolean isRoomReady = (boolean) dataSnapshot.getValue();
+                    if (isRoomReady){
+                        if (!mAmIReady){
+                            Toast.makeText(UserListActivity.this, "Game is about to start, click continue to be ready",Toast.LENGTH_LONG).show();
+                        }
+                        mReadyButton.setEnabled(true);
+                        mReadyButton.setImageResource(R.drawable.ok_button);
+                        mListenerForReadyArray = FirebaseDatabase.getInstance().getReference().child("game").child(roomId).
+                                child(ROOMREADYARRAY).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.getValue()!=null) {
+                                    ArrayList<Integer> readyArray = new ArrayList<>();
+                                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                        readyArray.add(snapshot.getValue(Integer.TYPE));
+                                    }
+                                    for (int whoIsReady : readyArray) {
+                                        mBorders.get(whoIsReady).
+                                                setBackground(ContextCompat.getDrawable(UserListActivity.this, R.drawable.border_layout_green));
+                                    }
+                                    ArrayList<Integer> notReadyArray = new ArrayList<>();
+                                    notReadyArray.add(0);
+                                    notReadyArray.add(1);
+                                    notReadyArray.add(2);
+                                    notReadyArray.add(3);
+                                    for (Integer whoIsReady : readyArray) {
+                                        notReadyArray.remove(whoIsReady);
+                                    }
+                                    for (int notReady : notReadyArray) {
+                                        mBorders.get(notReady).
+                                                setBackground(ContextCompat.getDrawable(UserListActivity.this, R.drawable.border_layout));
+                                    }
+                                    if (readyArray.size()==4){
+                                        startMainActivity();
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+                    } else {
+                        RemoveReadyForMain();
+                    }
+                } else {
+                    RemoveReadyForMain();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void RemoveReadyForMain() {
+        if (type.equalsIgnoreCase("Host")){
+           FirebaseDatabase.getInstance().getReference().child("game").child(roomId).
+                    child(ROOMREADYARRAY).setValue(null);
+        }
+        mAmIReady = false;
+        mReadyButton.setEnabled(false);
+        mReadyButton.setImageResource(R.drawable.okbttnhover);
+        if (mListenerForReadyArray!=null){
+            FirebaseDatabase.getInstance().getReference().child("game").child(roomId).
+                    child(ROOMREADYARRAY).removeEventListener(mListenerForReadyArray);
+        }
+        for (RelativeLayout whoIsReady : mBorders) {
+           whoIsReady.
+                    setBackground(ContextCompat.getDrawable(UserListActivity.this, R.drawable.border_layout));
+        }
     }
 
     private void playMusic() {
@@ -350,7 +467,7 @@ public class UserListActivity extends AppCompatActivity {
             String player = "player"+i;
             final int j = i;
             final int k = i;
-            ValueEventListener listener = FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child(player).addValueEventListener(new ValueEventListener() {
+            ValueEventListener listener = FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child(ROOMINFORM).child(player).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.getValue()!=null){
@@ -390,21 +507,14 @@ public class UserListActivity extends AppCompatActivity {
 
         for (int i=0; i<usersNames.size(); i++){
             if (usersNames.get(i).getText().toString().equals("")){
+                FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child(ISROOMREADY).setValue(false);
                 break;
             } else {
                 if (i==3){
-                    FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("on").setValue(false);
-                    FirebaseDatabase.getInstance().getReference().child("game").child(roomId).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            startMainActivity(dataSnapshot);
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
+//                    startMainActivity();
+                    if (type.equalsIgnoreCase("Host")){
+                        FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child(ISROOMREADY).setValue(true);
+                    }
                 }
             }
         }
@@ -429,7 +539,7 @@ public class UserListActivity extends AppCompatActivity {
             }
             for (int i=1; i<=4; i++) {
                 String player = "player" + i;
-                FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child(player).removeEventListener(mEventListeners.get(i-1));
+                FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child(ROOMINFORM).child(player).removeEventListener(mEventListeners.get(i-1));
             }
             builder.setTitle("Room has been cleared");
             builder.setMessage("Looks like the game owner has left the room");
@@ -447,12 +557,13 @@ public class UserListActivity extends AppCompatActivity {
     private void createRoom(String roomId) {
         gameMain = new Game(roomId);
         Log.i(LOG_TAG,"Create Room: " + roomId + " : " );
-        FirebaseDatabase.getInstance().getReference().child("game").child(roomId).setValue(gameMain);
-        FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child("player1").setValue(username);
+        FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child(ISROOMREADY).setValue(false);
+        FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child(ROOMINFORM).setValue(gameMain);
+        FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child(ROOMINFORM).child("player1").setValue(username);
     }
 
     private void registerNameInRoom(String roomId) {
-        FirebaseDatabase.getInstance().getReference().child("game").child(roomId).addListenerForSingleValueEvent(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child(ROOMINFORM).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 gameMain = dataSnapshot.getValue(Game.class);
@@ -464,7 +575,7 @@ public class UserListActivity extends AppCompatActivity {
             }
         });
         FirebaseDatabase.getInstance().getReference().child("game")
-                .child(roomId).addListenerForSingleValueEvent(new ValueEventListener() {
+                .child(roomId).child(ROOMINFORM).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue()!=null){
@@ -479,21 +590,11 @@ public class UserListActivity extends AppCompatActivity {
                             return;
                         } else {
                             if (players.get(i).equals("")){
-                                FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child("player"+q).setValue(username);
-                                if (q==4){
-                                    FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("on").setValue(false);
-                                    FirebaseDatabase.getInstance().getReference().child("game").child(roomId).addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                            startMainActivity(dataSnapshot);
-                                        }
-
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
-
-                                        }
-                                    });
-                                }
+                                FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child(ROOMINFORM).child("player"+q).setValue(username);
+                                playerN = q-1;
+//                                if (q==4){
+//                                    startMainActivity();
+//                                }
                                 return;
                             }
                         }
@@ -509,15 +610,37 @@ public class UserListActivity extends AppCompatActivity {
 
     }
 
-    private void startMainActivity(DataSnapshot dataSnapshot) {
-        gameMain = dataSnapshot.getValue(Game.class);
-        isGameStarted = true;
-        FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).
-                child("currentRoomId").setValue(null);
-        Intent intent = MainActivity.mainIntent(UserListActivity.this,4, gameMain, username, type,mBgmThemeSet);
-        _idleHandler.removeCallbacksAndMessages(null);
-        Log.i(LOG_TAG, "start main activity when reached 4 players");
-        startActivity(intent);
+    public void set_ready_to_main(View view) {
+        if (!mAmIReady){
+            mAmIReady = true;
+            FirebaseDatabase.getInstance().getReference().child("game").child(roomId).
+                    child(ROOMREADYARRAY).child(Integer.toString(playerN)).setValue(playerN);
+        }else {
+            Toast.makeText(UserListActivity.this, "You ready have been set, please wait for other players",Toast.LENGTH_LONG)
+            .show();
+        }
+    }
+
+    private void startMainActivity() {
+        FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).child("on").setValue(false);
+        FirebaseDatabase.getInstance().getReference().child("game").child(roomId).child(ROOMINFORM).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                gameMain = dataSnapshot.getValue(Game.class);
+                isGameStarted = true;
+                FirebaseDatabase.getInstance().getReference().child("users").child(User.getCurrentUserId()).
+                        child("currentRoomId").setValue(null);
+                Intent intent = MainActivity.mainIntent(UserListActivity.this,4, gameMain, username, type,mBgmThemeSet);
+                _idleHandler.removeCallbacksAndMessages(null);
+                Log.i(LOG_TAG, "start main activity when reached 4 players");
+                startActivity(intent);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void fetchUsers() {

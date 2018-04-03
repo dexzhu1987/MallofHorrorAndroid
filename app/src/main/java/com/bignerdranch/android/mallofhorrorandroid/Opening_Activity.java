@@ -1,6 +1,7 @@
 package com.bignerdranch.android.mallofhorrorandroid;
 
 import android.content.Intent;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.animation.Animation;
@@ -22,23 +23,17 @@ public class Opening_Activity extends AppCompatActivity {
         textView.startAnimation(animation);
 
 
-        Thread timer = new Thread(){
-
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-
-                try {
-                    sleep(5000);
-                    Intent intent = new Intent(getApplicationContext(),FirstActivity.class);
-                    startActivity(intent);
-                    finish();
-                    super.run();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                Intent intent = new Intent(getApplicationContext(),FirstActivity.class);
+                startActivity(intent);
+                overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
             }
-        };
+        }, 5000);
 
-        timer.start();
+
+
     }
 }

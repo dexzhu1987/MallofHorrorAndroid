@@ -204,6 +204,7 @@ public class FirstActivity extends AppCompatActivity {
                                 Intent serviceintent = OnClearFromRecentService.newServiceIntent(FirstActivity.this, roomID,roomID);
                                 startService(serviceintent);
                                 startActivity(intent);
+                                overridePendingTransition(android.support.v7.appcompat.R.anim.abc_fade_in,android.support.v7.appcompat.R.anim.abc_fade_out );
                             }
 
                             @Override

@@ -2,7 +2,7 @@
     <string name="app_name">MallofHorrorAndroid</string>
     <string name="set_player">Please select how many players</string>
     <string-array name="music_style">
-        <item>random</item>
+        <item>Random</item>
         <item>1</item>
         <item>2</item>
         <item>3</item>

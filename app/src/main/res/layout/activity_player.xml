@@ -354,16 +354,11 @@
         android:id="@+id/voteyellow_button"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_marginBottom="50dp"
-        android:layout_marginEnd="325dp"
-        android:layout_marginStart="258dp"
         android:background="@drawable/round_button"
         android:scaleType="fitXY"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/yellowbttn" />
+        app:srcCompat="@drawable/yellowbttn"
+        tools:layout_editor_absoluteX="258dp"
+        tools:layout_editor_absoluteY="294dp" />
 
     <ImageButton
         android:id="@+id/voteblue_button"
@@ -768,7 +763,8 @@
         app:layout_constraintHorizontal_bias="0.076"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/gunmanbutton"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:background="@null"/>
 
     <ImageView
         android:id="@+id/redtoughgunsqr"
@@ -782,7 +778,8 @@
         app:layout_constraintHorizontal_bias="0.076"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/toughguybutton"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:background="@null"/>
 
     <ImageView
         android:id="@+id/redmodelsqr"
@@ -796,7 +793,8 @@
         app:layout_constraintHorizontal_bias="0.076"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/modelbutton"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:background="@null"/>
 
 </android.support.constraint.ConstraintLayout>
 

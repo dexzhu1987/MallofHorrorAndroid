@@ -31,6 +31,7 @@
             android:orientation="vertical">
 
             <RelativeLayout
+                android:id="@+id/border_1"
                 android:background="@drawable/border_layout"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -64,6 +65,7 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/border_2"
                 android:background="@drawable/border_layout"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -97,6 +99,7 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/border_3"
                 android:background="@drawable/border_layout"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -132,6 +135,7 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/border_4"
                 android:background="@drawable/border_layout"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -169,38 +173,37 @@
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
             android:layout_height="match_parent"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
             android:layout_weight="2"
             android:orientation="vertical">
 
             <LinearLayout
-                android:background="@color/fui_buttonShadow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:background="@color/fui_buttonShadow"
                 android:orientation="vertical">
 
                 <TextView
-                    android:layout_margin="5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
                     android:text="Music Style"
-                    android:textColor="@android:color/primary_text_light_nodisable"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Small.Inverse"/>
+                    android:textSize="15dp"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Small.Inverse"
+                    android:textColor="@android:color/primary_text_light_nodisable" />
 
                 <Spinner
                     android:id="@+id/music_style_spinner"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginBottom="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@android:color/white"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
                     android:entries="@array/music_style"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Small.Inverse"
-                    ></Spinner>
+                    android:textColor="@android:color/white"></Spinner>
 
             </LinearLayout>
 
@@ -210,13 +213,27 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2"
-            android:layout_margin="10dp">
+            android:layout_margin="10dp"
+            android:orientation="vertical">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="7"
             android:layout_margin="10dp"/>
+
+        <ImageButton
+            android:id="@+id/ready_button"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/okbttnhover"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@null"
+            android:onClick="set_ready_to_main"/>
 
         </LinearLayout>
 
