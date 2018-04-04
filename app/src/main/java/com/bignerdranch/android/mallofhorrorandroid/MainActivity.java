@@ -972,6 +972,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
                 if  (isIdCorrect(mCurrentTeam)){
+                    soundEffectForCoundDown();
                     enableYesNo();
                     mYesButton.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -997,6 +998,27 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         },DELAYEDSECONDSFORMESSAGEVIE * 1000);
+    }
+
+    private void soundEffectForCoundDown() {
+        MediaPlayer player1 = MediaPlayer.create(MainActivity.this, R.raw.ticking_clock);
+        player1.start();
+        Handler playerHandler = new Handler();
+        playerHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (player1!=null){
+                    if (player1.isPlaying()){
+                        player1.stop();
+                        player1.release();
+                    }
+                }
+                MediaPlayer player2 = MediaPlayer.create(MainActivity.this, R.raw.countdown);
+                player2.start();
+
+
+            }
+        }, DELAYEDSECONDSFOROPTIONSCHOSEN * 1000 - 5000);
     }
 
     private boolean isIdCorrect(List<Playable> theCorrectMembers) {
@@ -1499,6 +1521,7 @@ public class MainActivity extends AppCompatActivity {
                 }, DELAYEDSECONDSFOROPTIONSCHOSEN * 1000);
 
                 if (isIdCorrect(gameBroad.getPlayers())){
+                    soundEffectForCoundDown();
                     enableYesNo();
                     mYesButton.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -2159,6 +2182,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
                 if (isIdCorrect(mCurrentTeam)){
+                    soundEffectForCoundDown();
                     enableYesNo();
                     mYesButton.setOnClickListener(new View.OnClickListener() {
                         @Override
