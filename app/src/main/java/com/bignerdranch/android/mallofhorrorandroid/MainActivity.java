@@ -240,7 +240,6 @@ public class MainActivity extends AppCompatActivity {
                 mIsRelease = false;
         }
         mShouldPlay = false;
-
     }
 
     @Override
@@ -259,11 +258,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (!mShouldPlay && mBgmPlayer.isPlaying()){
-            mBgmPlayer.stop();
-            mBgmPlayer.release();
-            mIsRelease = true;
-            mBgmPlayer = null;
+        if (mBgmPlayer!=null){
+            if (!mShouldPlay && mBgmPlayer.isPlaying()){
+                mBgmPlayer.stop();
+                mBgmPlayer.release();
+                mIsRelease = true;
+                mBgmPlayer = null;
+            }
         }
     }
 
