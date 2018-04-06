@@ -329,7 +329,6 @@ public class MainActivity extends AppCompatActivity {
             mRoomID = mDatabaseGame.getRoomId() + userNamesAll;
             isServiceStarted = false;
             isGameStarted = false;
-            FirebaseDatabase.getInstance().getReference().child("game").child(mRoomID).setValue(null);
             fireBaseInitialSetup();
             registerMyPlayerId();
         } else {
@@ -507,6 +506,7 @@ public class MainActivity extends AppCompatActivity {
             mFifthCount=0;
             mSixCount=0;
             if (!isGameStarted && mType.equals("Host")) {
+                FirebaseDatabase.getInstance().getReference().child("game").child(mRoomID).setValue(null);
                 createRoomOnFireBase();
             }
         }
