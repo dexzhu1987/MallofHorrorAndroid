@@ -88,6 +88,44 @@ public class MainActivity extends AppCompatActivity {
     private static final String ROOMID = "roomId";
     private static final String ISSERVICESTARTED = "isservicestarted";
     private static final String ISGAMESTARTED = "isgamestarted";
+    private static final String MCURRENTROOMPICKEDNUMBER = "mCurrentRoomPickedNumber";
+    private static final String MCOUNTSETUP = "mCountSetup";
+    private static final String MSECONDCOUNT = "mSecondCount";
+    private static final String MCURRENTYESNO = "mCurrentYesNo";
+    private static final String MCURRENTGAMECHARACTERSELECTED = "mCurrentGameCharacterSelected";
+    private static final String MCURRENTVOTECOLOR = "mCurrentVoteColor";
+    private static final String MCURRENTSELECTEDITEM = "mCurrentSelectedItem";
+    private static final String MCOUNTPHASE = "mCountPhase";
+    private static final String MCURRENTVICTIM = "mCurrentVictim";
+    private static final String COLORS = "Colors";
+    private static final String ITEMS = "Items";
+    private static final String MCURRENTTEAM = "mCurrentTeam";
+    private static final String ORIGINALTEAMSIZE = "originalTeamSize";
+    private static final String VOTES = "votes";
+    private static final String MTHIRDCOUNT = "mThirdCount";
+    private static final String MCURRENTITEMOPTIONS = "mCurrentItemOptions";
+    private static final String MCURRENTZOMBIESROOMS = "mCurrentZombiesRooms";
+    private static final String MCURRENTSTARTPLAYERINDEX = "mCurrentStartPlayerIndex";
+    private static final String MCURRENTSTARTPLAYER = "mCurrentStartPlayer";
+    private static final String MISCHIEFSELECTED = "mIsChiefSelected";
+    private static final String MCURRENTPLAYERNUMBER = "mCurrentPlayerNumber";
+    private static final String MCURRENTSTARTROOM = "mCurrentStartRoom";
+    private static final String ROOMPICKED = "roompicked";
+    private static final String PLAYERSINDEX = "playersIndex";
+    private static final String MCURRENTMOREZOMBIES = "mCurrentMoreZombies";
+    private static final String MUSEDITEMS = "mUsedItem";
+    private static final String MPLAYERSUSEDITEM = "mPlaerUsedItem";
+    private static final String MFOURTHCOUNT = "mFourthCount";
+    private static final String MFIFTHCOUNT = "mFifthCount";
+    private static final String MSIXTHCOUNT = "mSixthCount";
+    private static final String MDATABASEREFERENCE = "mDatabaseReference";
+    private static final String MDATABASEGAME = "mDatabaseGame";
+    private static final String MUSERNAME = "mUserName";
+    private static final String MPLAYERID = "mPlayerId";
+    private static final String MTYPE = "mType";
+    private static final String MISDATAPUSHED = "mIsDataPushed";
+
+
 
     private static final int REQUEST_CODE_ROOM = 0;
     private static final int REQUEST_CODE_CHARACTER = 1;
@@ -102,6 +140,8 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_VIEWZOMBIEAll = 10;
     private static final int REQUEST_CODE_VIEWZOMBIEALLMORE = 11;
     private static final int REQUEST_CODE_ITEM = 12;
+
+
 
     private int mPlayerNumber;
 
@@ -144,9 +184,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static GameBroad gameBroad ;
     private static int mCurrentRoomPickedNumber = 0;
-    private static int mCountSetUp;
-    private static int mSecondCount;
-    private static boolean mCurrentYesNoMain = false;
+    private static int mCountSetUp =0;
+    private static int mSecondCount =0;
     private static boolean mCurrentYesNo = false;
     private static String mCurrentGameCharacterSelected = "";
     private static String mCurrentVoteColor = "";
@@ -156,34 +195,34 @@ public class MainActivity extends AppCompatActivity {
     final static List<String> colors = new ArrayList<>();
     final static List<Item> items = new ArrayList<>();
     private ArrayList<Playable> mCurrentTeam = new ArrayList<>();
-    private int originalTeamSize ;
+    private int originalTeamSize =0 ;
     private static List<String> votes = new ArrayList<>();
-    private static int mThirdCount;
+    private static int mThirdCount =0;
     private static List<Item> mCurrentItemOptions = new ArrayList<>();
     private static ArrayList<Integer> mCurrentZombiesRooms = new ArrayList<>();
-    private static int mCurrentStartPlayerIndex;
-    private static Playable mCurrentStartPlayer;
-    private static boolean mIsChiefSelected;
-    private static int mCurrentPlayerNumber;
-    private static int mCurrentStartRoom;
+    private static int mCurrentStartPlayerIndex = 0;
+    private static Playable mCurrentStartPlayer = new Playable();
+    private static boolean mIsChiefSelected = false;
+    private static int mCurrentPlayerNumber = 0;
+    private static int mCurrentStartRoom =0;
     private static List<Integer> roomspicked = new ArrayList<>();
     private static List<Integer> playersIndex =  new ArrayList<>();
     private static ArrayList<Integer> mCurrentMoreZombies = new ArrayList<>();
     private static List<Item> mUsedItem = new ArrayList<>();
     private static List<Playable> mPlayersUsedItem = new ArrayList<>();
-    private static int mFourthCount;
-    private static int mFifthCount;
-    private static int mSixCount;
+    private static int mFourthCount = 0;
+    private static int mFifthCount =0 ;
+    private static int mSixCount = 0;
 
     private DatabaseReference mDatabaseReference;
-    private Game mDatabaseGame;
-    private String mUserName;
-    private int mMyPlayerID;
-    private String mType;
-    private boolean mIsDataPushed;
-    private String mRoomID;
-    private boolean isServiceStarted;
-    private boolean isGameStarted;
+    private Game mDatabaseGame = new Game();
+    private String mUserName = "";
+    private int mMyPlayerID = 0;
+    private String mType = "";
+    private boolean mIsDataPushed = false;
+    private String mRoomID = "";
+    private boolean isServiceStarted = false;
+    private boolean isGameStarted = false;
 
     final Animation mFlash = new AlphaAnimation(1, 0);
 
@@ -258,7 +297,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (mBgmPlayer!=null){
+        if (mBgmPlayer != null){
             if (!mShouldPlay && mBgmPlayer.isPlaying()){
                 mBgmPlayer.stop();
                 mBgmPlayer.release();
@@ -286,6 +325,42 @@ public class MainActivity extends AppCompatActivity {
         outState.putString(ROOMID, mRoomID);
         outState.putBoolean(ISSERVICESTARTED, isServiceStarted);
         outState.putBoolean(ISGAMESTARTED, isGameStarted);
+        outState.putInt(MCURRENTROOMPICKEDNUMBER,mCurrentRoomPickedNumber);
+        outState.putInt(MCOUNTSETUP,mCountSetUp);
+        outState.putInt(MSECONDCOUNT,mSecondCount);
+        outState.putBoolean(MCURRENTYESNO, mCurrentYesNo);
+        outState.putString(MCURRENTGAMECHARACTERSELECTED,mCurrentGameCharacterSelected);
+        outState.putString(MCURRENTVOTECOLOR,mCurrentVoteColor);
+        outState.putParcelable(MCURRENTSELECTEDITEM,mCurrentSelectedItem);
+        outState.putInt(MCOUNTPHASE,mCountPhase);
+        outState.putParcelable(MCURRENTVICTIM, mCurrentVictim);
+        outState.putParcelableArrayList(MCURRENTTEAM, mCurrentTeam);
+        outState.putInt(ORIGINALTEAMSIZE, originalTeamSize);
+        outState.putStringArrayList(VOTES, (ArrayList<String>) votes);
+        outState.putInt(MTHIRDCOUNT,mThirdCount);
+        outState.putParcelableArrayList(MCURRENTITEMOPTIONS, (ArrayList<? extends Parcelable>) mCurrentItemOptions);
+        outState.putIntegerArrayList(MCURRENTZOMBIESROOMS, mCurrentZombiesRooms);
+        outState.putInt(MCURRENTSTARTPLAYERINDEX, mCurrentStartPlayerIndex);
+        outState.putParcelable(MCURRENTSTARTPLAYER,mCurrentStartPlayer);
+        outState.putBoolean(MISCHIEFSELECTED,mIsChiefSelected);
+        outState.putInt(MCURRENTPLAYERNUMBER,mCurrentPlayerNumber);
+        outState.putInt(MCURRENTSTARTROOM,mCurrentStartRoom);
+        outState.putIntegerArrayList(ROOMPICKED, (ArrayList<Integer>) roomspicked);
+        outState.putIntegerArrayList(PLAYERSINDEX, (ArrayList<Integer>) playersIndex);
+        outState.putIntegerArrayList(MCURRENTMOREZOMBIES, mCurrentMoreZombies);
+        outState.putParcelableArrayList(MUSEDITEMS, (ArrayList<? extends Parcelable>) mUsedItem);
+        outState.putParcelableArrayList(MPLAYERSUSEDITEM, (ArrayList<? extends Parcelable>) mPlayersUsedItem);
+        outState.putInt(MFOURTHCOUNT,mFourthCount);
+        outState.putInt(MFIFTHCOUNT,mFifthCount);
+        outState.putInt(MSIXTHCOUNT,mSixCount);
+        outState.putParcelable(MDATABASEGAME,mDatabaseGame);
+        outState.putString(MUSERNAME,mUserName);
+        outState.putInt(MYPLAYERID,mMyPlayerID);
+        outState.putString(MTYPE,mType);
+        outState.putBoolean(MISDATAPUSHED, mIsDataPushed);
+
+
+
     }
 
     @Override
@@ -300,6 +375,40 @@ public class MainActivity extends AppCompatActivity {
         mRoomID = savedInstanceState.getString(ROOMID);
         isServiceStarted = savedInstanceState.getBoolean(ISSERVICESTARTED);
         isGameStarted = savedInstanceState.getBoolean(ISGAMESTARTED);
+
+        mCurrentRoomPickedNumber = savedInstanceState.getInt(MCURRENTROOMPICKEDNUMBER);
+        mCountSetUp = savedInstanceState.getInt(MCOUNTSETUP);
+        mSecondCount = savedInstanceState.getInt(MSECONDCOUNT);
+        mCurrentYesNo = savedInstanceState.getBoolean(MCURRENTYESNO);
+        mCurrentGameCharacterSelected = savedInstanceState.getString(MCURRENTGAMECHARACTERSELECTED);
+        mCurrentVoteColor = savedInstanceState.getString(MCURRENTVOTECOLOR);
+        mCurrentSelectedItem = savedInstanceState.getParcelable(MCURRENTSELECTEDITEM);
+        mCountPhase = savedInstanceState.getInt(MCOUNTPHASE);
+        mCurrentVictim = savedInstanceState.getParcelable(MCURRENTVICTIM);
+        mCurrentTeam = savedInstanceState.getParcelableArrayList(MCURRENTTEAM)   ;
+        originalTeamSize = savedInstanceState.getInt(ORIGINALTEAMSIZE);
+        votes = savedInstanceState.getStringArrayList(VOTES);
+        mThirdCount = savedInstanceState.getInt(MTHIRDCOUNT);
+        mCurrentItemOptions = savedInstanceState.getParcelableArrayList(MCURRENTITEMOPTIONS);
+        mCurrentZombiesRooms = savedInstanceState.getIntegerArrayList(MCURRENTZOMBIESROOMS);
+        mCurrentStartPlayerIndex = savedInstanceState.getInt(MCURRENTSTARTPLAYERINDEX);
+        mCurrentStartPlayer = savedInstanceState.getParcelable(MCURRENTSTARTPLAYER);
+        mIsChiefSelected = savedInstanceState.getBoolean(MISCHIEFSELECTED);
+        mCurrentPlayerNumber = savedInstanceState.getInt(MCURRENTPLAYERNUMBER);
+        mCurrentStartRoom = savedInstanceState.getInt(MCURRENTSTARTROOM);
+        roomspicked = savedInstanceState.getIntegerArrayList(ROOMPICKED);
+        playersIndex = savedInstanceState.getIntegerArrayList(PLAYERSINDEX);
+        mCurrentMoreZombies = savedInstanceState.getIntegerArrayList(MCURRENTMOREZOMBIES);
+        mUsedItem = savedInstanceState.getParcelableArrayList(MUSEDITEMS);
+        mPlayersUsedItem  = savedInstanceState.getParcelableArrayList(MPLAYERSUSEDITEM);
+        mFourthCount = savedInstanceState.getInt(MFOURTHCOUNT);
+        mFifthCount = savedInstanceState.getInt(MFIFTHCOUNT);
+        mSixCount = savedInstanceState.getInt(MSIXTHCOUNT);
+        mDatabaseGame = savedInstanceState.getParcelable(MDATABASEGAME);
+        mUserName = savedInstanceState.getString(MUSERNAME);
+        mType = savedInstanceState.getString(MTYPE);
+        mIsDataPushed = savedInstanceState.getBoolean(MISDATAPUSHED);
+
     }
 
     private void gettingReady(Bundle savedInstanceState) {
@@ -765,7 +874,6 @@ public class MainActivity extends AppCompatActivity {
                     mCurrentItemOptions.clear();
                     mCurrentZombiesRooms.clear();
                     mCurrentYesNo=false;
-                    mCurrentYesNoMain = false;
                     if (mMyPlayerID==getControlId()){
                             mCountPhase=4;
                             mCountSetUp=0;
@@ -1232,7 +1340,6 @@ public class MainActivity extends AppCompatActivity {
                                 mCurrentItemOptions.clear();
                                 mCurrentZombiesRooms.clear();
                                 mCurrentYesNo=false;
-                                mCurrentYesNoMain = false;
                                 if (mMyPlayerID==getControlId()){
                                     mCountPhase=4;
                                     mCountSetUp=0;
@@ -1268,7 +1375,6 @@ public class MainActivity extends AppCompatActivity {
                                         mCurrentItemOptions.clear();
                                         mCurrentZombiesRooms.clear();
                                         mCurrentYesNo=false;
-                                        mCurrentYesNoMain = false;
                                         if (mMyPlayerID==getControlId()){
                                             mCountPhase=4;
                                             mCountSetUp=0;
@@ -1397,7 +1503,6 @@ public class MainActivity extends AppCompatActivity {
             + " winner : "+ gameBroad.matchPlayer(winnercolor) + " CurrentTeam: " + mCurrentTeam);
         }
         mCurrentYesNo=false;
-        mCurrentYesNoMain = false;
         System.out.println("Preparing Zombies");
         TwoPairofDice fourdices = new TwoPairofDice();
         int DiceOne = fourdices.rollDieOne();
@@ -1626,7 +1731,6 @@ public class MainActivity extends AppCompatActivity {
                 votes.clear();
                 mCurrentTeam.clear();
                 mCurrentItemOptions.clear();
-                mCurrentYesNoMain = false;
                 mCurrentYesNo = false;
                 GameData gameData = new GameData(mCountPhase,mCountSetUp,mSecondCount,mThirdCount,mFourthCount,mFifthCount,mSixCount);
                 mDatabaseReference.child(GAMEDATA).setValue(gameData);
@@ -1896,7 +2000,6 @@ public class MainActivity extends AppCompatActivity {
                 playersIndex.clear();
                 roomspicked.clear();
                 mCurrentYesNo=false;
-                mCurrentYesNoMain = false;
                 if (mMyPlayerID==getControlId()){
                     mCountPhase=6;
                     mCountSetUp=0;
@@ -3067,7 +3170,6 @@ public class MainActivity extends AppCompatActivity {
         playersIndex.clear();
         roomspicked.clear();
         mCurrentYesNo=false;
-        mCurrentYesNoMain = false;
         if (mMyPlayerID==getControlId()){
             mFifthCount++;
             mFourthCount=2;
@@ -3118,7 +3220,6 @@ public class MainActivity extends AppCompatActivity {
                         roomspicked.clear();
                         mUsedItem.clear();
                         mCurrentYesNo=false;
-                        mCurrentYesNoMain = false;
                         mCurrentMoreZombies.clear();
                        if (mMyPlayerID==getControlId()){
                            if (gameBroad.totalCharatersRemain()>4){
@@ -4902,7 +5003,6 @@ public class MainActivity extends AppCompatActivity {
                     playersIndex.clear();
                     roomspicked.clear();
                     mCurrentYesNo=false;
-                    mCurrentYesNoMain = false;
                     mCurrentMoreZombies.clear();
 
                 }
