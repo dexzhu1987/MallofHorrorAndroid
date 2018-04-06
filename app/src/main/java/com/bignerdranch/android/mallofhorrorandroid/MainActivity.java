@@ -499,40 +499,29 @@ public class MainActivity extends AppCompatActivity {
     private void fireBaseInitialSetup() {
         if (mDatabaseGame!=null){
             mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("game").child(mRoomID);
-            FirebaseDatabase.getInstance().getReference().child("game").child(mRoomID).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (!isGameStarted && mType.equals("Host")){
-                        createRoomOnFireBase();
-                    } else if (dataSnapshot.getValue()==null && mCountPhase==0 ) {
-
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
+            mCountPhase=0;
+            mCountSetUp=0;
+            mSecondCount=0;
+            mThirdCount=0;
+            mFourthCount=0;
+            mFifthCount=0;
+            mSixCount=0;
+            if (!isGameStarted && mType.equals("Host")) {
+                createRoomOnFireBase();
+            }
         }
     }
 
     private void createRoomOnFireBase() {
         Log.i(TAG, "host created room" );
-        mCountPhase=0;
-        mCountSetUp=0;
-        mSecondCount=0;
-        mThirdCount=0;
-        mFourthCount=0;
-        mFifthCount=0;
-        mSixCount=0;
         isGameStarted = true;
-        mDatabaseReference.child(PLAYERINFORM).setValue(mDatabaseGame);
-        GameData gameData = new GameData(0,0,0,0,0,0,0);
-        mDatabaseReference.child(GAMEDATA).setValue(gameData);
-        mDatabaseReference.child(TURN).setValue(-1);
-        mDatabaseReference.child(PREVTURN).setValue(-1);
-
+        do {
+            mDatabaseReference.child(PLAYERINFORM).setValue(mDatabaseGame);
+            GameData gameData = new GameData(0,0,0,0,0,0,0);
+            mDatabaseReference.child(GAMEDATA).setValue(gameData);
+            mDatabaseReference.child(TURN).setValue(-1);
+            mDatabaseReference.child(PREVTURN).setValue(-1);
+        } while (!isNetworkAvailable());
     }
 
     private void registerMyPlayerId() {
@@ -1015,8 +1004,6 @@ public class MainActivity extends AppCompatActivity {
                 }
                 MediaPlayer player2 = MediaPlayer.create(MainActivity.this, R.raw.countdown);
                 player2.start();
-
-
             }
         }, DELAYEDSECONDSFOROPTIONSCHOSEN * 1000 - 5000);
     }
